@@ -1,0 +1,42 @@
+.logo-container {
+  justify-self: start;
+  
+  margin: 40px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+
+
+   /* flex-direction: row;
+    justify-content: flex-start;
+    border-bottom-color: #DDD;
+    border-bottom-width: 2px;
+    align-items: center;
+    padding-top: 5px;
+    margin: 15px;*/
+  }
+  
+  .logo-img {
+    width: 70px;
+    
+    
+    display: inline-block;
+    vertical-align: middle;
+    
+    
+  }
+
+  .logo-text {
+    font-size: 35px;
+    margin: -10px;
+    padding: 10;
+    align-self: center;
+    justify-content: center;    
+    display: inline-block;
+    vertical-align: middle;
+    font-family: "Trebuchet Ns";
+   
+  }
+  
