@@ -7,10 +7,10 @@
       loop
       muted
     ></video>
-    <div class="hero-overlay bg-opacity-70"></div>
+    <div class="hero-overlay bg-opacity-65"></div>
     <div class="hero-content text-center text-neutral-content">
       <div class="max-w-md">
-        <h1 class="mb-5 text-5xl font-bold">Tu cherches un Appartement Abordable?</h1>
+        <h1 class="mb-5 text-4xl font-bold">Tu cherches un Appartement Abordable?</h1>
         <p>Appuie sur le bouton ci-dessous</p>
         <button class="btn btn-outline m-10">Trouver Un Appartement!</button>
       </div>
@@ -19,8 +19,24 @@
 </template>
 
 <script>
+import {useRouter} from 'vue-router'
 export default {
-  name: 'HeroSection'
+  name: 'HeroSection',
+
+  setup() {
+
+    const router = useRouter();
+
+    const handleSubmitButton = () => {
+      router.push('/appartements')
+      console.log('vers appartmentd')
+    }
+
+    return {
+      handleSubmitButton
+    }
+  }
+
 };
 </script>
 
