@@ -1,13 +1,13 @@
 <template>
-  <div class="hero min-h-screen overflow-hidden">
+  <div class="hero min-h-screen w-full h-full overflow-hidden">
     <video
-      class="absolute inset-0 w-full h-full object-cover"
+      class=" inset-0 w-full h-full object-cover "
       src="@/assets/videos/mtlStreet.mp4"
       autoplay
       loop
       muted
     ></video>
-    <div class="hero-overlay bg-opacity-60"></div>
+    <div class="hero-overlay bg-opacity-70"></div>
     <div class="hero-content text-center text-neutral-content">
       <div class="max-w-md">
         <h1 class="mb-5 text-5xl font-bold">Tu cherches un Appartement Abordable?</h1>
