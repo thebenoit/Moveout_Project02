@@ -9,4 +9,4 @@ mongoose
   .then(() => console.log(mongoose.modelNames(), "DB Connected"))
   .catch((err) => console.log(err));
 
-module.exports = mongoose
+module.exports = mongoose;
