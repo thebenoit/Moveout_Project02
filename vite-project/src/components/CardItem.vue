@@ -25,9 +25,9 @@ const props = defineProps({
 	<a :href=props.path>
 		<div class="card card-compact w-96 bg-base-100 shadow-xl">
 			<figure>
-				<img
+				<img class="object-cover h-48 w-96"
 					:src=props.src
-					alt="Shoes"
+					:alt=props.label
 				/>
 			</figure>
 	
