@@ -1,39 +1,22 @@
-import React from "react";
-import { Button } from "./Button";
-import "../components/HeroSection.css";
-import { useNavigate } from 'react-router-dom';
-
-function HeroSection() {
-
-  const navigate = useNavigate();
-
-  const handleSubmitButton = () =>{
-
-  navigate('/Appartments')
-  console.log("oui c'est passé")
-  }
-
-
-
-  return (
-    <div className="hero-container">
-      <video src="./videos/mtlStreet.mp4" autoPlay loop muted />
-      <h1> Tu cherches un Appartement Abordable?</h1>
-      <p>Appuie sur le bouton ci-dessous</p>
-      <div className="hero-btns">
-        <Button
-          typeButton={"btn"}
-          className="btns"
-          buttonStyle="btn--outline"
-          buttonSize="btn--large"
-          onClick={handleSubmitButton}
-          path={"/Appartments"}
-        >
-          Trouver Un Appartement!
-        </Button>
+<template>
+  <div class="hero min-h-screen" style="background-image: url(https://img.daisyui.com/images/stock/photo-1507358522600-9f71e620c44e.jpg);">
+    <div class="hero-overlay bg-opacity-60"></div>
+    <div class="hero-content text-center text-neutral-content">
+      <div class="max-w-md">
+        <h1 class="mb-5 text-5xl font-bold">Tu cherches un Appartement Abordable?</h1>
+        <p>Appuie sur le bouton ci-dessous</p>
+        <button class="btn btn-outline m-10">Trouver Un Appartement!</button>
       </div>
     </div>
-  );
-}
+  </div>
+</template>
 
-export default HeroSection;
+<script>
+export default {
+  name: 'HeroSection'
+};
+</script>
+
+<style scoped>
+/* Vos styles supplémentaires ici si nécessaire */
+</style>
