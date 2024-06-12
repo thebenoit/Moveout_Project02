@@ -2,19 +2,44 @@
 import { ref, watch, onMounted, defineProps } from "vue";
 
 const props = defineProps({
-	path: {
+	// path: {
+	// 	type: String,
+	// 	required: true,
+	// },
+	// label: {
+	// 	type: String,
+	// 	required: true,
+	// },
+	// src: {
+	// 	type: String,
+	// 	required: true,
+	// },
+	// text: {
+	// 	type: String,
+	// 	required: true,
+	// },
+
+	title: {
 		type: String,
 		required: true,
 	},
-	label: {
+	price: {
 		type: String,
 		required: true,
 	},
-	src: {
+	city: {
 		type: String,
 		required: true,
 	},
-	text: {
+	bedrooms: {
+		type: String,
+		required: true,
+	},
+	url: {
+		type: String,
+		required: true,
+	},
+	img: {
 		type: String,
 		required: true,
 	},
@@ -22,18 +47,20 @@ const props = defineProps({
 </script>
 
 <template>
-	<a :href=props.path>
+	<a :href=props.url>
 		<div class="card card-compact w-96 bg-base-100 shadow-xl">
 			<figure>
 				<img class="object-cover h-48 w-96"
-					:src=props.src
+					:src=props.img
 					:alt=props.label
 				/>
 			</figure>
 	
 			<div class="card-body">
 				<h2 class="card-title">{{props.label}}</h2>
-				<p>{{props.text}}</p>
+				<p> {{props.title}} </p>
+				<p> {{props.price}} </p>
+				<p> {{props.city}} </p>
 			</div>
 		</div>
 	</a>

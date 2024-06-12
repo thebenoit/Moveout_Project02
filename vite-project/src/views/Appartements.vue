@@ -1,128 +1,30 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import CardItem from '../components/CardItem.vue';
+import utils from '../utils/utils.js';
 
-const apparts = ref([
-  {
-    path: "https://google.com",
-    src: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-    label: "test",
-    text: "test"
-  },
-  {
-    path: "https://google.com",
-    src: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-    label: "test",
-    text: "test"
-  },
-  {
-    path: "https://google.com",
-    src: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-    label: "test",
-    text: "test"
-  },
-  {
-    path: "https://google.com",
-    src: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-    label: "test",
-    text: "test"
-  },
-  {
-    path: "https://google.com",
-    src: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-    label: "test",
-    text: "test"
-  },
-  
-  {
-    path: "https://google.com",
-    src: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-    label: "test",
-    text: "test"
-  },
-  
-  {
-    path: "https://google.com",
-    src: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-    label: "test",
-    text: "test"
-  },
-  
-  {
-    path: "https://google.com",
-    src: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-    label: "test",
-    text: "test"
-  },
-  
-  {
-    path: "https://google.com",
-    src: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-    label: "test",
-    text: "test"
-  },
-  
-  {
-    path: "https://google.com",
-    src: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-    label: "test",
-    text: "test"
-  },
-  
-  {
-    path: "https://google.com",
-    src: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-    label: "test",
-    text: "test"
-  },
-  
-  {
-    path: "https://google.com",
-    src: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-    label: "test",
-    text: "test"
-  },
-  
-  {
-    path: "https://google.com",
-    src: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-    label: "test",
-    text: "test"
-  },
-  
-  {
-    path: "https://google.com",
-    src: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-    label: "test",
-    text: "test"
-  },
-  
-  {
-    path: "https://google.com",
-    src: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-    label: "test",
-    text: "test"
-  },
-  
-  {
-    path: "https://google.com",
-    src: "https://img-cdn.pixlr.com/image-generator/history/65bb506dcb310754719cf81f/ede935de-1138-4f66-8ed7-44bd16efc709/medium.webp",
-    label: "test",
-    text: "test"
-  },
-  
-]);
+// Initialize the `apparts` ref as an empty array
+const apparts = ref([]);
+
+onMounted(async () => {
+  // Await the result of `utils.get('appartments')` and assign it to `apparts.value`
+  const response = await utils.get('appartments');
+  apparts.value = response;
+});
 </script>
+
 
 <template>
   <div class="px-72">
     <div class="flex flex-wrap gap-5 justify-between">
-      <div v-for="appart in apparts" :key="appart.path">
-        <CardItem 
-          :path="appart.path"
-          :label="appart.label"
-          :src="appart.src"
-          :text="appart.text"
+      <div v-for="appart in apparts" :key="appart.url">
+        <CardItem
+          :title="appart.title"
+          :price="appart.price"
+          :city="appart.city"
+          :bedrooms="appart.bedrooms"
+          :url="appart.url"
+          :img="appart.img"
         />
       </div>
     </div>
