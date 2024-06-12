@@ -10,7 +10,7 @@ async function getAllAppartments(){
 
     //data est égale à tout ce qu'il trouve dans la collection
     const appartData = await appartments.find({});
-    console.log("Données récupérées:" + appartData);
+    //console.log("Données récupérées:" + appartData);
 
     return appartData
 }

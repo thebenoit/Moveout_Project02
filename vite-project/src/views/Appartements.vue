@@ -15,9 +15,13 @@ onMounted(async () => {
 
 
 <template>
+  
   <div class="px-72">
+    
     <div class="flex flex-wrap gap-5 justify-between">
+      
       <div v-for="appart in apparts" :key="appart.url">
+        
         <CardItem
           :title="appart.title"
           :price="appart.price"
