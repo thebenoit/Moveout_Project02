@@ -48,7 +48,7 @@ const props = defineProps({
 
 <template>
 	<a :href=props.url>
-		<div class="card card-compact w-96 bg-base-100 shadow-xl">
+		<div class="card card-compact w-96 bg-base-100 shadow-xl hover:shadow-blue-200 transition-all">
 			<figure>
 				<img class="object-cover h-48 w-96"
 					:src=props.img

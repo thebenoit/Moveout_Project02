@@ -11,16 +11,16 @@ function handleSubmitButton() {
 
 
 <template>
-  <div class="hero min-h-screen w-full h-full overflow-hidden">
+  <div class="hero overflow-hidden">
     <video
-      class=" inset-0 w-full h-full object-cover"
+      class="absolute inset-0 w-full h-full object-cover"
       src="@/assets/videos/mtlStreet.mp4"
       autoplay
       loop
       muted
     ></video>
-    <div class="hero-overlay bg-opacity-65"></div>
-    <div class="hero-content text-center text-neutral-content">
+    <div class="hero-overlay bg-opacity-65 absolute inset-0"></div>
+    <div class="hero-content text-center text-neutral-content relative z-10 flex items-center justify-center w-full h-full">
       <div class="max-w-md">
         <h1 class="mb-5 text-4xl font-bold">Tu cherches un Appartement Abordable?</h1>
         <p>Appuie sur le bouton ci-dessous</p>
@@ -29,3 +29,6 @@ function handleSubmitButton() {
     </div>
   </div>
 </template>
+
+<style>
+</style>
