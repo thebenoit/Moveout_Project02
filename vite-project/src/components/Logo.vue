@@ -29,7 +29,7 @@ export default {
 
     <img :src="imageSrc" alt="logo" class="w-[90px] inline-block align-middle -mr-3.5 " />
 
-    <span class="p-2.5 text-[35px] -m-3.5 
+    <span class="p-2.5 text-[35px] -ml-3.5 
  self-center justify-center inline-block align-middle">{{titre}}</span>
 
   </div>
