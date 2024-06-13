@@ -12,14 +12,12 @@ const imgSrc = MoveoutLogo
         
         <div class="navbar-start">
             <Logo
-            class="btn-ghost"
+            class="btn btn-ghost"
             titre="Moveout"
             :imageSrc='imgSrc'
             />
         </div>
-        <div class="navbar-center">
-          <a class="btn btn-ghost text-xl">daisyUI</a>
-        </div>
+        
         <div class="navbar-end">
             
           <button class="btn btn-ghost btn-circle">
