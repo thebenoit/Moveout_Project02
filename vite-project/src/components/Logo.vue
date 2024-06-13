@@ -24,7 +24,7 @@ export default {
 </script>
 
 <template>
-  <div class="justify-self-start m-10 cursor-pointer 
+  <div class="justify-self-start cursor-pointer 
   no-underline text-2xl flex items-center" @click="action">
 
     <img :src="imageSrc" alt="logo" class="w-[90px] inline-block align-middle -mr-3.5 " />
