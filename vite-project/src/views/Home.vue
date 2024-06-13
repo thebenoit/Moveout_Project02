@@ -1,7 +1,10 @@
 <script setup>
-import { useRouter } from 'vue-router'
 
-const router = useRouter()
+import { useRouter } from 'vue-router';
+
+
+
+const router = useRouter();
 
 function handleSubmitButton() {
   router.push('/appartements')
@@ -27,8 +30,9 @@ function handleSubmitButton() {
         <button class="btn btn-outline m-10" @click="handleSubmitButton">Trouver Un Appartement!</button>
       </div>
     </div>
-  </div>
+  </div>  
 </template>
 
 <style>
+
 </style>
