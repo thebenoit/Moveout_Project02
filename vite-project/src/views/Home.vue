@@ -1,6 +1,7 @@
 <script setup>
 
 import { useRouter } from 'vue-router';
+import Hero from "../components/HeroSection.vue"
 
 
 
@@ -14,8 +15,9 @@ function handleSubmitButton() {
 
 
 <template>
-  <div class="hero overflow-hidden">
-    <video class="inset-0 h-full object-cover min-w-fit min-h-fit" src="@/assets/videos/mtlStreet.mp4" autoplay loop muted></video>
+  
+  <div class="hero overflow-hidden min-h-screen ">
+    <video class="inset-0 h-full object-cover w-full h-full" src="@/assets/videos/mtlStreet.mp4" autoplay loop muted></video>
     <div class="hero-overlay bg-opacity-65 inset-0"></div>
     <div class="hero-content text-center text-neutral-content relative z-10 flex items-center justify-center w-full h-full">
       <div class="max-w-md">
@@ -24,7 +26,7 @@ function handleSubmitButton() {
         <button class="btn btn-outline m-10" @click="handleSubmitButton">Trouver Un Appartement!</button>
       </div>
     </div>
-  </div>  
+  </div>
 </template>
 
 <style>

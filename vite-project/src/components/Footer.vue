@@ -3,7 +3,8 @@
 </script>
 
 <template>
-  <footer class="footer items-center p-4 bg-neutral text-neutral-content ">
+  <!--items-center p-4  bg-black text-neutral-content  backdrop-blur-sm bg-->
+  <footer class="footer items-center p-4 w-full h-1 backdrop-blur-2xl ">
     <aside class="items-center grid-flow-col">
       <a><img src="../assets/images/MoveoutLogo.svg"/></a>
       

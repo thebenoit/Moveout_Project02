@@ -2,84 +2,77 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import Logo from "./Logo.vue";
 import MoveoutLogo from "../assets/images/MoveoutLogo.svg";
+
 </script>
 
 <template>
-     <header class="navbar sticky top-0 z-50 justify-center h-1">
-      <div>
-        <!-- <a class="btn btn-ghost text-xl">daisyUI</a> -->
-        <div class="cursor-pointer no-underline text-2xl flex items-center hover:shadow-2xl rounded-full w-[70px] transition-all duration-500 " @click="action">
-          <img class="" :src=MoveoutLogo alt="logo"/>
-        </div>
-      </div>
-      <div>
-        <ul class="menu menu-horizontal px-1">
-          <li><a>Link</a></li>
-        </ul>
-      </div>
-      <div>
-        <div class="dropdown dropdown-end">
-          <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-            <div class="w-10 rounded-full">
-              <img alt="Tailwind CSS Navbar component" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-            </div>
-          </div>
-          <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-            <li>
-              <a class="justify-between">
-                Profile
-                <span class="badge">New</span>
-              </a>
-            </li>
-            <li><a>Settings</a></li>
-            <li><a>Logout</a></li>
-          </ul>
-        </div>
-      </div>
-     </header>
+     
 
-    <!-- <div class="navbar sticky top-0 w-full h-1 backdrop-blur-2xl justify-center">
-      <div>
-        <a class="btn btn-ghost text-xl">daisyUI</a>
+     <div class="navbar sticky top-0 w-full h-1 backdrop-blur-2xl justify-center ">
+      <div class="navbar-start">
+        
         <div class="cursor-pointer no-underline text-2xl flex items-center hover:shadow-2xl rounded-full transition-all duration-500 " @click="action">
-          <img class="w-[90px]" :src=MoveoutLogo alt="logo"/>
+            <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+            width="65px" height="65px" viewBox="0 0 260.000000 280.000000"
+            preserveAspectRatio="xMidYMid meet">
+           
+           <g transform="translate(0.000000,280.000000) scale(0.100000,-0.100000)"
+           fill="#000000" stroke="none">
+           <path d="M993 1993 c-109 -108 -196 -214 -292 -352 -58 -85 -56 -95 16 -106
+           83 -12 216 -55 313 -101 108 -51 216 -118 224 -140 8 -20 43 -18 56 4 7 12 10
+           -32 8 -160 -2 -114 -7 -174 -13 -170 -5 3 -26 17 -45 30 -99 67 -305 151 -413
+           167 -42 7 -47 10 -47 34 0 41 -20 264 -25 289 -3 12 -10 22 -15 22 -16 0 -13
+           -365 3 -377 6 -6 30 -14 52 -18 131 -23 304 -99 438 -191 80 -55 100 -63 113
+           -43 10 17 228 158 352 229 62 35 114 71 117 80 8 28 -12 301 -23 312 -21 21
+           -33 -42 -31 -171 l2 -126 -39 -22 c-21 -12 -42 -19 -47 -16 -5 3 -7 74 -6 159
+           2 87 -1 158 -7 164 -6 6 -38 -9 -85 -39 l-76 -49 -6 -122 c-4 -68 -7 -149 -7
+           -180 l0 -57 -70 -47 c-38 -25 -73 -46 -76 -46 -4 0 -3 107 1 238 l7 237 40 70
+           c51 88 194 299 212 314 10 9 26 -10 75 -91 79 -132 162 -243 181 -243 35 0 14
+           42 -100 201 -90 126 -119 174 -115 190 2 12 -1 26 -8 31 -13 11 -362 150 -410
+           164 -49 14 -55 -6 -9 -34 21 -14 109 -56 193 -92 85 -37 155 -68 156 -69 1 -1
+           -28 -44 -66 -96 -61 -86 -153 -234 -225 -363 l-27 -47 -32 24 c-88 67 -312
+           161 -447 187 -36 7 -67 14 -69 16 -6 4 109 159 179 242 35 42 104 117 152 167
+           48 50 85 94 81 97 -16 17 -39 0 -140 -100z m653 -686 c0 -61 3 -126 7 -144 6
+           -30 4 -33 -49 -64 -30 -17 -56 -30 -58 -28 -2 2 -1 70 2 152 l5 147 41 25 c22
+           14 43 25 46 25 3 0 5 -51 6 -113z"/>
+           <path d="M1623 1695 c-3 -9 2 -24 11 -34 20 -22 21 -45 1 -61 -19 -16 -35 -4
+           -35 26 0 32 -27 32 -42 -1 -28 -63 70 -105 120 -52 32 34 30 89 -4 116 -32 25
+           -43 26 -51 6z"/>
+           <path d="M926 1360 c-3 -19 -7 -60 -9 -90 l-2 -55 94 -32 c118 -41 121 -40
+           121 73 l0 84 -51 25 c-52 27 -89 30 -97 7 -2 -7 19 -22 52 -37 52 -23 56 -27
+           56 -59 0 -64 -4 -67 -70 -44 l-59 19 -7 57 c-9 76 -20 97 -28 52z"/>
+           </g>
+           </svg>
         </div>
       </div>
-      <div>
 
-        <div class="dropdown dropdown-end">
-          <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-            <div class="w-10 rounded-full">
-              <img alt="Tailwind CSS Navbar component" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-            </div>
-          </div>
-          <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-            <li>
-              <a class="justify-between">
-                Profile
-                <span class="badge">New</span>
-              </a>
-            </li>
-            <li><a>Settings</a></li>
-            <li><a>Logout</a></li>
-          </ul>
-        </div>
+      <div class="navbar-end w-60">
+        <button class="btn btn-ghost btn-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+              </svg>
+                         
+        </button>
+
+        <button class="btn btn-ghost btn-circle">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+              </svg>
+           
+              
+        </button>
+
+        
+            
+            <Span class="btn btn-ghost btn-circle w-20">About us</Span>
+           
+              
+       
+
       </div>
-      <div class="flex-none">
-    <ul class="menu menu-horizontal px-1">
-      <li><a>Link</a></li>
-      <li>
-        <details>
-          <summary>
-            Parent
-          </summary>
-          <ul class="p-2 bg-base-100 rounded-t-none">
-            <li><a>Link 1</a></li>
-            <li><a>Link 2</a></li>
-          </ul>
-        </details>
-      </li>
-    </ul>
-  </div>
-    </div> -->
+
+    
+
+    </div> 
 </template>
