@@ -17,6 +17,7 @@ onMounted(async () => {
 <template>
   
   <div class="px-72">
+    <h1>Vos Résultats</h1>
     
     <div class="flex flex-wrap gap-5 justify-between">
       
