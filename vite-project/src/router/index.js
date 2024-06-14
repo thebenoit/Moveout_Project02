@@ -1,8 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import Home from '../views/Home.vue'
-import Appartements from '../views/Appartements.vue'
-import Demenagement from '../views/Demenagement.vue'
+import Appartements from '../views/Appartements.vue';
+import Demenagement from '../views/Demenagement.vue';
+import AboutUs from '../views/AboutUs.vue';
+import Login from '../views/Login.vue';
 
 
 
@@ -23,6 +25,18 @@ const router = createRouter({
       path: '/demenagement',
       name: 'Demenagement',
       component: Demenagement
+    },
+
+    {
+      path: '/aboutus',
+      name: 'About-us',
+      component: AboutUs
+    },
+
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login
     },
     
   ]
