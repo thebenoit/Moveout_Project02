@@ -11,13 +11,13 @@ import MoveoutLogo from "../assets/images/MoveoutLogo.svg";
      <div class="navbar sticky top-0 w-full h-1 backdrop-blur-2xl justify-center ">
       <div class="navbar-start">
         
-        <div class="cursor-pointer no-underline text-2xl flex items-center hover:shadow-2xl rounded-full transition-all duration-500 " @click="action">
-            <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+        <div class="cursor-pointer no-underline text-2xl flex items-center hover:shadow-2xl rounded-full transition-all duration-500 "  @click="$router.push('/')">
+            <svg version="1.0" xmlns="http://www.w3.org/2000/svg" fill="#ffffff"
             width="65px" height="65px" viewBox="0 0 260.000000 280.000000"
             preserveAspectRatio="xMidYMid meet">
            
            <g transform="translate(0.000000,280.000000) scale(0.100000,-0.100000)"
-           fill="#000000" stroke="none">
+           fill="#ffffff" stroke="none">
            <path d="M993 1993 c-109 -108 -196 -214 -292 -352 -58 -85 -56 -95 16 -106
            83 -12 216 -55 313 -101 108 -51 216 -118 224 -140 8 -20 43 -18 56 4 7 12 10
            -32 8 -160 -2 -114 -7 -174 -13 -170 -5 3 -26 17 -45 30 -99 67 -305 151 -413
@@ -47,8 +47,8 @@ import MoveoutLogo from "../assets/images/MoveoutLogo.svg";
       </div>
 
       <div class="navbar-end w-60">
-        <button class="btn btn-ghost btn-circle" @click="$router.push('../views/Demenagement.vue')">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
+        <button class="btn btn-ghost btn-circle" @click="$router.push('')">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="#ffffff" >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
               </svg>
                          
@@ -56,7 +56,7 @@ import MoveoutLogo from "../assets/images/MoveoutLogo.svg";
 
         <button class="btn btn-ghost btn-circle">
             
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="#ffffff" className="size-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
               </svg>
            
@@ -64,8 +64,10 @@ import MoveoutLogo from "../assets/images/MoveoutLogo.svg";
         </button>
 
         
-            
-            <Span class="btn btn-ghost btn-circle w-20">About us</Span>
+            <button>
+              <Span class="btn btn-ghost btn-circle w-20 text-white">About us</Span>
+            </button>
+           
            
               
        

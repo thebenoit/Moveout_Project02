@@ -16,8 +16,8 @@ function handleSubmitButton() {
 
 <template>
   
-  <div class="hero overflow-hidden min-h-screen ">
-    <video class="inset-0 h-full object-cover min-h-screen " src="@/assets/videos/mtlStreet.mp4" autoplay loop muted></video>
+  <div class="hero overflow-hidden min-h-screen w-screen ">
+    <video class="inset-0 h-full object-cover min-h-screen min-w-screen fixed -z-10  " src="@/assets/videos/mtlStreet.mp4" autoplay loop muted></video>
     <div class="hero-overlay bg-opacity-65 inset-0"></div>
     <div class="hero-content text-center text-neutral-content relative z-10 flex items-center justify-center w-full h-full">
       <div class="max-w-md">
