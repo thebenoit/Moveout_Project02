@@ -16,22 +16,30 @@ onMounted(async () => {
 
 <template>
   
-  <div class="px-72">
-    <h1>Vos Résultats</h1>
-    
-    <div class="flex flex-wrap gap-5 justify-between">
+  <div class=" flex w-screen h-screen inset-0 bg-slate-200">
+    <div class>
+      <h1 class="">Vos Résultats</h1>
+
+      <div class="flex flex-wrap gap-5 justify-between">
       
-      <div v-for="appart in apparts" :key="appart.url">
-        
-        <CardItem
-          :title="appart.title"
-          :price="appart.price"
-          :city="appart.city"
-          :bedrooms="appart.bedrooms"
-          :url="appart.url"
-          :img="appart.img"
-        />
+      
+        <div v-for="appart in apparts" :key="appart.url">
+          
+          <CardItem
+            :title="appart.title"
+            :price="appart.price"
+            :city="appart.city"
+            :bedrooms="appart.bedrooms"
+            :url="appart.url"
+            :img="appart.img"
+          />
+        </div> 
       </div>
+
     </div>
+
+    
+    
+   
   </div>
 </template>

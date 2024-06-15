@@ -2,7 +2,7 @@ const utils = {
     async get(endpoint) {
         try {
             let result = await fetch(`${import.meta.env.VITE_NODE_SERVER_URL}/${endpoint}`)
-
+            console.log("url:  ",`${import.meta.env.VITE_NODE_SERVER_URL}/${endpoint}` )
             return await result.json()
         }
         catch (error) {
