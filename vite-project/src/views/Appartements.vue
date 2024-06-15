@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import CardItem from '../components/CardItem.vue';
 import utils from '../utils/utils.js';
+import Footer from '../components/Footer.vue'
 
 // Initialize the `apparts` ref as an empty array
 const apparts = ref([]);
@@ -16,7 +17,7 @@ onMounted(async () => {
 
 <template>
   
-  <div class=" flex w-screen h-screen inset-0 bg-slate-200">
+  <div class=" flex w-screen  inset-0 bg-slate-200">
     <div class>
       <h1 class="">Vos Résultats</h1>
 

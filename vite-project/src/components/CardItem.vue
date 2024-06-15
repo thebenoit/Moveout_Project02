@@ -48,18 +48,17 @@ const props = defineProps({
 
 <template>
 	<a :href=props.url>
-		<div class="card card-compact w-96 bg-base-100 shadow-xl hover:shadow-blue-200 transition-all">
+		<div class="w-96 bg-base-100 shadow-xl hover:shadow-blue-200 transition-all rounded-lg">
 			<figure>
-				<img class="object-cover h-48 w-96"
+				<img class="object-cover h-48 w-96 "
 					:src=props.img
 					:alt=props.label
 				/>
 			</figure>
 	
 			<div class="card-body">
-				<h2 class="card-title">{{props.label}}</h2>
-				<p> {{props.title}} </p>
-				<p> {{props.price}} </p>
+				<h2 class="card-title">{{Facebook/*props.label*/}}</h2>
+				<strong> {{props.price}}$ {{props.title}} </strong>				
 				<p> {{props.city}} </p>
 			</div>
 		</div>
