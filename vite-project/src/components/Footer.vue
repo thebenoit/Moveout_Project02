@@ -14,11 +14,9 @@
       <p class="text-white">Copyright © 2024 - All right reserved</p>
     </aside>
     <nav class="grid-flow-col gap-4 md:place-self-center md:justify-self-center">
-
-      <a href="https://www.instagram.com/moveout_mtl/?igsh=MTI1amg1amk2YzV6cw%3D%3D&utm_source=qr" target="blank"><img
-          src="../assets/images/instagram-logo-bold.svg" /></a>
-      <a href="https://www.tiktok.com/@moveout_mtl?lang=en" target="blank"><img
-          src="../assets/images/logo-tiktok.svg" /></a>
+      <a href="/AboutUs" class="text-white">About us</a>
+      <a href="https://www.instagram.com/moveout_mtl/?igsh=MTI1amg1amk2YzV6cw%3D%3D&utm_source=qr" target="blank"><img src="../assets/images/instagram-logo-bold.svg" /></a>
+      <a href="https://www.tiktok.com/@moveout_mtl?lang=en" target="blank"><img src="../assets/images/logo-tiktok.svg" /></a>
     </nav>
   </footer>
 </template>
