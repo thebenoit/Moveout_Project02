@@ -22,7 +22,8 @@ onMounted(async () => {
   
   <div class="flex inset-0 bg-slate-500">
     <div>
-      <div class="flex flex-wrap gap-5 justify-between mx-32 mt-24">
+      <div class="flex flex-wrap gap-5 justify-around my-24 px-12 ">
+
         <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
         <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
         <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
@@ -35,8 +36,6 @@ onMounted(async () => {
         <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
         <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
         <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
-        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
-        
       
         <div v-for="appart in apparts" :key="appart.url">
           
