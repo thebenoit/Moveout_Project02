@@ -7,10 +7,13 @@ import Footer from '../components/Footer.vue'
 // Initialize the `apparts` ref as an empty array
 const apparts = ref([]);
 
+const isRendered = ref(false)
+
 onMounted(async () => {
   // Await the result of `utils.get('appartments')` and assign it to `apparts.value`
   const response = await utils.get('appartments');
   apparts.value = response;
+  isRendered.value = true
 });
 </script>
 
@@ -27,5 +30,7 @@ onMounted(async () => {
         </div>
       </div>
     </div>
+
+    </div>   
   </div>
 </template>

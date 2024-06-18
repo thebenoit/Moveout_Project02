@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
+import { RouterLink } from 'vue-router'
 import Logo from "./Logo.vue";
+
 import MoveoutLogo from "../assets/images/MoveoutLogo.svg";
 
 import { TruckIcon } from '@heroicons/vue/24/outline'
@@ -12,103 +14,46 @@ import { UserIcon } from '@heroicons/vue/24/outline'
 
 <template>
 
+  <nav class="fixed w-full z-20 top-0 start-0 bg-opacity-60 bg-gray-800 backdrop-blur-3xl">
+  <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-3">
+  <a href="https://flowbite.com/" class="flex items-center space-x-3 rtl:space-x-reverse">
+      <!-- <img :src="MoveoutLogo" class="h-12" alt="Flowbite Logo"> -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-12" fill="white" viewBox="0 0 499 496">
+      <path d="M134.461 43.508C90.507 87.058 55.424 129.803 16.712 185.45c-23.388 34.276-22.581 38.308 6.452 42.744 33.47 4.839 87.102 22.179 126.217 40.728 43.551 20.566 87.102 47.583 90.328 56.455 3.226 8.065 17.339 7.258 22.581-1.613 2.823-4.839 4.033 12.904 3.226 64.52-.806 45.97-2.822 70.165-5.242 68.552-2.016-1.21-10.484-6.855-18.146-12.098-39.921-27.017-122.991-60.89-166.541-67.342-16.937-2.823-18.953-4.033-18.953-13.711 0-16.533-8.065-106.457-10.081-116.538-1.21-4.839-4.033-8.872-6.049-8.872-6.452 0-5.242 147.186 1.21 152.025 2.42 2.419 12.097 5.645 20.969 7.258 52.825 9.275 122.587 39.922 176.622 77.021 32.26 22.178 40.325 25.404 45.567 17.339 4.033-6.855 91.941-63.713 141.944-92.343 25.001-14.114 45.97-28.631 47.18-32.26 3.226-11.291-4.839-121.378-9.275-125.814-8.468-8.468-13.307 16.937-12.501 68.956l.807 50.809-15.727 8.871c-8.468 4.839-16.936 7.662-18.953 6.452-2.016-1.209-2.822-29.84-2.419-64.116.806-35.083-.403-63.713-2.823-66.133-2.419-2.419-15.323 3.63-34.276 15.727l-30.647 19.759-2.419 49.196c-1.613 27.421-2.823 60.084-2.823 72.585v22.985l-28.227 18.953c-15.324 10.081-29.437 18.549-30.647 18.549-1.613 0-1.21-43.147.403-95.973l2.823-95.57 16.13-28.227c20.565-35.486 78.23-120.571 85.488-126.62 4.033-3.629 10.485 4.033 30.244 36.696 31.857 53.228 65.326 97.989 72.988 97.989 14.114 0 5.645-16.936-40.325-81.053-36.292-50.809-47.986-70.165-46.373-76.617.806-4.839-.404-10.484-3.226-12.5-5.243-4.436-145.976-60.488-165.332-66.133-19.759-5.646-22.179 2.42-3.629 13.71 8.468 5.646 43.954 22.582 77.826 37.099 34.277 14.92 62.504 27.42 62.907 27.824.403.403-11.291 17.743-26.614 38.712-24.598 34.679-61.697 94.36-90.731 146.379l-10.888 18.953-12.904-9.678c-35.485-27.018-125.813-64.923-180.252-75.408-14.516-2.823-27.017-5.645-27.824-6.452-2.42-1.613 43.954-64.116 72.182-97.586 14.113-16.936 41.938-47.18 61.293-67.342 19.356-20.163 34.277-37.905 32.664-39.115-6.452-6.855-15.727 0-56.455 40.325Zm263.321 276.628c0 24.598 1.21 50.809 2.823 58.067 2.419 12.098 1.612 13.308-19.76 25.808-12.097 6.855-22.582 12.098-23.388 11.291-.806-.806-.403-28.227.806-61.293l2.017-59.278 16.533-10.081c8.871-5.646 17.34-10.081 18.549-10.081 1.21 0 2.017 20.565 2.42 45.567Z"/>
+      <path d="M388.507 163.675c-1.21 3.63.807 9.678 4.436 13.711 8.065 8.871 8.468 18.146.403 24.598-7.662 6.452-14.114 1.613-14.114-10.484 0-12.904-10.887-12.904-16.936.403-11.291 25.404 28.227 42.341 48.39 20.969 12.904-13.711 12.097-35.889-1.613-46.777-12.904-10.081-17.34-10.485-20.566-2.42ZM107.443 298.764c-1.21 7.661-2.823 24.194-3.629 36.292l-.806 22.178 37.905 12.904c47.583 16.534 48.793 16.13 48.793-29.437v-33.873l-20.566-10.081c-20.969-10.887-35.889-12.097-39.115-2.822-.806 2.822 7.662 8.871 20.969 14.92 20.969 9.274 22.582 10.887 22.582 23.791 0 25.808-1.613 27.018-28.227 17.743l-23.792-7.661-2.823-22.986c-3.629-30.646-8.065-39.115-11.291-20.968Z"/>
+    </svg>
 
-  <!-- <div class="navbar sticky top-0 w-full h-1 backdrop-blur-2xl justify-center ">
-      <div class="navbar-start">
-        
-        <div class="cursor-pointer no-underline text-2xl flex items-center hover:shadow-2xl rounded-full transition-all duration-500 " @click="action">
-            <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
-            width="65px" height="65px" viewBox="0 0 260.000000 280.000000"
-            preserveAspectRatio="xMidYMid meet">
-           
-           <g transform="translate(0.000000,280.000000) scale(0.100000,-0.100000)"
-           fill="#000000" stroke="none">
-           <path d="M993 1993 c-109 -108 -196 -214 -292 -352 -58 -85 -56 -95 16 -106
-           83 -12 216 -55 313 -101 108 -51 216 -118 224 -140 8 -20 43 -18 56 4 7 12 10
-           -32 8 -160 -2 -114 -7 -174 -13 -170 -5 3 -26 17 -45 30 -99 67 -305 151 -413
-           167 -42 7 -47 10 -47 34 0 41 -20 264 -25 289 -3 12 -10 22 -15 22 -16 0 -13
-           -365 3 -377 6 -6 30 -14 52 -18 131 -23 304 -99 438 -191 80 -55 100 -63 113
-           -43 10 17 228 158 352 229 62 35 114 71 117 80 8 28 -12 301 -23 312 -21 21
-           -33 -42 -31 -171 l2 -126 -39 -22 c-21 -12 -42 -19 -47 -16 -5 3 -7 74 -6 159
-           2 87 -1 158 -7 164 -6 6 -38 -9 -85 -39 l-76 -49 -6 -122 c-4 -68 -7 -149 -7
-           -180 l0 -57 -70 -47 c-38 -25 -73 -46 -76 -46 -4 0 -3 107 1 238 l7 237 40 70
-           c51 88 194 299 212 314 10 9 26 -10 75 -91 79 -132 162 -243 181 -243 35 0 14
-           42 -100 201 -90 126 -119 174 -115 190 2 12 -1 26 -8 31 -13 11 -362 150 -410
-           164 -49 14 -55 -6 -9 -34 21 -14 109 -56 193 -92 85 -37 155 -68 156 -69 1 -1
-           -28 -44 -66 -96 -61 -86 -153 -234 -225 -363 l-27 -47 -32 24 c-88 67 -312
-           161 -447 187 -36 7 -67 14 -69 16 -6 4 109 159 179 242 35 42 104 117 152 167
-           48 50 85 94 81 97 -16 17 -39 0 -140 -100z m653 -686 c0 -61 3 -126 7 -144 6
-           -30 4 -33 -49 -64 -30 -17 -56 -30 -58 -28 -2 2 -1 70 2 152 l5 147 41 25 c22
-           14 43 25 46 25 3 0 5 -51 6 -113z" />
-            <path d="M1623 1695 c-3 -9 2 -24 11 -34 20 -22 21 -45 1 -61 -19 -16 -35 -4
-           -35 26 0 32 -27 32 -42 -1 -28 -63 70 -105 120 -52 32 34 30 89 -4 116 -32 25
-           -43 26 -51 6z" />
-            <path d="M926 1360 c-3 -19 -7 -60 -9 -90 l-2 -55 94 -32 c118 -41 121 -40
-           121 73 l0 84 -51 25 c-52 27 -89 30 -97 7 -2 -7 19 -22 52 -37 52 -23 56 -27
-           56 -59 0 -64 -4 -67 -70 -44 l-59 19 -7 57 c-9 76 -20 97 -28 52z" />
-          </g>
+      <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Moveout</span>
+  </a>
+  <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+      <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Get started</button>
+      <button data-collapse-toggle="navbar-sticky" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">
+        <span class="sr-only">Open main menu</span>
+        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
         </svg>
-      </div>
-    </div>
+    </button>
+  </div>
+  <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 content-center" id="navbar-sticky">
+    <ul class="flex flex-col p-4 md:p-0 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row">
+      
+      <li>
+        <RouterLink to="/" class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:p-0" aria-current="page">Home</RouterLink>
+      </li>
+      <li>
+        <RouterLink to="/Demenagement" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Services</RouterLink>
+      </li>
+      <li>
+        <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Services</a>
+      </li>
+      <li>
+        <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Contact</a>
+      </li>
 
-      <div class="navbar-end w-60">
-        <button class="btn btn-ghost btn-circle" @click="$router.push('../views/Demenagement.vue')">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-              </svg>
-                         
-        </button>
+    </ul>
+  </div>
+  </div>
+</nav>
 
-        <button class="btn btn-ghost btn-circle">
-            
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-              </svg>
-           
-              
-        </button>
-
-        
-            
-            <Span class="btn btn-ghost btn-circle w-20">About us</Span>
-           
-              
-       
-
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1"
-          stroke="#ffffff" className="size-6">
-          <path strokeLinecap="round" strokeLinejoin="round"
-            d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-        </svg>
-
-
-    </div> -->
-
-
-
-
-  <nav class="fixed w-full z-20 top-0 start-0 backdrop-blur-2xl">
-    <div class="flex flex-wrap items-center justify-center p-4">
-      <div class="flex space-x-44 mx-auto">
-        <a href="/" class="flex items-center">
-          <div class="cursor-pointer no-underline text-2xl flex items-center hover:shadow-2xl rounded-full transition-all duration-500 " @click="action">
-            <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 499 496">
-              <path fill="#fff" d="M134.461 43.508C90.507 87.058 55.424 129.803 16.712 185.45c-23.388 34.276-22.581 38.308 6.452 42.744 33.47 4.839 87.102 22.179 126.217 40.728 43.551 20.566 87.102 47.583 90.328 56.455 3.226 8.065 17.339 7.258 22.581-1.613 2.823-4.839 4.033 12.904 3.226 64.52-.806 45.97-2.822 70.165-5.242 68.552-2.016-1.21-10.484-6.855-18.146-12.098-39.921-27.017-122.991-60.89-166.541-67.342-16.937-2.823-18.953-4.033-18.953-13.711 0-16.533-8.065-106.457-10.081-116.538-1.21-4.839-4.033-8.872-6.049-8.872-6.452 0-5.242 147.186 1.21 152.025 2.42 2.419 12.097 5.645 20.969 7.258 52.825 9.275 122.587 39.922 176.622 77.021 32.26 22.178 40.325 25.404 45.567 17.339 4.033-6.855 91.941-63.713 141.944-92.343 25.001-14.114 45.97-28.631 47.18-32.26 3.226-11.291-4.839-121.378-9.275-125.814-8.468-8.468-13.307 16.937-12.501 68.956l.807 50.809-15.727 8.871c-8.468 4.839-16.936 7.662-18.953 6.452-2.016-1.209-2.822-29.84-2.419-64.116.806-35.083-.403-63.713-2.823-66.133-2.419-2.419-15.323 3.63-34.276 15.727l-30.647 19.759-2.419 49.196c-1.613 27.421-2.823 60.084-2.823 72.585v22.985l-28.227 18.953c-15.324 10.081-29.437 18.549-30.647 18.549-1.613 0-1.21-43.147.403-95.973l2.823-95.57 16.13-28.227c20.565-35.486 78.23-120.571 85.488-126.62 4.033-3.629 10.485 4.033 30.244 36.696 31.857 53.228 65.326 97.989 72.988 97.989 14.114 0 5.645-16.936-40.325-81.053-36.292-50.809-47.986-70.165-46.373-76.617.806-4.839-.404-10.484-3.226-12.5-5.243-4.436-145.976-60.488-165.332-66.133-19.759-5.646-22.179 2.42-3.629 13.71 8.468 5.646 43.954 22.582 77.826 37.099 34.277 14.92 62.504 27.42 62.907 27.824.403.403-11.291 17.743-26.614 38.712-24.598 34.679-61.697 94.36-90.731 146.379l-10.888 18.953-12.904-9.678c-35.485-27.018-125.813-64.923-180.252-75.408-14.516-2.823-27.017-5.645-27.824-6.452-2.42-1.613 43.954-64.116 72.182-97.586 14.113-16.936 41.938-47.18 61.293-67.342 19.356-20.163 34.277-37.905 32.664-39.115-6.452-6.855-15.727 0-56.455 40.325Zm263.321 276.628c0 24.598 1.21 50.809 2.823 58.067 2.419 12.098 1.613 13.308-19.76 25.808-12.097 6.855-22.582 12.098-23.388 11.291-.806-.806-.403-28.227.806-61.293l2.017-59.278 16.533-10.081c8.871-5.646 17.34-10.081 18.549-10.081 1.21 0 2.017 20.565 2.42 45.567Z" />
-              <path fill="#fff" d="M388.507 163.675c-1.21 3.63.807 9.678 4.436 13.711 8.065 8.871 8.468 18.146.403 24.598-7.662 6.452-14.114 1.613-14.114-10.484 0-12.904-10.887-12.904-16.936.403-11.291 25.404 28.227 42.341 48.39 20.969 12.904-13.711 12.097-35.889-1.613-46.777-12.904-10.081-17.34-10.485-20.566-2.42ZM107.443 298.764c-1.21 7.661-2.823 24.194-3.629 36.292l-.806 22.178 37.905 12.904c47.583 16.534 48.793 16.13 48.793-29.437v-33.873l-20.566-10.081c-20.969-10.887-35.889-12.097-39.115-2.822-.806 2.822 7.662 8.871 20.969 14.92 20.969 9.274 22.582 10.887 22.582 23.791 0 25.808-1.613 27.018-28.227 17.743l-23.792-7.661-2.823-22.986c-3.629-30.646-8.065-39.115-11.291-20.968Z" />
-            </svg>
-          </div>
-        </a>
-        <button class="btn btn-ghost btn-circle m-auto" @click="$router.push('../Demenagement')">
-          <!-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-          </svg> -->
-          <TruckIcon class="h-10 w-10 text-white stroke-1" />
-        </button>
-        <button class="btn btn-ghost btn-circle">
-          <UserIcon class="h-10 w-10 text-white stroke-1" />
-        </button>
-      </div>
-    </div>
-  </nav>
 
 </template>
