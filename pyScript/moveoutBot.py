@@ -15,6 +15,9 @@ import schedule
 mongoUser = "JerryAdmin"
 mongoPassword ="Mspdslxd123#"
 
+atlasUser = "moveout"
+atlasPassword = "qFCPn6LARdjfBAYQ"
+
 # Get the current date
 current_date = datetime.now().strftime("%Y_%m_%d_%H_%M") 
 print("current_date: ",current_date)
@@ -22,7 +25,7 @@ print("current_date: ",current_date)
 collection_name = "appartments"
 
 #connection à la BD
-client = MongoClient(f"mongodb://{mongoUser}:{mongoPassword}@localhost:27017/")
+client = MongoClient(f"mongodb+srv://{atlasUser}:{atlasPassword}@cluster0.iowm3fd.mongodb.net/Appartements_moveout")
 
 #assigne une bd qui existe si ca n'existe pas il va etre crée
 db = client["Appartements_moveout"]
@@ -199,4 +202,3 @@ def scrapeFb():
       
 
 scrapeFb()
-
