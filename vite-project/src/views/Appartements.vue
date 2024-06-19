@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import CardItem from '../components/CardItem.vue';
 import utils from '../utils/utils.js';
 import Footer from '../components/Footer.vue'
+import Map from '../components/map.vue'
 
 // Initialize the `apparts` ref as an empty array
 const apparts = ref([]);
@@ -21,6 +22,7 @@ onMounted(async () => {
 <template>
   
   <div class="flex inset-0 bg-slate-500">
+    <Map />
     <div>
       <div class="flex flex-wrap gap-5 justify-around my-24 px-12 ">
 
