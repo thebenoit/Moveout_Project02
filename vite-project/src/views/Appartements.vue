@@ -19,11 +19,24 @@ onMounted(async () => {
 
 
 <template>
+  
+  <div class="flex inset-0 bg-slate-500">
+    <div>
+      <div class="flex flex-wrap gap-5 justify-around my-24 px-12 ">
 
-  <div class=" flex w-screen  inset-0 bg-slate-200">
-    <div class>
-      <h1 class="">Vos Résultats</h1>
-      <div class="flex flex-wrap flex-col gap-5 justify-between">
+        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+      
         <div v-for="appart in apparts" :key="appart.url">
           <CardItem :title="appart.title" :price="appart.price" :city="appart.city" :bedrooms="appart.bedrooms"
             :url="appart.url" :img="appart.img" />
