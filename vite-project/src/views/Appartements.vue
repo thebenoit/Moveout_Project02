@@ -21,9 +21,15 @@ onMounted(async () => {
 
 <template>
   
-  <div class="flex inset-0 bg-slate-500">
-    <Map />
+  <div class="flex h-screen ">
+    <div class="flex-1 -mr-12 ">
+      <Map class="overflow-auto" />
+    </div>
+    
+    <div class="flex-1 inset-0  overflow-auto">
+    
     <div>
+        <h1 class="text-xl font-bold mt-10">Résultats :{{ apparts.length }}</h1>
       <div class="flex flex-wrap gap-5 justify-around my-24 px-12 ">
 
         <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
@@ -46,6 +52,8 @@ onMounted(async () => {
       </div>
     </div>
 
-    </div>   
+    </div>  
+  </div>
+   
   
 </template>
