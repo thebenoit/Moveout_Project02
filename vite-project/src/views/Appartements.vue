@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import CardItem from '../components/CardItem.vue';
 import utils from '../utils/utils.js';
 import Footer from '../components/Footer.vue'
+import Map from '../components/map.vue'
 
 // Initialize the `apparts` ref as an empty array
 const apparts = ref([]);
@@ -20,8 +21,15 @@ onMounted(async () => {
 
 <template>
   
-  <div class="flex inset-0 bg-slate-500">
+  <div class="flex h-screen ">
+    <div class="flex-1 -mr-12 ">
+      <Map class="overflow-auto" />
+    </div>
+    
+    <div class="flex-1 inset-0  overflow-auto">
+    
     <div>
+        <h1 class="text-xl font-bold mt-10">Résultats :{{ apparts.length }}</h1>
       <div class="flex flex-wrap gap-5 justify-around my-24 px-12 ">
 
         <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
@@ -38,18 +46,14 @@ onMounted(async () => {
         <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
       
         <div v-for="appart in apparts" :key="appart.url">
-          
-          <CardItem
-            :title="appart.title"
-            :price="appart.price"
-            :city="appart.city"
-            :bedrooms="appart.bedrooms"
-            :url="appart.url"
-            :img="appart.img"
-          />
-        </div> 
+          <CardItem :title="appart.title" :price="appart.price" :city="appart.city" :bedrooms="appart.bedrooms"
+            :url="appart.url" :img="appart.img" />
+        </div>
       </div>
+    </div>
 
-    </div>   
+    </div>  
   </div>
+   
+  
 </template>

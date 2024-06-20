@@ -23,6 +23,8 @@ collection_name = "appartments"
 #connection à la BD
 client = MongoClient(f"mongodb+srv://Moveout:aa91yce7EEMHF1AW@moveout.exzm8uk.mongodb.net/")
 
+
+
 #assigne une bd qui existe si ca n'existe pas il va etre crée
 db = client["Appartements_moveout"]
 
