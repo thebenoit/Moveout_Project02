@@ -11,12 +11,17 @@ const appartmentSchema = new Schema({
   date_scraped: { type: Date },
 });
 
-const Appartments = mongoose.model(
-  "Appartments",
-   appartmentSchema,
-  "appartments"
-);
+// const Appartments = mongoose.model(
+//   "Appartments",
+//    appartmentSchema,
+//   "appartments"
+// );
 
+const Appartments = mongoose.model(
+  "Appartements_moveout",  // Model name
+  appartmentSchema,        // Schema definition
+  "appartments"            // Collection name
+);
 // const mySchemas = { Appartments: Appartments }; // Ici, vous devez passer les objets modèles
 
 module.exports = Appartments;

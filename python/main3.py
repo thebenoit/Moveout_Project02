@@ -11,7 +11,7 @@ class Scraper:
 
     def __init__(self):
         self.driver = webdriver.Chrome()
-        self.bd = Bd("mongodb+srv://Moveout:aa91yce7EEMHF1AW@moveout.exzm8uk.mongodb.net/", "Appartements_moveout", "appartments")
+        self.bd = Bd("mongodb+srv://moveout:qFCPn6LARdjfBAYQ@cluster0.iowm3fd.mongodb.net/", "Appartements_moveout", "appartments")
 
     def load(self):
 
@@ -41,7 +41,7 @@ class Scraper:
 
                 i += 1
 
-                if i == 3:
+                if i == 10:
                     break
 
         except Exception as e:
@@ -59,7 +59,6 @@ class Scraper:
                     if "marketplace_search" in body["data"]:
                         for node in body["data"]["marketplace_search"]["feed_units"]["edges"]:
                             self.bd.add_data(node["node"]["listing"])
-
 
 
 class Bd:
