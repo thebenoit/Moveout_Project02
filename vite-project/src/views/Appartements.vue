@@ -21,40 +21,40 @@ onMounted(async () => {
 
 
 <template>
-  
-  <div class="flex h-screen ">
-    <div class="flex-1 -mr-12 ">
-      <Map class="overflow-auto" />
-    </div>
-    
-    <div class="flex-1 inset-0  overflow-auto">
-    
-    <div>
-        <h1 class="text-xl font-bold mt-10">Résultats :{{ apparts.length }}</h1>
-      <div class="flex flex-wrap gap-5 justify-around my-24 ">
 
-        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
-        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
-        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
-        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
-        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
-        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
-        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
-        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
-        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
-        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
-        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
-        <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
-      
-        <div v-for="appart in apparts" :key="appart.url">
-          <CardItem :title="appart.custom_title" :price="new Intl.NumberFormat().format(appart.listing_price.amount)" :city="appart.location.reverse_geocode.city" :bedrooms="appart.bedrooms"
-            :url="appart.url" :img="appart.primary_listing_photo.image.uri" />
+  <div class="flex h-screen ">
+
+    <div class="flex-1">
+      <Map />
+    </div>
+
+    <div class="flex-1 inset-0 overflow-auto">
+
+      <div>
+        <h1 class="text-xl font-bold mt-10">Résultats :{{ apparts.length }}</h1>
+        <div class="flex flex-wrap gap-5 justify-around my-24 ">
+
+          <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+          <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+          <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+          <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+          <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+          <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+          <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+          <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+          <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+          <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+          <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+          <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
+
+          <div v-for="appart in apparts" :key="appart.url">
+            <CardItem :title="appart.custom_title" :price="new Intl.NumberFormat().format(appart.listing_price.amount)" :city="appart.location.reverse_geocode.city" :bedrooms="appart.bedrooms" :url="appart.url" :img="appart.primary_listing_photo.image.uri" />
+          </div>
         </div>
       </div>
-    </div>
 
-    </div>  
+    </div>
   </div>
-   
-  
+
+
 </template>

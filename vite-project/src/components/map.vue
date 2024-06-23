@@ -1,11 +1,10 @@
 
 <template>
-  <div class="map-wrap">
-    <a href="https://www.maptiler.com" class="watermark">
-      <img src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler logo" />
-    </a>
-    <div class="map" ref="mapContainer"></div>
-  </div>
+    <div class="map-wrap mt-8">
+        <a href="https://www.maptiler.com" class="watermark"><img src="https://api.maptiler.com/resources/logo.svg"
+                alt="MapTiler logo" /></a>
+        <div class="map" ref="mapContainer"></div>
+    </div>
 </template>
 
 <script setup>
