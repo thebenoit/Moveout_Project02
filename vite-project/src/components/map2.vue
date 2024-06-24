@@ -11,6 +11,13 @@
 import { onMounted } from 'vue';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { defineProps } from 'vue'
+
+const props = defineProps({
+
+    apparts: Array
+
+})
 
 // Initialize the map and add the marker on mount
 onMounted(() => {
@@ -19,7 +26,7 @@ onMounted(() => {
 
     // Add a tile layer (using CartoDB Positron style)
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19,
+        maxZoom: 13,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
     }).addTo(map);
 

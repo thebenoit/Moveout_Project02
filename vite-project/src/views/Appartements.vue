@@ -25,7 +25,7 @@ onMounted(async () => {
   <div class="flex h-screen ">
 
     <div class="flex-1">
-      <Map />
+      <Map :apparts="apparts"/>
     </div>
 
     <div class="flex-1 inset-0 overflow-auto">
