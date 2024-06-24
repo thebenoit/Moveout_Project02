@@ -1,15 +1,16 @@
-
 <template>
-    <div class="map-wrap mt-8">
-        <a href="https://www.maptiler.com" class="watermark"><img src="https://api.maptiler.com/resources/logo.svg"
-                alt="MapTiler logo" /></a>
-        <div class="map" ref="mapContainer"></div>
-    </div>
+  <div class="map-wrap mt-8">
+    <a href="https://www.maptiler.com" class="watermark"><img src="https://api.maptiler.com/resources/logo.svg"
+        alt="MapTiler logo" /></a>
+    <div class="map" ref="mapContainer"></div>
+  </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import { Map, NavigationControl, Marker } from 'maplibre-gl';
+import "@maptiler/sdk/dist/maptiler-sdk.css";
+
 
 const mapContainer = ref(null);
 const map = ref(null);
@@ -25,6 +26,12 @@ onMounted(() => {
     center: [initialState.lng, initialState.lat],
     zoom: initialState.zoom,
   });
+
+
+  const marker = new Marker()  // Use Marker from maplibre-gl
+    .setLngLat([-73.676563, 45.537377])  // Use [longitude, latitude] format
+    .addTo(map.value);  // Add marker to the map
+
 });
 
 onUnmounted(() => {
@@ -42,7 +49,8 @@ onUnmounted(() => {
 .map-wrap {
   position: relative;
   width: 100%;
-  height: calc(100vh - 77px); /* Calculate height of the screen minus the heading */
+  height: calc(100vh - 77px);
+  /* Calculate height of the screen minus the heading */
 }
 
 .map {
