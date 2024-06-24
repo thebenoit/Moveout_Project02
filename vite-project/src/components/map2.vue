@@ -34,7 +34,7 @@ onMounted(() => {
 .map-wrap {
     position: relative;
     width: 100%;
-    height: calc(100vh - 77px);
+    height: calc(100vh - 27px);
     /* Calculate height of the screen minus the heading */
     z-index: 1;
     /* Ensures the map is behind the navbar */
