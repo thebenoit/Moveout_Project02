@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import CardItem from '../components/CardItem.vue';
 import utils from '../utils/utils.js';
 import Footer from '../components/Footer.vue'
-import Map from '../components/map.vue'
+import Map from '../components/map2.vue'
 
 // Initialize the `apparts` ref as an empty array
 const apparts = ref([]);

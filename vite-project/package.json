@@ -12,6 +12,7 @@
     "@heroicons/vue": "^2.1.4",
     "@maptiler/sdk": "^2.1.0",
     "cli": "^1.0.1",
+    "leaflet": "^1.9.4",
     "maplibre-gl": "^4.4.1",
     "pinia": "^2.1.7",
     "theme-change": "^2.5.0",
