@@ -4,10 +4,10 @@ import Footer from "./components/Footer.vue";
 </script>
 
 <template>
-  <header class="w-full bg-black shadow-lg items-center p-4">
+  <header class="w-full bg-black shadow-lg items-center">
     <Navbar />
   </header>
-  <main class="flex-grow">
+  <main class="flex-grow h-full">
     <RouterView />
   </main>
   <Footer />

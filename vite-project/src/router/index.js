@@ -1,10 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import Home from '../views/Home.vue'
-import Appartements from '../views/Appartements.vue';
-import Demenagement from '../views/Demenagement.vue';
-import AboutUs from '../views/AboutUs.vue';
-import Login from '../views/Login.vue';
+import Home from '@/views/Home.vue'
+import Appartements from '@/views/Appartements.vue';
+import Demenagement from '@/views/Demenagement.vue';
+import AboutUs from '@/views/AboutUs.vue';
+import ContactUs from '@/views/ContactUs.vue';
+import Login from '@/views/Login.vue';
+import Signup from '@/views/Signup.vue';
 
 
 
@@ -32,12 +34,26 @@ const router = createRouter({
       name: 'About-us',
       component: AboutUs
     },
+    
+    {
+      path: '/signup',
+      name: 'Signup',
+      component: Signup
+    },
+    
+    {
+      path: '/contactus',
+      name: 'Contact-us',
+      component: ContactUs
+    },
+
 
     {
       path: '/login',
       name: 'Login',
       component: Login
     },
+    
     
   ]
 })

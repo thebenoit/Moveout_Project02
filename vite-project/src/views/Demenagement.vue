@@ -4,5 +4,7 @@ import utils from '../utils/utils.js';
 </script>
 
 <template>
-  <h1>Demenagement</h1>
+  <div class="min-h-screen" >
+    <div class="justify-center">Demenagement sssssssssss</div>
+  </div>
 </template>
