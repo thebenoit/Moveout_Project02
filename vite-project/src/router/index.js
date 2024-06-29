@@ -40,21 +40,16 @@ const router = createRouter({
       name: 'Signup',
       component: Signup
     },
-    
     {
       path: '/contactus',
       name: 'Contact-us',
       component: ContactUs
     },
-
-
     {
       path: '/login',
       name: 'Login',
       component: Login
     },
-    
-    
   ]
 })
 

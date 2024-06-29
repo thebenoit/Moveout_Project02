@@ -36,17 +36,31 @@ import { UserIcon } from '@heroicons/vue/24/outline'
   </div>
   <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 content-center" id="navbar-sticky">
     <ul class="flex flex-col p-4 md:p-0 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row">
-      
-      <li>
+      <!-- <li>
         <RouterLink to="/" class="block py-2 px-3 text-gray-900 rounded hover:text-gray-200 md:p-0">
           Home
           </RouterLink>
-      </li>
+      </li> -->
       <li>
         <RouterLink to="/Demenagement" class="block py-2 px-3 text-gray-900 rounded hover:text-gray-200 md:p-0">
           Demenagement
           </RouterLink>
       </li>
+      <li>
+        <RouterLink to="/appartements" class="block py-2 px-3 text-gray-900 rounded hover:text-gray-200 md:p-0">
+          Appartements
+          </RouterLink>
+      </li>
+      <li>
+        <RouterLink to="/signup" class="block py-2 px-3 text-gray-900 rounded hover:text-gray-200 md:p-0">
+          Sign up
+          </RouterLink>
+      </li>
+      <li>
+        <RouterLink to="/login" class="block py-2 px-3 text-gray-900 rounded hover:text-gray-200 md:p-0">
+          Log in
+          </RouterLink>
+      </li> 
       <li>
         <RouterLink to="/contactus" class="block py-2 px-3 text-gray-900 rounded hover:text-gray-200 md:p-0">
           Contact-us
