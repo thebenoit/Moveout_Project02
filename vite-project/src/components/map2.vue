@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="map-wrap mt-8">
+        <div class="map-wrap ">
 
             <div id="map" class="map"></div>
         </div>
