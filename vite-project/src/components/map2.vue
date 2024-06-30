@@ -18,6 +18,7 @@ const props = defineProps({
     apparts: Array
 
 })
+const BING_API_KEY = 'Ajrg-Pgfa5E3sjD9qv43YUncbLhuhryhxUVANobgCYPCEz1rmzeUkhYt6b6xmGoZ';
 
 // Initialize the map and add the marker on mount
 onMounted(() => {
@@ -26,14 +27,49 @@ onMounted(() => {
 
     // Add a tile layer (using CartoDB Positron style)
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        maxZoom: 13,
+        maxZoom: 30,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
     }).addTo(map);
+
+    // Function to geocode an address using Bing Maps API
+    async function geocodeAddress(address) {
+        try {
+            // Make an API call to Bing's geocoding service to get coordinates for the given address
+            const response = await fetch(`http://dev.virtualearth.net/REST/v1/Locations?q=${encodeURIComponent(address)}&key=${BING_API_KEY}`);
+
+            // Parse the JSON response from the API
+            const data = await response.json();
+
+            // Check if the response contains any results
+            if (data.resourceSets[0].resources.length > 0) {
+
+                // Extract the coordinates of the first result
+                const location = data.resourceSets[0].resources[0].point.coordinates;
+
+                // Add a marker to the map at the extracted coordinates
+                const marker = L.marker([location[0], location[1]]).addTo(map)
+                // Bind a popup to the marker with the address
+                marker.bindPopup(address).openPopup();
+
+            } else {
+                // Log an error if no results were found
+                console.error('No results found for address', address)
+            }
+
+        }
+        catch (error) {
+            // Log any errors that occur during the API call or processing
+            console.error('Geocoding error:', error)
+
+        }
+    }
 
     // Add a marker for Montreal
     L.marker([45.5017, -73.5673]).addTo(map)
         .bindPopup('Montreal')
         .openPopup();
+
+    geocodeAddress('41288 Avenue des Canadiens-de-Montréal');
 });
 </script>
 

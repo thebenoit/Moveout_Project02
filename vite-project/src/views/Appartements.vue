@@ -40,11 +40,15 @@ onMounted(async () => {
                     </svg>
                   </span>
                 </button>
-                <ul class="drop-down ">
-                  <li class="h-full p-y-2 px-4"><button>1</button></li>
-                  <li class="h-full p-y-2 px-4"><button>2</button></li>
-                  <li class="h-full p-y-2 px-4"><button>3</button></li>
+                <ul class=" chambres drop-down w-36">
+                  <header class="font-bold text-center  w-full -mt-1 overflow-hidden h-1 rounded">
+                    Chambres
+                  </header>
+                  <li class="flex items-center justify-center h-full py-2 px-4"><button>1</button></li>
+                  <li class="flex items-center justify-center h-full py-2 px-4"><button>2</button></li>
+                  <li class="flex items-center justify-center h-full py-2 px-4"><button>3</button></li>
                 </ul>
+
               </li>
               <li class="  nav-link price h-full p-y-2 px-4">
                 <button>Price
@@ -59,9 +63,22 @@ onMounted(async () => {
 
                   </span>
                 </button>
-                <ul class="drop-down ">
-                  <li class="h-full p-y-2 px-4">
-                    <input type="range" min="0" max="100" value="40" class="range" />
+                <ul class="drop-down w-64 h-42 ">
+                  <header class="font-bold text-center  w-full -mt-1 overflow-hidden h-1 rounded">
+                    Price range
+                  </header>
+                  <li class="flex flex-col items-center justify-center h-full py-2 px-4">
+
+
+                    <div class="flex flex-1 mmt04">
+                      <p class="m-2">Prix Minimal</p> <input class="border-2 m-2">
+                    </div>
+
+                    <div class="flex flex-1 mmt04">
+                      <p class="m-2">Prix Maximal</p> <input class="border-2 m-2">
+                    </div>
+
+                    <button class="bg-blue-500 mt-4 mb-4 px-4 py-2 rounded text-white">Apply</button>
                   </li>
                 </ul>
               </li>
@@ -270,7 +287,9 @@ header {
 
 .bedrooms:hover .drop-down,
 .price:hover .drop-down {
-  display: block
+  display: block;
+  border-width: 1px;
+  border-color: rgb(0, 152, 240);
 }
 
 .bedrooms button,
@@ -291,8 +310,11 @@ header {
   transform: rotate(180deg)
 }
 
-.drop-down li:hover {
-  background-color: rgb(222, 222, 222);
+.chambres li:hover {
+  background-color: rgb(57, 136, 255);
+
+  transition: 0.1s ease-in-out all;
+  color: white;
 }
 
 .box-choice {
