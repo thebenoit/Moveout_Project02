@@ -23,7 +23,7 @@ let map;
 
 onMounted(() => {
     // Create the map centered on Montreal
-    map = L.map('map').setView([45.5017, -73.5673], 13);
+    map = L.map('map').setView([45.5017, -73.5673], 11);
 
     // Add a tile layer (using CartoDB Positron style)
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {

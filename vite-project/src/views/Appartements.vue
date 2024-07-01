@@ -8,6 +8,13 @@ import Map from '../components/map2.vue'
 // Initialize the `apparts` ref as an empty array
 const apparts = ref([]);
 
+let bedrooms = ref(0);
+let price = ref(0)
+
+function setBedrooms(value) {
+  bedrooms.value = value
+}
+
 const isRendered = ref(false)
 
 
@@ -16,7 +23,7 @@ onMounted(async () => {
   // Await the result of `utils.get('appartments')` and assign it to `apparts.value`
   const response = await utils.get('api/appartments');
   apparts.value = response;
-  
+
   console.log("valeur: ", apparts.value)
   isRendered.value = true
 });
@@ -42,7 +49,7 @@ onMounted(async () => {
           <div class=" ">
             <ul class="flex gap-x-2   ">
               <li class="  nav-link bedrooms h-full p-y-2 px-4 ">
-                <button>Bedrooms
+                <button>{{ bedrooms }} Bedrooms
                   <span class="dropdown-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
                       <path fill-rule="evenodd"
@@ -55,9 +62,13 @@ onMounted(async () => {
                   <header class="font-bold text-center  w-full -mt-1 overflow-hidden h-1 rounded">
                     Chambres
                   </header>
-                  <li class="flex items-center justify-center h-full py-2 px-4"><button>1</button></li>
-                  <li class="flex items-center justify-center h-full py-2 px-4"><button>2</button></li>
-                  <li class="flex items-center justify-center h-full py-2 px-4"><button>3</button></li>
+                  <li class="flex items-center justify-center h-full py-2 px-4"><button
+                      class="flex items-center justify-center py-2 px-4" @click="setBedrooms(1)">1</button></li>
+                  <li class="flex items-center justify-center h-full py-2 px-4"><button
+                      class="flex items-center justify-center py-2 px-4" @click="setBedrooms(2)">2</button></li>
+                  <li class="flex items-center justify-center h-full py-2 px-4"><button
+                      class="flex items-center justify-center py-2 px-4" @click="setBedrooms(3)">3</button></li>
+
                 </ul>
 
               </li>
@@ -100,7 +111,7 @@ onMounted(async () => {
     </header>
     <div class="main">
       <aside class="left">
-       
+
         <Map :apparts="apparts" />
       </aside>
 
@@ -306,7 +317,9 @@ header {
 
 .bedrooms button,
 .price button {
-  display: flex
+  display: flex;
+
+  border-radius: 15px;
 }
 
 .dropdown-icon {
@@ -322,7 +335,7 @@ header {
   transform: rotate(180deg)
 }
 
-.chambres li:hover {
+.chambres button:hover {
   background-color: rgb(57, 136, 255);
 
   transition: 0.1s ease-in-out all;
