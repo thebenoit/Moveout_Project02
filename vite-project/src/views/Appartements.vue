@@ -8,8 +8,8 @@ import Map from '../components/map2.vue'
 // Initialize the `apparts` ref as an empty array
 const apparts = ref([]);
 
-let bedrooms = ref(0);
-let price = ref(0)
+const bedrooms = ref(0);
+const price = ref(0)
 
 function setBedrooms(value) {
   bedrooms.value = value
@@ -21,7 +21,7 @@ const isRendered = ref(false)
 
 onMounted(async () => {
   // Await the result of `utils.get('appartments')` and assign it to `apparts.value`
-  const response = await utils.get('appartments');
+  const response = await utils.get('api/appartments');
   apparts.value = response;
 
   console.log("valeur: ", apparts.value)
@@ -118,6 +118,7 @@ onMounted(async () => {
 
       <aside class="right">
         <div class="flex flex-wrap gap-3 justify-around  ">
+          
 
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
