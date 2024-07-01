@@ -5,10 +5,11 @@ const path = require("path");
 const mongoose = require("./mongo/client.js");
 
 // routes
-const appartments = require("./routes/appartement.js");
-const client_login = require("./routes/client/login.js");
-const client_logout = require("./routes/client/logout.js");
-const client_appartements = require("./routes/client/custom_appartements.js");
+const appartments = require("./routes/api/appartement.js");
+const client_singup = require("./routes/api/client/signup.js");
+const client_login = require("./routes/api/client/login.js");
+const client_logout = require("./routes/api/client/logout.js");
+const client_appartements = require("./routes/api/client/custom_appartements.js");
 
 // config
 require("dotenv/config");
@@ -25,12 +26,15 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.get("/", (req, res) => {
-  res.send("test");
-});
-app.use("/", appartments);
-// app.use("/client/", client_login);
-// app.use("/client/", client_logout);
+
+app.use("/api", appartments);
+
+// api
+
+// client
+app.use("/api/client", client_singup);
+app.use("/api/client", client_login);
+// app.use("/api/client/", client_logout);
 // app.use("/client/", client_appartements);
 
 const port = process.env.PORT || 4000; //port to run the serve on

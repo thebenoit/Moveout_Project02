@@ -10,9 +10,9 @@ const utils = {
             return error
         }
     },
-    async post(sessionId, endpoint, body) {
+    async post(endpoint, body) {
         try {
-            let result = await fetch(`${import.meta.env.VITE_NODE_SERVER_URL}/event/${sessionId}/${endpoint}`, {
+            let result = await fetch(`${import.meta.env.VITE_NODE_SERVER_URL}/${endpoint}`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
