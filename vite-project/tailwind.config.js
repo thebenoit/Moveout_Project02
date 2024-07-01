@@ -19,6 +19,15 @@ module.exports = {
       },
     },
     extend: {
+
+      padding: {
+        '0.5': '0.5rem',
+        '0': '0rem',
+      },
+      margin: {
+        '0.5': '0.5rem',
+        '-0.5': '-0.5rem',
+      },
       keyframes: {
         "accordion-down": {
           from: { height: 0 },
