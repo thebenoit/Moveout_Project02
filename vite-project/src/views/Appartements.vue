@@ -14,7 +14,7 @@ const isRendered = ref(false)
 
 onMounted(async () => {
   // Await the result of `utils.get('appartments')` and assign it to `apparts.value`
-  const response = await utils.get('appartments');
+  const response = await utils.get('api/appartments');
   apparts.value = response;
   
   console.log("valeur: ", apparts.value)
