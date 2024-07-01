@@ -1,66 +1,62 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 </script>
 
 <template>
-  <div class="w-full min-h-screen lg:grid lg:grid-cols-2">
-    <div class="flex items-center justify-center py-12">
-      <div class="mx-auto grid w-[350px] gap-6">
-        <div class="grid gap-2 text-center">
-          <h1 class="text-3xl font-bold">
-            Login
-          </h1>
-          <p class="text-balance text-muted-foreground">
-            Enter your email below to login to your account
-          </p>
-        </div>
-        <div class="grid gap-4">
-          <div class="grid gap-2">
-            <Label for="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="m@example.com"
-              required
-            />
-          </div>
-          <div class="grid gap-2">
-            <div class="flex items-center">
-              <Label for="password">Password</Label>
-              <a
-                href="/forgot-password"
-                class="ml-auto inline-block text-sm underline"
-              >
-                Forgot your password?
-              </a>
+  <div class="w-full min-h-screen grid lg:grid-cols-2 ">
+    <div class="mx-auto max-w-sm content-center">
+      <Card class="bg-gray-200 backdrop-blur-3xl mt-16 lg:mt-0 ">
+        <CardHeader>
+          <CardTitle class="text-xl">
+            Sign Up
+          </CardTitle>
+          <CardDescription>
+            Fill the form below to get you started !
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div class="grid gap-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="grid gap-2">
+                <Input id="first-name" placeholder="First name" required />
+              </div>
+              <div class="grid gap-2">
+                <Input id="last-name" placeholder="Last name" required />
+              </div>
             </div>
-            <Input id="password" type="password" required />
+            <div class="grid mt-1">
+              <Input id="phone" type="phone" placeholder="Phone number" required />
+            </div>
+            <div class="grid mt-1">
+              <Input id="email" type="email" placeholder="Email" required />
+            </div>
+            <div class="grid mt-1">
+              <Input id="email" type="email" placeholder="Confirm email" required />
+            </div>
+            <div class="grid mt-1">
+              <Input id="password" type="password" placeholder="Password"/>
+            </div>
+            <div class="grid mt-1">
+              <Input id="password" type="password" placeholder="Confirm Password"/>
+            </div>
+            <Button type="submit" class="w-full">
+              Create an account
+            </Button>
           </div>
-          <Button type="submit" class="w-full">
-            Login
-          </Button>
-          <Button variant="outline" class="w-full">
-            Login with Google
-          </Button>
-        </div>
-        <div class="mt-4 text-center text-sm">
-          Don't have an account?
-          <a href="#" class="underline">
-            Sign up
-          </a>
-        </div>
-      </div>
+          <div class="mt-4 text-center text-sm">
+            Already have an account?
+            <a href="#" class="underline">
+              Sign in
+            </a>
+          </div>
+        </CardContent>
+      </Card>
     </div>
     <div class="hidden bg-muted lg:block">
-      <img
-        src="@/assets/images/house-1477041_1920.jpg"
-        alt="Image"
-        width="1920"
-        height="1080"
-        class="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-      >
+      <img src="@/assets/images/house-1477041_1920.jpg" alt="Image" width="1920" height="1080" class="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale">
     </div>
   </div>
 </template>

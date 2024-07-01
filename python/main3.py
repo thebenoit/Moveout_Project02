@@ -41,7 +41,7 @@ class Scraper:
 
                 i += 1
 
-                if i == 10:
+                if i == 40:
                     break
 
         except Exception as e:
