@@ -64,12 +64,26 @@ onMounted(() => {
         }
     }
 
+        /*geocodeAddress('6081 Avenue du Parc')
+        geocodeAddress('1288 Avenue des Canadiens-de-Montréal')
+        geocodeAddress('5595 Chemin de la Côte-des-Neiges')
+        geocodeAddress('2377 Rue Gamache')*/
+        
+        console.log('apparts: ', props.apparts)  
     // Add a marker for Montreal
-    L.marker([45.5017, -73.5673]).addTo(map)
-        .bindPopup('Montreal')
-        .openPopup();
+    props.apparts.forEach(appart => {
+      
+    const addressParts = appart.custom_sub_titles_with_rendering_flags.map(subtitleObj => subtitleObj.subtitle);
+    const address = addressParts.join(', ');
+    console.log('address: ', address)
+    geocodeAddress(address);
+  });
 
-    geocodeAddress('41288 Avenue des Canadiens-de-Montréal');
+       /* props.apparts.forEach(appart => {
+            console.log('appart: ', appart)
+            geocodeAddress(appart);
+        })*/
+    
 });
 </script>
 

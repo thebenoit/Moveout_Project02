@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import CardItem from '../components/CardItem.vue';
 import utils from '../utils/utils.js';
 import Footer from '../components/Footer.vue'
@@ -10,13 +10,24 @@ const apparts = ref([]);
 
 const isRendered = ref(false)
 
+
+
 onMounted(async () => {
   // Await the result of `utils.get('appartments')` and assign it to `apparts.value`
   const response = await utils.get('appartments');
   apparts.value = response;
-  console.log(apparts.value)
+  
+  console.log("valeur: ", apparts.value)
   isRendered.value = true
 });
+
+// Extract addresses from apparts data
+/*const appartAddresses = computed(() => {
+  return apparts.value.map(appart => {
+    const addressParts = appart.custom_sub_titles_with_rendering_flags.map(subtitleObj => subtitleObj.subtitle);
+    return addressParts.join(', ');
+  });
+});*/
 </script>
 
 
@@ -89,6 +100,7 @@ onMounted(async () => {
     </header>
     <div class="main">
       <aside class="left">
+       
         <Map :apparts="apparts" />
       </aside>
 
