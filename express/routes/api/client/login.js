@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const getAllAppartments = require("../mongo/interface/appartement");
+const getAllAppartments = require("../../../mongo/interface/appartement");
 
 module.exports = app.get("/appartments", async (req, res) => {
 	try {

@@ -7,7 +7,7 @@ import AboutUs from '@/views/AboutUs.vue';
 import ContactUs from '@/views/ContactUs.vue';
 import Login from '@/views/Login.vue';
 import Signup from '@/views/Signup.vue';
-
+import Foryou from '@/views/foryou.vue';
 
 
 const router = createRouter({
@@ -49,6 +49,11 @@ const router = createRouter({
       path: '/login',
       name: 'Login',
       component: Login
+    },
+    {
+      path: '/foryou',
+      name: 'Foryou',
+      component: Foryou
     },
   ]
 })

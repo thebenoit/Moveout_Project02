@@ -18,7 +18,7 @@ const appartmentSchema = new Schema({
 // );
 
 const Appartments = mongoose.model(
-  "Appartements_moveout",  // Model name
+  "appartments",  // Model name
   appartmentSchema,        // Schema definition
   "appartments"            // Collection name
 );
