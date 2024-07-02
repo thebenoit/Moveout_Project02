@@ -1,27 +1,24 @@
 const express = require("express");
 const app = express();
-const getAllAppartments = require("../../../mongo/interface/appartement");
+const { login } = require("../../../mongo/interface/client");
+const jwt = require('jsonwebtoken');
 
-module.exports = app.get("/appartments", async (req, res) => {
-	try {
-		// const appartments = schemas.Appartments;
-		// console.log("Recherche dans la collection: ", appartments.collection.name);
 
-		// const docCount = await appartments.collection.countDocuments({});
-		// console.log("NB_Documents ", docCount);
+module.exports = app.post("/login", async (req, res) => {
+    try {
+        const response = await login(
+			req.body.identifier,
+			req.body.password
+		)
 
-		// //data est égale à tout ce qu'il trouve dans la collection
-		// const appartData = await appartments.find({});
-		// console.log("Données récupérées:");
+        if (response.error) {
+            return res.status(400).send(response);
+        }
+		
+        // Generate JWT
+		const token = jwt.sign({ userId: response.user_id }, process.env.JWT_SECRET, { expiresIn: '3h' });
 
-		appartData = await getAllAppartments();
-
-		if (appartData.length === 0) {
-			console.log("Aucune donnée trouvée", appartData);
-			return res.status(404).send("Aucune donnée trouvée");
-		}
-
-		res.send(appartData);
+		res.send({token: token});
 	} catch (error) {
 		console.error("Erreur lors de la récupération des données:", error);
 		res.status(500).send("Erreur lors de la récupération des données");

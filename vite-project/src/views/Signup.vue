@@ -31,13 +31,15 @@ async function signup(){
     }
   )
 
-  result = await result.json()
-  console.log(result)
 
-  router.push({ path: '/foryou' })
+  result = await result.json()
+  console.log(result.token)
+
+  if(result.token){
+    router.push({ path: '/foryou' })
+  }
 
 }
-
 
 </script>
 

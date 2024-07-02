@@ -9,15 +9,19 @@ const responses = {
             invalidPhone: {message: "Invalid phone number", code: 6},
             weakPassword: {message: "Password must be at least 8 characters long, contain at least one number, one uppercase letter, one lowercase letter, and one special character", code: 7},
             accountCreationError: {message: "An error occurred while creating the account", code: 8},
+            invalidIdentifier: {message: "Invalid email or phone number format", code: 9},
+            userNotFound: {message: "User not found", code: 10},
+            invalidPassword: {message: "Invalid password", code: 11},
+            loginError: {message: "An error occurred during login", code: 12},
         }
     },
     success: {
-        accountCreated: {message: "Account successfully created", code: 9},
+        accountCreated: {message: "Account successfully created", code: 13},
+        loginSuccessful: {message: "Login successful", code: 14}
     },
     info: {
-        welcome: {message: "Welcome to our service", code: 10},
+        welcome: {message: "Welcome to our service", code: 15},
     }
 };
 
-
-module.exports = responses
+module.exports = responses;

@@ -4,12 +4,30 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import utils from '../utils/utils'
+import { useRouter } from 'vue-router'
 
-const email = ref("")
+
+const identifier = ref("")
 const password = ref("")
 
-function login(){
-  alert(password.value)
+const router = useRouter()
+
+async function login(){
+  let result = await utils.post('api/client/login',
+    {
+      "identifier": identifier.value,
+      "password": password.value 
+    }
+  )
+
+  result = await result.json()
+  console.log(result.token)
+
+  if(result.token){
+    router.push({ path: '/foryou' })
+  }
+
 }
 
 </script>
@@ -40,7 +58,7 @@ function login(){
               <Input id="phone" type="phone" placeholder="Phone number" required />
             </div> -->
             <div class="grid mt-1">
-              <Input id="email" placeholder="Email or Phone Number" v-model="email" required />
+              <Input id="email" placeholder="Email or Phone Number" v-model="identifier" required />
             </div>
             <div class="grid mt-1">
               <Input id="password" type="password" placeholder="Password" v-model="password" required />

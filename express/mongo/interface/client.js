@@ -128,6 +128,38 @@ async function createAccount(firstName, lastName, phone, email, confirmEmail, pa
     }
 }
 
+async function login(identifier, password) {
+    try {
+        let user;
+
+        // Check if identifier is an email or phone number
+        if (validator.isEmail(identifier)) {
+            user = await Users.findOne({ email: identifier });
+        } else if (validator.isMobilePhone(identifier, 'en-CA')) {
+            user = await Users.findOne({ phone: identifier });
+        } else {
+            return { error: responses.errors.client.invalidIdentifier };
+        }
+
+        if (!user) {
+            return { error: responses.errors.client.userNotFound };
+        }
+
+        // Check if the password is correct
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return { error: responses.errors.client.invalidPassword };
+        }
+
+        return { message: responses.success.accountCreated, userId: user._id.toString() };
+    } catch (error) {
+        console.error(error);
+        return { error: responses.errors.client.loginError };
+    }
+}
+
+
 module.exports = {
-    createAccount
+    createAccount,
+    login
 }

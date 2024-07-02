@@ -19,9 +19,11 @@ module.exports = app.post("/signup", async (req, res) => {
 			req.body.confirmPassword
 		)
 
-		const token = jwt.sign({ userId: response.user_id }, process.env.JWT_SECRET, { expiresIn: '3h' });
+        if (response.error) {
+            return res.status(400).send(response);
+        }
 
-		console.log(response)
+		const token = jwt.sign({ userId: response.user_id }, process.env.JWT_SECRET, { expiresIn: '3h' });
 
 		res.send({token: token});
 	} catch (error) {
