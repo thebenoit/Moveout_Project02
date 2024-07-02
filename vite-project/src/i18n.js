@@ -1,10 +1,9 @@
 import { createI18n } from "vue-i18n";
 import en from "./locales/en.json";
 import fr from "./locales/fr.json";
-import ro from "./locales/ro.json"
 
 function loadLocaleMessages() {
-  const locales = [{ en: en }, { fr: fr }, {ro: ro}];
+  const locales = [{ en: en }, { fr: fr }];
   const messages = {};
   locales.forEach((lang) => {
     const key = Object.keys(lang);

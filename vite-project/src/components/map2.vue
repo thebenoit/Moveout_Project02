@@ -61,7 +61,7 @@ async function geocodeAddress(address, price, uri) {
     try {
         console.log(`Geocoding address: ${address}`); // Debug: log the address being geocoded
         const response = await fetch(
-            `http://dev.virtualearth.net/REST/v1/Locations?q=${encodeURIComponent(
+            `https://dev.virtualearth.net/REST/v1/Locations?q=${encodeURIComponent(
                 address
             )}&key=${BING_API_KEY}`
         );

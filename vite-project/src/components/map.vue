@@ -38,7 +38,7 @@ onMounted(() => {
     async function geocodeAddress(address) {
         try {
             // Make an API call to Bing's geocoding service to get coordinates for the given address
-            const response = await fetch(`http://dev.virtualearth.net/REST/v1/Locations?q=${encodeURIComponent(address)}&key=${BING_API_KEY}`);
+            const response = await fetch(`https://dev.virtualearth.net/REST/v1/Locations?q=${encodeURIComponent(address)}&key=${BING_API_KEY}`);
 
             // Parse the JSON response from the API
             const data = await response.json();
