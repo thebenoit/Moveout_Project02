@@ -12,6 +12,7 @@ import { onMounted, watch } from 'vue';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { defineProps } from 'vue';
+import icon from '../assets/images/marker-icon.png';
 
 const props = defineProps({
     apparts: Array,
@@ -70,7 +71,13 @@ async function geocodeAddress(address, price, uri) {
 
         if (data.resourceSets[0].resources.length > 0) {
             const location = data.resourceSets[0].resources[0].point.coordinates;
-            const marker = L.marker([location[0], location[1]]).addTo(map);
+            // var icon = L.icon({iconUrl: icon})
+
+            var iconMarker = L.icon({
+                iconUrl: icon,
+            });
+
+            const marker = L.marker([location[0], location[1]], {icon: iconMarker}).addTo(map);
 
             marker.bindPopup(`<div class="da relative flex h-46  overflow-auto ">
   
