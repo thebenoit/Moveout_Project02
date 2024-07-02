@@ -34,13 +34,13 @@ const utils = {
         }
     },
     logout() {
-        localStorage.removeItem('user-token');
+        sessionStorage.removeItem('auth');
     },
     setToken(token) {
-        localStorage.setItem('user-token', token);
+        sessionStorage.setItem('auth', token);
     },
     getToken() {
-        return localStorage.getItem('user-token');
+        return sessionStorage.getItem('auth');
     }
 }
 
