@@ -7,7 +7,11 @@ import MoveoutLogo from "../assets/images/MoveoutLogo.svg";
 
 import { TruckIcon } from '@heroicons/vue/24/outline'
 import { UserIcon } from '@heroicons/vue/24/outline'
+import utils from "@/utils/utils";
 
+function logout(){
+  utils.logout()
+}
 
 
 </script>
@@ -71,6 +75,12 @@ import { UserIcon } from '@heroicons/vue/24/outline'
           About-us
           </RouterLink>
       </li>
+      <li>
+        <div class="block py-2 px-3 text-gray-900 rounded hover:text-gray-200 md:p-0" @click="logout">
+          Logout
+          </div>
+      </li>
+      
 
     </ul>
   </div>

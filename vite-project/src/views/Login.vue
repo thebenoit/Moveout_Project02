@@ -25,6 +25,7 @@ async function login(){
   console.log(result.token)
 
   if(result.token){
+    utils.setToken(result.token)
     router.push({ path: '/foryou' })
   }
 

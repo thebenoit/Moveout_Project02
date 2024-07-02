@@ -4,9 +4,7 @@
       <div class="w-1/2 rounded-full">
         <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
       </div>
-
       <p class="text-4xl mt-4">Liam Chiche</p>
-      <h1>Ben</h1>
       <p class="text-2xl mt-2 text-gray-500">Role</p>
       <div class="p-0 m-0" style="aspect-ratio: 0;">
         <button class="btn btn-square">
@@ -42,7 +40,6 @@
       <div class="w-1/2 rounded-full">
         <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
       </div>
-
       <p class="text-4xl mt-4">Kemmy Will Benoit</p>
       <p class="text-2xl mt-2 text-gray-500">Role</p>
       <div class="p-0 m-0" style="aspect-ratio: 0;">
@@ -79,9 +76,8 @@
       <div class="w-1/2 rounded-full">
         <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
       </div>
-
-      <p class="text-4xl mt-4">Salim Ben</p>
-      <p class="text-2xl mt-2 text-gray-500">Role</p>
+      <p class="text-4xl mt-4">Salim Ben Youssef</p>
+      <p class="text-2xl mt-2 text-gray-500">Développeur</p>
       <div class="p-0 m-0" style="aspect-ratio: 0;">
         <button class="btn btn-square">
           <svg width="25px" height="25px" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
