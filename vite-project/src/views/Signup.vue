@@ -81,7 +81,7 @@ async function signup(){
             <div class="grid mt-1">
               <Input id="password" type="password" placeholder="Confirm Password" v-model="confirmPassword"/>
             </div>
-            <Button type="submit" class="w-full" @click="signup">
+            <Button type="submit" class="w-full bg-cyan-500" @click="signup">
               Create an account
             </Button>
           </div>

@@ -64,7 +64,7 @@ async function login(){
             <div class="grid mt-1">
               <Input id="password" type="password" placeholder="Password" v-model="password" required />
             </div>
-            <Button type="submit" class="w-full" @click="login">
+            <Button type="submit" class="w-full bg-cyan-500" @click="login">
               Log in
             </Button>
           </div>

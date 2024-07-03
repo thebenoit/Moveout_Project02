@@ -56,7 +56,7 @@ function handleImageError() {
 
 <template>
 	<a :href=props.url>
-		<div class="w-96 bg-base-100 shadow-2xl duration-500 hover:shadow-blue-400 transition-all rounded-lg">
+		<div class="w-96 bg-base-100 shadow-2xl duration-500 hover:shadow-cyan-400 transition-all rounded-lg">
 			<figure>
 				<img v-if="isValidImage" class="object-cover media" :src="props.img" :alt="props.label" @error="handleImageError" />
 				<div v-else class="flex items-center justify-center media bg-gray-200">
@@ -65,7 +65,7 @@ function handleImageError() {
 			</figure>
 			<div class="card-body">
 				<div class="grid grid-cols-4 grid-rows-2 gap-3 font-medium content-center">
-					<div class="row-span-2 content-center text-2xl text-blue-500 group-hover:shadow-blue-500">{{props.price}}&nbsp$</div>
+					<div class="row-span-2 content-center text-2xl text-cyan-500 group-hover:shadow-cyan-500">{{props.price}}&nbsp$</div>
 					<div class="col-span-3">{{ props.title }}</div>
 					<p class="text-xl col-span-3"> {{ props.city }} </p>
 				</div>

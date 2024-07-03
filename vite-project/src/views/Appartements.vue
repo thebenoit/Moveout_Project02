@@ -41,20 +41,18 @@ onMounted(async () => {
 <template>
 
   <div class="bodyPage h-screen">
-    <div class="white-space">
+    <div class="white-space pt-12">
     </div>
     <header>
-      <section class="box-choice   h-4  ">
-        <div class=" interior-box p-1   ">
-          <div class=" ">
-            <ul class="flex gap-x-2   ">
+      <section class="box-choice h-4">
+        <div class=" interior-box p-1">
+          <div class="">
+            <ul class="flex gap-x-2">
               <li class="  nav-link bedrooms h-full p-y-2 px-4 ">
                 <button>{{ bedrooms }} Bedrooms
                   <span class="dropdown-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
-                      <path fill-rule="evenodd"
-                        d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
-                        clip-rule="evenodd" />
+                      <path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                     </svg>
                   </span>
                 </button>
@@ -62,12 +60,9 @@ onMounted(async () => {
                   <header class="font-bold text-center  w-full -mt-1 overflow-hidden h-1 rounded">
                     Chambres
                   </header>
-                  <li class="flex items-center justify-center h-full py-2 px-4"><button
-                      class="flex items-center justify-center py-2 px-4" @click="setBedrooms(1)">1</button></li>
-                  <li class="flex items-center justify-center h-full py-2 px-4"><button
-                      class="flex items-center justify-center py-2 px-4" @click="setBedrooms(2)">2</button></li>
-                  <li class="flex items-center justify-center h-full py-2 px-4"><button
-                      class="flex items-center justify-center py-2 px-4" @click="setBedrooms(3)">3</button></li>
+                  <li class="flex items-center justify-center h-full py-2 px-4"><button class="flex items-center justify-center py-2 px-4" @click="setBedrooms(1)">1</button></li>
+                  <li class="flex items-center justify-center h-full py-2 px-4"><button class="flex items-center justify-center py-2 px-4" @click="setBedrooms(2)">2</button></li>
+                  <li class="flex items-center justify-center h-full py-2 px-4"><button class="flex items-center justify-center py-2 px-4" @click="setBedrooms(3)">3</button></li>
 
                 </ul>
 
@@ -77,9 +72,7 @@ onMounted(async () => {
                   <span class="dropdown-icon">
 
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
-                      <path fill-rule="evenodd"
-                        d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
-                        clip-rule="evenodd" />
+                      <path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                     </svg>
 
 
@@ -100,7 +93,7 @@ onMounted(async () => {
                       <p class="m-2">Prix Maximal</p> <input class="border-2 m-2">
                     </div>
 
-                    <button class="bg-blue-500 mt-4 mb-4 px-4 py-2 rounded text-white">Apply</button>
+                    <button class="bg-cyan-500 mt-4 mb-4 px-4 py-2 rounded text-white">Apply</button>
                   </li>
                 </ul>
               </li>
@@ -111,15 +104,10 @@ onMounted(async () => {
     </header>
     <div class="main">
       <aside class="left">
-
         <Map :apparts="apparts" />
       </aside>
-
-
       <aside class="right">
-        <div class="flex flex-wrap gap-3 justify-around  ">
-          
-
+        <div class="flex flex-wrap gap-3 justify-around">
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
@@ -132,16 +120,11 @@ onMounted(async () => {
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
-
           <div v-for="appart in apparts" :key="appart.url">
-
-            <CardItem :title="appart.custom_title" :price="new Intl.NumberFormat().format(appart.listing_price.amount)"
-              :city="appart.location.reverse_geocode.city" :bedrooms="appart.bedrooms" :url="appart.url"
-              :img="appart.primary_listing_photo.image.uri" />
+            <CardItem :title="appart.custom_title" :price="new Intl.NumberFormat().format(appart.listing_price.amount)" :city="appart.location.reverse_geocode.city" :bedrooms="appart.bedrooms" :url="appart.url" :img="appart.primary_listing_photo.image.uri" />
           </div>
         </div>
       </aside>
-
     </div>
   </div>
 
@@ -243,12 +226,12 @@ onMounted(async () => {
 
 }
 
-header {
+/* header {
 
   padding: 1em 0 2em 0;
   z-index: 10;
 
-}
+} */
 
 .left {
   background: blanchedalmond;
