@@ -39,44 +39,44 @@ function logout(){
     </button>
   </div>
   <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 content-center" id="navbar-sticky">
-    <ul class="flex flex-col p-4 md:p-0 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row">
+    <ul class="flex flex-col p-4 md:p-0 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row" >
       <!-- <li>
         <RouterLink to="/" class="block py-2 px-3 text-gray-900 rounded hover:text-gray-200 md:p-0">
           Home
           </RouterLink>
       </li> -->
       <li>
-        <RouterLink to="/Demenagement" class="block py-2 px-3 text-white rounded hover:text-cyan-500 md:p-0">
-          Demenagement
+        <RouterLink to="/Demenagement" class="block py-2 px-3 text-white rounded hover:text-cyan-300 md:p-0">
+          Demenagement   
           </RouterLink>
       </li>
       <li>
-        <RouterLink to="/appartements" class="block py-2 px-3 text-white rounded hover:text-cyan-500 md:p-0">
+        <RouterLink to="/appartements" class="block py-2 px-3 text-white rounded hover:text-cyan-300 md:p-0">
           Appartements
           </RouterLink>
       </li>
       <li>
-        <RouterLink to="/signup" class="block py-2 px-3 text-white rounded hover:text-cyan-500 md:p-0">
+        <RouterLink to="/signup" class="block py-2 px-3 text-white rounded hover:text-cyan-300 md:p-0">
           Sign up
           </RouterLink>
       </li>
       <li>
-        <RouterLink to="/login" class="block py-2 px-3 text-white rounded hover:text-cyan-500 md:p-0">
+        <RouterLink to="/login" class="block py-2 px-3 text-white rounded hover:text-cyan-300 md:p-0">
           Log in
           </RouterLink>
       </li> 
       <li>
-        <RouterLink to="/contactus" class="block py-2 px-3 text-white rounded hover:text-cyan-500 md:p-0">
+        <RouterLink to="/contactus" class="block py-2 px-3 text-white rounded hover:text-cyan-300 md:p-0">
           Contact-us
           </RouterLink>
       </li>
       <li>
-        <RouterLink to="/aboutus" class="block py-2 px-3 text-white rounded hover:text-cyan-500 md:p-0">
+        <RouterLink to="/aboutus" class="block py-2 px-3 text-white rounded hover:text-cyan-300 md:p-0">
           About-us
           </RouterLink>
       </li>
       <li>
-        <button class="block py-2 px-3 text-white rounded hover:text-cyan-500 md:p-0" @click="logout()">
+        <button class="block py-2 px-3 text-white rounded hover:text-cyan-300 md:p-0" @click="logout()">
           Logout
           </button>
       </li>
