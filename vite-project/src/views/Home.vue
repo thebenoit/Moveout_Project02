@@ -21,7 +21,7 @@ function handleSubmitButton() {
     <div class="hero-overlay bg-opacity-65 inset-0"></div>
     <div class="hero-content text-center text-neutral-content relative z-10 flex items-center justify-center w-full ">
       <div class="">
-        <h1 class="mb-5 text-4xl font-bold ">À la recherche d'un Appartement Abordable?</h1>
+        <h1 class="mb-5 text-4xl font-bold ">À la recherche d'un appartement abordable?</h1>
         <button class="btn btn-outline m-10 bg-cyan-500 border-none hover:bg-cyan-400 hover:shadow-cyan-300 hover:shadow-lg" @click="handleSubmitButton">Trouver Un Appartement!</button>
       </div>
     </div>
