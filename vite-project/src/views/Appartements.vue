@@ -40,10 +40,10 @@ onMounted(async () => {
 
 <template>
 
-  <div class="bodyPage h-screen">
-    <div class="white-space pt-12">
+  <div class="bodyPage h-screen pt-16">
+    <div class="white-space pt-2">
     </div>
-    <header>
+    <div>
       <section class="box-choice h-4">
         <div class=" interior-box p-1">
           <div class="">
@@ -57,9 +57,9 @@ onMounted(async () => {
                   </span>
                 </button>
                 <ul class=" chambres drop-down w-36">
-                  <header class="font-bold text-center  w-full -mt-1 overflow-hidden h-1 rounded">
+                  <div class="font-bold text-center  w-full -mt-1 overflow-hidden h-1 rounded">
                     Chambres
-                  </header>
+                  </div>
                   <li class="flex items-center justify-center h-full py-2 px-4"><button class="flex items-center justify-center py-2 px-4" @click="setBedrooms(1)">1</button></li>
                   <li class="flex items-center justify-center h-full py-2 px-4"><button class="flex items-center justify-center py-2 px-4" @click="setBedrooms(2)">2</button></li>
                   <li class="flex items-center justify-center h-full py-2 px-4"><button class="flex items-center justify-center py-2 px-4" @click="setBedrooms(3)">3</button></li>
@@ -79,9 +79,9 @@ onMounted(async () => {
                   </span>
                 </button>
                 <ul class="drop-down w-64 h-42 ">
-                  <header class="font-bold text-center  w-full -mt-1 overflow-hidden h-1 rounded">
+                  <div class="font-bold text-center  w-full -mt-1 overflow-hidden h-1 rounded">
                     Price range
-                  </header>
+                  </div>
                   <li class="flex flex-col items-center justify-center h-full py-2 px-4">
 
 
@@ -101,8 +101,8 @@ onMounted(async () => {
           </div>
         </div>
       </section>
-    </header>
-    <div class="main">
+    </div>
+    <div class="main pt-12">
       <aside class="left">
         <Map :apparts="apparts" />
       </aside>
