@@ -43,36 +43,43 @@ onMounted(async () => {
   <div class="bodyPage h-screen pt-16">
     <div class="white-space pt-2">
     </div>
-    <div>
-      <section class="box-choice h-4">
-        <div class=" interior-box p-1">
+    <div class="header ">
+      <section class="box-choice h-4  ">
+        <div class=" interior-box">
           <div class="">
             <ul class="flex gap-x-2">
               <li class="  nav-link bedrooms h-full p-y-2 px-4 ">
                 <button>{{ bedrooms }} Bedrooms
                   <span class="dropdown-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
-                      <path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                      <path fill-rule="evenodd"
+                        d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+                        clip-rule="evenodd" />
                     </svg>
                   </span>
                 </button>
                 <ul class=" chambres drop-down w-36">
-                  <div class="font-bold text-center  w-full -mt-1 overflow-hidden h-1 rounded">
+                  <div class=" font-bold text-center  w-full -mt-1 overflow-hidden h-1 rounded">
                     Chambres
                   </div>
-                  <li class="flex items-center justify-center h-full py-2 px-4"><button class="flex items-center justify-center py-2 px-4" @click="setBedrooms(1)">1</button></li>
-                  <li class="flex items-center justify-center h-full py-2 px-4"><button class="flex items-center justify-center py-2 px-4" @click="setBedrooms(2)">2</button></li>
-                  <li class="flex items-center justify-center h-full py-2 px-4"><button class="flex items-center justify-center py-2 px-4" @click="setBedrooms(3)">3</button></li>
+                  <li class="flex items-center justify-center h-full py-2 px-4"><button
+                      class="flex items-center justify-center py-2 px-4" @click="setBedrooms(1)">1</button></li>
+                  <li class="flex items-center justify-center h-full py-2 px-4"><button
+                      class="flex items-center justify-center py-2 px-4" @click="setBedrooms(2)">2</button></li>
+                  <li class="flex items-center justify-center h-full py-2 px-4"><button
+                      class="flex items-center justify-center py-2 px-4" @click="setBedrooms(3)">3</button></li>
 
                 </ul>
 
               </li>
-              <li class="  nav-link price h-full p-y-2 px-4">
+              <li class="nav-link price h-full p-y-2 px-4">
                 <button>Price
                   <span class="dropdown-icon">
 
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
-                      <path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                      <path fill-rule="evenodd"
+                        d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+                        clip-rule="evenodd" />
                     </svg>
 
 
@@ -102,7 +109,7 @@ onMounted(async () => {
         </div>
       </section>
     </div>
-    <div class="main pt-12">
+    <div class="main pt-2">
       <aside class="left">
         <Map :apparts="apparts" />
       </aside>
@@ -121,12 +128,14 @@ onMounted(async () => {
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
           <div v-for="appart in apparts" :key="appart.url">
-            <CardItem :title="appart.custom_title" :price="new Intl.NumberFormat().format(appart.listing_price.amount)" :city="appart.location.reverse_geocode.city" :bedrooms="appart.bedrooms" :url="appart.url" :img="appart.primary_listing_photo.image.uri" />
+            <CardItem :title="appart.custom_title" :price="new Intl.NumberFormat().format(appart.listing_price.amount)"
+              :city="appart.location.reverse_geocode.city" :bedrooms="appart.bedrooms" :url="appart.url"
+              :img="appart.primary_listing_photo.image.uri" />
           </div>
         </div>
       </aside>
     </div>
-  </div> --->
+  </div>
 
   <!---<div class="flex flex-col  ">
 
@@ -213,6 +222,9 @@ onMounted(async () => {
 
 
   </div>---->
+
+
+
 </template>
 
 <style>
@@ -226,12 +238,15 @@ onMounted(async () => {
 
 }
 
-/* header {
-
-  padding: 1em 0 2em 0;
+.header {
+  padding: 0.5em 0 1.7em 0;
   z-index: 10;
 
-} */
+
+
+
+
+}
 
 .left {
   background: blanchedalmond;
@@ -254,6 +269,8 @@ onMounted(async () => {
   display: flex;
   flex: 1;
   height: 80%;
+
+
 }
 
 .nav-link {
@@ -288,7 +305,7 @@ onMounted(async () => {
 }
 
 .nav-link:hover {
-  background-color: rgb(222, 222, 222);
+  /*background-color: rgb(222, 222, 222);*/
   border-radius: 0.5rem;
 }
 
@@ -349,78 +366,3 @@ onMounted(async () => {
 
 }
 </style>
-
-<!---<style>
-
-.nav-link {
-
-  border-color: black;
-  border-width: 1px;
-
-}
-.nav-link,
-.drop-down li {
-  height: 100%;
-  padding: 0.5rem 1rem;
-  font-weight: 6000;
-  
-}
-
-.drop-down {
-  position: absolute;
-  padding: 0.5rem 0;
-  margin: 0.5rem -0.5rem;
-  background: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 0.5rem;
-  font-size: 12px;
-  display: none;
-
-}
-
-.nav-link:hover {
-  background-color: rgb(222, 222, 222);
-
-  border-radius: 0.5rem;
-
-
-}
-
-.bedrooms:hover .drop-down,
-.price:hover .drop-down {
-  display: block
-}
-
-.bedrooms button,
-.price button {
-  display: flex
-}
-
-.dropdown-icon {
-  font-size: 20px;
-  position: relative;
-  right: -5px;
-  transition: 0.3s ease-in-out all
-}
-
-.bedrooms:hover .dropdown-icon,
-.price:hover .dropdown-icon {
-
-  transform: rotate(180deg)
-}
-
-.drop-down li:hover {
-  background-color: rgb(222, 222, 222);
-}
-
-.box-choice {
-  margin-bottom: 20;
-
-  z-index: 2;
-}
-
-.interior-box {
-  border-width: 10;
-  border-color: blue;
-}
-</style>---->
