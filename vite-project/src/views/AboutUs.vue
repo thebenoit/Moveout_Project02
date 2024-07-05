@@ -37,8 +37,8 @@
       </div>
     </div>
     <div class="avatar flex-col items-center">
-      <div class="w-1/2 rounded-full">
-        <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+      <div class="w-13 h-13 ">
+        <img src="../assets/images/Jerry.jpeg" />
       </div>
       <p class="text-4xl mt-4">Kemmy Will Benoit</p>
       <p class="text-2xl mt-2 text-gray-500">Role</p>
