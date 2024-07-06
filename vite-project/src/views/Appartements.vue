@@ -28,13 +28,27 @@ onMounted(async () => {
   isRendered.value = true
 });
 
-// Extract addresses from apparts data
-/*const appartAddresses = computed(() => {
-  return apparts.value.map(appart => {
-    const addressParts = appart.custom_sub_titles_with_rendering_flags.map(subtitleObj => subtitleObj.subtitle);
-    return addressParts.join(', ');
+// Function to extract the number of bedrooms from custom_title
+function extractBedrooms(customTitle) {
+  console.log(`Extracting bedrooms from: ${customTitle}`);
+  const match = customTitle.match(/(\d+)\s+beds?/);
+  const bedrooms = match ? parseInt(match[1], 10) : 0;
+  console.log(`Extracted bedrooms: ${bedrooms}`);
+  return bedrooms;
+}
+
+// Define a computed property to filter apartments by bedrooms
+const filteredApparts = computed(() => {
+  console.log('Filtering apartments based on bedrooms:', bedrooms.value);
+  const filtered = apparts.value.filter(appart => {
+    const appartBedrooms = extractBedrooms(appart.custom_title);
+    console.log(`Comparing: ${appartBedrooms} with ${bedrooms.value}`);
+    return bedrooms.value === 0 || appartBedrooms === bedrooms.value;
   });
-});*/
+  console.log('Filtered apartments:', filtered);
+  return filtered;
+});
+
 </script>
 
 
@@ -111,7 +125,7 @@ onMounted(async () => {
     </div>
     <div class="main pt-2">
       <aside class="left">
-        <Map :apparts="apparts" />
+        <Map :apparts="filteredApparts" />
       </aside>
       <aside class="right">
         <div class="flex flex-wrap gap-3 justify-around">
@@ -127,10 +141,16 @@ onMounted(async () => {
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
-          <div v-for="appart in apparts" :key="appart.url">
-            <CardItem :title="appart.custom_title" :price="new Intl.NumberFormat().format(appart.listing_price.amount)"
-              :city="appart.location.reverse_geocode.city" :bedrooms="appart.bedrooms" :url="appart.url"
-              :img="appart.primary_listing_photo.image.uri" />
+          <div v-for="appart in filteredApparts" :key="appart.url">
+            <div>
+              
+              <CardItem :title="appart.custom_title"
+                :price="new Intl.NumberFormat().format(appart.listing_price.amount)"
+                :city="appart.location.reverse_geocode.city" :bedrooms="extractBedrooms(appart.custom_title)"
+                :url="appart.url" :img="appart.primary_listing_photo.image.uri" />
+
+            </div>
+
           </div>
         </div>
       </aside>
