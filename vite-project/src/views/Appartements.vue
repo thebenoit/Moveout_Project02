@@ -142,8 +142,6 @@ const filteredApparts = computed(() => {
         <Map :apparts="filteredApparts" />
       </aside>
       <aside class="right">
-        <h1> longueur: {{ filteredApparts.length }}</h1>
-
         <div class="flex flex-wrap gap-3 justify-around">
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
