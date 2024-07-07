@@ -9,10 +9,18 @@ import Map from '../components/map2.vue'
 const apparts = ref([]);
 
 const bedrooms = ref(0);
-const price = ref(0)
+const prixMin = ref(0)
+const prixMax = ref(0)
+const inputPrixMin = ref(0)
+const inputPrixMax = ref(0)
 
 function setBedrooms(value) {
   bedrooms.value = value
+}
+function applyClicked() {
+  prixMin.value = inputPrixMin.value
+  prixMax.value = inputPrixMax.value
+
 }
 
 const isRendered = ref(false)
@@ -30,24 +38,27 @@ onMounted(async () => {
 
 // Function to extract the number of bedrooms from custom_title
 function extractBedrooms(customTitle) {
-  console.log(`Extracting bedrooms from: ${customTitle}`);
+  //console.log(`Extracting bedrooms from: ${customTitle}`);
   const match = customTitle.match(/(\d+)\s+beds?/);
   const bedrooms = match ? parseInt(match[1], 10) : 0;
-  console.log(`Extracted bedrooms: ${bedrooms}`);
+  // console.log(`Extracted bedrooms: ${bedrooms}`);
   return bedrooms;
 }
 
 // Define a computed property to filter apartments by bedrooms
 const filteredApparts = computed(() => {
-  console.log('Filtering apartments based on bedrooms:', bedrooms.value);
   const filtered = apparts.value.filter(appart => {
     const appartBedrooms = extractBedrooms(appart.custom_title);
-    console.log(`Comparing: ${appartBedrooms} with ${bedrooms.value}`);
-    return bedrooms.value === 0 || appartBedrooms === bedrooms.value;
+    const appartPrice = appart.listing_price.amount;  // Use the numeric value directly
+    return (
+      (bedrooms.value === 0 || appartBedrooms === bedrooms.value) &&
+      (prixMin.value === 0 || appartPrice >= prixMin.value) &&
+      (prixMax.value === 0 || appartPrice <= prixMax.value)
+    );
   });
-  console.log('Filtered apartments:', filtered);
   return filtered;
 });
+
 
 </script>
 
@@ -107,14 +118,17 @@ const filteredApparts = computed(() => {
 
 
                     <div class="flex flex-1 mmt04">
-                      <p class="m-2">Prix Minimal</p> <input class="border-2 m-2">
+                      <p class="m-2">Prix Minimal</p>
+                      <input class="border-2 m-2" v-model.number="inputPrixMin">
                     </div>
 
                     <div class="flex flex-1 mmt04">
-                      <p class="m-2">Prix Maximal</p> <input class="border-2 m-2">
+                      <p class="m-2">Prix Maximal</p>
+                      <input class="border-2 m-2" v-model.number="inputPrixMax">
                     </div>
 
-                    <button class="bg-cyan-500 mt-4 mb-4 px-4 py-2 rounded text-white">Apply</button>
+                    <button class="bg-cyan-500 mt-4 mb-4 px-4 py-2 rounded text-white"
+                      @click="applyClicked">Apply</button>
                   </li>
                 </ul>
               </li>
@@ -128,6 +142,8 @@ const filteredApparts = computed(() => {
         <Map :apparts="filteredApparts" />
       </aside>
       <aside class="right">
+        <h1> max: {{ prixMax }}</h1>
+        <h1>min: {{ prixMin }}</h1>
         <div class="flex flex-wrap gap-3 justify-around">
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
@@ -143,7 +159,10 @@ const filteredApparts = computed(() => {
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
           <div v-for="appart in filteredApparts" :key="appart.url">
             <div>
-              
+
+
+              <h1>prix {{ new Intl.NumberFormat().format(appart.listing_price.amount) }}</h1>
+              <h1></h1>
               <CardItem :title="appart.custom_title"
                 :price="new Intl.NumberFormat().format(appart.listing_price.amount)"
                 :city="appart.location.reverse_geocode.city" :bedrooms="extractBedrooms(appart.custom_title)"

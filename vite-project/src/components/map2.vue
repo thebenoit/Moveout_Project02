@@ -1,6 +1,6 @@
 <template>
     <div>
-
+        <h1>longueur {{apparts.length}}</h1>
         <div class="map-wrap">
             <div id="map" class="map"></div>
         </div>
