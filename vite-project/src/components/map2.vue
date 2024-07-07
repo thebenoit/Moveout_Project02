@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>longueur {{apparts.length}}</h1>
+        <h1>longueur {{ apparts.length }}</h1>
         <div class="map-wrap">
             <div id="map" class="map"></div>
         </div>
@@ -21,6 +21,7 @@ const props = defineProps({
 const BING_API_KEY = 'Ajrg-Pgfa5E3sjD9qv43YUncbLhuhryhxUVANobgCYPCEz1rmzeUkhYt6b6xmGoZ';
 
 let map;
+let markers = [];
 
 onMounted(() => {
     // Create the map centered on Montreal
@@ -37,27 +38,31 @@ onMounted(() => {
 
 watch(
     () => props.apparts,
-    (newApparts) => {
+    async (newApparts) => {
         if (newApparts && newApparts.length > 0) {
             console.log('apparts:', newApparts);
 
-            newApparts.forEach((appart) => {
+            // Clear old markers
+            markers.forEach(marker => map.removeLayer(marker));
+            markers = [];
+
+            // Add new markers
+            for (const appart of newApparts) {
                 const addressParts = appart.custom_sub_titles_with_rendering_flags.map(
                     (subtitleObj) => subtitleObj.subtitle
                 );
                 const address = addressParts.join(', ');
                 console.log('address:', address);
-                geocodeAddress(address,
+                await geocodeAddress(address,
                     new Intl.NumberFormat().format(appart.listing_price.amount),
                     appart.primary_listing_photo.image.uri);
-            });
+            }
         } else {
             console.log('No apparts data available');
         }
     },
     { immediate: true }
 );
-
 async function geocodeAddress(address, price, uri) {
     try {
         console.log(`Geocoding address: ${address}`); // Debug: log the address being geocoded
@@ -77,7 +82,7 @@ async function geocodeAddress(address, price, uri) {
                 iconUrl: icon,
             });
 
-            const marker = L.marker([location[0], location[1]], {icon: iconMarker}).addTo(map);
+            const marker = L.marker([location[0], location[1]], { icon: iconMarker }).addTo(map);
 
             marker.bindPopup(`<div class="da relative flex h-46  overflow-auto ">
   
@@ -91,6 +96,8 @@ async function geocodeAddress(address, price, uri) {
     </div>
   </div>
 </div>`)
+            //add marker to markers array
+            markers.push(marker)
         } else {
             console.error('No results found for address:', address);
         }

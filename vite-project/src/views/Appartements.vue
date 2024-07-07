@@ -127,8 +127,8 @@ const filteredApparts = computed(() => {
                       <input class="border-2 m-2" v-model.number="inputPrixMax">
                     </div>
 
-                    <button class="bg-cyan-500 mt-4 mb-4 px-4 py-2 rounded text-white"
-                      @click="applyClicked">Apply</button>
+                    <button class="bg-cyan-500 mt-4 mb-4 px-4 py-2 rounded text-white
+                    hover:bg-cyan-400" @click="applyClicked">Apply</button>
                   </li>
                 </ul>
               </li>
@@ -142,8 +142,8 @@ const filteredApparts = computed(() => {
         <Map :apparts="filteredApparts" />
       </aside>
       <aside class="right">
-        <h1> max: {{ prixMax }}</h1>
-        <h1>min: {{ prixMin }}</h1>
+        <h1> longueur: {{ filteredApparts.length }}</h1>
+
         <div class="flex flex-wrap gap-3 justify-around">
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
@@ -159,9 +159,6 @@ const filteredApparts = computed(() => {
           <div v-if="!isRendered" class="w-96 h-80 skeleton"></div>
           <div v-for="appart in filteredApparts" :key="appart.url">
             <div>
-
-
-              <h1>prix {{ new Intl.NumberFormat().format(appart.listing_price.amount) }}</h1>
               <h1></h1>
               <CardItem :title="appart.custom_title"
                 :price="new Intl.NumberFormat().format(appart.listing_price.amount)"
