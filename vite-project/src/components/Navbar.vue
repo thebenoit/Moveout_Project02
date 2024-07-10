@@ -76,6 +76,17 @@ function logout(){
           </RouterLink>
       </li>
       <li>
+        <RouterLink to="/preferences" class="block py-2 px-3 text-white rounded hover:text-cyan-300 md:p-0">
+          preferences
+          </RouterLink>
+      </li>
+      <li>
+        <RouterLink to="/settings" class="block py-2 px-3 text-white rounded hover:text-cyan-300 md:p-0">
+          settings
+          </RouterLink>
+      </li>
+      
+      <li>
         <button class="block py-2 px-3 text-white rounded hover:text-cyan-300 md:p-0" @click="logout()">
           Logout
           </button>

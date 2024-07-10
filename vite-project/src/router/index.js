@@ -8,6 +8,8 @@ import ContactUs from '@/views/ContactUs.vue';
 import Login from '@/views/Login.vue';
 import Signup from '@/views/Signup.vue';
 import Foryou from '@/views/foryou.vue';
+import Preferences from '@/views/Preferences.vue';
+import Settings from '@/views/Settings.vue';
 
 
 const router = createRouter({
@@ -54,6 +56,16 @@ const router = createRouter({
       path: '/foryou',
       name: 'Foryou',
       component: Foryou
+    },
+    {
+      path: '/preferences',
+      name: 'Preferences',
+      component: Preferences
+    },
+    {
+      path: '/settings',
+      name: 'Settings',
+      component: Settings
     },
   ]
 })

@@ -1,4 +1,5 @@
 const Users = require("../schemas/user")
+const Preferences = require("../schemas/preference")
 const responses = require("../../responses")
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
@@ -109,6 +110,12 @@ async function createAccount(firstName, lastName, phone, email, confirmEmail, pa
         // Hash password
         const hashPassword = await bcrypt.hash(password, 10);
 
+        // create Preferences
+        const newPreferences = new Preferences({})
+        
+        // Save the user to the database
+        const savedPreferences = await newPreferences.save();
+
         // Create user
         const newUser = new Users({
             firstName: firstName,
@@ -116,6 +123,7 @@ async function createAccount(firstName, lastName, phone, email, confirmEmail, pa
             phone: phone,
             email: email,
             password: hashPassword,
+            preferencesId: savedPreferences._id.toString()
         });
 
         // Save the user to the database
