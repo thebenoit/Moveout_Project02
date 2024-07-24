@@ -39,10 +39,14 @@ onMounted(async () => {
 // Function to extract the number of bedrooms from custom_title
 function extractBedrooms(customTitle) {
   //console.log(`Extracting bedrooms from: ${customTitle}`);
-  const match = customTitle.match(/(\d+)\s+beds?/);
-  const bedrooms = match ? parseInt(match[1], 10) : 0;
-  // console.log(`Extracted bedrooms: ${bedrooms}`);
-  return bedrooms;
+  if(customTitle){
+
+    const match = customTitle.match(/(\d+)\s+beds?/);
+    const bedrooms = match ? parseInt(match[1], 10) : 0;
+    // console.log(`Extracted bedrooms: ${bedrooms}`);
+    return bedrooms;
+  }
+  return 0;
 }
 
 // Define a computed property to filter apartments by bedrooms
