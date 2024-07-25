@@ -7,8 +7,7 @@ require('dotenv').config(); // Load environment variables from .env file at the 
 
 
 module.exports = app.post("/signup", async (req, res) => {
-	try {
-		
+	try {	
 		response = await createAccount(
 			req.body.firstName,
 			req.body.lastName,
