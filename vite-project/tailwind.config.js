@@ -19,7 +19,9 @@ module.exports = {
       },
     },
     extend: {
-
+      fontFamily: {
+        poppins: ['Poppins', 'sans-serif'],
+      },
       padding: {
         '0.5': '0.5rem',
         '0': '0rem',
