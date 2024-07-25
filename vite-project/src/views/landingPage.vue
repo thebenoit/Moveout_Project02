@@ -69,6 +69,17 @@
       <section class="frustration">
         <h2>Êtes-vous frustré par la recherche interminable d'un appartement ?</h2>
         <p>Moveout.ai élimine le stress de la recherche en trouvant les meilleures annonces adaptées à vos préférences.</p>
+        <br>
+        <br>
+        <h2>En avez-vous assez de rater de superbes appartements ?</h2>
+        <p>Nos alertes en temps réel vous assurent d'être le premier informé des nouvelles annonces, pour ne jamais manquer une opportunité..</p>
+        <br>
+        <br>
+        <h2>Craignez-vous de ne pas trouver un appartement qui réponde à tous vos besoins ?</h2>
+        <p>Moveout.ai utilise des algorithmes avancés pour vous proposer des appartements correspondant à vos critères,
+             vous faisant gagner du temps et des efforts.</p>
+
+             <button @click="showForm = true">Rejoignez Moveout aujourd'hui gratuitement</button>
       </section>
     </div>
   </template>
@@ -189,6 +200,17 @@
   
   .frustration p {
     font-size: 1.25rem;
+    margin: 5px;
+  }
+
+  .frustration button {
+    background-color: #FB1A35;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 25px;
   }
   
   .signup-form {
