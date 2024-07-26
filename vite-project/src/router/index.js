@@ -1,16 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import Home from '@/views/Home.vue'
-import Appartements from '@/views/Appartements.vue';
-import Demenagement from '@/views/Demenagement.vue';
-import AboutUs from '@/views/AboutUs.vue';
-import ContactUs from '@/views/ContactUs.vue';
-import Login from '@/views/Login.vue';
-import Signup from '@/views/Signup.vue';
-import Foryou from '@/views/foryou.vue';
-import Preferences from '@/views/Preferences.vue';
-import Settings from '@/views/Settings.vue';
-
+import Appartements from '@/views/Appartements.vue'
+import Demenagement from '@/views/Demenagement.vue'
+import AboutUs from '@/views/AboutUs.vue'
+import ContactUs from '@/views/ContactUs.vue'
+import Login from '@/views/Login.vue'
+import Signup from '@/views/Signup.vue'
+import Foryou from '@/views/foryou.vue'
+import Preferences from '@/views/Preferences.vue'
+import Settings from '@/views/Settings.vue'
+import LandingPage from '@/views/landingPage.vue'
+import LandingPageSignup from '@/views/landingPage-signup.vue'
+import LandingPageSuccess from '@/views/landingPage-success.vue'
+import Erreur404 from '@/views/Erreur404.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,46 +30,64 @@ const router = createRouter({
     },
     {
       path: '/demenagement',
-      name: 'Demenagement',
+      name: 'demenagement',
       component: Demenagement
     },
-
     {
       path: '/aboutus',
-      name: 'About-us',
+      name: 'about-us',
       component: AboutUs
     },
-    
     {
       path: '/signup',
-      name: 'Signup',
+      name: 'signup',
       component: Signup
     },
     {
       path: '/contactus',
-      name: 'Contact-us',
+      name: 'contact-us',
       component: ContactUs
     },
     {
       path: '/login',
-      name: 'Login',
+      name: 'login',
       component: Login
     },
     {
       path: '/foryou',
-      name: 'Foryou',
+      name: 'foryou',
       component: Foryou
     },
     {
       path: '/preferences',
-      name: 'Preferences',
+      name: 'preferences',
       component: Preferences
     },
     {
       path: '/settings',
-      name: 'Settings',
+      name: 'settings',
       component: Settings
     },
+    {
+      path: '/landingpage',
+      name: 'landing-page',
+      component: LandingPage
+    },
+    {
+      path: '/landingpage-success',
+      name: 'landing-page-success',
+      component: LandingPageSuccess
+    },
+    {
+      path: '/landingpage-signup',
+      name: 'landing-page-signup',
+      component: LandingPageSignup
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'erreur404',
+      component: Erreur404
+    }
   ]
 })
 
