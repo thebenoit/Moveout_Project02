@@ -7,42 +7,7 @@
         <button @click="clickCta" >Rejoignez Moveout aujourd'hui gratuitement</button>
       </section>
   
-      <section  class="signup-form">
-        <h2>Inscrivez-vous</h2>
-        <form @submit.prevent="submitForm" class="popup-content">
-          <div class="form-group">
-            <label for="firstName">Prénom</label>
-            <input type="text" id="firstName" v-model="form.firstName" required>
-          </div>
-          <div class="form-group">
-            <label for="lastName">Nom</label>
-            <input type="text" id="lastName" v-model="form.lastName" required>
-          </div>
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" v-model="form.email" required>
-          </div>
-          <div class="form-group">
-            <label for="confirmEmail">Confirmer Email</label>
-            <input type="email" id="confirmEmail" v-model="form.confirmEmail" required>
-          </div>
-          <div class="form-group">
-            <label for="phone">Téléphone</label>
-            <input type="tel" id="phone" v-model="form.phone" required>
-          </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" v-model="form.password" required>
-          </div>
-
-          <div class="form-group">
-            <label for="confirmPassword">Confirmer Password</label>
-            <input type="password" id="confirmPassword" v-model="form.confirmPassword" required>
-          </div>
-          
-          <button type="submit">Soumettre</button>
-        </form>
-      </section>
+   
       
       <section class="how-it-works ">
         <h1>Comment ça marche?</h1>
