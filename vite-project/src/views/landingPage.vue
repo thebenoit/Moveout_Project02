@@ -7,7 +7,7 @@
         <button @click="clickCta" >Rejoignez Moveout aujourd'hui gratuitement</button>
       </section>
   
-      <section v-if="showForm" class="signup-form">
+      <section  class="signup-form">
         <h2>Inscrivez-vous</h2>
         <form @submit.prevent="submitForm" class="popup-content">
           <div class="form-group">
