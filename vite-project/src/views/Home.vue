@@ -24,7 +24,7 @@ function handleSubmitButton() {
 
     <p class="mt-12 text-center text-3xl text-blue-main font-bold">Comment ça marche ?</p>
     <div class="mt-10 flex justify-around sm:flex-row flex-col">
-      <div class="card sm:w-1/5 bg-base-100 mx-auto w-3/4 shadow-none rounded-none ml-44">
+      <div class="card sm:w-1/5 bg-base-100 mx-auto w-3/4 shadow-none rounded-none">
         <figure>
           <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp" alt="Shoes" />
         </figure>
@@ -42,7 +42,7 @@ function handleSubmitButton() {
           <p class="text-lg">Moveout.ai  Analyse les meilleures listings selon vos gout et préférences jours et nuits</p>
         </div>
       </div>
-      <div class="card sm:w-1/5 bg-base-100 mx-auto w-3/4 shadow-none rounded-none mr-44">
+      <div class="card sm:w-1/5 bg-base-100 mx-auto w-3/4 shadow-none rounded-none">
         <figure>
           <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp" alt="Shoes" />
         </figure>
