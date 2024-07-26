@@ -11,6 +11,8 @@ import Foryou from '@/views/foryou.vue'
 import Preferences from '@/views/Preferences.vue'
 import Settings from '@/views/Settings.vue'
 import LandingPage from '@/views/landingPage.vue'
+import LandingPageSignup from '@/views/landingPage-signup.vue'
+import LandingPageSuccess from '@/views/landingPage-success.vue'
 import Erreur404 from '@/views/Erreur404.vue'
 
 const router = createRouter({
@@ -70,6 +72,16 @@ const router = createRouter({
       path: '/landingpage',
       name: 'landing-page',
       component: LandingPage
+    },
+    {
+      path: '/landingpage-success',
+      name: 'landing-page-success',
+      component: LandingPageSuccess
+    },
+    {
+      path: '/landingpage-signup',
+      name: 'landing-page-signup',
+      component: LandingPageSignup
     },
     {
       path: '/:pathMatch(.*)*',

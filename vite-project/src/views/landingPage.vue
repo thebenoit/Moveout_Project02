@@ -1,15 +1,15 @@
 <template>
     <div class="landing-page">
       <section class="header">
-        <h1>Trouvez votre appartement <p class="text-xl">3X</p> plus vite grâce à Moveout</h1>
+        <h1>Trouvez votre appartement <span class="">3X</span> plus vite grâce à Moveout</h1>
         <p>Ne perdez plus de temps à chercher — laissez-nous trouver l'appartement parfait pour vous!</p>
         <img class="mx-auto" src="../assets/images/camionDemenage.svg" alt="noimage">
-        <button @click="showForm = true">Rejoignez Moveout aujourd'hui gratuitement</button>
+        <button @click="clickCta" >Rejoignez Moveout aujourd'hui gratuitement</button>
       </section>
   
       <section v-if="showForm" class="signup-form">
         <h2>Inscrivez-vous</h2>
-        <form @submit.prevent="submitForm">
+        <form @submit.prevent="submitForm" class="popup-content">
           <div class="form-group">
             <label for="firstName">Prénom</label>
             <input type="text" id="firstName" v-model="form.firstName" required>
@@ -45,10 +45,10 @@
       </section>
       
       <section class="how-it-works ">
-        <h2>Comment ça marche?</h2>
+        <h1>Comment ça marche?</h1>
         <div class="steps">
           <div class="step">
-            <img class="mx-auto" src="../assets/images/conect.png" alt="noimage">
+            <img class="" src="../assets/images/conect.png" alt="noimage">
             <h3>1. Inscrivez-vous sur Moveout</h3>
             <p>Moveout.ai recherche tout les site web de listing sur internet... vraiment tout</p>
           </div>
@@ -79,7 +79,7 @@
         <p>Moveout.ai utilise des algorithmes avancés pour vous proposer des appartements correspondant à vos critères,
              vous faisant gagner du temps et des efforts.</p>
 
-             <button @click="showForm = true">Rejoignez Moveout aujourd'hui gratuitement</button>
+             <button @click="clickCta" class="mt-10 mb-5">Rejoignez Moveout aujourd'hui gratuitement</button>
       </section>
     </div>
   </template>
@@ -113,13 +113,20 @@
 
         if (result.token) {
           utils.setToken(result.token);
-          this.$router.push({ path: '/foryou' });
+          this.$router.push({ path: '/landingpage-signup' });
         }
       } catch (error) {
         console.error('Error during signup:', error);
       }
-      }
+      },
+
+      clickCta() {
+        this.$router.push({path:'/landingpage-signup'})
+
     }
+    }
+
+    
 
   };
   </script>
@@ -146,8 +153,39 @@
     margin: 1rem 0;
     color: #2a9d8f;
   }
+
+  .header span {
+    color: #2a9d8f;
+    font-weight: bold;
+
+  }
+
+  .popup{
+    background: #000000(0,0,0,0.6);
+    width: 100%;
+    height: 100%;
+    position: absolutet;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+  }
+
+  .popup-content{
+    height: 250px;
+    width: 500px;
+    background:white;
+    padding: 20px;
+    border-radius: 5px;
+    position: relative;
+
+
+  }
+
+
   
-  .header button {
+   button {
     background-color: #FB1A35;
     color: white;
     border: none;
@@ -155,11 +193,23 @@
     font-size: 1rem;
     cursor: pointer;
     border-radius: 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ajoute une ombre portée */
+    transition: box-shadow 0.3s ease; /* Ajoute une transition pour un effet lisse lors du hover */
   }
+
+ button:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Augmente l'ombre portée au survol */
+    }   
   
   .how-it-works {
     text-align: center;
     padding: 2rem 1rem;
+  }
+
+  .how-it-works h1 {
+    font-size: 30px;
+    font-weight: bold;
+    color: #2a9d8f;
   }
   
   .steps {
@@ -174,8 +224,9 @@
   }
   
   .step img {
-    max-width: 100px;
+    max-width: 500px;
     margin-bottom: 1rem;
+    
   }
   
   .step h3 {
@@ -189,34 +240,36 @@
   
   .frustration {
     text-align: center;
-    background-color: #264653;
-    color: white;
+    background-color: #0A1E65;
+    
     padding: 2rem;
   }
   
   .frustration h2 {
     font-size: 1.5rem;
+    color: #D4CD12;
   }
   
   .frustration p {
     font-size: 1.25rem;
     margin: 5px;
+    color: white;
   }
 
-  .frustration button {
-    background-color: #FB1A35;
-    color: white;
-    border: none;
-    padding: 1rem 2rem;
-    font-size: 1rem;
-    cursor: pointer;
-    border-radius: 25px;
-  }
+  
   
   .signup-form {
-    text-align: center;
+    background: #000000(0,0,0,0.6);
+    width: 100%;
+    height: 100%;
+    position: absolutet;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*text-align: center;
     background-color: #e9ecef;
-    padding: 2rem;
+    padding: 2rem;*/
   }
   
   .signup-form h2 {
@@ -251,6 +304,16 @@
     cursor: pointer;
     border-radius: 25px;
     margin-top: 1rem;
+  }
+  @media all and (max-width: 700px) {
+    .step img {
+        max-width: 350px;
+        margin-bottom: 1rem;
+        
+      }
+    .frustration button {
+        margin-bottom: 145px;
+    }  
   }
   </style>
   
