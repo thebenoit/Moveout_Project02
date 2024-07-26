@@ -97,7 +97,7 @@ function logout() {
 </nav> -->
 
 
-  <div class="navbar bg-base-100 fixed top-0 z-50 font-normal py-4 px-10 hidden sm:flex">
+  <div class="navbar bg-white fixed top-0 z-50 font-normal py-4 px-10 hidden sm:flex">
     <div class="flex-1">
       <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-12" fill="black" viewBox="0 0 499 496">
