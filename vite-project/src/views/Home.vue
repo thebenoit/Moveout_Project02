@@ -15,17 +15,54 @@ function handleSubmitButton() {
 
 
 <template>
-  
-  <div class="hero overflow-hidden h-screen w-full">
-    <img class="inset-0 object-cover h-screen w-full" src="@/assets/images/main1.jpg"></img>
-    <div class="inset-0"></div>
-    <div class="hero-content text-center text-neutral-content relative z-10 flex items-center justify-center w-full ">
-      <div class="">
-        <h1 class="mb-5 text-4xl font-bold ">À la recherche d'un appartement abordable?</h1>
-        <button class="btn btn-outline m-10 bg-cyan-500 border-none hover:bg-cyan-400 hover:shadow-cyan-300 hover:shadow-lg" @click="handleSubmitButton">Trouver Un Appartement!</button>
+  <div>
+    <div class="h-screen">
+      <div class="flex h-1/2 w-full flex-col justify-center overflow-hidden bg-[url(@/assets/images/main1.jpg)] bg-center py-12" style="background-size: 120%;">
+        <div class="mx-auto font-poppins text-5xl mb-6 text-white">Trouve un appartement abordable</div>
+        <input type="text" placeholder="Type here" class="input input-bordered mx-auto w-5/6 min-w-72 max-w-lg" />
+      </div>
+      <p class="mt-12 text-center text-3xl text-blue-main font-bold">How does it work ?</p>
+      <div class="mt-10 flex justify-around">
+        <div class="card w-1/5 bg-base-100 shadow-none rounded-none">
+          <figure>
+            <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp" alt="Shoes" />
+          </figure>
+          <div class="card-body">
+            <h2 class="card-title text-blue-main">Shoes!</h2>
+            <p class="text-lg">If a dog chews shoes whose shoes does he choose?</p>
+          </div>
+        </div>
+        <div class="card w-1/5 bg-base-100 shadow-none rounded-none">
+          <figure>
+            <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp" alt="Shoes" />
+          </figure>
+          <div class="card-body">
+            <h2 class="card-title text-blue-main">Shoes!</h2>
+            <p class="text-lg">If a dog chews shoes whose shoes does he choose?</p>
+          </div>
+        </div>
+        <div class="card w-1/5 bg-base-100 shadow-none rounded-none">
+          <figure>
+            <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp" alt="Shoes" />
+          </figure>
+          <div class="card-body">
+            <h2 class="card-title text-blue-main">Shoes!</h2>
+            <p class="text-lg">If a dog chews shoes whose shoes does he choose?</p>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</template>
 
-<style></style>
+    <div class="flex justify-around mb-10">
+        <button class="btn mt-16 w-full sm:w-1/2">
+          <p>
+            Start today for
+            <u>free</u>
+            !
+          </p>
+        </button>
+      </div>
+  </div>
+ 
+
+</template>

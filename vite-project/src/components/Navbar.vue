@@ -108,40 +108,40 @@ function logout() {
       </a>
     </div>
     <div class="flex-none">
-      <button class="btn btn-square btn-ghost">
+      <button class="btn btn-square mx-2 bg-white border-none">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-12" fill="none" viewBox="0 0 56 55">
           <path fill="#0FB3AF" fill-rule="evenodd" d="M26.148 19.409v-2.356a1.137 1.137 0 0 1 2.274 0v2.356a7.957 7.957 0 0 1 6.822 7.876v4.28l.92 1.84a2.841 2.841 0 0 1-2.543 4.112h-5.199a1.138 1.138 0 0 1-2.274 0H20.95a2.842 2.842 0 0 1-2.543-4.113l.92-1.84v-4.279a7.959 7.959 0 0 1 6.821-7.876Zm1.137 2.192a5.684 5.684 0 0 0-5.684 5.684v4.548c0 .176-.042.35-.12.508l-1.04 2.08a.571.571 0 0 0 .509.823h12.67a.569.569 0 0 0 .508-.823l-1.04-2.08a1.144 1.144 0 0 1-.12-.508v-4.548a5.683 5.683 0 0 0-5.684-5.684Z" clip-rule="evenodd" />
           <ellipse cx="42.364" cy="14" fill="#0FB3AF" rx="10.526" ry="10" />
         </svg>
       </button>
 
-      <button class="btn btn-square btn-ghost ml-2">
+      <button class="btn btn-square mx-2 bg-white border-none">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 m-auto" fill="none" viewBox="0 0 55 55">
           <path fill="#0FB3AF" stroke="#0FB3AF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M33.268 18.322c1.1.128 1.907 1.077 1.907 2.185V36l-7.5-3.75-7.5 3.75V20.507c0-1.108.806-2.057 1.907-2.185a48.503 48.503 0 0 1 11.186 0Z" />
         </svg>
       </button>
 
-      <svg class="mx-4" xmlns="http://www.w3.org/2000/svg" width="1" height="56" fill="none" viewBox="0 0 1 56">
-        <rect width=".974" height="54.571" y=".975" fill="#6B6F7B" rx=".487" />
-      </svg>
-
-      <button class="flex">
-        <div class="avatar ml-4">
-          <div class="w-12 rounded-full">
-            <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+      <div class="flex-none">
+        <div class="dropdown dropdown-end">
+          <div tabindex="0" role="button" class="btn btn-square  bg-white border-none">
+            <div class="w-10 rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block h-5 w-5 stroke-current">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
+              </svg>
+            </div>
           </div>
+          <ul tabindex="0" class="dropdown-content menu menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow">
+            <li>
+              <a class="justify-between">
+                Profile
+                <span class="badge">New</span>
+              </a>
+            </li>
+            <li><a>Settings</a></li>
+            <li><a>Logout</a></li>
+          </ul>
         </div>
-
-        <div class="mx-2 text-sm font-bold m-auto">
-          <div>John doe</div>
-        </div>
-      </button>
-
-      <button class="btn btn-square btn-ghost">
-        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-5 w-5 stroke-current" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
-        </svg>
-      </button>
+      </div>
     </div>
   </div>
 
@@ -162,13 +162,29 @@ function logout() {
       </a>
     </div>
     <div class="flex-none">
-      <button class="btn btn-square btn-ghost">
-        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-5 w-5 stroke-current" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
-        </svg>
-      </button>
-    </div>
+        <div class="dropdown dropdown-end">
+          <div tabindex="0" role="button" class="btn btn-square btn-ghost">
+            <div class="w-10 rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block h-5 w-5 stroke-current">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
+              </svg>
+            </div>
+          </div>
+          <ul tabindex="0" class="dropdown-content menu menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow">
+            <li>
+              <a class="justify-between">
+                Profile
+                <span class="badge">New</span>
+              </a>
+            </li>
+            <li><a>Settings</a></li>
+            <li><a>Logout</a></li>
+          </ul>
+        </div>
+      </div>
   </div>
+
+
 
 
 </template>

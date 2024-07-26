@@ -19,6 +19,9 @@ module.exports = {
       },
     },
     extend: {
+      colors: {
+        'blue-main': '#0FB3AF',
+      },
       fontFamily: {
         poppins: ['Poppins', 'sans-serif'],
       },
