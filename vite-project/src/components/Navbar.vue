@@ -96,7 +96,7 @@ function logout() {
   </div>
 </nav> -->
 
-
+<!-- 
   <div class="navbar bg-white fixed top-0 z-50 font-normal py-4 px-10 hidden sm:flex">
     <div class="flex-1">
       <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
@@ -182,7 +182,7 @@ function logout() {
           </ul>
         </div>
       </div>
-  </div>
+  </div> -->
 
 
 
