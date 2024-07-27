@@ -8,6 +8,8 @@ const mongoose = require("./mongo/client.js");
 const appartments = require("./routes/api/appartement.js");
 const client_singup = require("./routes/api/client/signup.js");
 const client_login = require("./routes/api/client/login.js");
+const client_lead = require("./routes/api/client/leads.js");
+
 const client_logout = require("./routes/api/client/logout.js");
 const client_appartements = require("./routes/api/client/custom_appartements.js");
 
@@ -34,6 +36,8 @@ app.use("/api", appartments);
 // client
 app.use("/api/client", client_singup);
 app.use("/api/client", client_login);
+app.use("/api/client", client_lead);
+
 // app.use("/api/client/", client_logout);
 // app.use("/client/", client_appartements);
 

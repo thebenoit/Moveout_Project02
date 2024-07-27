@@ -16,7 +16,7 @@
               <div class="grid gap-2">
                 <input
                   id="first-name"
-                  placeholder="First name"
+                  placeholder="Prénom"
                   required
                   v-model="form.firstName"
                 />
@@ -24,7 +24,7 @@
               <div class="grid gap-2">
                 <input
                   id="last-name"
-                  placeholder="Last name"
+                  placeholder="Nom"
                   required
                   v-model="form.lastName"
                 />
@@ -34,7 +34,7 @@
               <input
                 id="phone"
                 type="phone"
-                placeholder="Phone number"
+                placeholder="Phone"
                 required
                 v-model="form.phone"
               />
@@ -48,7 +48,7 @@
                 v-model="form.email"
               />
             </div>
-            <div class="grid mt-1">
+            <!-- <div class="grid mt-1">
               <input
                 id="confirmEmail"
                 type="email"
@@ -56,8 +56,8 @@
                 required
                 v-model="form.confirmEmail"
               />
-            </div>
-            <div class="grid mt-1">
+            </div> -->
+            <!-- <div class="grid mt-1">
               <input
                 id="password"
                 type="password"
@@ -65,8 +65,8 @@
                 required
                 v-model="form.password"
               />
-            </div>
-            <div class="grid mt-1">
+            </div> -->
+            <!-- <div class="grid mt-1">
               <input
                 id="confirmPassword"
                 type="password"
@@ -74,7 +74,7 @@
                 required
                 v-model="form.confirmPassword"
               />
-            </div>
+            </div> -->
             <Button type="submit" class="w-full" @click="submitForm">
               Rejoignez Moveout aujourd'hui gratuitement
             </Button>
@@ -114,27 +114,24 @@ export default {
       form: {
         firstName: "",
         lastName: "",
-        email: "",
-        confirmEmail: "",
         phone: "",
-        password: "",
-        confirmPassword: "",
+        email: "",
       },
     };
   },
   methods: {
     async submitForm() {
     try {
-        let result = await utils.post("api/client/signup", this.form);
+        let result = await utils.post("api/client/lead", this.form);
 
         // Vérifiez si une erreur est retournée
         if (result.error) {
-            this.errorMessages =
-                "Une erreur est survenue lors de l'inscription. Vérifiez votre mot de passe : il doit contenir une majuscule, une minuscule, un caractère spécial et avoir au moins 8 caractères.";
+            this.errorMessages = result.error.message
+                // "Une erreur est survenue lors de l'inscription. Vérifiez votre mot de passe : il doit contenir une majuscule, une minuscule, un caractère spécial et avoir au moins 8 caractères.";
         } else {
             // Utilisez directement `result` comme il est déjà au format JSON
-            if (result.token) {
-                utils.setToken(result.token);
+            if (result.success == 1) {
+                // utils.setToken(result.token);
                 this.$router.push({ path: "/landingpage-success" });
             }
         }

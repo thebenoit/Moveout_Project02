@@ -29,9 +29,9 @@ const utils = {
                 },
                 body: JSON.stringify(body)
             });
-            if (!result.ok) { // Vérifier si la réponse est OK
-                throw new Error(`HTTP error! status: ${result.status}`);
-            }
+            // if (!result.ok) { // Vérifier si la réponse est OK
+            //     throw new Error(`HTTP error! status: ${result.status}`);
+            // }
             return await result.json(); // Assurez-vous d'attendre le JSON
         }
         catch (error) {

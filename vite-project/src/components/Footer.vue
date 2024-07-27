@@ -14,12 +14,12 @@
       </div>
 
       <ul class="flex flex-nowrap items-center mt-3 text-sm font-semibold sm:mt-0 ">
-        <li>
+        <!-- <li>
           <a href="/aboutus" class="hover:underline me-4">About</a>
         </li>
         <li>
           <a href="/contactus" class="hover:underline me-4">Contact</a>
-        </li>
+        </li> -->
         <li class="content-center items-center me-4" >
           <a href="https://www.instagram.com/moveout_mtl/?igsh=MTI1amg1amk2YzV6cw%3D%3D&utm_source=qr" target="_blank">
             <svg fill="black" width="25px" height="25px" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">
