@@ -1,5 +1,5 @@
 <script setup>
-import utils from '../utils/utils.js';
+import utils from '../../utils/utils.js';
 </script>
 
 <template>

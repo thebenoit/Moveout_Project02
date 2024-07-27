@@ -103,7 +103,7 @@ import {
 } from "@/components/ui/card"; // Importez vos composants UI correctement
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import utils from "../utils/utils";
+import utils from "../../utils/utils";
 
 export default {
   data() {
