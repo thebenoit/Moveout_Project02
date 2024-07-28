@@ -19,6 +19,9 @@ module.exports = {
       },
     },
     extend: {
+      boxShadow: {
+        'custom': '0 0 7px 5px rgba(0, 0, 0, 0.05);',
+      },
       colors: {
         'blue-main': '#0FB3AF',
       },
@@ -55,6 +58,6 @@ module.exports = {
     animate
   ],
   daisyui: {
-    themes: ["light"],
+    themes: [{light: {...require("daisyui/src/theming/themes")["light"], primary: "#0FB3AF"}}],
   },
 }
