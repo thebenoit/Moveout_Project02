@@ -27,6 +27,7 @@ module.exports = {
       },
       fontFamily: {
         poppins: ['Poppins', 'sans-serif'],
+        roboto: ['Roboto', 'Sans-serif']
       },
       padding: {
         '0.5': '0.5rem',

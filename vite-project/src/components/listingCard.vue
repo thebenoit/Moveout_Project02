@@ -74,7 +74,7 @@ function handleImageError() {
                 <div class="w-2/3">
                     <div class="flex">
                         <MapPinIcon class="size-6" />
-                        <div class="font-bold text-base truncate my-auto mb-0">{{ city }}</div>
+                        <div class="text-base truncate my-auto mb-0 font-medium">{{ city }}</div>
                     </div>
                     <p class="text-gray-700 text-base truncate">
                         {{ address }}
@@ -87,7 +87,7 @@ function handleImageError() {
             </div>
             <div class="flex w-full justify-between mt-3">
                 <div class="flex h-full">
-                    <div class="my-auto text-xl font-bold mr-2">{{ rating }}</div>
+                    <div class="my-auto text-xl font-semibold mr-2">{{ rating }}</div>
                     <div class="flex my-auto">
                         <StarIcon v-for="(star, index) in 5" :key="index" :class="{
                             'h-5 stroke-none': true,
@@ -97,7 +97,7 @@ function handleImageError() {
                     </div>
                 </div>
 
-                <div class="flex font-bold text-xl">
+                <div class="flex font-medium text-xl">
                     <div>{{ bedrooms }}</div>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="#686868" viewBox="0 0 15 12" class="my-auto h-3.5 ml-1">
                         <g clip-path="url(#a)">
@@ -110,7 +110,7 @@ function handleImageError() {
                             </clipPath>
                         </defs>
                     </svg>
-                    <div class="ml-4">{{ bathrooms }}</div>
+                    <div class="ml-4 font-medium">{{ bathrooms }}</div>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="#686868" viewBox="0 0 13 13" class="my-auto h-4 ml-1">
                         <g clip-path="url(#a)">
                             <path fill="#686868" d="M.813 9.75a2.423 2.423 0 0 0 .812 1.805v1.039a.406.406 0 0 0 .406.406h.813a.406.406 0 0 0 .406-.406v-.407h6.5v.407a.406.406 0 0 0 .406.406h.813a.406.406 0 0 0 .406-.406v-1.04a2.421 2.421 0 0 0 .813-1.804V8.53H.812v1.22Zm11.78-3.25H2.032V1.758a.54.54 0 0 1 .921-.38l.49.488c-.334.759-.194 1.501.219 2.025l-.005.004a.406.406 0 0 0 0 .574l.287.287a.406.406 0 0 0 .575 0L7.193 2.08a.406.406 0 0 0 0-.574l-.287-.287a.406.406 0 0 0-.574 0l-.004.004C5.804.811 5.062.671 4.303 1.004l-.489-.49A1.758 1.758 0 0 0 .812 1.759V6.5H.406A.406.406 0 0 0 0 6.906v.406a.406.406 0 0 0 .406.407h12.188A.406.406 0 0 0 13 7.312v-.406a.406.406 0 0 0-.406-.406Z" />
@@ -123,7 +123,7 @@ function handleImageError() {
                     </svg>
                 </div>
                 <div class="flex">
-                    <div class="font-bold text-xl">{{ price }}$</div>
+                    <div class="font-medium text-xl">{{ price }}$</div>
                 </div>
 
             </div>
@@ -137,7 +137,7 @@ function handleImageError() {
         <div class="w-full">
             <!-- titre + bookmark -->
             <div class="flex justify-between mb-1">
-                <h1 class="text-2xl truncate max-w-80">{{ city }}</h1>
+                <h1 class="text-2xl truncate max-w-80 font-medium">{{ city }}</h1>
 
                 <button>
                     <BookmarkIcon class="size-6 my-auto stroke-blue-main" />
@@ -163,7 +163,7 @@ function handleImageError() {
             <div>percs</div>
         </div>
         <!-- nb chambre et salles de bains -->
-        <div class="flex font-bold text-xl">
+        <div class="flex font-medium text-xl">
             <div>{{ bedrooms }}</div>
             <svg xmlns="http://www.w3.org/2000/svg" fill="#686868" viewBox="0 0 15 12" class="my-auto h-3.5 ml-1">
                 <g clip-path="url(#a)">
@@ -192,7 +192,7 @@ function handleImageError() {
         <div class="flex justify-between">
             <!-- rating -->
             <div class="flex h-full">
-                <div class="my-auto text-xl font-bold mr-2">{{ rating }}</div>
+                <div class="my-auto text-xl font-semibold mr-2">{{ rating }}</div>
                 <div class="flex my-auto">
                     <StarIcon v-for="(star, index) in 5" :key="index" :class="{
                         'h-5 stroke-none': true,
@@ -210,8 +210,8 @@ function handleImageError() {
             </div>
             <!-- prix -->
             <div class="flex">
-                <div class="font-bold text-xl">4000$</div>
-                <div class="my-auto mb-0 ml-1">/month</div>
+                <div class="font-medium text-xl">4000$</div>
+                <div class="my-auto mb-0">/mo</div>
             </div>
         </div>
     </div>

@@ -16,7 +16,7 @@ onMounted(async () => {
         <div class="w-full h-full col-span-12 lg:col-span-6 p-6 my-auto lg:block">
             <div class="w-full flex justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold">Listings in Montreal</h1>
+                    <h1 class="text-2xl font-medium">Listings in Montreal</h1>
                     <p class="">1234 results</p>
                 </div>
                 <div class="flex h-full my-auto space-x-2">
