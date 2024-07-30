@@ -43,7 +43,7 @@ browser = Browser('chrome')
 #browser.driver.set_page_load_timeout(30)  # sets the timeout to 30 seconds
 
 # Définition de l'URL de base
-base_url = "https://www.facebook.com/marketplace/montreal/search?"
+base_url = "https://www.zumper.com/apartments-for-rent/montreal-qc/cheap"
 
 # Définition des paramètres de recherche pour les appartements
 min_price = 300  # Prix minimum en dollars
@@ -52,9 +52,13 @@ min_bedrooms = 2  # Nombre minimum de chambres
 min_bathrooms = 1  # Nombre minimum de salles de bains
 min_sqft = 500  # Superficie minimum en pieds carrés
 max_sqft = 2000  # Superficie maximum en pieds carrés
+uniqueId = 'k0l1700281'
+query = '?dc=true'
+
 days_listed = 7  # Nombre de jours depuis la mise en ligne
 pets_allowed = True  # Animaux autorisés
 furnished = False  # Meublé ou non
+
 neighborhood = "Montreal"  # Quartier souhaité
 #attempt to only show appartment on the feed
 recherche = "appartment"
@@ -72,16 +76,15 @@ def scrapeFb():
 
       urls =[
       #
-      f"{base_url}minPrice={min_price}&maxPrice={1000}&minBedrooms={bedrooms}&minBathrooms={min_bathrooms}&minSqft={min_sqft}&maxSqft={max_sqft}&daysSinceListed={days_listed}&query={min_bedrooms}+bedroom+{recherche}&exact=false",
-    #   f"{base_url}minPrice={min_price}&maxPrice={1500}&minBedrooms={bedrooms}&minBathrooms={min_bathrooms}&minSqft={min_sqft}&maxSqft={max_sqft}&daysSinceListed={days_listed}&query={min_bedrooms}+bedroom+{recherche}&exact=false",
-    #   f"{base_url}minPrice={1500}&maxPrice={3000}&minBedrooms={bedrooms}&minBathrooms={min_bathrooms}&minSqft={min_sqft}&maxSqft={max_sqft}&daysSinceListed={days_listed}&query={min_bedrooms}+bedroom+{recherche}&exact=false"
+      f"{base_url}",
+
       ]
 
       for url in urls:
          # print(f"visiting: URL: {url}")  
 
          
-          # Visit the website
+          # Visit the website 
           browser.visit(url)
          # print("Url Visité:")
 
@@ -110,7 +113,7 @@ def scrapeFb():
 
         
           #merde  qui sont pas des appartements donc je les mets dans une liste pour supprimer plus tard
-          elements_a_supprimer = ['Filters', 'Categories']
+         # elements_a_supprimer = ['Filters', 'Categories']
 
 
           #Extract all the necessary info and insert into lists
@@ -168,11 +171,10 @@ def scrapeFb():
             apartment_data = {
               
                           "title": title.strip(),
-            
+                    
                           "price": int(re.sub(r'[^\d.]', '', price.strip())),
                           "city": city.strip(),
                           "bedrooms": bedrooms,
-                          "price": int(re.findall(r'\d+', price.strip())[0]),
                           "url": 'https://www.facebook.com/' + url,
                           "img": img,
                           "date_scraped": datetime.now()
