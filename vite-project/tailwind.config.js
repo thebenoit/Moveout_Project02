@@ -19,11 +19,15 @@ module.exports = {
       },
     },
     extend: {
+      boxShadow: {
+        'custom': '0 0 7px 5px rgba(0, 0, 0, 0.05);',
+      },
       colors: {
         'blue-main': '#0FB3AF',
       },
       fontFamily: {
         poppins: ['Poppins', 'sans-serif'],
+        roboto: ['Roboto', 'Sans-serif']
       },
       padding: {
         '0.5': '0.5rem',
@@ -55,6 +59,6 @@ module.exports = {
     animate
   ],
   daisyui: {
-    themes: ["light"],
+    themes: [{light: {...require("daisyui/src/theming/themes")["light"], primary: "#0FB3AF"}}],
   },
 }

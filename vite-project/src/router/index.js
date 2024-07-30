@@ -14,6 +14,7 @@ import LandingPage from '@/views/landingPages/landingPage.vue'
 import LandingPageSignup from '@/views/landingPages/landingPage-signup.vue'
 import LandingPageSuccess from '@/views/landingPages/landingPage-success.vue'
 import Erreur404 from '@/views/Erreur404.vue'
+import Listings from '@/views/Listings.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -67,6 +68,11 @@ const router = createRouter({
       path: '/settings',
       name: 'settings',
       component: Settings
+    },
+    {
+      path: '/listings',
+      name: 'listings',
+      component: Listings
     },
     {
       path: '/landingpage',
