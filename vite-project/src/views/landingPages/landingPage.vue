@@ -1,29 +1,35 @@
+<script setup>
+import conect from '@/assets/images/conect.png'
+import camionDemenage from '@/assets/images/camionDemenage.svg'
+import robot from '@/assets/images/robot.png'
+import detente from '@/assets/images/detente.png'
+
+</script>
+
 <template>
   <div class="landing-page">
     <section class="header">
       <h1>Trouvez votre appartement <span class="">3X</span> plus vite grâce à Moveout</h1>
       <p>Ne perdez plus de temps à chercher — laissez-nous trouver l'appartement parfait pour vous!</p>
-      <img class="mx-auto" src="../assets/images/camionDemenage.svg" alt="noimage">
+      <img class="mx-auto" :src="camionDemenage" alt="noimage">
       <button @click="clickCta">Rejoignez Moveout aujourd'hui gratuitement</button>
     </section>
-
-
 
     <section class="how-it-works ">
       <h1>Comment ça marche?</h1>
       <div class="steps">
         <div class="step">
-          <img class="" src="../assets/images/conect.png" alt="noimage">
+          <img class="" :src="conect" alt="noimage">
           <h3>1. Inscrivez-vous sur Moveout</h3>
           <p>Moveout.ai recherche tout les site web de listing sur internet... vraiment tout</p>
         </div>
         <div class="step">
-          <img class="mx-auto" src="../assets/images/robot.png" alt="noimage">
+          <img class="mx-auto" :src="robot" alt="noimage">
           <h3>2. Communiquez nous vos préférences</h3>
           <p>Moveout.ai analyse les meilleures listings selon vos goûts et préférences jours et nuits</p>
         </div>
         <div class="step">
-          <img class="mx-auto" src="../assets/images/detente.png" alt="noimage">
+          <img class="mx-auto" :src="detente" alt="noimage">
           <h3>3. Relaxez, on s'occupe du reste</h3>
           <p>Dès qu'un appartement apparaît sur le web, vous serez le premier à le savoir</p>
 

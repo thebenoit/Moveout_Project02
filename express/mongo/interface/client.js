@@ -178,10 +178,12 @@ async function login(identifier, password) {
 async function createLead(firstName, lastName, phone, email) {
 	try {
 		if (!validator.isEmail(email)) {
+			console.log(email, responses.errors.client.invalidEmail)
 			return { error: responses.errors.client.invalidEmail };
 		}
 
 		if (!validator.isMobilePhone(phone.toString(), "en-US")) {
+			console.log(phone, responses.errors.client.invalidPhone)
 			return { error: responses.errors.client.invalidPhone };
 		}
 
@@ -190,10 +192,12 @@ async function createLead(firstName, lastName, phone, email) {
 			$or: [{ email: email }, { phone: phone }],
 		});
 		if (existingLead) {
+			console.log(responses.errors.client.alreadyExists)
 			return { error: responses.errors.client.alreadyExists };
 		}
 
 		if (!firstName || !lastName || !phone || !email) {
+			console.log(messages.errors.client.missingFields)
 			return { error: messages.errors.client.missingFields };
 		}
 
@@ -203,6 +207,7 @@ async function createLead(firstName, lastName, phone, email) {
 			lastName: lastName,
 			phone: phone,
 			email: email,
+			date: Date.now()
 		});
 
 		// Save the user to the database
