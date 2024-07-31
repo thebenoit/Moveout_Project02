@@ -207,6 +207,7 @@ async function createLead(firstName, lastName, phone, email) {
 			lastName: lastName,
 			phone: phone,
 			email: email,
+			date: Date.now()
 		});
 
 		// Save the user to the database
