@@ -6,6 +6,7 @@ const leadsSchema = new Schema({
   lastName: { type: Schema.Types.String },
   phone: { type: Schema.Types.String },
   email: { type: Schema.Types.String },
+  
 });
 
 const Leads = mongoose.model('leads', leadsSchema, 'leads');
