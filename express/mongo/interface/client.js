@@ -4,6 +4,7 @@ const Preferences = require("../schemas/preference");
 const responses = require("../../responses");
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
+const createLog = require("../interface/logs")
 
 /**
  * function qui permet de get tout les appart de la base de données
@@ -178,12 +179,14 @@ async function login(identifier, password) {
 async function createLead(firstName, lastName, phone, email) {
 	try {
 		if (!validator.isEmail(email)) {
-			console.log(email, responses.errors.client.invalidEmail)
+			// console.log(email, responses.errors.client.invalidEmail)
+			createLog({email: email}, responses.errors.client.invalidEmail)
 			return { error: responses.errors.client.invalidEmail };
 		}
 
 		if (!validator.isMobilePhone(phone.toString(), "en-US")) {
-			console.log(phone, responses.errors.client.invalidPhone)
+			// console.log(phone, responses.errors.client.invalidPhone)
+			createLog({phone: phone}, responses.errors.client.invalidPhone)
 			return { error: responses.errors.client.invalidPhone };
 		}
 
@@ -192,13 +195,15 @@ async function createLead(firstName, lastName, phone, email) {
 			$or: [{ email: email }, { phone: phone }],
 		});
 		if (existingLead) {
-			console.log(responses.errors.client.alreadyExists)
+			// console.log(responses.errors.client.alreadyExists)
+			createLog({ email: email, phone: phone }, responses.errors.client.alreadyExists)
 			return { error: responses.errors.client.alreadyExists };
 		}
 
 		if (!firstName || !lastName || !phone || !email) {
-			console.log(messages.errors.client.missingFields)
-			return { error: messages.errors.client.missingFields };
+			// console.log(messages.errors.client.missingFields)
+			createLog({ firstName: firstName, lastName: lastName, phone: phone, email: email }, responses.errors.client.missingFields)
+			return { error: responses.errors.client.missingFields };
 		}
 
 		// Create user
