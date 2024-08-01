@@ -1,26 +1,26 @@
 const responses = {
     errors: {
         client: {
-            notMatchingPasswords: {message: "Passwords do not match", code: 1},
-            notMatchingEmails: {message: "Emails do not match", code: 2},
-            alreadyExists: {message: "User with this email or phone number already exists", code: 3},
-            missingFields: {message: "All fields are required", code: 4},
-            invalidEmail: {message: "Invalid email address", code: 5},
-            invalidPhone: {message: "Invalid phone number", code: 6},
-            weakPassword: {message: "Password must be at least 8 characters long, contain at least one number, one uppercase letter, one lowercase letter, and one special character", code: 7},
-            accountCreationError: {message: "An error occurred while creating the account", code: 8},
-            invalidIdentifier: {message: "Invalid email or phone number format", code: 9},
-            userNotFound: {message: "User not found", code: 10},
-            invalidPassword: {message: "Invalid password", code: 11},
-            loginError: {message: "An error occurred during login", code: 12},
+            notMatchingPasswords: {message: "Les mots de passe ne correspondent pas", code: 1},
+            notMatchingEmails: {message: "Les e-mails ne correspondent pas", code: 2},
+            alreadyExists: {message: "Un utilisateur avec cet e-mail ou ce numéro de téléphone existe déjà", code: 3},
+            missingFields: {message: "Tous les champs sont requis", code: 4},
+            invalidEmail: {message: "Adresse e-mail invalide", code: 5},
+            invalidPhone: {message: "Numéro de téléphone invalide", code: 6},
+            weakPassword: {message: "Le mot de passe doit comporter au moins 8 caractères, contenir au moins un chiffre, une lettre majuscule, une lettre minuscule et un caractère spécial", code: 7},
+            accountCreationError: {message: "Une erreur est survenue lors de la création du compte", code: 8},
+            invalidIdentifier: {message: "Format d'e-mail ou de numéro de téléphone invalide", code: 9},
+            userNotFound: {message: "Utilisateur non trouvé", code: 10},
+            invalidPassword: {message: "Mot de passe invalide", code: 11},
+            loginError: {message: "Une erreur est survenue lors de la connexion", code: 12},
         }
     },
     success: {
-        accountCreated: {message: "Account successfully created", code: 13},
-        loginSuccessful: {message: "Login successful", code: 14}
+        accountCreated: {message: "Compte créé avec succès", code: 13},
+        loginSuccessful: {message: "Connexion réussie", code: 14}
     },
     info: {
-        welcome: {message: "Welcome to our service", code: 15},
+        welcome: {message: "Bienvenue dans notre service", code: 15},
     }
 };
 
