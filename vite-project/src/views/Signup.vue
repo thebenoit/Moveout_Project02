@@ -145,7 +145,7 @@ async function signup() {
           </div>
 
           <div class="border-2 rounded-lg shadow-lg p-6 mt-8 max-h-60 overflow-y-scroll">
-            <h1 class="text-blue-main text-center mb-5"> </h1>
+            <h1 class="text-blue-main text-center mb-5">Quartier de préférence </h1>
             <div v-for="(neighborhoods, borough) in quartiers" :key="borough" class="mb-4">
               <h2 class="text-lg text-gray-700 mb-2">{{ borough }}</h2>
               
@@ -166,6 +166,129 @@ async function signup() {
               </div>
             </div>
           </div>
+
+          <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
+            <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">Quelle est votre âge?</h1>
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+              <label class="flex items-center">
+                <input type="radio" name="age" value="18-25" v-model="age" class="mr-2">
+                18-25
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="age" value="26-35" v-model="age" class="mr-2">
+                26-35
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="age" value="36-45" v-model="age" class="mr-2">
+                36-45
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="age" value="46+" v-model="age" class="mr-2">
+                46+
+              </label>
+            </div>
+          </div>
+
+          <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
+            <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">Quelle est votre situation professionnelle ?</h1>
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+              <label class="flex items-center">
+                <input type="radio" name="profession" value="Étudiant" v-model="profession" class="mr-2">
+                Étudiant
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="profession" value="Employé" v-model="profession" class="mr-2">
+                Employé
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="profession" value="Auto-entrepreneur" v-model="profession" class="mr-2">
+               Entrepreneur
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="profession" value="Sans emploi" v-model="profession" class="mr-2">
+                Sans emploi
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="profession" value="Retraité" v-model="profession" class="mr-2">
+                Retraité
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="profession" value="Autre" v-model="profession" class="mr-2">
+                Autre
+              </label>
+            </div>
+          </div>
+
+          <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
+            <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">Quel est votre revenu mensuel approximatif ?</h1>
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+              <label class="flex items-center">
+                <input type="radio" name="revenu" value="Moins de 1000$" v-model="revenu" class="mr-2">
+                Moins de 1000$
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="revenu" value="1000$ - 2000$" v-model="revenu" class="mr-2">
+                1000$ - 2000$
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="revenu" value="2000$ - 3000$" v-model="revenu" class="mr-2">
+                2000$ - 3000$
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="revenu" value="3000$ - 4000$" v-model="revenu" class="mr-2">
+                3000$ - 4000$
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="revenu" value="Plus de 4000$" v-model="revenu" class="mr-2">
+                Plus de 4000$
+              </label>
+            </div>
+          </div>
+
+          <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
+            <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">Comment avez-vous entendu parler de notre site ?</h1>
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+              <label class="flex items-center">
+                <input type="radio" name="source" value="Réseaux sociaux" v-model="source" class="mr-2">
+                Réseaux sociaux
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="source" value="Recherche Google" v-model="source" class="mr-2">
+                Recherche Google
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="source" value="Recommandation d'un ami" v-model="source" class="mr-2">
+                Recommandation d'un ami
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="source" value="Publicité" v-model="source" class="mr-2">
+                Publicité
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="source" value="Autre" v-model="source" class="mr-2">
+                Autre (précisez)
+              </label>
+            </div>
+          </div>
+
+          <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8 ">
+            <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">Quel genre de services supplémentaires seriez-vous intéressé(e) ?</h1>
+            <div class="flex flex-wrap gap-2">
+              <label class="flex items-center">
+                <input type="checkbox" name="services" value="Déménagement" v-model="services" class="mr-2">
+                Déménagement
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" name="services" value="Décoration intérieure" v-model="services" class="mr-2">
+                Décoration intérieure
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" name="services" value="Autre" v-model="services" class="mr-2">
+                Autre (précisez)
+              </label>
+            </div>
+          </div>
+           
     
           <button class="btn btn-accent w-full mt-6">Next</button>
         </div>
