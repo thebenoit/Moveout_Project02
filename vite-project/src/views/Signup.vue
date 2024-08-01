@@ -19,6 +19,8 @@ const confirmPassword = ref("")
 const minValue = ref(0);
 const maxValue = ref(100);
 
+const hiddenFirst = ref(false)
+
 const quartiers = {
         "Ahuntsic-Cartierville": ["Ahuntsic", "Cartierville", "Sault-au-Récollet"],
         "Anjou": ["Anjou"],
@@ -85,7 +87,14 @@ const quartiers = {
 
 const router = useRouter()
 
+async function nextSlide() {
+  hiddenFirst.value = true
 
+}
+async function previousSlide() {
+  hiddenFirst.value = false
+
+}
 async function signup() {
   let result = await utils.post('api/client/signup',
     {
@@ -113,7 +122,66 @@ async function signup() {
 </script>
 <template>
   <div>
-    <section class="max-w-xl lg:max-w-3xl mx-auto p-4">
+    <section 
+    v-if="!hiddenFirst"
+    class="max-w-xl lg:max-w-3xl mx-auto p-4 overflow-hidden"
+  >
+ 
+    
+  
+  
+  
+  
+      <div class="mt-0">
+        
+        <Card class="bg-gray-200 backdrop-blur-3xl mt-16 lg:mt-0 ">
+          
+          
+          <CardHeader>
+            <CardTitle class="text-xl">
+              Inscrivez-vous gratuitement!
+            </CardTitle>
+            <CardDescription class="text-lg">
+              Rejoignez Moveout aujourd'hui gratuitement
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div class="grid gap-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="grid gap-2">
+                  <Input class="btn text-left" id="first-name" placeholder="First name" required v-model="firstName" />
+                </div>
+                <div class="grid gap-2">
+                  <Input class="btn text-left" id="last-name" placeholder="Last name" required v-model="lastName" />
+                </div>
+              </div>
+              <div class="grid mt-1">
+                <Input class="btn text-left" id="phone" type="phone" placeholder="Phone number" required v-model="phone" />
+              </div>
+              <div class="grid mt-1">
+                <Input class="btn text-left" id="email" type="email" placeholder="Email" required v-model="email" />
+              </div>
+              <div class="grid mt-1">
+                <Input class="btn text-left" id="password" type="password" placeholder="Password" v-model="password" />
+              </div>
+              <Button type="submit" class="btn btn-lg w-full text-base bg-red-500 hover:bg-red-400 overflow-hidden " @click="nextSlide">
+                Rejoignez Moveout gratuitement
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+        </div>
+    </section>
+
+    <section v-if="hiddenFirst"
+    class="max-w-xl lg:max-w-3xl mx-auto p-4">
+    <div class="w-full flex  jusitfy-start">
+      <svg xmlns="http://www.w3.org/2000/svg" class="mt-2 ml-5 hover:text-blue-main" @click="previousSlide" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" width="26" height="26">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+      </svg>
+      
+    </div>
+
       <section>
         <h1 class="text-xl text-blue-main text-center">
           Comprendre vos préférences...
@@ -295,44 +363,7 @@ async function signup() {
       </section>
     </section>
     
-    <section>
-      <div class="mt-0">
-        <Card class="bg-gray-200 backdrop-blur-3xl mt-16 lg:mt-0 ">
-          <CardHeader>
-            <CardTitle class="text-xl">
-              Inscrivez-vous gratuitement!
-            </CardTitle>
-            <CardDescription class="text-lg">
-              Rejoignez Moveout aujourd'hui gratuitement
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div class="grid gap-4">
-              <div class="grid grid-cols-2 gap-4">
-                <div class="grid gap-2">
-                  <Input class="btn text-left" id="first-name" placeholder="First name" required v-model="firstName" />
-                </div>
-                <div class="grid gap-2">
-                  <Input class="btn text-left" id="last-name" placeholder="Last name" required v-model="lastName" />
-                </div>
-              </div>
-              <div class="grid mt-1">
-                <Input class="btn text-left" id="phone" type="phone" placeholder="Phone number" required v-model="phone" />
-              </div>
-              <div class="grid mt-1">
-                <Input class="btn text-left" id="email" type="email" placeholder="Email" required v-model="email" />
-              </div>
-              <div class="grid mt-1">
-                <Input class="btn text-left" id="password" type="password" placeholder="Password" v-model="password" />
-              </div>
-              <Button type="submit" class="btn btn-lg w-full text-lg bg-red-500 hover:bg-red-300 " @click="signup">
-                Rejoignez Moveout gratuitement
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-        </div>
-    </section>
+    
   </div>  
 
  
