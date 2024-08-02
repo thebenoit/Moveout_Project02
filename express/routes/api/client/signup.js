@@ -13,9 +13,9 @@ module.exports = app.post("/signup", async (req, res) => {
 			req.body.lastName,
 			req.body.phone,
 			req.body.email,
-			req.body.confirmEmail,
+			//req.body.confirmEmail,
 			req.body.password,
-			req.body.confirmPassword
+			//req.body.confirmPassword
 		)
 
         if (response.error) {
