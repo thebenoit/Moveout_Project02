@@ -8,6 +8,7 @@ const usersSchema = new Schema({
   email: { type: Schema.Types.String },
   password: { type: Schema.Types.String },
   preferencesId: { type: Schema.Types.ObjectId },
+  date: { type: Schema.Types.Date}
 });
 
 const Users = mongoose.model('users', usersSchema, 'users');

@@ -127,6 +127,7 @@ async function createAccount(firstName, lastName, phone, email, password) {
 			email: email,
 			password: hashPassword,
 			preferencesId: savedPreferences._id.toString(),
+			date: Date.now()
 		});
 
 		// Save the user to the database

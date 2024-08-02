@@ -120,7 +120,7 @@ async function signup() {
       console.log("error: ", errorMessages);
     } else {
       result = await result.json();
-      console.log(result.token);
+      console.log("result ",result);
 
       if (result.token) {
         utils.setToken(result.token);
@@ -131,7 +131,7 @@ async function signup() {
   } catch (error) {
     console.error("Error during signup:", error);
     errorMessages.value =
-      "Une erreur est survenue lors de l'inscription. Vérifiez votre mot de passe : il doit contenir une majuscule, une minuscule, un caractère spécial et avoir au moins 8 caractères.";
+      "Une erreur est survenue lors de l'inscription.";
     console.log("error2: ", errorMessages);
   }
 }
@@ -144,7 +144,7 @@ async function signup() {
     >
       <div class="mt-0">
         <Card class="bg-gray-200 backdrop-blur-3xl mt-16 lg:mt-0">
-          <p class="text-red-500 text-sm m-5 text-center p-2 rounded-lg">{{ errorMessages }}</p>
+          <p class="text-red-500 text-sm  text-center  rounded-lg">{{ errorMessages }}</p>
           <CardHeader>
             <CardTitle class="text-xl">
               Inscrivez-vous gratuitement!
