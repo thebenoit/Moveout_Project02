@@ -25,6 +25,34 @@ const confirmPassword = ref("");
 const minValue = ref(0);
 const maxValue = ref(100);
 
+// Store selected neighborhoods
+const selectedNeighborhoods = ref([]);
+// Store selected number of bedrooms
+const selectedBedrooms = ref([]);
+const selectedGender = ref("");
+const selectedOccupation = ref("");
+const selectedSalary = ref("");
+const selectedReference = ref("");
+const selectedAge = ref("");
+const selectedAddOnService = ref("");
+const autreClicked = ref(false);
+const customService = ref("");
+
+const survey = {
+  numberOfBedrooms: selectedBedrooms,
+  Budget: {
+    minValue: minValue,
+    maxValue: maxValue,
+  },
+  locationsPreferences: selectedNeighborhoods,
+  age: selectedAge,
+  gender: "",
+  occupation: selectedOccupation,
+  salary: "",
+  reference: "",
+  addOnService: "",
+};
+
 const errorMessages = ref("");
 const hiddenFirst = ref(false);
 
@@ -80,9 +108,6 @@ const quartiers = {
   Westmount: ["Westmount"],
 };
 
-// Store selected neighborhoods
-const selectedNeighborhoods = ref([]);
-
 const toggleSelection = (neighborhood) => {
   if (selectedNeighborhoods.value.includes(neighborhood)) {
     // Remove if already selected
@@ -92,6 +117,48 @@ const toggleSelection = (neighborhood) => {
   } else {
     // Add if not selected
     selectedNeighborhoods.value.push(neighborhood);
+  }
+};
+
+// Fonction pour gérer la sélection du nombre de chambres
+const toggleBedroomsSelection = (bedrooms) => {
+  if (selectedBedrooms.value.includes(bedrooms)) {
+    //remove if already selected
+    selectedBedrooms.value = selectedBedrooms.value.filter(
+      (n) => n !== bedrooms
+    );
+  } else {
+    console.log("push bedrooms: ", bedrooms);
+    selectedBedrooms.value.push(bedrooms);
+  }
+};
+
+const toggleAgeSelection = (age) => {
+  selectedAge.value = age;
+};
+
+const toggleGenderSelection = (gender) => {
+  selectedGender.value = gender;
+};
+
+const toggleSalarySelection = (salary) => {
+  selectedSalary.value = salary;
+};
+
+const toggleOccupationSelection = (occupation) => {
+  selectedOccupation.value = occupation;
+};
+
+const toggleReferenceSelection = (reference) => {
+  selectedReference.value = reference;
+};
+
+const toggleAddOnServiceSelection = (addOnService) => {
+  if (selectedAddOnService.value === addOnService) {
+    selectedAddOnService.value = "";
+  } else {
+    selectedAddOnService.value = addOnService;
+    autreClicked.value = false; // Désactiver le champ "Autre" s'il est sélectionné
   }
 };
 
@@ -115,25 +182,23 @@ async function signup() {
       //"confirmPassword": confirmPassword.value
     });
     if (result.error) {
-      console.log('result.error: ',result.error.message)
+      console.log("result.error: ", result.error.message);
       errorMessages.value = result.error?.message;
       console.log("error: ", errorMessages);
     } else {
-      console.log("result ",result);
+      console.log("result ", result);
       //result = await result.json();
-      
 
       if (result.token) {
         utils.setToken(result.token);
         //router.push({ path: '/foryou' })
-        nextSlide()
-        console.log('changement de plage: ')
+        nextSlide();
+        console.log("changement de plage: ");
       }
     }
   } catch (error) {
     console.error("Error during signup:", error);
-    errorMessages.value =
-      "Une erreur est survenue lors de l'inscription.";
+    errorMessages.value = "Une erreur est survenue lors de l'inscription.";
     console.log("error2: ", errorMessages);
   }
 }
@@ -146,7 +211,9 @@ async function signup() {
     >
       <div class="mt-0">
         <Card class="bg-gray-200 backdrop-blur-3xl mt-16 lg:mt-0">
-          <p class="text-red-500 text-sm  text-center  rounded-lg">{{ errorMessages }}</p>
+          <p class="text-red-500 text-sm text-center rounded-lg">
+            {{ errorMessages }}
+          </p>
           <CardHeader>
             <CardTitle class="text-xl">
               Inscrivez-vous gratuitement!
@@ -259,11 +326,22 @@ async function signup() {
           <div class="border-2 rounded-lg shadow-lg p-6">
             <h1 class="text-blue-main text-center mb-5">Combien de chambre?</h1>
             <ul class="flex justify-center space-x-4">
-              <li><p class="btn btn-active">1</p></li>
-              <li><p class="btn btn-active">2</p></li>
-              <li><p class="btn btn-active">3</p></li>
-              <li><p class="btn btn-active">4</p></li>
-              <li><p class="btn btn-active">5+</p></li>
+              <li>
+                <button
+                  v-for="bedrooms in ['1', '2', '3', '4', '5+']"
+                  :key="bedrooms"
+                  @click="toggleBedroomsSelection(bedrooms)"
+                  :class="{
+                    ' bg-blue-main text-white':
+                      selectedBedrooms.includes(bedrooms),
+                    ' bg-gray-200 text-gray-700':
+                      !selectedBedrooms.includes(bedrooms),
+                  }"
+                  class="px-4 py-2 rounded-md border m-2"
+                >
+                  {{ bedrooms }}
+                </button>
+              </li>
             </ul>
           </div>
 
@@ -314,311 +392,172 @@ async function signup() {
             <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
               Quelle est votre âge?
             </h1>
-            <div
-              class="flex flex-col sm:flex-row justify-center items-center gap-4"
-            >
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="age"
-                  value="18-25"
-                  v-model="age"
-                  class="mr-2"
-                />
-                18-25
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="age"
-                  value="26-35"
-                  v-model="age"
-                  class="mr-2"
-                />
-                26-35
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="age"
-                  value="36-45"
-                  v-model="age"
-                  class="mr-2"
-                />
-                36-45
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="age"
-                  value="46+"
-                  v-model="age"
-                  class="mr-2"
-                />
-                46+
-              </label>
-            </div>
+            <ul class="flex justify-center space-x-4">
+              <li>
+                <button
+                  v-for="age in ['18-25', '26-35', '36-45', '46+']"
+                  :key="age"
+                  @click="toggleAgeSelection(age)"
+                  :class="{
+                    ' bg-blue-main text-white': selectedAge === age,
+                    ' bg-gray-200 text-gray-700': selectedAge !== age,
+                  }"
+                  class="px-4 py-2 rounded-md border m-2"
+                >
+                  {{ age }}
+                </button>
+              </li>
+            </ul>
           </div>
 
           <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
             <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
               Quelle est votre Sexe?
             </h1>
-            <div
-              class="flex flex-col sm:flex-row justify-center items-center gap-4"
-            >
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="age"
-                  value="18-25"
-                  v-model="age"
-                  class="mr-2"
-                />
-                Homme
-              </label>
-
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="age"
-                  value="18-25"
-                  v-model="age"
-                  class="mr-2"
-                />
-                Femme
-              </label>
-             
-              
-            </div>
+            <ul class="flex justify-center space-x-4">
+              <li>
+                <button
+                  v-for="gender in ['Homme', 'Femme']"
+                  :key="gender"
+                  @click="toggleGenderSelection(gender)"
+                  :class="{
+                    ' bg-blue-main text-white': selectedGender === gender,
+                    ' bg-gray-200 text-gray-700': selectedGender !== gender,
+                  }"
+                  class="px-4 py-2 rounded-md border m-2"
+                >
+                  {{ gender }}
+                </button>
+              </li>
+            </ul>
           </div>
 
           <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
             <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
               Quelle est votre situation professionnelle ?
             </h1>
-            <div
-              class="flex flex-col sm:flex-row justify-center items-center gap-4"
-            >
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="profession"
-                  value="Étudiant"
-                  v-model="profession"
-                  class="mr-2"
-                />
-                Étudiant
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="profession"
-                  value="Employé"
-                  v-model="profession"
-                  class="mr-2"
-                />
-                Employé
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="profession"
-                  value="Auto-entrepreneur"
-                  v-model="profession"
-                  class="mr-2"
-                />
-                Entrepreneur
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="profession"
-                  value="Sans emploi"
-                  v-model="profession"
-                  class="mr-2"
-                />
-                Sans emploi
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="profession"
-                  value="Retraité"
-                  v-model="profession"
-                  class="mr-2"
-                />
-                Retraité
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="profession"
-                  value="Autre"
-                  v-model="profession"
-                  class="mr-2"
-                />
-                Autre
-              </label>
-            </div>
+
+            <ul class="flex justify-center space-x-4">
+              <li>
+                <button
+                  v-for="occupation in [
+                    'Étudiant',
+                    'Sans Emplois',
+                    'Employé',
+                    'Entrepreneur',
+                    'retraité',
+                  ]"
+                  :key="occupation"
+                  @click="toggleOccupationSelection(occupation)"
+                  :class="{
+                    ' bg-blue-main text-white':
+                      selectedOccupation === occupation,
+                    ' bg-gray-200 text-gray-700':
+                      selectedOccupation !== occupation,
+                  }"
+                  class="px-4 py-2 rounded-md border m-2"
+                >
+                  {{ occupation }}
+                </button>
+              </li>
+            </ul>
           </div>
 
-          <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
+          <!-- <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
             <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
               Quel est votre revenu mensuel approximatif ?
             </h1>
-            <div
-              class="flex flex-col sm:flex-row justify-center items-center gap-4"
-            >
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="revenu"
-                  value="Moins de 1000$"
-                  v-model="revenu"
-                  class="mr-2"
-                />
-                Moins de 1000$
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="revenu"
-                  value="1000$ - 2000$"
-                  v-model="revenu"
-                  class="mr-2"
-                />
-                1000$ - 2000$
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="revenu"
-                  value="2000$ - 3000$"
-                  v-model="revenu"
-                  class="mr-2"
-                />
-                2000$ - 3000$
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="revenu"
-                  value="3000$ - 4000$"
-                  v-model="revenu"
-                  class="mr-2"
-                />
-                3000$ - 4000$
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="revenu"
-                  value="Plus de 4000$"
-                  v-model="revenu"
-                  class="mr-2"
-                />
-                Plus de 4000$
-              </label>
-            </div>
-          </div>
+            <ul class="flex justify-center space-x-4">
+              <li>
+                <button
+                  v-for="salary in ['<1000', '1000-2000', '2000-3000', '3000-4000', '>4000']"
+                  :key="salary"
+                  @click="toggleSalarySelection(salary)"
+                  :class="{
+                    ' bg-blue-main text-white': selectedSalary === salary,
+                    ' bg-gray-200 text-gray-700': selectedSalary !== salary,
+                  }"
+                  class="px-4 py-2 rounded-md border m-2"
+                >
+                  {{ salary }}
+                </button>
+              </li>
+            </ul>
+          </div> -->
 
           <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
             <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
               Comment avez-vous entendu parler de notre site ?
             </h1>
-            <div
-              class="flex flex-col sm:flex-row justify-center items-center gap-4"
-            >
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="source"
-                  value="Réseaux sociaux"
-                  v-model="source"
-                  class="mr-2"
-                />
-                Réseaux sociaux
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="source"
-                  value="Recherche Google"
-                  v-model="source"
-                  class="mr-2"
-                />
-                Recherche Google
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="source"
-                  value="Recommandation d'un ami"
-                  v-model="source"
-                  class="mr-2"
-                />
-                Recommandation d'un ami
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="source"
-                  value="Publicité"
-                  v-model="source"
-                  class="mr-2"
-                />
-                Publicité
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="source"
-                  value="Autre"
-                  v-model="source"
-                  class="mr-2"
-                />
-                Autre (précisez)
-              </label>
-            </div>
+
+            <ul class="flex justify-center space-x-4">
+              <li>
+                <button
+                  v-for="reference in [
+                    'Recherche Google',
+                    `référence d'un ami  `,
+                    'réseaux sociaux',
+                    'Publicité',
+                  ]"
+                  :key="reference"
+                  @click="toggleReferenceSelection(reference)"
+                  :class="{
+                    ' bg-blue-main text-white': selectedReference === reference,
+                    ' bg-gray-200 text-gray-700':
+                      selectedReference !== reference,
+                  }"
+                  class="px-4 py-2 rounded-md border m-2"
+                >
+                  {{ reference }}
+                </button>
+              </li>
+            </ul>
           </div>
 
           <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
             <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
               Quel genre de services supplémentaires seriez-vous intéressé(e) ?
             </h1>
-            <div class="flex flex-wrap gap-2">
-              <label class="flex items-center">
+            <ul class="flex justify-center space-x-4">
+              <li>
+                <button
+                  v-for="addOnService in [
+                    'Déménagement',
+                    `décoration de maison`,
+                  ]"
+                  :key="addOnService"
+                  @click="toggleAddOnServiceSelection(addOnService)"
+                  :class="{
+                    ' bg-blue-main text-white':
+                      selectedAddOnService === addOnService,
+                    ' bg-gray-200 text-gray-700':
+                      selectedAddOnService !== addOnService,
+                  }"
+                  class="px-4 py-2 rounded-md border m-2"
+                >
+                  {{ addOnService }}
+                </button>
+              </li>
+              <li>
+                <button
+                  @click="autreClicked = !autreClicked"
+                  :class="{
+                    'bg-blue-main text-white': autreClicked,
+                    'bg-gray-200 text-gray-700': !autreClicked,
+                  }"
+                  class="px-4 py-2 rounded-md border m-2"
+                >
+                  Autre
+                </button>
                 <input
-                  type="checkbox"
-                  name="services"
-                  value="Déménagement"
-                  v-model="services"
-                  class="mr-2"
+                  v-if="autreClicked"
+                  v-model="customService"
+                  type="text"
+                  placeholder="Précisez le service"
+                  class="input input-bordered w-full max-w-xs mt-2"
                 />
-                Déménagement
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="checkbox"
-                  name="services"
-                  value="Décoration intérieure"
-                  v-model="services"
-                  class="mr-2"
-                />
-                Décoration intérieure
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="checkbox"
-                  name="services"
-                  value="Autre"
-                  v-model="services"
-                  class="mr-2"
-                />
-                Autre (précisez)
-              </label>
-            </div>
+              </li>
+            </ul>
           </div>
 
           <button class="btn btn-accent w-full mt-6">Next</button>
@@ -626,46 +565,4 @@ async function signup() {
       </section>
     </section>
   </div>
-
-  <!-- <button class="btn" onclick="signup.showModal()">open modal</button> -->
-  <!-- <dialog id="signup" class="modal modal-bottom sm:modal-middle">
- <div class="absolute flex h-screen">
-     <div class="mt-0">
-       <Card class="bg-gray-200 backdrop-blur-3xl mt-16 lg:mt-0 ">
-         <CardHeader>
-           <CardTitle class="text-xl">
-             Inscrivez-vous gratuitement!
-           </CardTitle>
-           <CardDescription class="text-lg">
-             Rejoignez Moveout aujourd'hui gratuitement
-           </CardDescription>
-         </CardHeader>
-         <CardContent>
-           <div class="grid gap-4">
-             <div class="grid grid-cols-2 gap-4">
-               <div class="grid gap-2">
-                 <Input class="btn text-left" id="first-name" placeholder="First name" required v-model="firstName" />
-               </div>
-               <div class="grid gap-2">
-                 <Input class="btn text-left" id="last-name" placeholder="Last name" required v-model="lastName" />
-               </div>
-             </div>
-             <div class="grid mt-1">
-               <Input class="btn text-left" id="phone" type="phone" placeholder="Phone number" required v-model="phone" />
-             </div>
-             <div class="grid mt-1">
-               <Input class="btn text-left" id="email" type="email" placeholder="Email" required v-model="email" />
-             </div>
-             <div class="grid mt-1">
-               <Input class="btn text-left" id="password" type="password" placeholder="Password" v-model="password" />
-             </div>
-             <Button type="submit" class="btn btn-lg w-full text-lg bg-red-500 hover:bg-red-300 " @click="signup">
-               Rejoignez Moveout gratuitement
-             </Button>
-           </div>
-         </CardContent>
-       </Card>
-     </div>
- </div>
-</dialog> -->
 </template>
