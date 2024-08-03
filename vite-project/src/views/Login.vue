@@ -6,14 +6,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 //import { Label } from '@/components/ui/label'
 import utils from '../utils/utils'
 import { useRouter } from 'vue-router'
+import { errorMessages } from 'vue/compiler-sfc';
 
 
 const identifier = ref("")
 const password = ref("")
+const messageErreur = ref("")
 
 const router = useRouter()
 
 async function login(){
+
+  try {
   console.log('identifier: ', identifier.value)
   console.log('password: ', password.value)
   let result = await utils.post('api/client/login',
@@ -22,6 +26,12 @@ async function login(){
       "password": password.value 
     }
   )
+  //si il y a une erreur rentre dans la variable  pour afficher à l'user
+  if(result.error){
+    console.log('resultError; ', result.error.message);
+    messageErreur.value = result.error.message
+  }
+
   console.log('result; ', result);
   //result = await result.json()
   console.log(result.token)
@@ -30,6 +40,11 @@ async function login(){
     utils.setToken(result.token)
     router.push({ path: '/foryou' })
   }
+
+  }catch(error){
+    console.log("erreur lors du login: ", error)
+  }
+
 
 }
 
@@ -40,6 +55,7 @@ async function login(){
     <div class="mx-auto max-w-sm content-center w-full">
       <Card class="bg-gray-200 backdrop-blur-3xl mt-16 lg:mt-0">
         <CardHeader>
+          <p class="text-red-500 m-2 ">{{messageErreur}}</p>
           <CardTitle class="text-xl">
             Login
           </CardTitle>
