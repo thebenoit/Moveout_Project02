@@ -38,12 +38,6 @@ class Scraper:
     def __init__(self) -> None:
         self.url = "https://www.facebook.com/marketplace/montreal/propertyrentals?locale=fr_CA"
 
-        # options = Options()
-        # options.add_argument("--headless=new")
-        # options.add_argument(f"--proxy-server=socks5://r50iVq2iUKSprfJ:2LlqFzamzsUDYcC@109.203.164.213:41178")
-        
-        # self.driver = webdriver.Chrome(options=options)
-
         proxies = {
             'http': 'http://rdqnojgj:nOEVjKbkfAnM3zGP_country-Canada@proxy.proxy-cheap.com:31112',
             'https': 'http://rdqnojgj:nOEVjKbkfAnM3zGP_country-Canada@proxy.proxy-cheap.com:31112'
@@ -59,19 +53,11 @@ class Scraper:
         self.session.proxies.update(proxies)
         self.session.verify = False
         
-
-        self.bd = Bd("mongodb+srv://moveout:qFCPn6LARdjfBAYQ@cluster0.iowm3fd.mongodb.net/", "Appartements_moveout", "facebook")
+        self.bd = Bd("mongodb+srv://moveout:qFCPn6LARdjfBAYQ@cluster0.iowm3fd.mongodb.net/", "Appartements_moveout", "facebook_old")
         
         self.init_session()
         self.driver.close()
 
-    # def get_headers(self, body) -> dict:
-    #     # start a fb page with selenium to get valid headers and to use later on with requests
-    #     pass
-
-    # def get_payload(self, body) -> dict:
-    #     # get the payload to be reused
-    #     pass
 
     def get_first_req(self):
         self.driver.get(f"https://www.facebook.com/marketplace/montreal/propertyrentals?locale=fr_CA")
@@ -160,50 +146,11 @@ class Scraper:
             time.sleep(5)
 
 
-# with ApiGateway("https://site.com") as g:
-#     session = requests.Session()
-#     session.mount("https://site.com", g)
-
-#     response = session.get("https://site.com/index.php")
-#     print(response.status_code)
-
-
-# scraper = Scraper()
-# scraper.scrape()
-
-# import requests
-# from requests_ip_rotator import ApiGateway
-
-# with ApiGateway("https://www.facebook.com/api/graphql/", regions=["us-east-1", "us-east-2"], access_key_id="AKIAQGYBPW4MXOG5ZGO3", access_key_secret="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") as g:
-
-#     # session = requests.Session()
-#     # session.mount("https://api.ipify.org", g)
-    
-#     # for _ in range(0,10):
-#     #     response = session.get("https://api.ipify.org?format=json")
-#     #     print(response.json())
-
-#     scraper = Scraper()
-#     scraper.session.mount("https://www.facebook.com/api/graphql/", g)
-#     # scraper.session.mount("https://www.facebook.com/api/graphql/", g)
-
-#     for _ in range(0, 1000): 
-#         scraper.scrape()
-#         time.sleep(5)
-
-# session = requests.Session()
-# proxies = {
-#     'http': 'http://rdqnojgj:nOEVjKbkfAnM3zGP_country-Canada@proxy.proxy-cheap.com:31112',
-#     'https': 'http://rdqnojgj:nOEVjKbkfAnM3zGP_country-Canada@proxy.proxy-cheap.com:31112'
-# }
-# session.proxies.update(proxies)
-# response = session.get("http://api.ipify.org?format=json", params={"theme": "light"})
-# print(response.json())
-
-
 scraper = Scraper()
-
 scraper.scrape()
+
+
+# doesnt work for facebook :(
 
 # import requests
 # from requests_ip_rotator import ApiGateway
