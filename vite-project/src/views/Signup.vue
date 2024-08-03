@@ -119,13 +119,15 @@ async function signup() {
       errorMessages.value = result.error?.message;
       console.log("error: ", errorMessages);
     } else {
-      result = await result.json();
       console.log("result ",result);
+      //result = await result.json();
+      
 
       if (result.token) {
         utils.setToken(result.token);
         //router.push({ path: '/foryou' })
-        hiddenFirst.value = true;
+        nextSlide()
+        console.log('changement de plage: ')
       }
     }
   } catch (error) {
@@ -355,6 +357,39 @@ async function signup() {
                 />
                 46+
               </label>
+            </div>
+          </div>
+
+          <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
+            <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
+              Quelle est votre Sexe?
+            </h1>
+            <div
+              class="flex flex-col sm:flex-row justify-center items-center gap-4"
+            >
+              <label class="flex items-center">
+                <input
+                  type="radio"
+                  name="age"
+                  value="18-25"
+                  v-model="age"
+                  class="mr-2"
+                />
+                Homme
+              </label>
+
+              <label class="flex items-center">
+                <input
+                  type="radio"
+                  name="age"
+                  value="18-25"
+                  v-model="age"
+                  class="mr-2"
+                />
+                Femme
+              </label>
+             
+              
             </div>
           </div>
 

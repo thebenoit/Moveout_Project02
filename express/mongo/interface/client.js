@@ -144,6 +144,19 @@ async function createAccount(firstName, lastName, phone, email, password) {
 	}
 }
 
+async function createPreference(
+idPreference, bedrooms, budget,locationPreference, 
+age,sex, occupation, salary){
+
+
+	
+
+
+
+
+
+}
+
 async function login(identifier, password) {
 	try {
 		let user;

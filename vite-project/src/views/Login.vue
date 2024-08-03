@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Button } from '@/components/ui/button'
+//import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+//import { Input } from '@/components/ui/input'
+//import { Label } from '@/components/ui/label'
 import utils from '../utils/utils'
 import { useRouter } from 'vue-router'
 
@@ -14,14 +14,16 @@ const password = ref("")
 const router = useRouter()
 
 async function login(){
+  console.log('identifier: ', identifier.value)
+  console.log('password: ', password.value)
   let result = await utils.post('api/client/login',
     {
       "identifier": identifier.value,
       "password": password.value 
     }
   )
-
-  result = await result.json()
+  console.log('result; ', result);
+  //result = await result.json()
   console.log(result.token)
 
   if(result.token){
@@ -59,10 +61,10 @@ async function login(){
               <Input id="phone" type="phone" placeholder="Phone number" required />
             </div> -->
             <div class="grid mt-1">
-              <Input id="email" placeholder="Email or Phone Number" v-model="identifier" required />
+              <input id="email" placeholder="Email or Phone Number" v-model="identifier" required />
             </div>
             <div class="grid mt-1">
-              <Input id="password" type="password" placeholder="Password" v-model="password" required />
+              <input id="password" type="password" placeholder="Password" v-model="password" required />
             </div>
             <Button type="submit" class="w-full bg-cyan-500" @click="login">
               Log in
