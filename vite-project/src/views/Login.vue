@@ -1,33 +1,50 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Button } from '@/components/ui/button'
+//import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+//import { Input } from '@/components/ui/input'
+//import { Label } from '@/components/ui/label'
 import utils from '../utils/utils'
 import { useRouter } from 'vue-router'
+import { errorMessages } from 'vue/compiler-sfc';
 
 
 const identifier = ref("")
 const password = ref("")
+const messageErreur = ref("")
 
 const router = useRouter()
 
 async function login(){
+
+  try {
+  console.log('identifier: ', identifier.value)
+  console.log('password: ', password.value)
   let result = await utils.post('api/client/login',
     {
       "identifier": identifier.value,
       "password": password.value 
     }
   )
+  //si il y a une erreur rentre dans la variable  pour afficher à l'user
+  if(result.error){
+    console.log('resultError; ', result.error.message);
+    messageErreur.value = result.error.message
+  }
 
-  result = await result.json()
+  console.log('result; ', result);
+  //result = await result.json()
   console.log(result.token)
 
   if(result.token){
     utils.setToken(result.token)
     router.push({ path: '/foryou' })
   }
+
+  }catch(error){
+    console.log("erreur lors du login: ", error)
+  }
+
 
 }
 
@@ -38,6 +55,7 @@ async function login(){
     <div class="mx-auto max-w-sm content-center w-full">
       <Card class="bg-gray-200 backdrop-blur-3xl mt-16 lg:mt-0">
         <CardHeader>
+          <p class="text-red-500 m-2 ">{{messageErreur}}</p>
           <CardTitle class="text-xl">
             Login
           </CardTitle>
@@ -59,10 +77,10 @@ async function login(){
               <Input id="phone" type="phone" placeholder="Phone number" required />
             </div> -->
             <div class="grid mt-1">
-              <Input id="email" placeholder="Email or Phone Number" v-model="identifier" required />
+              <input id="email" placeholder="Email or Phone Number" v-model="identifier" required />
             </div>
             <div class="grid mt-1">
-              <Input id="password" type="password" placeholder="Password" v-model="password" required />
+              <input id="password" type="password" placeholder="Password" v-model="password" required />
             </div>
             <Button type="submit" class="w-full bg-cyan-500" @click="login">
               Log in
