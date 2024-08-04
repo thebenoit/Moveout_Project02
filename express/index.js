@@ -5,7 +5,12 @@ const path = require("path");
 const mongoose = require("./mongo/client.js");
 
 // routes
+
+// apparts
 const appartments = require("./routes/api/appartement.js");
+const paginated_appartments = require("./routes/api/appartements/paginated_appartments.js");
+
+// client
 const client_singup = require("./routes/api/client/signup.js");
 const client_login = require("./routes/api/client/login.js");
 const client_lead = require("./routes/api/client/leads.js");
@@ -37,6 +42,11 @@ app.use("/api", appartments);
 app.use("/api/client", client_singup);
 app.use("/api/client", client_login);
 app.use("/api/client", client_lead);
+
+// apparts
+app.use("/api/appartements", paginated_appartments);
+
+
 
 // app.use("/api/client/", client_logout);
 // app.use("/client/", client_appartements);
