@@ -1,4 +1,6 @@
 const appartments = require("../schemas/appartement")
+const facebook = require("../schemas/facebook")
+
 /**
  * function qui permet de get tout les appart de la base de données
  * et le mettre dans un varibale
@@ -15,4 +17,28 @@ async function getAllAppartments(){
     return appartData
 }
 
-module.exports = getAllAppartments;
+async function getFacebookListings(){
+    const docCount = await facebook.countDocuments({});
+    console.log("NB_Documents facebook", docCount);
+
+    const appartData = await facebook.find({}).limit(100);
+    // let apparts = [];
+
+    // try {
+    //     apparts = appartData.map((listing) => ({
+    //         price: listing.listing_price.amount,
+    //         city: listing.reverse_geocode.city,
+    //         custom_title: listing.custom_title,
+    //     }));
+    // } catch (error) {
+    //     console.error("An error occurred while mapping apartment data:", error);
+    // }
+
+    return appartData;
+}
+
+
+module.exports = {
+    getAllAppartments,
+    getFacebookListings
+};

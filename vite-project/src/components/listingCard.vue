@@ -22,7 +22,6 @@ const props = defineProps({
     // },
     img: {
         type: String,
-        default: "@/assets/images/house-1477041_1920.jpg",
         required: true,
     },
     city: {
@@ -67,8 +66,16 @@ function handleImageError() {
 </script>
 
 <template>
-    <div class="w-full rounded overflow-hidden shadow-lg p-2 bg-white min-[1262px]:hidden transition-all">
-        <img class="object-cover rounded-2xl rounded-b-none" src="@/assets/images/house-1477041_1920.jpg">
+    <div class="w-fit rounded overflow-hidden shadow-lg p-2 bg-white min-[1262px]:hidden transition-all">
+        <!-- <img class="object-cover rounded-2xl rounded-b-none" src="@/assets/images/house-1477041_1920.jpg"> -->
+        <img
+  v-if="isValidImage"
+  class="w-full object-cover rounded-2xl rounded-b-none"
+  :src="props.img"
+  :alt="props.label"
+  @error="handleImageError"
+/>
+
         <div class="p-2">
             <div class="flex w-full">
                 <div class="w-2/3">
@@ -132,7 +139,7 @@ function handleImageError() {
     </div>
 
     <div class="h-64 w-full rounded-2xl p-2 shadow-sm border-gray-100 min-[1262px]:flex hidden transition-all">
-    <img class="object-cover h-56 w-56 rounded-2xl my-auto" src="@/assets/images/house-1477041_1920.jpg">
+    <img v-if="isValidImage" class="object-cover h-56 w-56 rounded-2xl my-auto" :src="props.img" :alt="props.label" @error="handleImageError" >
     <div class="flex flex-col ml-4 p-2 min-w-72 w-full justify-between">
         <div class="w-full">
             <!-- titre + bookmark -->
@@ -200,13 +207,6 @@ function handleImageError() {
                         'fill-gray-300': index >= rating
                     }" />
                 </div>
-                <!-- <div class="flex my-auto">
-                    <StarIcon class="h-5 fill-blue-main stroke-none"/>
-                    <StarIcon class="h-5 fill-blue-main stroke-none"/>
-                    <StarIcon class="h-5 fill-blue-main stroke-none"/>
-                    <StarIcon class="h-5 fill-blue-main stroke-none"/>
-                    <StarIcon class="h-5 fill-gray-300 stroke-none"/>
-                </div> -->
             </div>
             <!-- prix -->
             <div class="flex">

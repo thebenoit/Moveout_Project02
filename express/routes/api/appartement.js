@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const getAllAppartments = require("../../mongo/interface/appartement");
+const { getFacebookListings } = require("../../mongo/interface/appartement");
 
 module.exports = app.get("/appartments", async (req, res) => {
 	try {
@@ -14,7 +14,7 @@ module.exports = app.get("/appartments", async (req, res) => {
 		// const appartData = await appartments.find({});
 		// console.log("Données récupérées:");
 
-		appartData = await getAllAppartments();
+		appartData = await getFacebookListings();
 
 		if (appartData.length === 0) {
 			console.log("Aucune donnée trouvée", appartData);
