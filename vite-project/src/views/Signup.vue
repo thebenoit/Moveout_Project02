@@ -46,19 +46,20 @@ const selectedAddOnService = ref("");
 const autreClicked = ref(false);
 const customService = ref("");
 
-const survey = {
-  numberOfBedrooms: selectedBedrooms,
-  Budget: selectedBudget,
-  locationsPreferences: selectedNeighborhoods,
-  age: selectedAge,
-  gender: selectedGender,
-  occupation: selectedOccupation,
-  salary: selectedSalary,
-  reference: selectedReference,
-  addOnService: customService,
-};
+// const survey = {
+//   numberOfBedrooms: selectedBedrooms,
+//   Budget: selectedBudget,
+//   locationsPreferences: selectedNeighborhoods,
+//   age: selectedAge,
+//   gender: selectedGender,
+//   occupation: selectedOccupation,
+//   salary: selectedSalary,
+//   reference: selectedReference,
+//   addOnService: customService,
+// };
 
 const errorMessages = ref("");
+const preferenceSurveyError = ref("")
 const hiddenFirst = ref(false);
 
 const quartiers = {
@@ -158,6 +159,17 @@ const toggleReferenceSelection = (reference) => {
   selectedReference.value = reference;
 };
 
+
+const handleMinValueChange = (value) => {
+  console.log('Min value changed:', value); // Vérifiez la valeur reçue
+  selectedBudget.value.minValue = value;
+};
+
+const handleMaxValueChange = (value) => {
+  console.log('Max value changed:', value); // Vérifiez la valeur reçue
+  selectedBudget.value.maxValue = value;
+};
+
 // const toggleAddOnServiceSelection = (addOnService) => {
 //   if (selectedAddOnService.value === addOnService) {
 //     selectedAddOnService.value = "";
@@ -233,7 +245,7 @@ async function preferenceCreation() {
     console.log("budgetMax: ", selectedBudget.value.maxValue);
     console.log("budgetMin: ", selectedBudget.value.minValue);
     console.log("age: ", selectedAge.value);
-    //console.log("salary: ",selectedSalary.value)
+
     console.log("addOnService: ", customService.value);
     console.log("genre: ", selectedGender.value);
     console.log("reference: ", selectedReference.value);
@@ -246,7 +258,6 @@ async function preferenceCreation() {
       gender: selectedGender.value,
       locationPreferences: selectedNeighborhoods.value,
       occupation: selectedOccupation.value,
-      //salary: selectedSalary.value,
       reference: selectedReference.value,
       minValue: selectedBudget.value.minValue,
       maxValue: selectedBudget.value.maxValue,
@@ -255,9 +266,10 @@ async function preferenceCreation() {
     console.log("Raw response: ", result);
 
     if (result.error) {
-      console.log("result.errorPreference: ", result.error);
+      console.log("result.errorPreference: ", result.error?.message);
       //errorMessages.value = result.error?.message;
-      console.log("errorPreference: ", errorMessages);
+      preferenceSurveyError.value = result.error
+      
     } else {
       console.log("resultPreference ", result);
       //result = await result.json();
@@ -396,7 +408,7 @@ async function preferenceCreation() {
             vous correspondent le mieux
           </h2>
         </div>
-
+        <p class="text-red-500 text-center mt-2">{{ preferenceSurveyError }}</p>
         <div class="mt-8">
           <div class="border-2 rounded-lg shadow-lg p-6">
             <h1 class="text-blue-main text-center mb-5">Combien de chambre?</h1>
@@ -425,8 +437,8 @@ async function preferenceCreation() {
             <MultiSlider
               :min="0"
               :max="100"
-              @update:minValue="selectedBudget.minValue = $event"
-              @update:maxValue="selectedBudget.maxValue = $event"
+              @update:minValue="handleMinValueChange"
+              @update:maxValue="handleMaxValueChange"
             ></MultiSlider>
           </div>
 
@@ -634,7 +646,7 @@ async function preferenceCreation() {
               </li> -->
             <!-- </ul> -->
           </div>
-
+          <p class="text-red-500 text-center mt-2">{{ preferenceSurveyError }}</p>
           <button
             @click="preferenceCreation"
             class="btn btn-accent w-full mt-6"
