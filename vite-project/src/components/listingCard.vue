@@ -2,6 +2,9 @@
 import { BookmarkIcon, MapPinIcon, MapIcon, StarIcon, PhotoIcon } from '@heroicons/vue/24/outline'
 import { ref, watch, onMounted, defineProps } from "vue";
 
+// stores
+import { useMapStore } from '@/stores/mapStore.js'
+
 
 const props = defineProps({
     // path: {
@@ -20,6 +23,10 @@ const props = defineProps({
     // 	type: String,
     // 	required: true,
     // },
+    id: {
+        type: String,
+        required: true,
+    },
     img: {
         type: String,
         required: true,
@@ -35,13 +42,13 @@ const props = defineProps({
         required: true,
     },
     bedrooms: {
-        type: Number,
-        default: 2,
+        type: String,
+        default: "2",
         required: true,
     },
     bathrooms: {
-        type: Number,
-        default: 1,
+        type: String,
+        default: "1",
         required: true,
     },
     rating: {
@@ -50,13 +57,19 @@ const props = defineProps({
         required: true,
     },
     price: {
-        type: Number,
-        default: 1500,
+        type: String,
+        default: "1500",
+        required: true,
+    },
+    location: {
+        type: Object,
         required: true,
     },
 });
 
 const isValidImage = ref(true);
+
+const mapStore = useMapStore()
 
 // Methods
 function handleImageError() {
@@ -66,15 +79,13 @@ function handleImageError() {
 </script>
 
 <template>
-    <div class="w-fit rounded overflow-hidden shadow-lg p-2 bg-white min-[1262px]:hidden transition-all">
+
+    <div :href="`https://facebook.com/marketplace/item/${props.id}/?ref=browse_tab&referral_code=marketplace_top_picks&referral_story_type=top_picks&locale=fr_CA`" class="rounded overflow-hidden shadow-lg p-2 bg-white transition-all max-w-96 w-11/12"><!-- min-[1262px]:hidden -->
         <!-- <img class="object-cover rounded-2xl rounded-b-none" src="@/assets/images/house-1477041_1920.jpg"> -->
-        <img
-  v-if="isValidImage"
-  class="w-full object-cover rounded-2xl rounded-b-none"
-  :src="props.img"
-  :alt="props.label"
-  @error="handleImageError"
-/>
+        <img v-if="isValidImage" class="w-full object-cover rounded-2xl rounded-b-none" :src="props.img" :alt="props.label" @error="handleImageError" />
+        <div v-else class="flex items-center rounded-b-none h-64 justify-center media bg-gray-200">
+            <PhotoIcon class="w-8" />
+        </div>
 
         <div class="p-2">
             <div class="flex w-full">
@@ -88,8 +99,12 @@ function handleImageError() {
                     </p>
                 </div>
                 <div class="justify-around w-1/2 flex">
-                    <MapIcon class="size-8 my-auto stroke-blue-main" />
-                    <BookmarkIcon class="size-8 my-auto stroke-blue-main" />
+                    <button @click="mapStore.setCurrentLocation(props.location)" class="btn btn-ghost px-3">
+                        <MapIcon class="size-8 my-auto stroke-blue-main" />
+                    </button>
+                    <button class="btn btn-ghost px-3">
+                        <BookmarkIcon class="size-8 my-auto stroke-blue-main" />
+                    </button>
                 </div>
             </div>
             <div class="flex w-full justify-between mt-3">
@@ -130,7 +145,7 @@ function handleImageError() {
                     </svg>
                 </div>
                 <div class="flex">
-                    <div class="font-medium text-xl">{{ price }}$</div>
+                    <div class="font-medium text-xl">{{ price }}</div>
                 </div>
 
             </div>
@@ -138,11 +153,13 @@ function handleImageError() {
         </div>
     </div>
 
-    <div class="h-64 w-full rounded-2xl p-2 shadow-sm border-gray-100 min-[1262px]:flex hidden transition-all">
-    <img v-if="isValidImage" class="object-cover h-56 w-56 rounded-2xl my-auto" :src="props.img" :alt="props.label" @error="handleImageError" >
+    <!-- maybe to use later on -->
+
+    <!-- <div :href="`https://facebook.com/marketplace/item/${props.id}/?ref=browse_tab&referral_code=marketplace_top_picks&referral_story_type=top_picks&locale=fr_CA`" class="h-64 w-full rounded-2xl p-2 shadow-sm border-gray-100 min-[1262px]:flex hidden transition-all">
+    <img v-if="isValidImage" class="object-cover h-56 w-56 rounded-2xl my-auto" :src="props.img" :alt="props.label" @error="handleImageError">
     <div class="flex flex-col ml-4 p-2 min-w-72 w-full justify-between">
         <div class="w-full">
-            <!-- titre + bookmark -->
+            {{ /* titre + bookmark * /}}
             <div class="flex justify-between mb-1">
                 <h1 class="text-2xl truncate max-w-80 font-medium">{{ city }}</h1>
 
@@ -150,26 +167,26 @@ function handleImageError() {
                     <BookmarkIcon class="size-6 my-auto stroke-blue-main" />
                 </button>
             </div>
-            <!-- adresse + map -->
+            {{ /* adresse + map * /}}
             <div class="flex space-x-1 w-1/2">
                 <MapPinIcon class="size-6 my-auto" />
                 <p class="text-base truncate my-auto">{{ address }}</p>
-                <button>
+                <button @click="mapStore.setCurrentLocation(props.location)">
                     <MapIcon class="size-6 my-auto stroke-blue-main" />
                 </button>
             </div>
         </div>
-        <!-- percs -->
+        {{ /* percs * /}}
         <div class="h-1/4 space-x-3 flex text-gray-400 max-w-72 flex-wrap">
             <div>percs</div>
-            <div>•</div>
-            <div>percs</div>
-            <div>•</div>
-            <div>percs</div>
-            <div>•</div>
-            <div>percs</div>
+        <div>•</div>
+        <div>percs</div>
+        <div>•</div>
+        <div>percs</div>
+        <div>•</div>
+        <div>percs</div>
         </div>
-        <!-- nb chambre et salles de bains -->
+        {{ /* nb chambre et salles de bains */ }}
         <div class="flex font-medium text-xl">
             <div>{{ bedrooms }}</div>
             <svg xmlns="http://www.w3.org/2000/svg" fill="#686868" viewBox="0 0 15 12" class="my-auto h-3.5 ml-1">
@@ -197,7 +214,7 @@ function handleImageError() {
         </div>
 
         <div class="flex justify-between">
-            <!-- rating -->
+            {{/* rating */}}
             <div class="flex h-full">
                 <div class="my-auto text-xl font-semibold mr-2">{{ rating }}</div>
                 <div class="flex my-auto">
@@ -208,15 +225,11 @@ function handleImageError() {
                     }" />
                 </div>
             </div>
-            <!-- prix -->
+            {{/* prix */}}
             <div class="flex">
-                <div class="font-medium text-xl">4000$</div>
+                <div class="font-medium text-xl">{{ price }}</div>
                 <div class="my-auto mb-0">/mo</div>
             </div>
         </div>
-    </div>
-    
-</div>
-
-
+    </div> -->
 </template>

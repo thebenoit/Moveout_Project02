@@ -7,8 +7,8 @@ import Footer from "./components/Footer.vue";
   <header class="w-full bg-black shadow-lg items-center font-poppins">
     <Navbar />
   </header>
-  <main class="flex-grow h-full font-poppins mt-20">
+  <main class="flex-grow h-[78vh] font-poppins mt-20">
     <RouterView />
   </main>
-  <Footer />
+  <Footer class="mt-16"/>
 </template>

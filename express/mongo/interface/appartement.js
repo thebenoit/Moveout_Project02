@@ -1,11 +1,27 @@
 const appartments = require("../schemas/appartement")
 const facebook = require("../schemas/facebook")
 
-/**
- * function qui permet de get tout les appart de la base de données
- * et le mettre dans un varibale
- * @returns 
- */
+
+async function fetchPage(pageNumber, pageSize) {
+    try {
+        const fieldsToSelect = [
+            'for_sale_item.location',
+            'for_sale_item.custom_title',
+            'for_sale_item.custom_sub_titles_with_rendering_flags',
+            'for_sale_item.formatted_price.text',
+          ].join(' ');
+        
+        const skipAmount = (pageNumber - 1) * pageSize;
+        const results = await facebook.find({}).skip(skipAmount).limit(pageSize).lean().exec();
+
+
+        return results;
+    } catch (err) {
+        console.error('Error fetching page:', err);
+        throw err;  // Re-throw the error after logging it
+    }
+}
+
 async function getAllAppartments(){
     const docCount = await appartments.countDocuments({});
     console.log("NB_Documents 2", docCount);
@@ -40,5 +56,6 @@ async function getFacebookListings(){
 
 module.exports = {
     getAllAppartments,
-    getFacebookListings
+    getFacebookListings,
+    fetchPage
 };
