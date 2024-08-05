@@ -1,4 +1,5 @@
 <script setup>
+import * as jwtDecode from 'jwt-decode';
 import { onMounted, ref } from "vue";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +14,9 @@ import { Label } from "@/components/ui/label";
 import MultiSlider from "@/components/ui/input/multirange-input/multiRangeInput.vue";
 import utils from "../utils/utils";
 import { useRouter } from "vue-router";
+import { decodeJwt } from 'jose';
+//import { default as jwt_decode } from 'jwt-decode';
+
 
 const firstName = ref("");
 const lastName = ref("");
@@ -29,6 +33,11 @@ const maxValue = ref(100);
 const selectedNeighborhoods = ref([]);
 // Store selected number of bedrooms
 const selectedBedrooms = ref([]);
+const selectedBudget = ref({
+  minValue: 0,
+  maxValue: 100
+});
+const selectedIdPreference = ref("")
 const selectedGender = ref("");
 const selectedOccupation = ref("");
 const selectedSalary = ref("");
@@ -40,17 +49,14 @@ const customService = ref("");
 
 const survey = {
   numberOfBedrooms: selectedBedrooms,
-  Budget: {
-    minValue: minValue,
-    maxValue: maxValue,
-  },
+  Budget: selectedBudget,  
   locationsPreferences: selectedNeighborhoods,
   age: selectedAge,
-  gender: "",
+  gender: selectedGender,
   occupation: selectedOccupation,
-  salary: "",
-  reference: "",
-  addOnService: "",
+  salary: selectedSalary,
+  reference: selectedReference,
+  addOnService: selectedAddOnService,
 };
 
 const errorMessages = ref("");
@@ -191,9 +197,27 @@ async function signup() {
 
       if (result.token) {
         utils.setToken(result.token);
-        //router.push({ path: '/foryou' })
+
+          // Décoder le token JWT pour accéder à preferenceId
+          const decodedToken = decodeJwt(result.token);
+          console.log('decoded token: ', decodedToken)
+          //console.log('token preferenceId: ', decodedToken.preferencesId);
+       // if(decodedToken && decodedToken.preferencesId){
+          
+         
+        // Stocker preferenceId
+        //selectedIdPreference.value = decodedToken.preferencesId;
+       
         nextSlide();
-        console.log("changement de plage: ");
+        console.log("changement de page: ");
+
+        // }else{
+        //   console.log('erreur dans le decoded token: ', decodedToken)
+        //   console.log('erreur dans le decoded token préférenceID: ', decodedToken.preferencesId)
+
+        // }
+
+       
       }
     }
   } catch (error) {
@@ -201,6 +225,56 @@ async function signup() {
     errorMessages.value = "Une erreur est survenue lors de l'inscription.";
     console.log("error2: ", errorMessages);
   }
+}
+
+async function preferenceCreation(){
+  try {
+
+    console.log("budgetMax: ",selectedBudget.value.maxValue)
+    console.log("budgetMin: ",selectedBudget.value.minValue)
+    console.log("age: ",selectedAge.value)
+    console.log("salary: ",selectedSalary.value)
+    console.log("addOnService: ",selectedAddOnService.value)
+    console.log('genre: ',selectedGender.value)
+    console.log("reference: ",selectedReference.value)
+    console.log("occupation: ",selectedOccupation.value)
+
+
+    let result = await utils.post("api/client/preference", {
+      preferencesId: selectedIdPreference.value,
+      numberOfBedrooms: selectedBedrooms.value,
+      age: selectedAge.value,
+      gender: selectedGender.value,
+      locationPreferences: selectedNeighborhoods.value,
+      occupation: selectedOccupation.value,
+      //salary: selectedSalary.value,
+      reference: selectedReference.value,
+      minValue: selectedBudget.value.minValue,
+      maxValue: selectedBudget.value.maxValue,
+      addOnService: selectedAddOnService.value
+
+    });
+    if (result.error) {
+      console.log("result.error: ", result.error.message);
+      //errorMessages.value = result.error?.message;
+      console.log("error: ", errorMessages);
+    } else {
+      console.log("result ", result);
+      //result = await result.json();
+
+      if (result.token) {
+        utils.setToken(result.token);
+        router.push({ path: '/foryou' })
+       
+        console.log("changement de page: ");
+      }
+    }
+  } catch (error) {
+    console.error("Error during signup:", error);
+    //errorMessages.value = "Une erreur est survenue lors de l'inscription.";
+    console.log("error2: ", errorMessages);
+  }
+
 }
 </script>
 <template>
@@ -350,8 +424,8 @@ async function signup() {
             <MultiSlider
               :min="0"
               :max="100"
-              @update:minValue="minValue = $event"
-              @update:maxValue="maxValue = $event"
+              @update:minValue="selectedBudget.minValue = $event"
+              @update:maxValue="selectedBudget.maxValue = $event"
             ></MultiSlider>
           </div>
 
@@ -560,7 +634,7 @@ async function signup() {
             </ul>
           </div>
 
-          <button class="btn btn-accent w-full mt-6">Next</button>
+          <button @click="preferenceCreation" class="btn btn-accent w-full mt-6">Next</button>
         </div>
       </section>
     </section>
