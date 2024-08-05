@@ -2,14 +2,17 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const preferencesSchema = new Schema({
-    numberOfBedrooms: { type: Schema.Types.Number, required: false },
-    Budget: { type: Schema.Types.Number, required: false },
-    locationPreferences: { type: Schema.Types.String, required: false },
+    numberOfBedrooms: { type: Schema.Types.Array, required: false },
+    budget: {
+        minValue: { type: Schema.Types.Number, required: false },
+        maxValue: { type: Schema.Types.Number, required: false }
+    },
+    locationPreferences: { type: Schema.Types.Array, required: false },
     age: { type: Schema.Types.Number, required: false },       
     gender: { type: Schema.Types.String, enum: ['Male', 'Female', 'Other'] },
     occupation: { type: Schema.Types.String, required: false },
-    salary: { type: Schema.Types.Number, required: false },
-    Reference: { type: Schema.Types.String, required: false },
+   // salary: { type: Schema.Types.Number, required: false },
+    reference: { type: Schema.Types.String, required: false },
     addOnService: { type: Schema.Types.String, required: false },
 
 

@@ -4,7 +4,7 @@ const Preferences = require("../schemas/preference");
 const responses = require("../../responses");
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
-const createLog = require("../interface/logs")
+const createLog = require("../interface/logs");
 
 /**
  * function qui permet de get tout les appart de la base de données
@@ -13,7 +13,7 @@ const createLog = require("../interface/logs")
  */
 
 async function emailToUserId(email) {
-	const user = await Users.find({});
+  const user = await Users.find({});
 }
 
 async function phoneToUserId(phone) {}
@@ -65,185 +65,227 @@ async function phoneToUserId(phone) {}
 // }
 
 function isStrongPassword(password) {
-	const passwordRegex =
-		/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+  const passwordRegex =
+    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
 
-	return passwordRegex.test(password);
+  return passwordRegex.test(password);
 }
 
 // async function createAccount(firstName, lastName, phone, email, confirmEmail, password, confirmPassword) {
 async function createAccount(firstName, lastName, phone, email, password) {
-	try {
-		// Run checks
+  try {
+    // Run checks
 
-		if (!isStrongPassword(password)) {
-			return { error: responses.errors.client.weakPassword };
-		}
+    if (!isStrongPassword(password)) {
+      return { error: responses.errors.client.weakPassword };
+    }
 
-		// if (password !== confirmPassword) {
-		//     return { error: responses.errors.client.notMatchingPasswords };
-		// }
+    // if (password !== confirmPassword) {
+    //     return { error: responses.errors.client.notMatchingPasswords };
+    // }
 
-		if (!validator.isEmail(email)) {
-			return { error: responses.errors.client.invalidEmail };
-		}
+    if (!validator.isEmail(email)) {
+      return { error: responses.errors.client.invalidEmail };
+    }
 
-		// if (email !== confirmEmail) {
-		//     return { error: messages.errors.client.notMatchingEmails };
-		// }
+    // if (email !== confirmEmail) {
+    //     return { error: messages.errors.client.notMatchingEmails };
+    // }
 
-		if (!validator.isMobilePhone(phone.toString(), "en-US")) {
-			return { error: responses.errors.client.invalidPhone };
-		}
+    if (!validator.isMobilePhone(phone.toString(), "en-US")) {
+      return { error: responses.errors.client.invalidPhone };
+    }
 
-		// Check if the user already exists by email or phone
-		const existingUser = await Users.findOne({
-			$or: [{ email: email }, { phone: phone }],
-		});
-		if (existingUser) {
-			return { error: responses.errors.client.alreadyExists };
-		}
+    // Check if the user already exists by email or phone
+    const existingUser = await Users.findOne({
+      $or: [{ email: email }, { phone: phone }],
+    });
+    if (existingUser) {
+      return { error: responses.errors.client.alreadyExists };
+    }
 
-		// Check if other required fields are not empty
-		// if (!firstName || !lastName || !phone || !email || !confirmEmail || !password) {
-		if (!firstName || !lastName || !phone || !email || !password) {
-			return { error: messages.errors.client.missingFields };
-		}
+    // Check if other required fields are not empty
+    // if (!firstName || !lastName || !phone || !email || !confirmEmail || !password) {
+    if (!firstName || !lastName || !phone || !email || !password) {
+      return { error: messages.errors.client.missingFields };
+    }
 
-		// Hash password
-		const hashPassword = await bcrypt.hash(password, 10);
+    // Hash password
+    const hashPassword = await bcrypt.hash(password, 10);
 
-		// create Preferences
-		const newPreferences = new Preferences({});
+    // create Preferences
+    const newPreferences = new Preferences({});
 
-		// Save the user to the database
-		const savedPreferences = await newPreferences.save();
+    // Save the user to the database
+    const savedPreferences = await newPreferences.save();
 
-		// Create user
-		const newUser = new Users({
-			firstName: firstName,
-			lastName: lastName,
-			phone: phone,
-			email: email,
-			password: hashPassword,
-			preferencesId: savedPreferences._id.toString(),
-			date: Date.now()
-		});
+    // Create user
+    const newUser = new Users({
+      firstName: firstName,
+      lastName: lastName,
+      phone: phone,
+      email: email,
+      password: hashPassword,
+      preferencesId: savedPreferences._id.toString(),
+      date: Date.now(),
+    });
 
-		// Save the user to the database
-		const savedUser = await newUser.save();
+    // Save the user to the database
+    const savedUser = await newUser.save();
 
-		// Return success message with user_id
-		return {
-			message: responses.success.accountCreated,
-			user_id: savedUser._id.toString(),
-		};
-	} catch (error) {
-		console.error(error);
-		return { error: responses.errors.client.accountCreationError };
-	}
+    // Return success message with user_id
+    return {
+      message: responses.success.accountCreated,
+      user_id: savedUser._id.toString(),
+	  preferenceId: savedUser.preferencesId.toString()
+    };
+  } catch (error) {
+    console.error(error);
+    return { error: responses.errors.client.accountCreationError };
+  }
 }
 
 async function createPreference(
-idPreference, bedrooms, budget,locationPreference, 
-age,sex, occupation, salary){
+  idPreference,
+  bedrooms,
+  maxValue,
+  minValue,
+  locationPreference,
+  age,
+  sex,
+  occupation,
+  //salary,
+  addOnService
+) {
+  //find the id preference
+  try {
+    const preference = await Preferences.findById(idPreference);
 
+    if (!preference) {
+      throw new Error("Preference not found");
+    }
 
-	
+    // Update the fields
+    preference.numberOfBedrooms = bedrooms;
+    preference.budget.maxValue = maxValue;
+	preference.budget.minValue = minValue;
+    preference.locationPreferences = locationPreference;
+    preference.age = age;
+    preference.gender = sex;
+    preference.occupation = occupation;
+    //preference.salary = salary;
+	preference.addOnService = addOnService
 
+    // Save the updated preference
+    await preference.save();
 
-
-
-
+    console.log("Preference updated successfully:", preference);
+    return preference;
+  } catch (error) {
+    console.error("Error updating preference:", error);
+    throw error;
+  }
 }
 
 async function login(identifier, password) {
-	try {
-		let user;
+  try {
+    let user;
 
-		// Check if identifier is an email or phone number
-		if (validator.isEmail(identifier)) {
-			user = await Users.findOne({ email: identifier });
-		} else if (validator.isMobilePhone(identifier, "en-CA")) {
-			user = await Users.findOne({ phone: identifier });
-		} else {
-			return { error: responses.errors.client.invalidIdentifier };
-		}
+    // Check if identifier is an email or phone number
+    if (validator.isEmail(identifier)) {
+      user = await Users.findOne({ email: identifier });
+    } else if (validator.isMobilePhone(identifier, "en-CA")) {
+      user = await Users.findOne({ phone: identifier });
+    } else {
+      return { error: responses.errors.client.invalidIdentifier };
+    }
 
-		if (!user) {
-			return { error: responses.errors.client.userNotFound };
-		}
+    if (!user) {
+      return { error: responses.errors.client.userNotFound };
+    }
 
-		// Check if the password is correct
-		const isPasswordValid = await bcrypt.compare(password, user.password);
-		if (!isPasswordValid) {
-			return { error: responses.errors.client.invalidPassword };
-		}
+    // Check if the password is correct
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return { error: responses.errors.client.invalidPassword };
+    }
 
-		return {
-			message: responses.success.accountCreated,
-			userId: user._id.toString(),
-		};
-	} catch (error) {
-		console.error(error);
-		return { error: responses.errors.client.loginError };
-	}
+    return {
+      message: responses.success.accountCreated,
+      userId: user._id.toString(),
+    };
+  } catch (error) {
+    console.error(error);
+    return { error: responses.errors.client.loginError };
+  }
 }
 
 async function createLead(firstName, lastName, phone, email) {
-	try {
-		if (!validator.isEmail(email)) {
-			// console.log(email, responses.errors.client.invalidEmail)
-			createLog({email: email}, responses.errors.client.invalidEmail)
-			return { error: responses.errors.client.invalidEmail };
-		}
+  try {
+    if (!validator.isEmail(email)) {
+      // console.log(email, responses.errors.client.invalidEmail)
+      createLog({ email: email }, responses.errors.client.invalidEmail);
+      return { error: responses.errors.client.invalidEmail };
+    }
 
-		if (!validator.isMobilePhone(phone.toString(), "en-US")) {
-			// console.log(phone, responses.errors.client.invalidPhone)
-			createLog({phone: phone}, responses.errors.client.invalidPhone)
-			return { error: responses.errors.client.invalidPhone };
-		}
+    if (!validator.isMobilePhone(phone.toString(), "en-US")) {
+      // console.log(phone, responses.errors.client.invalidPhone)
+      createLog({ phone: phone }, responses.errors.client.invalidPhone);
+      return { error: responses.errors.client.invalidPhone };
+    }
 
-		// Check if the user already exists by email or phone
-		const existingLead = await Leads.findOne({
-			$or: [{ email: email }, { phone: phone }],
-		});
-		if (existingLead) {
-			// console.log(responses.errors.client.alreadyExists)
-			createLog({ email: email, phone: phone }, responses.errors.client.alreadyExists)
-			return { error: responses.errors.client.alreadyExists };
-		}
+    // Check if the user already exists by email or phone
+    const existingLead = await Leads.findOne({
+      $or: [{ email: email }, { phone: phone }],
+    });
+    if (existingLead) {
+      // console.log(responses.errors.client.alreadyExists)
+      createLog(
+        { email: email, phone: phone },
+        responses.errors.client.alreadyExists
+      );
+      return { error: responses.errors.client.alreadyExists };
+    }
 
-		if (!firstName || !lastName || !phone || !email) {
-			// console.log(messages.errors.client.missingFields)
-			createLog({ firstName: firstName, lastName: lastName, phone: phone, email: email }, responses.errors.client.missingFields)
-			return { error: responses.errors.client.missingFields };
-		}
+    if (!firstName || !lastName || !phone || !email) {
+      // console.log(messages.errors.client.missingFields)
+      createLog(
+        {
+          firstName: firstName,
+          lastName: lastName,
+          phone: phone,
+          email: email,
+        },
+        responses.errors.client.missingFields
+      );
+      return { error: responses.errors.client.missingFields };
+    }
 
-		// Create user
-		const newLead = new Leads({
-			firstName: firstName,
-			lastName: lastName,
-			phone: phone,
-			email: email,
-			date: Date.now()
-		});
+    // Create user
+    const newLead = new Leads({
+      firstName: firstName,
+      lastName: lastName,
+      phone: phone,
+      email: email,
+      date: Date.now(),
+    });
 
-		// Save the user to the database
-		const savedLead = await newLead.save();
+    // Save the user to the database
+    const savedLead = await newLead.save();
 
-        return {
-			message: responses.success.accountCreated,
-			lead_id: savedLead._id.toString(),
-		};
-	} catch (error) {
-		console.error(error);
-		return { error: responses.errors.client.loginError };
-	}
+    return {
+      message: responses.success.accountCreated,
+      lead_id: savedLead._id.toString(),
+    };
+  } catch (error) {
+    console.error(error);
+    return { error: responses.errors.client.loginError };
+  }
 }
 
 module.exports = {
-	createAccount,
-	login,
-	createLead,
+  createAccount,
+  login,
+  createLead,
+  createPreference
 };

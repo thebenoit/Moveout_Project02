@@ -12,6 +12,7 @@ const client_lead = require("./routes/api/client/leads.js");
 
 const client_logout = require("./routes/api/client/logout.js");
 const client_appartements = require("./routes/api/client/custom_appartements.js");
+const client_preference = require("./routes/api/client/preference.js")
 
 // config
 require("dotenv/config");
@@ -37,6 +38,7 @@ app.use("/api", appartments);
 app.use("/api/client", client_singup);
 app.use("/api/client", client_login);
 app.use("/api/client", client_lead);
+app.use("/api/client", client_preference);
 
 // app.use("/api/client/", client_logout);
 // app.use("/client/", client_appartements);

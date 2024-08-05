@@ -1,5 +1,5 @@
 <script setup>
-import * as jwtDecode from 'jwt-decode';
+import * as jwtDecode from "jwt-decode";
 import { onMounted, ref } from "vue";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,9 +14,8 @@ import { Label } from "@/components/ui/label";
 import MultiSlider from "@/components/ui/input/multirange-input/multiRangeInput.vue";
 import utils from "../utils/utils";
 import { useRouter } from "vue-router";
-import { decodeJwt } from 'jose';
+import { decodeJwt } from "jose";
 //import { default as jwt_decode } from 'jwt-decode';
-
 
 const firstName = ref("");
 const lastName = ref("");
@@ -35,9 +34,9 @@ const selectedNeighborhoods = ref([]);
 const selectedBedrooms = ref([]);
 const selectedBudget = ref({
   minValue: 0,
-  maxValue: 100
+  maxValue: 100,
 });
-const selectedIdPreference = ref("")
+const selectedIdPreference = ref("");
 const selectedGender = ref("");
 const selectedOccupation = ref("");
 const selectedSalary = ref("");
@@ -49,14 +48,14 @@ const customService = ref("");
 
 const survey = {
   numberOfBedrooms: selectedBedrooms,
-  Budget: selectedBudget,  
+  Budget: selectedBudget,
   locationsPreferences: selectedNeighborhoods,
   age: selectedAge,
   gender: selectedGender,
   occupation: selectedOccupation,
   salary: selectedSalary,
   reference: selectedReference,
-  addOnService: selectedAddOnService,
+  addOnService: customService,
 };
 
 const errorMessages = ref("");
@@ -159,13 +158,17 @@ const toggleReferenceSelection = (reference) => {
   selectedReference.value = reference;
 };
 
-const toggleAddOnServiceSelection = (addOnService) => {
-  if (selectedAddOnService.value === addOnService) {
-    selectedAddOnService.value = "";
-  } else {
-    selectedAddOnService.value = addOnService;
-    autreClicked.value = false; // Désactiver le champ "Autre" s'il est sélectionné
-  }
+// const toggleAddOnServiceSelection = (addOnService) => {
+//   if (selectedAddOnService.value === addOnService) {
+//     selectedAddOnService.value = "";
+//   } else {
+//     selectedAddOnService.value = addOnService;
+//     autreClicked.value = false; // Désactiver le champ "Autre" s'il est sélectionné
+//   }
+// };
+
+const toggleAddOnServiceSelectionAutre = (addOnService) => {
+  selectedAddOnService(addOnService);
 };
 
 const router = useRouter();
@@ -198,26 +201,23 @@ async function signup() {
       if (result.token) {
         utils.setToken(result.token);
 
-          // Décoder le token JWT pour accéder à preferenceId
-          const decodedToken = decodeJwt(result.token);
-          console.log('decoded token: ', decodedToken)
-          //console.log('token preferenceId: ', decodedToken.preferencesId);
-       // if(decodedToken && decodedToken.preferencesId){
-          
-         
-        // Stocker preferenceId
-        //selectedIdPreference.value = decodedToken.preferencesId;
-       
-        nextSlide();
-        console.log("changement de page: ");
+        // Décoder le token JWT pour accéder à preferenceId
+        const decodedToken = decodeJwt(result.token);
+        console.log("decoded token: ", decodedToken);
+        console.log("token preferenceId: ", decodedToken.preferenceId);
+        if (decodedToken && decodedToken.preferenceId) {
+          // Stocker preferenceId
+          selectedIdPreference.value = decodedToken.preferenceId;
 
-        // }else{
-        //   console.log('erreur dans le decoded token: ', decodedToken)
-        //   console.log('erreur dans le decoded token préférenceID: ', decodedToken.preferencesId)
-
-        // }
-
-       
+          nextSlide();
+          console.log("changement de page: ");
+        } else {
+          console.log("erreur dans le decoded token: ", decodedToken);
+          console.log(
+            "erreur dans le decoded token préférenceID: ",
+            decodedToken.preferenceId
+          );
+        }
       }
     }
   } catch (error) {
@@ -227,18 +227,16 @@ async function signup() {
   }
 }
 
-async function preferenceCreation(){
+async function preferenceCreation() {
   try {
-
-    console.log("budgetMax: ",selectedBudget.value.maxValue)
-    console.log("budgetMin: ",selectedBudget.value.minValue)
-    console.log("age: ",selectedAge.value)
-    console.log("salary: ",selectedSalary.value)
-    console.log("addOnService: ",selectedAddOnService.value)
-    console.log('genre: ',selectedGender.value)
-    console.log("reference: ",selectedReference.value)
-    console.log("occupation: ",selectedOccupation.value)
-
+    console.log("budgetMax: ", selectedBudget.value.maxValue);
+    console.log("budgetMin: ", selectedBudget.value.minValue);
+    console.log("age: ", selectedAge.value);
+    //console.log("salary: ",selectedSalary.value)
+    console.log("addOnService: ", customService.value);
+    console.log("genre: ", selectedGender.value);
+    console.log("reference: ", selectedReference.value);
+    console.log("occupation: ", selectedOccupation.value);
 
     let result = await utils.post("api/client/preference", {
       preferencesId: selectedIdPreference.value,
@@ -251,30 +249,30 @@ async function preferenceCreation(){
       reference: selectedReference.value,
       minValue: selectedBudget.value.minValue,
       maxValue: selectedBudget.value.maxValue,
-      addOnService: selectedAddOnService.value
-
+      addOnService: customService.value,
     });
+    console.log("Raw response: ", result);
+
     if (result.error) {
-      console.log("result.error: ", result.error.message);
+      console.log("result.errorPreference: ", result.error.message);
       //errorMessages.value = result.error?.message;
-      console.log("error: ", errorMessages);
+      console.log("errorPreference: ", errorMessages);
     } else {
-      console.log("result ", result);
+      console.log("resultPreference ", result);
       //result = await result.json();
 
       if (result.token) {
         utils.setToken(result.token);
-        router.push({ path: '/foryou' })
-       
+        router.push({ path: "/foryou" });
+
         console.log("changement de page: ");
       }
     }
   } catch (error) {
-    console.error("Error during signup:", error);
+    console.error("Error during signup Preference:", error);
     //errorMessages.value = "Une erreur est survenue lors de l'inscription.";
-    console.log("error2: ", errorMessages);
+    console.log("error2Pref: ", errorMessages);
   }
-
 }
 </script>
 <template>
@@ -592,8 +590,14 @@ async function preferenceCreation(){
             <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
               Quel genre de services supplémentaires seriez-vous intéressé(e) ?
             </h1>
-            <ul class="flex justify-center space-x-4">
-              <li>
+            <input
+              v-model="customService"
+              type="text"
+              placeholder="Précisez le service"
+              class="input input-bordered w-full max-w-xs mt-2"
+            />
+            <!-- <ul class="flex justify-center space-x-4"> -->
+            <!-- <li>
                 <button
                   v-for="addOnService in [
                     'Déménagement',
@@ -611,8 +615,8 @@ async function preferenceCreation(){
                 >
                   {{ addOnService }}
                 </button>
-              </li>
-              <li>
+              </li> -->
+            <!-- <li>
                 <button
                   @click="autreClicked = !autreClicked"
                   :class="{
@@ -623,18 +627,17 @@ async function preferenceCreation(){
                 >
                   Autre
                 </button>
-                <input
-                  v-if="autreClicked"
-                  v-model="customService"
-                  type="text"
-                  placeholder="Précisez le service"
-                  class="input input-bordered w-full max-w-xs mt-2"
-                />
-              </li>
-            </ul>
+                
+              </li> -->
+            <!-- </ul> -->
           </div>
 
-          <button @click="preferenceCreation" class="btn btn-accent w-full mt-6">Next</button>
+          <button
+            @click="preferenceCreation"
+            class="btn btn-accent w-full mt-6"
+          >
+            Next
+          </button>
         </div>
       </section>
     </section>
