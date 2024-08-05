@@ -8,6 +8,7 @@ require('dotenv').config(); // Load environment variables from .env file at the 
 module.exports = app.post("/preference", async (req, res) => {
 	try {	
 		response = await createPreference(
+            req.body.preferencesId,
 			req.body.numberOfBedrooms,
 			req.body.minValue,
             req.body.maxValue,
@@ -27,7 +28,7 @@ module.exports = app.post("/preference", async (req, res) => {
 		res.send({success: 1});
 	} catch (error) {
 		console.error("Erreur lors de la récupération des données:", error);
-		res.status(500).json({ error: "Erreur lors de la création des préférences" });
+		res.status(500).json({ error: `Erreur lors de la création des préférences ${error}`});
 
 	}
 });

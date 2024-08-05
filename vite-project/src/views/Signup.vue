@@ -229,6 +229,7 @@ async function signup() {
 
 async function preferenceCreation() {
   try {
+    console.log("bedrooms: ", selectedBedrooms.value);
     console.log("budgetMax: ", selectedBudget.value.maxValue);
     console.log("budgetMin: ", selectedBudget.value.minValue);
     console.log("age: ", selectedAge.value);
@@ -254,7 +255,7 @@ async function preferenceCreation() {
     console.log("Raw response: ", result);
 
     if (result.error) {
-      console.log("result.errorPreference: ", result.error.message);
+      console.log("result.errorPreference: ", result.error);
       //errorMessages.value = result.error?.message;
       console.log("errorPreference: ", errorMessages);
     } else {
@@ -263,10 +264,12 @@ async function preferenceCreation() {
 
       if (result.token) {
         utils.setToken(result.token);
-        router.push({ path: "/foryou" });
-
-        console.log("changement de page: ");
+        
       }
+      if (result.success) {
+     router.push({ path: "/foryou" });
+      console.log("changement de page: ");
+}
     }
   } catch (error) {
     console.error("Error during signup Preference:", error);

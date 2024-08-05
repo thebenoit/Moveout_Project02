@@ -8,8 +8,8 @@ const preferencesSchema = new Schema({
         maxValue: { type: Schema.Types.Number, required: false }
     },
     locationPreferences: { type: Schema.Types.Array, required: false },
-    age: { type: Schema.Types.Number, required: false },       
-    gender: { type: Schema.Types.String, enum: ['Male', 'Female', 'Other'] },
+    age: { type: Schema.Types.String, required: false },       
+    gender: { type: Schema.Types.String, required: false },
     occupation: { type: Schema.Types.String, required: false },
    // salary: { type: Schema.Types.Number, required: false },
     reference: { type: Schema.Types.String, required: false },

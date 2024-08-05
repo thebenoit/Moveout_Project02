@@ -180,7 +180,7 @@ async function createPreference(
     await preference.save();
 
     console.log("Preference updated successfully:", preference);
-    return preference;
+    return { success: true, preference };
   } catch (error) {
     console.error("Error updating preference:", error);
     throw error;
