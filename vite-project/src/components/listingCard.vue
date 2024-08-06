@@ -82,10 +82,17 @@ function handleImageError() {
 
     <div :href="`https://facebook.com/marketplace/item/${props.id}/?ref=browse_tab&referral_code=marketplace_top_picks&referral_story_type=top_picks&locale=fr_CA`" class="rounded overflow-hidden shadow-lg p-2 bg-white transition-all max-w-96 w-11/12"><!-- min-[1262px]:hidden -->
         <!-- <img class="object-cover rounded-2xl rounded-b-none" src="@/assets/images/house-1477041_1920.jpg"> -->
-        <img v-if="isValidImage" class="w-full object-cover rounded-2xl rounded-b-none" :src="props.img" :alt="props.label" @error="handleImageError" />
-        <div v-else class="flex items-center rounded-b-none h-64 justify-center media bg-gray-200">
-            <PhotoIcon class="w-8" />
-        </div>
+        
+        <figure>
+				<!-- <img v-if="isValidImage" class="object-cover media" :src="props.img" :alt="props.label" @error="handleImageError" />
+				<div v-else class="flex items-center justify-center media bg-gray-200">
+					<PhotoIcon class="w-8 h-8" />
+				</div> -->
+                <img v-if="isValidImage" class="w-full object-cover rounded-2xl rounded-b-none" :src="props.img" :alt="props.label" @error="handleImageError" />
+                <div v-else class="flex items-center rounded-b-none h-full rounded-2xl justify-center media bg-gray-200">
+                    <PhotoIcon class="w-1/2 "/>
+                </div>
+			</figure>
 
         <div class="p-2">
             <div class="flex w-full">
@@ -102,21 +109,23 @@ function handleImageError() {
                     <button @click="mapStore.setCurrentLocation(props.location)" class="btn btn-ghost px-3">
                         <MapIcon class="size-8 my-auto stroke-blue-main" />
                     </button>
-                    <button class="btn btn-ghost px-3">
+                    <!-- Bookmark -->
+                    <!-- <button class="btn btn-ghost px-3">
                         <BookmarkIcon class="size-8 my-auto stroke-blue-main" />
-                    </button>
+                    </button> -->
                 </div>
             </div>
             <div class="flex w-full justify-between mt-3">
                 <div class="flex h-full">
-                    <div class="my-auto text-xl font-semibold mr-2">{{ rating }}</div>
+                    <!-- Rating -->
+                    <!-- <div class="my-auto text-xl font-semibold mr-2">{{ rating }}</div>
                     <div class="flex my-auto">
                         <StarIcon v-for="(star, index) in 5" :key="index" :class="{
                             'h-5 stroke-none': true,
                             'fill-blue-main': index < rating,
                             'fill-gray-300': index >= rating
                         }" />
-                    </div>
+                    </div> -->
                 </div>
 
                 <div class="flex font-medium text-xl">

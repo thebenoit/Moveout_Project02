@@ -78,7 +78,6 @@ function extractCity(fullAddress) {
 onMounted(async () => {
     try {
         mapStore.map = map.value
-        console.log(mapStore.map)
 
         // Await the result of `utils.post` and assign it to `apparts.value`
         const response = await utils.post('api/appartements/page', { "pageNumer": 1});
@@ -115,7 +114,7 @@ function scrollToItem(id) {
 </script>
 
 <template>
-    <div class="flex lg:grid lg:grid-cols-12 relative z-10 h-[85vh] lg:m-6 m-0 transition-all duration-300">
+    <div class="grid grid-cols-12 relative z-10 h-[85vh] lg:m-6 m-0 transition-all duration-300">
 
         <div class="w-full h-full col-span-12 lg:col-span-6 p-6 my-auto lg:block">
             <BetaLogo class="mx-auto sm:hidden flex mb-3" />
@@ -180,51 +179,15 @@ function scrollToItem(id) {
                         </div>
                         <div>Price</div>
                     </div>
-                    <div class="btn btn-sm border-gray-400">
-                        <div>
-                            <CurrencyDollarIcon class="size-6" />
-                        </div>
-                        <div>Price</div>
-                    </div>
-                    <div class="btn btn-sm border-gray-400">
-                        <div>
-                            <CurrencyDollarIcon class="size-6" />
-                        </div>
-                        <div>Price</div>
-                    </div>
-                    <div class="btn btn-sm border-gray-400">
-                        <div>
-                            <CurrencyDollarIcon class="size-6" />
-                        </div>
-                        <div>Price</div>
-                    </div>
-                    <div class="btn btn-sm border-gray-400">
-                        <div>
-                            <CurrencyDollarIcon class="size-6" />
-                        </div>
-                        <div>Price</div>
-                    </div>
-                    <div class="btn btn-sm border-gray-400">
-                        <div>
-                            <CurrencyDollarIcon class="size-6" />
-                        </div>
-                        <div>Price</div>
-                    </div>
-                    <div class="btn btn-sm border-gray-400">
-                        <div>
-                            <CurrencyDollarIcon class="size-6" />
-                        </div>
-                        <div>Price</div>
-                    </div>
 
                 </div>
-                <div class="my-auto min-w-fit ml-10">display modesa</div>
+                <!-- <div class="my-auto min-w-fit ml-10">display modesa</div> -->
             </div>
             <div class="w-full pt-5 space-y-4 h-[75vh] overflow-y-auto whitespace-nowrap p-2 flex flex-wrap gap-3 justify-around">
                 <listingCard v-for="appart in apparts" :key="appart.id" :id="appart.id" :price="appart.price" :city="extractCity(appart.fullAddress)" :bedrooms="extractBedrooms(appart.customTitle)" :bathrooms="extractBathrooms(appart.customTitle)" :rating="0" :img="appart.img" :address="appart.fullAddress" :location="appart.location" :ref="(el) => { setItemRef(el.$el, appart.id) }" />
             </div>
         </div>
-        <div class="w-full  lg:p-4 col-span-6 lg:col-start-7 h-full my-auto border-white shadow-2xl">
+        <div class="w-full lg:p-4 col-span-6 block lg:col-start-7 h-full my-auto border-white shadow-2xl">
             <l-map ref="map" v-model:zoom="mapStore.currentZoom" v-model:center="mapStore.currentLocation" class="h-full" :options="{ zoomControl: false }">
                 <l-tile-layer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" layer-type="base" name="OpenStreetMap"></l-tile-layer>
                 <l-control-zoom position="bottomright"></l-control-zoom>
