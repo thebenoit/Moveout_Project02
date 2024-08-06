@@ -4,11 +4,13 @@ import Footer from "./components/Footer.vue";
 </script>
 
 <template>
-  <header class="w-full bg-black shadow-lg items-center font-poppins">
-    <Navbar />
-  </header>
-  <main class="flex-grow h-[78vh] font-poppins mt-20">
-    <RouterView />
-  </main>
-  <Footer class="mt-16"/>
+  <div class="flex flex-col min-h-screen">
+    <header class="w-full bg-black shadow-lg items-center font-poppins">
+      <Navbar />
+    </header>
+    <main class="flex-grow font-poppins mt-20">
+      <RouterView />
+    </main>
+    <Footer class="mt-16"/>
+  </div>
 </template>

@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const { createAccount } = require("../../../mongo/interface/client");
 const jwt = require('jsonwebtoken');
+const preference = require("./preference");
 
 require('dotenv').config(); // Load environment variables from .env file at the very beginning
 
@@ -11,7 +12,7 @@ module.exports = app.post("/signup", async (req, res) => {
 		response = await createAccount(
 			req.body.firstName,
 			req.body.lastName,
-			req.body.phone,
+			req.body.phone,	
 			req.body.email,
 			//req.body.confirmEmail,
 			req.body.password,
@@ -21,8 +22,14 @@ module.exports = app.post("/signup", async (req, res) => {
         if (response.error) {
             return res.status(400).send(response);
         }
+		console.log('sign up response: ', response.preferenceId,)
 
-		const token = jwt.sign({ userId: response.user_id }, process.env.JWT_SECRET, { expiresIn: '3h' });
+		 // Ensure preferenceId is present
+		 if (!response.preferenceId) {
+            console.error('PreferenceId is missing in the response');
+            return res.status(500).send("PreferenceId is missing.");
+        }
+		const token = jwt.sign({ userId: response.user_id, preferenceId: response.preferenceId}, process.env.JWT_SECRET, { expiresIn: '3h' });
 
 		res.send({token: token});
 	} catch (error) {

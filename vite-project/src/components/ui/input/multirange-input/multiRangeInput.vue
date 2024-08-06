@@ -64,7 +64,9 @@
   </template>
   
   <script setup>
-  import { ref, onMounted } from 'vue';
+  import { ref, defineEmits,onMounted } from 'vue';
+
+  const emit = defineEmits(['update:minValue', 'update:maxValue']);
   
   const minprice = ref(1000);
   const maxprice = ref(7000);
@@ -76,17 +78,19 @@
   const mintrigger = () => {
     minprice.value = Math.min(minprice.value, maxprice.value - 500);
     minthumb.value = ((minprice.value - min.value) / (max.value - min.value)) * 100;
+    emit('update:minValue', minprice.value);
   };
   
   const maxtrigger = () => {
     maxprice.value = Math.max(maxprice.value, minprice.value + 500);
     maxthumb.value = 100 - (((maxprice.value - min.value) / (max.value - min.value)) * 100);
+    emit('update:maxValue', maxprice.value);  // Émet l'événement avec la nouvelle valeur
   };
   
   onMounted(() => {
-    mintrigger();
-    maxtrigger();
-  });
+  mintrigger();
+  maxtrigger();
+});
   </script>
   
   <style scoped>

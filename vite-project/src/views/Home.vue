@@ -1,68 +1,83 @@
 <script setup>
-
 import { useRouter } from 'vue-router';
-import Hero from "../components/HeroSection.vue"
-
-
+import Hero from "../components/HeroSection.vue";
+import conect from '@/assets/images/conect.png';
+import camionDemenage from '@/assets/images/camionDemenage.svg';
+import robot from '@/assets/images/robot.png';
+import detente from '@/assets/images/detente.png';
+import homeImg from '@/assets/images/main1.jpg'
 
 const router = useRouter();
 
 function handleSubmitButton() {
-  router.push('/appartements')
-  console.log('vers appartmentd')
+  router.push('/listings');
+  console.log('Navigating to apartments...');
 }
 </script>
 
-
 <template>
-  <div>
-
-    <div class="mx-auto bg-fixed bg-no-repeat flex h-[35dvh] w-full flex-col justify-center overflow-hidden bg-center bg-cover bg-[url(@/assets/images/main1.jpg)]">
-      <div class="mx-auto font-poppins text-5xl mb-6 text-white text-center">Trouve un appartement abordable</div>
-      <input type="text" placeholder="Chercher par quartier ou ville" class="input input-bordered mx-auto w-5/6 min-w-72 max-w-lg" />
-    </div>
-
-    <p class="mt-12 text-center text-3xl text-blue-main font-bold">Comment ça marche ?</p>
-    <div class="mt-10 flex justify-around sm:flex-row flex-col">
-      <div class="card sm:w-1/5 bg-base-100 mx-auto w-3/4 shadow-none rounded-none">
-        <figure>
-          <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp" alt="Shoes" />
-        </figure>
-        <div class="card-body">
-          <h2 class="card-title text-blue-main">1. Inscrivez-vous sur Move out</h2>
-          <p class="text-lg">Moveout.ai recherche  tout les site web de listing sur internet... vraiment tout</p>
-        </div>
-      </div>
-      <div class="card sm:w-1/5 bg-base-100 mx-auto w-3/4 shadow-none rounded-none">
-        <figure>
-          <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp" alt="Shoes" />
-        </figure>
-        <div class="card-body">
-          <h2 class="card-title text-blue-main">2. Communiquez nous vos préférences</h2>
-          <p class="text-lg">Moveout.ai  Analyse les meilleures listings selon vos gout et préférences jours et nuits</p>
-        </div>
-      </div>
-      <div class="card sm:w-1/5 bg-base-100 mx-auto w-3/4 shadow-none rounded-none">
-        <figure>
-          <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp" alt="Shoes" />
-        </figure>
-        <div class="card-body">
-          <h2 class="card-title text-blue-main">3. Relaxez, on s'occupe du reste</h2>
-          <p class="text-lg">Dès qu'un appartement apparait sur le web vous serez le premier à le savoir</p>
-        </div>
+  <div class="bg-gray-100 min-h-screen flex flex-col items-center">
+    <!-- Hero Section -->
+    <div class="bg-fixed bg-no-repeat bg-cover bg-center h-[35vh] w-full flex items-center justify-center" 
+        :style="{ backgroundImage: `url(${homeImg})` }"
+         >
+      <div class="text-center text-white">
+        <h1 class="font-poppins text-4xl md:text-5xl mb-6">Trouve un appartement abordable</h1>
+        <button 
+          @click="handleSubmitButton"
+          class="bg-blue-600 text-white py-3 px-6 rounded-full text-lg md:text-xl font-semibold hover:bg-blue-700 transition-colors">
+          Commencer la recherche
+        </button>
       </div>
     </div>
+
+    <!-- How It Works Section -->
+    <section class="text-center mt-12 w-full px-4">
+      <h2 class="text-3xl md:text-4xl font-bold text-blue-main mb-8">Comment ça marche ?</h2>
+      <div class="flex flex-col md:flex-row justify-around items-center">
+        <!-- Step 1 -->
+        <div class="flex flex-col items-center mb-10 md:mb-0 max-w-xs">
+          <img :src="conect" alt="Inscrivez-vous" class="w-32 h-32 mb-4">
+          <h3 class="text-xl font-semibold mb-2 text-blue-main">1. Inscrivez-vous sur Moveout</h3>
+          <p class="text-gray-600">Moveout.ai recherche tout les sites web de listing sur internet... vraiment tout.</p>
+        </div>
+        <!-- Step 2 -->
+        <div class="flex flex-col items-center mb-10 md:mb-0 max-w-xs">
+          <img :src="robot" alt="Préférences" class="w-32 h-32 mb-4">
+          <h3 class="text-xl font-semibold mb-2 text-blue-main">2. Communiquez-nous vos préférences</h3>
+          <p class="text-gray-600">Moveout.ai analyse les meilleurs listings selon vos goûts et préférences jour et nuit.</p>
+        </div>
+        <!-- Step 3 -->
+        <div class="flex flex-col items-center max-w-xs">
+          <img :src="detente" alt="Relaxez" class="w-32 h-32 mb-4">
+          <h3 class="text-xl font-semibold mb-2 text-blue-main">3. Relaxez, on s'occupe du reste</h3>
+          <p class="text-gray-600">Dès qu'un appartement apparaît sur le web, vous serez le premier à le savoir.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Start Button Section -->
+    <div class="flex justify-center my-12">
+      <button 
+        @click="handleSubmitButton"
+        class="bg-blue-600 text-white py-4 px-8 rounded-full text-2xl font-bold hover:bg-blue-700 transition-colors shadow-lg">
+        Start today for <u>free</u>!
+      </button>
+    </div>
   </div>
-
-  <div class="flex justify-around my-10">
-    <button class="btn mt-16 md:w-96 w-1/2 min-w-max bg-blue-main text-white text-3xl tracking-wide font-bold btn-lg shadow-cyan-100 hover:shadow-cyan-500 hover:bg-blue-main shadow-2xl transition-all duration-500 ease-in-out border-none">
-      <p>
-        Start today for
-        <u>free</u>
-        !
-      </p>
-    </button>
-  </div>
-
-
 </template>
+
+<style scoped>
+/* Add custom styles for responsiveness */
+@media (min-width: 768px) {
+  .text-3xl {
+    font-size: 2rem;
+  }
+  .text-4xl {
+    font-size: 2.5rem;
+  }
+  .text-5xl {
+    font-size: 3rem;
+  }
+}
+</style>
