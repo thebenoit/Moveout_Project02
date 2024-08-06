@@ -1,5 +1,5 @@
 <script setup>
-import { BookmarkIcon, MapPinIcon, MapIcon, StarIcon, PhotoIcon } from '@heroicons/vue/24/outline'
+import { BookmarkIcon, MapPinIcon, MapIcon, StarIcon, PhotoIcon, ArrowRightCircleIcon } from '@heroicons/vue/24/outline'
 import { ref, watch, onMounted, defineProps } from "vue";
 
 // stores
@@ -76,11 +76,16 @@ function handleImageError() {
     isValidImage.value = false;
 }
 
+const openLink = () => {
+  const url = `https://facebook.com/marketplace/item/${props.id}/?ref=browse_tab&referral_code=marketplace_top_picks&referral_story_type=top_picks&locale=fr_CA`; // Replace with your URL
+  window.open(url, '_blank');
+};
+
 </script>
 
 <template>
 
-    <div :href="`https://facebook.com/marketplace/item/${props.id}/?ref=browse_tab&referral_code=marketplace_top_picks&referral_story_type=top_picks&locale=fr_CA`" class="rounded overflow-hidden shadow-lg p-2 bg-white transition-all max-w-96 w-11/12"><!-- min-[1262px]:hidden -->
+    <div class="rounded overflow-hidden shadow-lg p-2 bg-white transition-all max-w-96 w-11/12"><!-- min-[1262px]:hidden -->
         <!-- <img class="object-cover rounded-2xl rounded-b-none" src="@/assets/images/house-1477041_1920.jpg"> -->
         
         <figure>
@@ -108,6 +113,10 @@ function handleImageError() {
                 <div class="justify-around w-1/2 flex">
                     <button @click="mapStore.setCurrentLocation(props.location)" class="btn btn-ghost px-3">
                         <MapIcon class="size-8 my-auto stroke-blue-main" />
+                    </button>
+                    <button class="btn btn-ghost px-0">
+                        
+                        <ArrowRightCircleIcon class="size-8 my-auto stroke-blue-main" @click="openLink"/>
                     </button>
                     <!-- Bookmark -->
                     <!-- <button class="btn btn-ghost px-3">
