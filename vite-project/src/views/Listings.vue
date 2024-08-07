@@ -136,9 +136,11 @@ function scrollToItem(id) {
     try {
       const item = itemRefs.value[id];
       if (item && item.nodeType === 1) {
+        console.log('item node: ',item )
         // Ensuring it's an element node
         item.nextElementSibling.scrollIntoView({ behavior: "smooth" });
       } else if (item && item.nextElementSibling) {
+        console.log('element: ',item )
         console.warn(
           `Item with id ${id} is not an element, but has a next sibling`
         );
