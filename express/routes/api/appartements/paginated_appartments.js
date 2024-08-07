@@ -6,7 +6,7 @@ module.exports = app.post("/page", async (req, res) => {
 	try {
 		const pageNumber = req.body.pageNumber || 1
 
-		appartData = await fetchPage(pageNumber, 100);
+		appartData = await fetchPage(pageNumber, 656);
 
 		try{
 			appartData = appartData.map((appart) => {
@@ -17,9 +17,10 @@ module.exports = app.post("/page", async (req, res) => {
 						customTitle: appart.for_sale_item.custom_title,
 						fullAddress: appart.for_sale_item.custom_sub_titles_with_rendering_flags[0].subtitle,
 						price: appart.for_sale_item.formatted_price.text,
-						img: appart.for_sale_item.listing_photos[0].image.uri
+						img: appart.for_sale_item.listing_photos[0]?.image?.uri ?? '',
 					};
 				} catch (error) {
+					console.log(appart.for_sale_item.id)
 					return null; // Or handle the error as needed
 				}
 			})

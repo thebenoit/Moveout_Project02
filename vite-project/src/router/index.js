@@ -24,51 +24,51 @@ const router = createRouter({
       name: 'home',
       component: Home
     },
-    {
-      path: '/appartements',
-      name: 'appartements',
-      component: Appartements
-    },
-    {
-      path: '/demenagement',
-      name: 'demenagement',
-      component: Demenagement
-    },
-    {
-      path: '/aboutus',
-      name: 'about-us',
-      component: AboutUs
-    },
-    {
-      path: '/signup',
-      name: 'signup',
-      component: Signup
-    },
-    {
-      path: '/contactus',
-      name: 'contact-us',
-      component: ContactUs
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: Login
-    },
-    {
-      path: '/foryou',
-      name: 'foryou',
-      component: Foryou
-    },
-    {
-      path: '/preferences',
-      name: 'preferences',
-      component: Preferences
-    },
-    {
-      path: '/settings',
-      name: 'settings',
-      component: Settings
-    },
+    // {
+    //   path: '/appartements',
+    //   name: 'appartements',
+    //   component: Appartements
+    // },
+    // {
+    //   path: '/demenagement',
+    //   name: 'demenagement',
+    //   component: Demenagement
+    // },
+    // {
+    //   path: '/aboutus',
+    //   name: 'about-us',
+    //   component: AboutUs
+    // },
+    // {
+    //   path: '/signup',
+    //   name: 'signup',
+    //   component: Signup
+    // },
+    // {
+    //   path: '/contactus',
+    //   name: 'contact-us',
+    //   component: ContactUs
+    // },
+    // {
+    //   path: '/login',
+    //   name: 'login',
+    //   component: Login
+    // },
+    // {
+    //   path: '/foryou',
+    //   name: 'foryou',
+    //   component: Foryou
+    // },
+    // {
+    //   path: '/preferences',
+    //   name: 'preferences',
+    //   component: Preferences
+    // },
+    // {
+    //   path: '/settings',
+    //   name: 'settings',
+    //   component: Settings
+    // },
     {
       path: '/listings',
       name: 'listings',

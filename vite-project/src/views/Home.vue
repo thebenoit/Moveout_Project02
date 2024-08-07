@@ -25,7 +25,7 @@ function handleSubmitButton() {
         <h1 class="font-poppins text-4xl md:text-5xl mb-6">Trouve un appartement abordable</h1>
         <button 
           @click="handleSubmitButton"
-          class="bg-blue-600 text-white py-3 px-6 rounded-full text-lg md:text-xl font-semibold hover:bg-blue-700 transition-colors">
+          class="bg-blue-main text-white py-3 px-6 rounded-full text-lg md:text-xl font-semibold hover:bg-blue-700 transition-colors">
           Commencer la recherche
         </button>
       </div>
@@ -60,7 +60,7 @@ function handleSubmitButton() {
     <div class="flex justify-center my-12">
       <button 
         @click="handleSubmitButton"
-        class="bg-blue-600 text-white py-4 px-8 rounded-full text-2xl font-bold hover:bg-blue-700 transition-colors shadow-lg">
+        class="bg-blue-main text-white py-4 px-8 rounded-full text-2xl font-bold hover:bg-blue-700 transition-colors shadow-lg">
         Start today for <u>free</u>!
       </button>
     </div>

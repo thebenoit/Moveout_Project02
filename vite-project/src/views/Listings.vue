@@ -3,14 +3,15 @@ import utils from '../utils/utils.js';
 import { ref, onMounted, computed, watch } from 'vue';
 
 // leaflet
-import { LMap, LTileLayer, LControlZoom, LMarker } from "@vue-leaflet/vue-leaflet";
+import { LMap, LTileLayer, LControlZoom, LMarker, LPopup } from "@vue-leaflet/vue-leaflet";
 import { LMarkerClusterGroup } from 'vue-leaflet-markercluster'
 import "leaflet/dist/leaflet.css";
 //import 'vue-leaflet-markercluster/dist/style.css'
 
 // icons
 import listingCard from '@/components/listingCard.vue';
-import { CurrencyDollarIcon } from '@heroicons/vue/24/outline'
+import { CurrencyDollarIcon, MapPinIcon, ArrowsRightLeftIcon, Squares2X2Icon, MapIcon } from '@heroicons/vue/24/outline'
+
 import icon from '../assets/images/marker-icon.png';
 
 // stores
@@ -27,6 +28,8 @@ const apparts = ref([
 
 // variable qui contient la map leaflet
 const map = ref()
+
+const displayModeIsMap = ref(true)
 
 const bedrooms = ref(0);
 const prixMin = ref(0)
@@ -81,7 +84,7 @@ onMounted(async () => {
         mapStore.map = map.value
 
         // Await the result of `utils.post` and assign it to `apparts.value`
-        const response = await utils.post('api/appartements/page', { pageNumer: 1});
+        const response = await utils.post('api/appartements/page', { "pageNumer": 1 });
         apparts.value = response
 
         // Set the rendered flag
@@ -112,22 +115,33 @@ function scrollToItem(id) {
     }
 }
 
+const resultsCount = computed(() => apparts.value.length);
+
+const isLargeScreen = computed(() => window.innerWidth >= 1024);
+
 </script>
 
 <template>
-    <div class="grid grid-cols-12 relative z-10 h-[85vh] lg:m-6 m-0 transition-all duration-300">
 
-        <div class="w-full h-full col-span-12 lg:col-span-6 p-6 my-auto lg:block">
-            <BetaLogo class="mx-auto sm:hidden flex mb-3" />
+    <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 lg:hidden">
+        <button class="bg-blue-main text-white rounded-full flex space-x-4 p-2 px-4" @click="displayModeIsMap = !displayModeIsMap">
+            <Squares2X2Icon class="size-7" />
+            <ArrowsRightLeftIcon class="size-7" />
+            <MapIcon class="size-7" />
+        </button>
+    </div>
+    <div class="grid grid-cols-12 relative z-10 h-[85vh] m-6 transition-all duration-300">
+          <div :class="{ 'hidden': displayModeIsMap, 'w-full h-full col-span-12 lg:col-span-6 sm:p-0 lg:p-6 my-auto lg:block': !displayModeIsMap || isLargeScreen}">
+
             <div class="w-full flex justify-between">
 
                 <div>
                     <h1 class="text-2xl font-medium">Montreal</h1>
-                    <p class="">1234 results</p>
+                    <p class="">{{ resultsCount }} results</p>
                 </div>
                 <div class="flex h-full my-auto space-x-2">
-                    <div>saved</div>
-                    <input type="checkbox" class="toggle my-auto toggle-primary" checked="checked" />
+                    <!-- <div>saved</div>
+                    <input type="checkbox" class="toggle my-auto toggle-primary" checked="checked" /> -->
                 </div>
             </div>
             <div class="h-14 mt-2 flex w-full justify-between">
@@ -139,48 +153,40 @@ function scrollToItem(id) {
                         <div>Price</div>
                     </div>
                     <div class="btn btn-sm border-gray-400">
-                        <div>
-                            <CurrencyDollarIcon class="size-6" />
-                        </div>
-                        <div>Price</div>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="#686868" viewBox="0 0 15 12" class="size-6">
+                            <g clip-path="url(#a)">
+                                <path fill="#686868" d="M14.27 4.696h-.013c-.402 0-.73.32-.73.71 0 .04-.034.072-.074.072H1.547a.073.073 0 0 1-.074-.071.722.722 0 0 0-.73-.711H.73c-.402 0-.73.32-.73.71v5.883c0 .392.328.711.73.711h.013c.402 0 .73-.32.73-.71v-.203c0-.072.06-.13.134-.13h11.786c.073 0 .134.058.134.13v.202c0 .392.328.711.73.711h.013c.402 0 .73-.32.73-.71V5.406a.722.722 0 0 0-.73-.711Z" />
+                                <path fill="#686868" d="M1.741 4.891h.753a.133.133 0 0 0 .134-.13v-.424a.53.53 0 0 1 .536-.522H6.43a.53.53 0 0 1 .535.522v.424c0 .072.06.13.134.13h.804a.133.133 0 0 0 .134-.13v-.424a.53.53 0 0 1 .535-.522h3.265a.53.53 0 0 1 .536.522v.424c0 .072.06.13.134.13h.753a.265.265 0 0 0 .268-.26V1.564c0-.574-.482-1.043-1.072-1.043h-9.91c-.59 0-1.072.47-1.072 1.043V4.63c0 .144.12.261.268.261Z" />
+                            </g>
+                            <defs>
+                                <clipPath id="a">
+                                    <path fill="#fff" d="M0 0h15v12H0z" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                        <div>Bedrooms</div>
                     </div>
                     <div class="btn btn-sm border-gray-400">
                         <div>
-                            <CurrencyDollarIcon class="size-6" />
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="#686868" viewBox="0 0 13 13" class="size-6">
+                                <g clip-path="url(#a)">
+                                    <path fill="#686868" d="M.813 9.75a2.423 2.423 0 0 0 .812 1.805v1.039a.406.406 0 0 0 .406.406h.813a.406.406 0 0 0 .406-.406v-.407h6.5v.407a.406.406 0 0 0 .406.406h.813a.406.406 0 0 0 .406-.406v-1.04a2.421 2.421 0 0 0 .813-1.804V8.53H.812v1.22Zm11.78-3.25H2.032V1.758a.54.54 0 0 1 .921-.38l.49.488c-.334.759-.194 1.501.219 2.025l-.005.004a.406.406 0 0 0 0 .574l.287.287a.406.406 0 0 0 .575 0L7.193 2.08a.406.406 0 0 0 0-.574l-.287-.287a.406.406 0 0 0-.574 0l-.004.004C5.804.811 5.062.671 4.303 1.004l-.489-.49A1.758 1.758 0 0 0 .812 1.759V6.5H.406A.406.406 0 0 0 0 6.906v.406a.406.406 0 0 0 .406.407h12.188A.406.406 0 0 0 13 7.312v-.406a.406.406 0 0 0-.406-.406Z" />
+                                </g>
+                                <defs>
+                                    <clipPath id="a">
+                                        <path fill="#fff" d="M0 0h13v13H0z" />
+                                    </clipPath>
+                                </defs>
+                            </svg>
                         </div>
-                        <div>Price</div>
+                        <div>Bathrooms</div>
                     </div>
                     <div class="btn btn-sm border-gray-400">
                         <div>
-                            <CurrencyDollarIcon class="size-6" />
+                            <MapPinIcon class="size-6" />
                         </div>
-                        <div>Price</div>
+                        <div>location</div>
                     </div>
-                    <div class="btn btn-sm border-gray-400">
-                        <div>
-                            <CurrencyDollarIcon class="size-6" />
-                        </div>
-                        <div>Price</div>
-                    </div>
-                    <div class="btn btn-sm border-gray-400">
-                        <div>
-                            <CurrencyDollarIcon class="size-6" />
-                        </div>
-                        <div>Price</div>
-                    </div>
-                    <div class="btn btn-sm border-gray-400">
-                        <div>
-                            <CurrencyDollarIcon class="size-6" />
-                        </div>
-                        <div>Price</div>
-                    </div>
-                    <div class="btn btn-sm border-gray-400">
-                        <div>
-                            <CurrencyDollarIcon class="size-6" />
-                        </div>
-                        <div>Price</div>
-                    </div>
-
                 </div>
                 <!-- <div class="my-auto min-w-fit ml-10">display modesa</div> -->
             </div>
@@ -188,12 +194,16 @@ function scrollToItem(id) {
                 <listingCard v-for="appart in apparts" :key="appart.id" :id="appart.id" :price="appart.price" :city="extractCity(appart.fullAddress)" :bedrooms="extractBedrooms(appart.customTitle)" :bathrooms="extractBathrooms(appart.customTitle)" :rating="0" :img="appart.img" :address="appart.fullAddress" :location="appart.location" :ref="(el) => { setItemRef(el.$el, appart.id) }" />
             </div>
         </div>
-        <div class="w-full lg:p-4 col-span-6 block lg:col-start-7 h-full my-auto border-white shadow-2xl">
+        <div :class="{ 'hidden': !displayModeIsMap, 'w-full lg:p-4 col-span-12 block lg:col-start-7 h-full my-auto border-white shadow-2xl': displayModeIsMap || isLargeScreen}">
             <l-map ref="map" v-model:zoom="mapStore.currentZoom" v-model:center="mapStore.currentLocation" class="h-full" :options="{ zoomControl: false }">
                 <l-tile-layer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" layer-type="base" name="OpenStreetMap"></l-tile-layer>
                 <l-control-zoom position="bottomright"></l-control-zoom>
-                <l-marker-cluster-group >
-                    <l-marker v-for="appart in apparts" :key="appart.id" :lat-lng="appart.location" @click="scrollToItem(appart.id)" />
+                <l-marker-cluster-group>
+                    <l-marker v-for="appart in apparts" :key="appart.id" :lat-lng="appart.location" @click="scrollToItem(appart.id)">
+                        <LPopup class="p-0" >
+                            <listingCard :key="appart.id" :id="appart.id" :price="appart.price" :city="extractCity(appart.fullAddress)" :bedrooms="extractBedrooms(appart.customTitle)" :bathrooms="extractBathrooms(appart.customTitle)" :rating="0" :img="appart.img" :address="appart.fullAddress" :location="appart.location" :ref="(el) => { setItemRef(el.$el, appart.id) }" />
+                        </LPopup>
+                    </l-marker>
                 </l-marker-cluster-group>
             </l-map>
         </div>
