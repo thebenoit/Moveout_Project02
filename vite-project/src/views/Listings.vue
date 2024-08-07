@@ -106,7 +106,7 @@ function setItemRef(el, idx) {
 }
 
 function scrollToItem(id) {
-    
+    try{
         const item = itemRefs.value[id];
     if (item) {
         console.log('item: ', item)
@@ -114,6 +114,11 @@ function scrollToItem(id) {
     } else {
         console.warn(`Item with id ${id} not found`);
     }
+    }catch(error){
+        console.log('erreur survenu lors du scrollToItem: ',error )
+
+    }
+      
     
    
 }
