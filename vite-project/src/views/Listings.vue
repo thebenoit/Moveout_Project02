@@ -105,23 +105,44 @@ function setItemRef(el, idx) {
     }
 }
 
-function scrollToItem(id) {
-    try{
-        const item = itemRefs.value[id];
-    if (item) {
-        console.log('item: ', item)
-        item.nextElementSibling.scrollIntoView({ behavior: 'smooth' });
-    } else {
-        console.warn(`Item with id ${id} not found`);
-    }
-    }catch(error){
-        console.log('erreur survenu lors du scrollToItem: ',error )
+// function scrollToItem(id) {
+//     try{
+//         const item = itemRefs.value[id];
+//     if (item) {
+//         console.log('item: ', item)
+//         item.nextElementSibling.scrollIntoView({ behavior: 'smooth' });
+//     } else {
+//         console.warn(`Item with id ${id} not found`);
+//     }
+//     }catch(error){
+//         console.log('erreur survenu lors du scrollToItem: ',error )
 
-    }
+//     }
       
     
    
+// }
+function scrollToItem(id) {
+    setTimeout(() => {
+        // Existing code
+        try {
+        const item = itemRefs.value[id];
+        if (item && item.nodeType === 1) { // Ensuring it's an element node
+            item.nextElementSibling.scrollIntoView({ behavior: 'smooth' });
+        } else if (item && item.nextElementSibling) {
+            console.warn(`Item with id ${id} is not an element, but has a next sibling`);
+            item.nextElementSibling.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            console.warn(`Item with id ${id} not found or has no next sibling`);
+        }
+    } catch (error) {
+        console.log('Error during scrollToItem:', error);
+    }
+    }, 100); // Adjust the delay as necessary
+
+    
 }
+
 
 const resultsCount = computed(() => apparts.value.length);
 
