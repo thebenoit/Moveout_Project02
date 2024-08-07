@@ -16,7 +16,6 @@ module.exports = app.post("/preference", async (req, res) => {
 			req.body.age,
             req.body.gender,
             req.body.occupation,
-            //req.body.salary,
             req.body.reference,
             req.body.addOnService,
 		)

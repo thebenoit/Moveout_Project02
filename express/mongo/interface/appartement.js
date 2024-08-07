@@ -22,6 +22,31 @@ async function fetchPage(pageNumber, pageSize) {
     }
 }
 
+async function fetchPageForYou(pageNumber,pageSize, priceMin, priceMax, numberBedrooms, location ) {
+    try {
+        const fieldsToSelect = [
+            'for_sale_item.location',
+            'for_sale_item.custom_title',
+            'for_sale_item.custom_sub_titles_with_rendering_flags',
+            'for_sale_item.formatted_price.text',
+          ].join(' ');
+        
+        const skipAmount = (pageNumber - 1) * pageSize;
+        //find appartements on the bd according to preference
+        const results = await facebook.find({
+            
+            //'for_sale_item.formatted_price.text': { $gte: priceMin, $lte: priceMax },
+            //'for_sale_item.bedrooms': numberBedrooms,
+        }).skip(skipAmount).limit(pageSize).lean().exec();
+
+
+        return results;
+    } catch (err) {
+        console.error('Error fetching page:', err);
+        throw err;  // Re-throw the error after logging it
+    }
+}
+
 async function getAllAppartments(){
     const docCount = await appartments.countDocuments({});
     console.log("NB_Documents 2", docCount);
@@ -32,7 +57,11 @@ async function getAllAppartments(){
 
     return appartData
 }
-
+/**
+ * méthode qui prend les données de la bd facebook et le mets
+ * dans la constante appartData
+ * @returns 
+ */
 async function getFacebookListings(){
     const docCount = await facebook.countDocuments({});
     console.log("NB_Documents facebook", docCount);
@@ -57,5 +86,6 @@ async function getFacebookListings(){
 module.exports = {
     getAllAppartments,
     getFacebookListings,
-    fetchPage
+    fetchPage,
+    fetchPageForYou
 };

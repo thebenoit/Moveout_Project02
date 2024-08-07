@@ -60,6 +60,7 @@ function extractBedrooms(description) {
 
 function extractCity(fullAddress) {
     // Split the address by comma
+    console.log('full Address Listing: ', fullAddress)
     const parts = fullAddress.split(",");
 
     // Reverse the array of parts
@@ -80,7 +81,7 @@ onMounted(async () => {
         mapStore.map = map.value
 
         // Await the result of `utils.post` and assign it to `apparts.value`
-        const response = await utils.post('api/appartements/page', { "pageNumer": 1});
+        const response = await utils.post('api/appartements/page', { pageNumer: 1});
         apparts.value = response
 
         // Set the rendered flag

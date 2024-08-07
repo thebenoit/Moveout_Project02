@@ -9,6 +9,7 @@ const mongoose = require("./mongo/client.js");
 // apparts
 const appartments = require("./routes/api/appartement.js");
 const paginated_appartments = require("./routes/api/appartements/paginated_appartments.js");
+const paginated_forYouPage = require("./routes/api/appartements/paginated_forYouPage.js");
 
 // client
 const client_singup = require("./routes/api/client/signup.js");
@@ -47,6 +48,8 @@ app.use("/api/client", client_preference);
 
 // apparts
 app.use("/api/appartements", paginated_appartments);
+// apparts personalisé
+app.use("/api/appartements", paginated_forYouPage);
 
 
 

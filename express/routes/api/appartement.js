@@ -2,6 +2,9 @@ const express = require("express");
 const app = express();
 const { getFacebookListings } = require("../../mongo/interface/appartement");
 
+/**
+ * 
+ */
 module.exports = app.get("/appartments", async (req, res) => {
 	try {
 		// const appartments = schemas.Appartments;
@@ -14,6 +17,7 @@ module.exports = app.get("/appartments", async (req, res) => {
 		// const appartData = await appartments.find({});
 		// console.log("Données récupérées:");
 
+		//prend les données de la bd facebook et le met dans la const
 		appartData = await getFacebookListings();
 
 		if (appartData.length === 0) {

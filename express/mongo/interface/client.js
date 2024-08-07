@@ -159,6 +159,23 @@ async function createPreference(
 ) {
   //find the id preference
   try {
+
+	// Vérification des champs manquants
+    switch (true) {
+		case !bedrooms || bedrooms.length === 0:
+			return { error: "La case Nombre de chambres est manquante." };
+		  case !locationPreference || locationPreference.length === 0:
+			return { error: "La case Préférence de localisation est manquante." };
+		  case !age || age.trim() === "":
+			return { error: "La case Âge est manquante." };
+		  case !sex || sex.trim() === "":
+			return { error: "La case Genre est manquante." };
+		  case !occupation || occupation.trim() === "":
+			return { error: "La case Occupation est manquante." };
+		  case !addOnService || addOnService.trim() === "":
+			return { error: "La case Service supplémentaire est manquante." };
+	  }
+  
     const preference = await Preferences.findById(idPreference);
 
     if (!preference) {
