@@ -39,26 +39,26 @@ const router = createRouter({
     //   name: 'about-us',
     //   component: AboutUs
     // },
-    // {
-    //   path: '/signup',
-    //   name: 'signup',
-    //   component: Signup
-    // },
+    {
+      path: '/signup',
+      name: 'signup',
+      component: Signup
+    },
     // {
     //   path: '/contactus',
     //   name: 'contact-us',
     //   component: ContactUs
     // },
-    // {
-    //   path: '/login',
-    //   name: 'login',
-    //   component: Login
-    // },
-    // {
-    //   path: '/foryou',
-    //   name: 'foryou',
-    //   component: Foryou
-    // },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
+    },
+    {
+      path: '/foryou',
+      name: 'foryou',
+      component: Foryou
+    },
     // {
     //   path: '/preferences',
     //   name: 'preferences',

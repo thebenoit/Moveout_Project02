@@ -205,7 +205,7 @@ async function signup() {
     if (result.error) {
       console.log("result.error: ", result.error.message);
       errorMessages.value = result.error?.message;
-      console.log("error: ", errorMessages);
+      console.log("error: ", result.error);
     } else {
       console.log("result ", result);
       //result = await result.json();

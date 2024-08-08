@@ -1,3 +1,7 @@
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+dotenv.config();
+
 const Users = require("../schemas/user");
 const Leads = require("../schemas/leads");
 const Preferences = require("../schemas/preference");
@@ -5,6 +9,7 @@ const responses = require("../../responses");
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
 const createLog = require("../interface/logs");
+const {generateJwt} = require("../interface/JWT")
 
 /**
  * function qui permet de get tout les appart de la base de données
@@ -119,6 +124,10 @@ async function createAccount(firstName, lastName, phone, email, password) {
     // Save the user to the database
     const savedPreferences = await newPreferences.save();
 
+     
+
+
+
     // Create user
     const newUser = new Users({
       firstName: firstName,
@@ -127,8 +136,16 @@ async function createAccount(firstName, lastName, phone, email, password) {
       email: email,
       password: hashPassword,
       preferencesId: savedPreferences._id.toString(),
+      accessToken: 'allo',
       date: Date.now(),
     });
+
+    newUser.accessToken =  await generateJwt(newUser._id,newUser.preferencesId)
+    console.log('client accessToken: ', newUser.accessToken )
+    console.log('user first name: ',newUser.firstName )
+
+    
+    
 
     // Save the user to the database
     const savedUser = await newUser.save();
@@ -137,7 +154,8 @@ async function createAccount(firstName, lastName, phone, email, password) {
     return {
       message: responses.success.accountCreated,
       user_id: savedUser._id.toString(),
-	  preferenceId: savedUser.preferencesId.toString()
+	    preferenceId: savedUser.preferencesId.toString(),
+      accessToken: savedUser.accessToken
     };
   } catch (error) {
     console.error(error);
@@ -226,6 +244,16 @@ async function login(identifier, password) {
     if (!isPasswordValid) {
       return { error: responses.errors.client.invalidPassword };
     }
+      //create Access Token
+      const {error, token} = await generateJwt(user.id)
+
+      if(!token){
+        return {error: `impossible de créer un accès de token veuillez réessayer plus tard ${error}`}
+      }
+      //assigne access token
+      user.accessToken = token  
+      //save dans la bd
+      await user.save()
 
     return {
       message: responses.success.accountCreated,

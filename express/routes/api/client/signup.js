@@ -20,6 +20,7 @@ module.exports = app.post("/signup", async (req, res) => {
 		)
 
         if (response.error) {
+			console.log('response errror signup: ', response.error)
             return res.status(400).send(response);
         }
 		console.log('sign up response: ', response.preferenceId,)
@@ -32,10 +33,11 @@ module.exports = app.post("/signup", async (req, res) => {
 		//génère un token
 		//const token = utils.
 		//jwt.sign({ userId: response.user_id, preferenceId: response.preferenceId}, process.env.JWT_SECRET, { expiresIn: '3h' });
-
-		res.send({token: token});
+		console.log('access token: ', response.accessToken)
+		res.send({token: response.accessToken});
 	} catch (error) {
 		console.error("Erreur lors de la récupération des données:", error);
 		res.status(500).send("Erreur lors de la récupération des données");
 	}
 });
+

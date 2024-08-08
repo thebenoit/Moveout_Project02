@@ -1,6 +1,8 @@
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-dotenv();
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+dotenv.config();
+
+const User = require("../schemas/user");
 
 /**
  * méthode qui génère un token avec userId & userPreference comme payload
@@ -16,10 +18,16 @@ async function generateJwt(userId, prefId) {
       process.env.JWT_SECRET,
       { expiresIn: "3h" }
     );
+
+    return token;
+
+    console.log('generateJwt; ', token)
   } catch (error) {
     console.log("erreur lors de la création de token: ");
     return { error: true };
   }
 }
 
-export default generateJwt;
+module.exports = {
+  generateJwt,
+};
