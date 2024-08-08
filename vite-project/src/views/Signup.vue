@@ -216,10 +216,10 @@ async function signup() {
         // Décoder le token JWT pour accéder à preferenceId
         const decodedToken = decodeJwt(result.token);
         console.log("decoded token: ", decodedToken);
-        console.log("token preferenceId: ", decodedToken.preferenceId);
-        if (decodedToken && decodedToken.preferenceId) {
-          // Stocker preferenceId
-          selectedIdPreference.value = decodedToken.preferenceId;
+        console.log("token preferenceId: ", decodedToken.prefId);
+        if (decodedToken && decodedToken.prefId) {
+          // Stocker prefId
+          selectedIdPreference.value = decodedToken.prefId;
 
           nextSlide();
           console.log("changement de page: ");
@@ -227,7 +227,7 @@ async function signup() {
           console.log("erreur dans le decoded token: ", decodedToken);
           console.log(
             "erreur dans le decoded token préférenceID: ",
-            decodedToken.preferenceId
+            decodedToken.prefId
           );
         }
       }

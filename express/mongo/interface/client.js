@@ -9,7 +9,7 @@ const responses = require("../../responses");
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
 const createLog = require("../interface/logs");
-const {generateJwt} = require("../interface/JWT")
+const { generateJwt } = require("../interface/JWT");
 
 /**
  * function qui permet de get tout les appart de la base de données
@@ -124,10 +124,6 @@ async function createAccount(firstName, lastName, phone, email, password) {
     // Save the user to the database
     const savedPreferences = await newPreferences.save();
 
-     
-
-
-
     // Create user
     const newUser = new Users({
       firstName: firstName,
@@ -136,16 +132,11 @@ async function createAccount(firstName, lastName, phone, email, password) {
       email: email,
       password: hashPassword,
       preferencesId: savedPreferences._id.toString(),
-      accessToken: 'allo',
+      accessToken: "",
       date: Date.now(),
     });
 
-    newUser.accessToken =  await generateJwt(newUser._id,newUser.preferencesId)
-    console.log('client accessToken: ', newUser.accessToken )
-    console.log('user first name: ',newUser.firstName )
-
-    
-    
+    newUser.accessToken = await generateJwt(newUser._id, newUser.preferencesId);
 
     // Save the user to the database
     const savedUser = await newUser.save();
@@ -154,8 +145,8 @@ async function createAccount(firstName, lastName, phone, email, password) {
     return {
       message: responses.success.accountCreated,
       user_id: savedUser._id.toString(),
-	    preferenceId: savedUser.preferencesId.toString(),
-      accessToken: savedUser.accessToken
+      preferenceId: savedUser.preferencesId.toString(),
+      accessToken: savedUser.accessToken,
     };
   } catch (error) {
     console.error(error);
@@ -177,23 +168,22 @@ async function createPreference(
 ) {
   //find the id preference
   try {
-
-	// Vérification des champs manquants
+    // Vérification des champs manquants
     switch (true) {
-		case !bedrooms || bedrooms.length === 0:
-			return { error: "La case Nombre de chambres est manquante." };
-		  case !locationPreference || locationPreference.length === 0:
-			return { error: "La case Préférence de localisation est manquante." };
-		  case !age || age.trim() === "":
-			return { error: "La case Âge est manquante." };
-		  case !sex || sex.trim() === "":
-			return { error: "La case Genre est manquante." };
-		  case !occupation || occupation.trim() === "":
-			return { error: "La case Occupation est manquante." };
-		  case !addOnService || addOnService.trim() === "":
-			return { error: "La case Service supplémentaire est manquante." };
-	  }
-  
+      case !bedrooms || bedrooms.length === 0:
+        return { error: "La case Nombre de chambres est manquante." };
+      case !locationPreference || locationPreference.length === 0:
+        return { error: "La case Préférence de localisation est manquante." };
+      case !age || age.trim() === "":
+        return { error: "La case Âge est manquante." };
+      case !sex || sex.trim() === "":
+        return { error: "La case Genre est manquante." };
+      case !occupation || occupation.trim() === "":
+        return { error: "La case Occupation est manquante." };
+      case !addOnService || addOnService.trim() === "":
+        return { error: "La case Service supplémentaire est manquante." };
+    }
+
     const preference = await Preferences.findById(idPreference);
 
     if (!preference) {
@@ -203,13 +193,13 @@ async function createPreference(
     // Update the fields
     preference.numberOfBedrooms = bedrooms;
     preference.budget.maxValue = maxValue;
-	preference.budget.minValue = minValue;
+    preference.budget.minValue = minValue;
     preference.locationPreferences = locationPreference;
     preference.age = age;
     preference.gender = sex;
     preference.occupation = occupation;
     //preference.salary = salary;
-	preference.addOnService = addOnService
+    preference.addOnService = addOnService;
 
     // Save the updated preference
     await preference.save();
@@ -244,16 +234,18 @@ async function login(identifier, password) {
     if (!isPasswordValid) {
       return { error: responses.errors.client.invalidPassword };
     }
-      //create Access Token
-      const {error, token} = await generateJwt(user.id)
+    //create Access Token
+    const { error, token } = await generateJwt(user.id);
 
-      if(!token){
-        return {error: `impossible de créer un accès de token veuillez réessayer plus tard ${error}`}
-      }
-      //assigne access token
-      user.accessToken = token  
-      //save dans la bd
-      await user.save()
+    if (!token) {
+      return {
+        error: `impossible de créer un accès de token veuillez réessayer plus tard ${error}`,
+      };
+    }
+    //assigne access token
+    user.accessToken = token;
+    //save dans la bd
+    await user.save();
 
     return {
       message: responses.success.accountCreated,
@@ -332,5 +324,5 @@ module.exports = {
   createAccount,
   login,
   createLead,
-  createPreference
+  createPreference,
 };
