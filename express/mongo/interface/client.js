@@ -234,16 +234,30 @@ async function login(identifier, password) {
     if (!isPasswordValid) {
       return { error: responses.errors.client.invalidPassword };
     }
-    //create Access Token
-    const { error, token } = await generateJwt(user.id);
+    //si user.accessToken est vide créer un accesToken
+    if(!user.accessToken){
+      console.log('accès token créer car vide')
+
+       //create Access Token
+    const { error, token } = await generateJwt(user.id,user.preferencesId);
+    console.log('uerA: ',user.accessToken )
+    //assigne access token
+    user.accessToken = token;
+
 
     if (!token) {
       return {
         error: `impossible de créer un accès de token veuillez réessayer plus tard ${error}`,
       };
     }
-    //assigne access token
-    user.accessToken = token;
+    
+
+    }else{
+      console.log('accès token pas créer car pas vide')
+    }
+   
+    
+    
     //save dans la bd
     await user.save();
 
