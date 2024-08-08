@@ -59,7 +59,8 @@ const utils = {
             }
         }
         return null;
-    }
+    },
+    
 }
 
 export default utils;
