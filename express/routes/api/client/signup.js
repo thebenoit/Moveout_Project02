@@ -29,6 +29,7 @@ module.exports = app.post("/signup", async (req, res) => {
             console.error('PreferenceId is missing in the response');
             return res.status(500).send("PreferenceId is missing.");
         }
+		//génère un token
 		const token = jwt.sign({ userId: response.user_id, preferenceId: response.preferenceId}, process.env.JWT_SECRET, { expiresIn: '3h' });
 
 		res.send({token: token});

@@ -131,7 +131,7 @@ function setItemRef(el, idx) {
 
 // }
 function scrollToItem(id) {
-  setTimeout(() => {
+  //setTimeout(() => {
     // Existing code
     try {
       const item = itemRefs.value[id];
@@ -151,7 +151,7 @@ function scrollToItem(id) {
     } catch (error) {
       console.log("Error during scrollToItem:", error);
     }
-  }, 0); // Adjust the delay as necessary
+  //}, 0); // Adjust the delay as necessary
 }
 
 const resultsCount = computed(() => apparts.value.length);

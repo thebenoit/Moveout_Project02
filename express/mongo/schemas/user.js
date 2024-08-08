@@ -8,6 +8,7 @@ const usersSchema = new Schema({
   email: { type: Schema.Types.String },
   password: { type: Schema.Types.String },
   preferencesId: { type: Schema.Types.ObjectId },
+  accessToken: {type: Schema.Types.String},
   date: { type: Schema.Types.Date}
 });
 
