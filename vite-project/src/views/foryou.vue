@@ -124,7 +124,24 @@ function scrollToItem(id) {
 </script>
 
 <template>
-    <div class="grid grid-cols-12 relative z-10 h-[85vh] lg:m-6 m-0 transition-all duration-300">
+    <div>
+
+        <div v-if="!utils.getToken()" class="text-center p-6 rounded-lg shadow-md h-screen flex items-center justify-center">
+            <div class="w-full max-w-md bg-gray-200 backdrop-blur-3xl p-6 rounded-lg shadow-lg text-center">
+                <p class="text-sm text-gray-100">
+                    <a href="https://www.freepik.com/free-vector/mobile-login-concept-illustration_4957412.htm#from_view=detail_alsolike">Image by storyset on Freepik</a>
+                </p>
+                <img src="@/assets/images/needLogin.png" alt="Success Image" class="w-full h-auto mb-4">
+                <h1 class="text-2xl font-bold mb-2">Oups!</h1>
+                <p class="text-lg mb-4">Vous devez être connecté pour avoir accès aux listings personnalisés</p>
+                <a class="btn btn-primary" href="/login">Je me connecte!</a>
+                
+            </div>
+        </div>
+        
+
+    
+    <div  v-else class="grid grid-cols-12 relative z-10 h-[85vh] lg:m-6 m-0 transition-all duration-300">
 
         <div class="w-full h-full col-span-12 lg:col-span-6 p-6 my-auto lg:block">
             <BetaLogo class="mx-auto sm:hidden flex mb-3" />
@@ -132,7 +149,7 @@ function scrollToItem(id) {
 
                 <div>
                     <h1 class="text-2xl font-medium">Montreal</h1>
-                    <p class="">1234 results</p>
+                    <p class="">{{ resultsCount }} results</p>
                 </div>
                 <div class="flex h-full my-auto space-x-2">
                     <div>saved</div>
@@ -207,6 +224,7 @@ function scrollToItem(id) {
             </l-map>
         </div>
     </div>
+</div>
 </template>
 
 <style>

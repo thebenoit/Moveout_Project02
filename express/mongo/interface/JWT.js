@@ -29,13 +29,13 @@ async function generateJwt(userId, prefId) {
 }
 
 /**
- * middleware qui vérrifier si le il y a un token dans le header de la requete
+ * middleware qui vérrifie si le il y a un token dans le header de la requete
  * @param {*} req 
  * @param {*} res 
  * @param {*} next 
  * @returns 
  */
-async function validateToken(req, res, next){
+async function validateToken(req, res){
 
   const authorizationHeader = req.headers.authorization;
 
@@ -81,7 +81,9 @@ async function validateToken(req, res, next){
 
     req.decoded = result;
 
-    next();
+    console.log('re.decoded: ', req.decoded)
+
+    return req.decoded;
 
 
   }catch(error){

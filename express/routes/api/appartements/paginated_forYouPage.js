@@ -7,6 +7,7 @@ const {
 
 module.exports = app.post("/pageForYou", async (req, res) => {
   try {
+    
     console.log("Requête reçue avec req.body :", req.body);
     const {
       pageNumber = 1,
@@ -33,7 +34,7 @@ module.exports = app.post("/pageForYou", async (req, res) => {
     try {
       appartData = appartData.map((appart) => {
         try {
-            console.log('nom: ', appart.for_sale_item.location.latitude)
+            //trier selon les préférences
           return {
             id: appart.for_sale_item.id,
             location: [appart.for_sale_item.location.latitude, appart.for_sale_item.location.longitude],

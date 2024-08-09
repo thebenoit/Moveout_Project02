@@ -11,12 +11,14 @@ const errors = {
         invalidIdentifier: 'L\'identifiant fourni est invalide.',
         userNotFound: 'Aucun utilisateur trouvé avec cet identifiant.',
         invalidPassword: 'Le mot de passe est incorrect.',
-        loginError: 'Une erreur est survenue lors de la connexion.'
+        loginError: 'Une erreur est survenue lors de la connexion.',
+        logoutError: 'Une erreur est survenu lors de la deconnexion'
     }
 };
 
 const success = {
-    accountCreated: 'Compte créé avec succès.'
+    accountCreated: 'Compte créé avec succès.',
+    accountLogout: 'Compte déconnecté avec succès'
 };
 
 module.exports = { errors, success };

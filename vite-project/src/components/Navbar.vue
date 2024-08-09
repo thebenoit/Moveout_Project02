@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import Logo from "./Logo.vue";
 
 import MoveoutLogo from "../assets/images/MoveoutLogo.svg";
@@ -10,8 +10,40 @@ import { UserIcon } from '@heroicons/vue/24/outline'
 import utils from "@/utils/utils";
 import BetaLogo from "./BetaLogo.vue";
 
+const connecter = ref(false);
+
+const router = useRouter();
+
 function logout() {
   utils.logout()
+  router.push({ path: "/login" });
+}
+
+function login(){
+
+  router.push({ path: "/login" });
+
+
+}
+
+function signup(){
+  router.push({ path: "/signup" });
+
+}
+
+function estConnecter(){
+
+  if(utils.getToken()){
+    console.log('est connecté')
+    connecter.value = true
+
+  }else{
+    console.log(`n'est pas  connecté`)
+    connecter.value = false
+  }
+
+ 
+
 }
 
 
@@ -144,7 +176,13 @@ function logout() {
               </a>
             </li>
             <li><a>Settings</a></li> -->
-            <li><a>Logout</a></li>
+            <li v-if="!utils.getToken()">   <RouterLink to="/login" class="">
+              Log in
+              </RouterLink></li>
+  
+            <!-- Sinon, affiche "signup" -->
+            <li v-else><a @click="logout">Logout</a></li>
+          
           </ul>
         </div>
       </div>

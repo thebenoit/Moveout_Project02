@@ -1,6 +1,6 @@
 <script setup>
 import utils from "../utils/utils.js";
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, onMounted,onUnmounted, computed, watch } from "vue";
 
 // leaflet
 import {
@@ -104,6 +104,10 @@ onMounted(async () => {
   } catch (error) {
     console.error("Error fetching apartments:", error);
   }
+});
+
+onUnmounted(() => {
+    // Nettoyage ou annulation des opérations en cours
 });
 
 // Use ref to access the item container and individual listingCards

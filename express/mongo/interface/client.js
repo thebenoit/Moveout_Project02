@@ -10,6 +10,7 @@ const bcrypt = require("bcryptjs");
 const validator = require("validator");
 const createLog = require("../interface/logs");
 const { generateJwt } = require("../interface/JWT");
+const { response } = require("../../routes/api/appartement");
 
 /**
  * function qui permet de get tout les appart de la base de données
@@ -271,6 +272,30 @@ async function login(identifier, password) {
   }
 }
 
+async function logout(req,res) {
+
+  try {
+    const {username} = req.decoded
+
+    let user = await Users.findOne({username});
+
+    user.accessToken = "";
+
+    await user.save()
+
+    return {message: responses.success.accountLogout}
+
+    
+  }catch(error){
+    console.log('erreur lors du logout: ', error)
+
+    return {error: responses.errors.client.logoutError}
+    
+
+    
+  }
+}
+
 async function createLead(firstName, lastName, phone, email) {
   try {
     if (!validator.isEmail(email)) {
@@ -337,6 +362,7 @@ async function createLead(firstName, lastName, phone, email) {
 module.exports = {
   createAccount,
   login,
+  logout,
   createLead,
   createPreference,
 };

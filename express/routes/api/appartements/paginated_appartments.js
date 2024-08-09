@@ -6,11 +6,12 @@ module.exports = app.post("/page", async (req, res) => {
 	try {
 		const pageNumber = req.body.pageNumber || 1
 
-		appartData = await fetchPage(pageNumber, 656);
+		appartData = await fetchPage(pageNumber, 434);
 
 		try{
 			appartData = appartData.map((appart) => {
 				try {
+					
 					return {
 						id: appart.for_sale_item.id,
 						location: [appart.for_sale_item.location.latitude, appart.for_sale_item.location.longitude],
