@@ -13,6 +13,7 @@ import {
 import { LMarkerClusterGroup } from "vue-leaflet-markercluster";
 import "leaflet/dist/leaflet.css";
 //import 'vue-leaflet-markercluster/dist/style.css'
+import { decodeJwt } from "jose";
 
 // icons
 import listingCard from "@/components/listingCard.vue";
@@ -29,6 +30,9 @@ import icon from "../assets/images/marker-icon.png";
 // stores
 import { useMapStore } from "@/stores/mapStore.js";
 import BetaLogo from "@/components/BetaLogo.vue";
+
+
+
 
 const mapStore = useMapStore();
 
@@ -91,16 +95,29 @@ function extractCity(fullAddress) {
 
 onMounted(async () => {
   try {
+    //get le token et le decode
+    const token =  await decodeJwt(utils.getToken())
+    
+    
+    const pref = await utils.get(`api/client/preference/${token.prefId}`)
+
+    if(!pref){
+        console.log('preference nexiste pas: ')
+    }
+
+    console.log('pref: ',pref)
+
+
     mapStore.map = map.value;
 
     // Await the result of `utils.post` and assign it to `apparts.value`
     const response = await utils.post(
             'api/appartements/pageForYou', 
             { "pageNumber": 1, 
-            "priceMin": 200,
-            "priceMax": 2000,
-            "numberBedrooms":['2','4'],
-            "location":'montreal'});
+           "priceMin": pref.budget.minValue,
+            "priceMax": pref.budget.maxValue,
+            "numberBedrooms":pref.numberOfBedrooms,
+            "location":pref.locationPreferences});
     apparts.value = response;
 
     // Set the rendered flag

@@ -46,8 +46,7 @@ module.exports = app.post("/pageForYou", async (req, res) => {
               
               bedrooms = 1;
             }
-            console.log('custom: ', appart.for_sale_item.custom_title)
-            console.log('bedrooms: ', bedrooms)
+      
             // Retourner les informations de l'appartement
             
             return {

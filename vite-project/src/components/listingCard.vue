@@ -57,8 +57,8 @@ const props = defineProps({
         required: true,
     },
     price: {
-        type: String,
-        default: "1500",
+        type: Number,
+        default: 1500,
         required: true,
     },
     location: {
