@@ -61,7 +61,7 @@ async function login(){
             Login
           </CardTitle>
           <CardDescription>
-            Fill the form below to login to your account
+            remplissez ce formulaire pour vous connecter
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -78,19 +78,19 @@ async function login(){
               <Input id="phone" type="phone" placeholder="Phone number" required />
             </div> -->
             <div class="grid mt-1">
-              <input id="email" placeholder="Email or Phone Number" v-model="identifier" required />
+              <input id="email" placeholder="Email ou Tel" v-model="identifier" required />
             </div>
             <div class="grid mt-1">
-              <input id="password" type="password" placeholder="Password" v-model="password" required />
+              <input id="password" type="password" placeholder="mot de passe" v-model="password" required />
             </div>
             <Button type="submit" class="w-full bg-cyan-500" @click="login">
               Log in
             </Button>
           </div>
           <div class="mt-4 text-center text-sm">
-            Don't have an account?
+            Vous n'avez pas de compte?
             <a href="/signup" class="underline">
-              Sign up
+              Inscrivez-vous
             </a>
           </div>
         </CardContent>
