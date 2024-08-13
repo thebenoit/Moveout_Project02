@@ -24,11 +24,11 @@ const router = createRouter({
       name: 'home',
       component: Home
     },
-    // {
-    //   path: '/appartements',
-    //   name: 'appartements',
-    //   component: Appartements
-    // },
+    {
+      path: '/appartements',
+      name: 'appartements',
+      component: Appartements
+    },
     // {
     //   path: '/demenagement',
     //   name: 'demenagement',

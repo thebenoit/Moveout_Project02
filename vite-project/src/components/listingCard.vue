@@ -163,7 +163,7 @@ const openLink = () => {
                     </svg>
                 </div>
                 <div class="flex">
-                    <div class="font-medium text-xl">{{ price }}</div>
+                    <div class="font-medium text-xl">{{ price }}/mois</div>
                 </div>
 
             </div>

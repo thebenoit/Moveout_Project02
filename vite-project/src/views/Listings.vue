@@ -25,6 +25,7 @@ import {
 } from "@heroicons/vue/24/outline";
 
 import icon from "../assets/images/marker-icon.png";
+import MultiSlider from "@/components/ui/input/multirange-input/multiRangeInput.vue";
 
 // stores
 import { useMapStore } from "@/stores/mapStore.js";
@@ -51,6 +52,13 @@ const inputPrixMax = ref(0);
 const zoom = ref(12);
 
 const isRendered = ref(false);
+
+const selectedBedrooms = ref([]);
+const selectedBathrooms = ref([]);
+const selectedBudget = ref({
+  minValue: 0,
+  maxValue: 100,
+});
 
 function extractBathrooms(description) {
   // Use a regular expression to find the number of bathrooms
@@ -118,22 +126,31 @@ function setItemRef(el, idx) {
     itemRefs.value[idx] = el;
   }
 }
+//
+const toggleBathroomsSelection = (bathrooms) => {
+  if (selectedBathrooms.value.includes(bathrooms)) {
+    //remove if already selected
+    selectedBathrooms.value = selectedBathrooms.value.filter(
+      (n) => n !== bathrooms
+    );
+  } else {
+    console.log("push bathrooms: ", bathrooms);
+    selectedBathrooms.value.push(bathrooms);
+  }
+};
+// Fonction pour gérer la sélection du nombre de chambres
+const toggleBedroomsSelection = (bedrooms) => {
+  if (selectedBedrooms.value.includes(bedrooms)) {
+    //remove if already selected
+    selectedBedrooms.value = selectedBedrooms.value.filter(
+      (n) => n !== bedrooms
+    );
+  } else {
+    console.log("push bedrooms: ", bedrooms);
+    selectedBedrooms.value.push(bedrooms);
+  }
+};
 
-// function scrollToItem(id) {
-//     try{
-//         const item = itemRefs.value[id];
-//     if (item) {
-//         console.log('item: ', item)
-//         item.nextElementSibling.scrollIntoView({ behavior: 'smooth' });
-//     } else {
-//         console.warn(`Item with id ${id} not found`);
-//     }
-//     }catch(error){
-//         console.log('erreur survenu lors du scrollToItem: ',error )
-
-//     }
-
-// }
 function scrollToItem(id) {
   //setTimeout(() => {
     // Existing code
@@ -157,6 +174,16 @@ function scrollToItem(id) {
     }
   //}, 0); // Adjust the delay as necessary
 }
+const handleMinValueChange = (value) => {
+  console.log('Min value changed:', value); // Vérifiez la valeur reçue
+  selectedBudget.value.minValue = value;
+};
+
+const handleMaxValueChange = (value) => {
+  console.log('Max value changed:', value); // Vérifiez la valeur reçue
+  selectedBudget.value.maxValue = value;
+};
+
 
 const resultsCount = computed(() => apparts.value.length);
 
@@ -191,21 +218,56 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
           <div>
             <h1 class="text-2xl font-medium">Montreal</h1>
             <p class="">{{ resultsCount }} results</p>
+            <p> is large Screen?{{isLargeScreen}}</p>
+           
+            
           </div>
           <div class="flex h-full my-auto space-x-2">
             <!-- <div>saved</div>
                     <input type="checkbox" class="toggle my-auto toggle-primary" checked="checked" /> -->
           </div>
         </div>
-        <div class="h-14 mt-2 flex w-full justify-between">
+       
+        <div class=" h-14 mt-2 flex w-full justify-between ">
           <div class="overflow-x-auto whitespace-nowrap space-x-3">
-            <div class="btn btn-sm border-gray-400">
-              <div>
-                <CurrencyDollarIcon class="size-6" />
-              </div>
-              <div>Price</div>
+             <!-- cache tout ce qui est plus grand qu'un petit écran -->
+           
+         
+            
+            <div class="btn bg-blue-main btn-sm text-white border-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
+              </svg>
+              
+              <div>For rent</div>
             </div>
-            <div class="btn btn-sm border-gray-400">
+
+             
+           <!-- Open the modal using ID.showModal() method -->
+<button class="btn btn-sm" onclick="my_modal_1.showModal()">
+  <div>
+    <CurrencyDollarIcon class="size-6" />
+  </div>
+  <div>Prix</div></button>
+<dialog id="my_modal_1" class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold text-blue-main text-center">Prix</h3>
+    <p class="py-4 text-center">Inscrivez les prix qui vous conviennent</p>
+    <MultiSlider
+    :min="0"
+    :max="100"
+    @update:minValue="handleMinValueChange"
+    @update:maxValue="handleMaxValueChange"
+  ></MultiSlider>
+    <div class="modal-action">
+      <form method="dialog">
+        <!-- if there is a button in form, it will close the modal -->
+        <button class="btn bg-blue-main text-white">Continuer</button>
+      </form>
+    </div>
+  </div>
+</dialog>
+            <button class="btn btn-sm border-gray-400 " onclick="my_modal_2.showModal()">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="#686868"
@@ -229,10 +291,44 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
                 </defs>
               </svg>
               <div>Bedrooms</div>
-            </div>
-            <div class="btn btn-sm border-gray-400">
-              <div>
-                <svg
+            </button>
+            <dialog id="my_modal_2" class="modal">
+              <div class="modal-box ">
+                <h3 class="text-lg font-bold text-blue-main text-center">Chambres</h3>
+                <p class="py-4 text-center">Chosisez le nombre de chambre qui vous intéresse</p>
+                
+                <div class="flex justify-center ">
+                  <button
+                
+                  v-for="bedrooms in ['1', '2', '3', '4', '5+']"
+                  :key="bedrooms"
+                  @click="toggleBedroomsSelection(bedrooms)"
+                  :class="{
+                    '  bg-blue-main text-white ':
+                      selectedBedrooms.includes(bedrooms),
+                    ' bg-gray-200 text-gray-700 ':
+                      !selectedBedrooms.includes(bedrooms),
+                  }"
+                  class="px-4 py-2 rounded-md border m-2"
+                >
+                  {{ bedrooms }}
+                </button>
+
+                </div>
+                
+                <div class="modal-action">
+                  <form method="dialog">
+                    <!-- if there is a button in form, it will close the modal -->
+                    <button class="btn btn-active btn-accent  bg-blue-main text-white">Continuer</button>
+                  </form>
+                </div>
+              </div>
+            </dialog>
+
+
+
+            <!-- <button class="btn btn-sm border-gray-400 " onclick="my_modal_3.showModal()">
+              <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="#686868"
                   viewBox="0 0 13 13"
@@ -250,15 +346,50 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
                     </clipPath>
                   </defs>
                 </svg>
-              </div>
               <div>Bathrooms</div>
-            </div>
-            <div class="btn btn-sm border-gray-400">
+            </button>
+            <dialog id="my_modal_3" class="modal">
+              <div class="modal-box ">
+                <h3 class="text-lg font-bold text-blue-main text-center">Toilettex</h3>
+                <p class="py-4 text-center">Chosisez le nombre de Toilettes qui vous intéresse</p>
+                
+                <div class="flex justify-center ">
+                  <button
+                
+                  v-for="bathrooms in ['1', '2', '3', '4', '5+']"
+                  :key="bathrooms"
+                  @click="toggleBathroomsSelection(bathrooms)"
+                  :class="{
+                    '  bg-blue-main text-white ':
+                      selectedBathrooms.includes(bathrooms),
+                    ' bg-gray-200 text-gray-700 ':
+                      !selectedBathroomss.includes(bathrooms),
+                  }"
+                  class="px-4 py-2 rounded-md border m-2"
+                >
+                  {{ bathrooms }}
+                </button>
+
+                </div>
+                
+                <div class="modal-action">
+                  <form method="dialog"> -->
+                    <!-- if there is a button in form, it will close the modal -->
+                    <!-- <button class="btn btn-active btn-accent  bg-blue-main text-white">Continuer</button>
+                  </form>
+                </div>
+              </div>
+            </dialog>  -->
+
+
+            <!-- <div class="btn btn-sm border-gray-400"
+           >
               <div>
                 <MapPinIcon class="size-6" />
               </div>
               <div>location</div>
-            </div>
+            </div> -->
+          
           </div>
           <!-- <div class="my-auto min-w-fit ml-10">display modesa</div> -->
         </div>
