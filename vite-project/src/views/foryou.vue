@@ -98,7 +98,7 @@ onMounted(async () => {
     //get le token et le decode
     const token =  await decodeJwt(utils.getToken())
     
-    
+    //get la préférence spécifique
     const pref = await utils.get(`api/client/preference/${token.prefId}`)
 
     if(!pref){
