@@ -1,6 +1,8 @@
 <script setup>
 import utils from "../utils/utils.js";
 import { ref, onMounted, onUnmounted, computed, watch } from "vue";
+import { useRouter } from 'vue-router';
+
 
 // leaflet
 import {
@@ -32,6 +34,7 @@ import { useMapStore } from "@/stores/mapStore.js";
 import BetaLogo from "@/components/BetaLogo.vue";
 
 const mapStore = useMapStore();
+const router = useRouter();
 
 // Initialize the `apparts` ref as an empty array
 const apparts = ref([
@@ -339,7 +342,7 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
           <div>
             <h1 class="text-2xl font-medium">Montreal</h1>
             <p class="">{{ resultsCount }} results</p>
-            <p>is large Screen?{{ isLargeScreen }}</p>
+            
           </div>
           <div class="flex h-full my-auto space-x-2">
             <!-- <div>saved</div>
@@ -351,23 +354,13 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
           <div class="overflow-x-auto whitespace-nowrap space-x-3">
             <!-- cache tout ce qui est plus grand qu'un petit écran -->
 
-            <div class="btn bg-blue-main btn-sm text-white border-gray-400">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-6"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3"
-                />
+            <div class="btn bg-red-400 btn-sm text-white border-gray-400" @click="router.push('/foryou')">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
               </svg>
+              
 
-              <div>for rent</div>
+              <div>Pour toi</div>
             </div>
 
             <!-- Open the modal using ID.showModal() method -->
@@ -432,7 +425,7 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
                   </clipPath>
                 </defs>
               </svg>
-              <div>Bedrooms</div>
+              <div>Chambres</div>
             </button>
             <dialog id="my_modal_2" class="modal">
               <div class="modal-box">

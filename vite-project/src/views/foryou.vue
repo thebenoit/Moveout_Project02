@@ -1,6 +1,7 @@
 <script setup>
 import utils from "../utils/utils.js";
 import { ref, onMounted,onUnmounted, computed, watch } from "vue";
+import { useRouter } from 'vue-router';
 
 // leaflet
 import {
@@ -35,6 +36,7 @@ import BetaLogo from "@/components/BetaLogo.vue";
 
 
 const mapStore = useMapStore();
+const router = useRouter();
 
 // Initialize the `apparts` ref as an empty array
 const apparts = ref([
@@ -105,7 +107,7 @@ onMounted(async () => {
         console.log('preference nexiste pas: ')
     }
 
-    console.log('pref: ',pref)
+    // console.log('pref: ',pref)
 
 
     mapStore.map = map.value;
@@ -141,8 +143,8 @@ function setItemRef(el, idx) {
 }
 
 function scrollToItem(id) {
-  //setTimeout(() => {
-    // Existing code
+  setTimeout(() => {
+    //Existing code
     try {
       const item = itemRefs.value[id];
       if (item && item.nodeType === 1) {
@@ -161,7 +163,7 @@ function scrollToItem(id) {
     } catch (error) {
       console.log("Error during scrollToItem:", error);
     }
-  //}, 0); // Adjust the delay as necessary
+  }, 0); // Adjust the delay as necessary
 }
 
 const resultsCount = computed(() => apparts.value.length);
@@ -217,7 +219,26 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
           </div>
         </div>
         <div class="h-14 mt-2 flex w-full justify-between">
-          <div class="overflow-x-auto whitespace-nowrap space-x-3">
+          <div class="btn bg-blue-main btn-sm text-white border-gray-400" @click="router.push('/listings')">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
+            </svg>
+            
+            
+
+            <div>Main</div>
+          </div>
+          <!-- <div class="overflow-x-auto whitespace-nowrap space-x-3">
+            <div class="btn bg-blue-main btn-sm text-white border-gray-400" @click="router.push('/listings')">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
+              </svg>
+              
+              
+
+              <div>Main</div>
+            </div>
+
             <div class="btn btn-sm border-gray-400">
               <div>
                 <CurrencyDollarIcon class="size-6" />
@@ -278,7 +299,7 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
               </div>
               <div>location</div>
             </div>
-          </div>
+          </div> -->
           <!-- <div class="my-auto min-w-fit ml-10">display modesa</div> -->
         </div>
         <div
@@ -298,7 +319,10 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
             :location="appart.location"
             :ref="
               (el) => {
-                setItemRef(el.$el, appart.id);
+                //si le composant n'est pas null
+                if (el && el.$el) {
+                  setItemRef(el.$el, appart.id);
+                }
               }
             "
           />
@@ -345,7 +369,10 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
                   :location="appart.location"
                   :ref="
                     (el) => {
-                      setItemRef(el.$el, appart.id);
+                      //si le composant n'est pas null
+                if (el && el.$el) {
+                  setItemRef(el.$el, appart.id);
+                }
                     }
                   "
                 />
