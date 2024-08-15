@@ -6,8 +6,10 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
   try {
     // Récupérer les paramètres de la query
     const { numberBedrooms, minPrice, maxPrice } = req.query;
+	const pageNumber = req.body.pageNumber
+	console.log(pageNumber)
 
-		appartData = await fetchPage(pageNumber, 24);
+	appartData = await fetchPage(pageNumber, 100);
 
     // Initialiser un tableau pour stocker les valeurs des chambres
     let bedroomsArray = [];

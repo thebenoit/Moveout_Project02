@@ -56,6 +56,7 @@ const zoom = ref(12);
 const currentPage = ref(1);
 const totalPages = ref(100);
 const queryString = ref("");
+// const pageNumber = ref(1)
 
 const isRendered = ref(false);
 
@@ -131,13 +132,13 @@ const fetchData = async () => {
 
     if (!queryString.value) {
       response = await utils.post(`api/appartements/page`, {
-        pageNumber: 1,
+        pageNumber: currentPage.value,
       });
     } else {
       response = await utils.post(
         `api/appartements/page?${queryString.value}`,
         {
-          pageNumber: 1,
+          pageNumber: currentPage.value,
         }
       );
     }
@@ -213,31 +214,31 @@ function updateChange() {
   updateQueryString();
   fetchData();
 }
-async function fetchPage(pageNumber) {
-  try {
-    isRendered.value = false;
+// async function fetchPage(pageNumber) {
+//   try {
+//     isRendered.value = false;
 
-    const response = await utils.post("api/appartements/page", {
-      pageNumber: pageNumber,
-    });
+//     const response = await utils.post("api/appartements/page", {
+//       pageNumber: pageNumber,
+//     });
 
-    if (response) {
-      apparts.value = response;
-      console.log(response);
-    } else {
-      console.error("Failed to fetch data");
-    }
-  } catch (error) {
-    console.error("Error fetching page:", error);
-  } finally {
-    isRendered.value = true;
-  }
-}
+//     if (response) {
+//       apparts.value = response;
+//       console.log(response);
+//     } else {
+//       console.error("Failed to fetch data");
+//     }
+//   } catch (error) {
+//     console.error("Error fetching page:", error);
+//   } finally {
+//     isRendered.value = true;
+//   }
+// }
 
 const nextPage = async () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value++;
-    await fetchPage(currentPage.value);
+    await fetchData();
   } else {
     console.log("You are on the last page.");
   }
@@ -246,7 +247,7 @@ const nextPage = async () => {
 const lastPage = async () => {
   if (currentPage.value > 1) {
     currentPage.value--;
-    await fetchPage(currentPage.value);
+    await fetchData();
   } else {
     console.log("You are on the first page.");
   }
@@ -382,7 +383,7 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
         <div class="w-full flex justify-between">
           <div>
             <h1 class="text-2xl font-medium">Montreal</h1>
-            <p class=""> {{ resultsCount }} sur {{ resultsCount }}</p>
+            <p class=""> {{ currentPage }} sur {{ resultsCount }}</p>
             <p> is large Screen?{{isLargeScreen}}</p>
            
             
@@ -612,43 +613,42 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
         }"
       >
         <l-map
-          ref="map"
-          v-model:zoom="mapStore.currentZoom"
-          v-model:center="mapStore.currentLocation"
-          class="h-full"
-          :options="{ zoomControl: false }"
-        >
-          <l-tile-layer
-            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-            layer-type="base"
-            name="OpenStreetMap"
-          ></l-tile-layer>
-          <l-control-zoom position="bottomright"></l-control-zoom>
-          <l-marker-cluster-group>
-            <l-marker
-              v-for="appart in apparts"
-              :key="appart.id"
-              :lat-lng="appart.location"
-              @click="scrollToItem(appart.id)"
-            >
-              <LPopup class="p-0">
-                <listingCard
-                  :key="appart.id"
-                  :id="appart.id"
-                  :price="appart.price"
-                  :city="extractCity(appart.fullAddress)"
-                  :bedrooms="extractBedrooms(appart.customTitle)"
-                  :bathrooms="extractBathrooms(appart.customTitle)"
-                  :rating="0"
-                  :img="appart.img"
-                  :address="appart.fullAddress"
-                  :location="appart.location"
-                  :ref="(el) => {setItemRef(el.$el, appart.id);}"
-                />
-              </LPopup>
-            </l-marker>
-          </l-marker-cluster-group>
-        </l-map>
+    ref="map"
+    v-model:zoom="mapStore.currentZoom"
+    v-model:center="mapStore.currentLocation"
+    class="h-full"
+    :options="{ zoomControl: false }"
+  >
+    <l-tile-layer
+      url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+      layer-type="base"
+      name="OpenStreetMap"
+    ></l-tile-layer>
+    <l-control-zoom position="bottomright"></l-control-zoom>
+    <l-marker-cluster-group ref="markerCluster">
+      <l-marker
+        v-for="appart in apparts"
+        :key="appart.id"
+        :lat-lng="appart.location"
+        @click="scrollToItem(appart.id)"
+      >
+        <LPopup class="p-0">
+          <listingCard
+            :key="appart.id"
+            :id="appart.id"
+            :price="appart.price"
+            :city="extractCity(appart.fullAddress)"
+            :bedrooms="extractBedrooms(appart.customTitle)"
+            :bathrooms="extractBathrooms(appart.customTitle)"
+            :rating="0"
+            :img="appart.img"
+            :address="appart.fullAddress"
+            :location="appart.location"
+          />
+        </LPopup>
+      </l-marker>
+    </l-marker-cluster-group>
+  </l-map>
       </div>
     </div>
   </div>
