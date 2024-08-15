@@ -50,7 +50,8 @@ const inputPrixMin = ref(0);
 const inputPrixMax = ref(0);
 
 const zoom = ref(12);
-
+const currentPage = ref(1);
+const totalPages = ref(100);
 const isRendered = ref(false);
 
 const selectedBedrooms = ref([]);
@@ -102,17 +103,55 @@ onMounted(async () => {
     mapStore.map = map.value;
 
     // Await the result of `utils.post` and assign it to `apparts.value`
-    const response = await utils.post("api/appartements/page", {
-      pageNumer: 1,
-    });
-    apparts.value = response;
+    // const response = await utils.post("api/appartements/page", {
+    //   pageNumer: 1,
+    // });
+    // apparts.value = response;
+    fetchPage(currentPage.value)
 
-    // Set the rendered flag
-    isRendered.value = true;
   } catch (error) {
     console.error("Error fetching apartments:", error);
   }
 });
+
+async function fetchPage(pageNumber) {
+  try {
+    isRendered.value = false;
+
+    const response = await utils.post("api/appartements/page", {
+      pageNumber: pageNumber,
+    });
+
+    if (response) {
+      apparts.value = response;
+      console.log(response);
+    } else {
+      console.error("Failed to fetch data");
+    }
+  } catch (error) {
+    console.error("Error fetching page:", error);
+  } finally {
+    isRendered.value = true;
+  }
+}
+
+const nextPage = async () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+    await fetchPage(currentPage.value);
+  } else {
+    console.log("You are on the last page.");
+  }
+};
+
+const lastPage = async () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+    await fetchPage(currentPage.value);
+  } else {
+    console.log("You are on the first page.");
+  }
+};
 
 onUnmounted(() => {
     // Nettoyage ou annulation des opérations en cours
@@ -217,7 +256,7 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
         <div class="w-full flex justify-between">
           <div>
             <h1 class="text-2xl font-medium">Montreal</h1>
-            <p class="">{{ resultsCount }} results</p>
+            <p class=""> {{ resultsCount }} sur {{ resultsCount }}</p>
             <p> is large Screen?{{isLargeScreen}}</p>
            
             
@@ -393,9 +432,7 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
           </div>
           <!-- <div class="my-auto min-w-fit ml-10">display modesa</div> -->
         </div>
-        <div
-          class="w-full pt-5 space-y-4 h-[75vh] overflow-y-auto whitespace-nowrap p-2 flex flex-wrap gap-3 justify-around"
-        >
+        <div class="w-full pt-5 space-y-4 h-[70vh] overflow-y-auto whitespace-nowrap p-2 flex flex-wrap gap-3 justify-around">
           <listingCard
             v-for="appart in apparts"
             :key="appart.id"
@@ -408,13 +445,22 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
             :img="appart.img"
             :address="appart.fullAddress"
             :location="appart.location"
-            :ref="
-              (el) => {
-                setItemRef(el.$el, appart.id);
-              }
-            "
+            :ref="(el) => setItemRef(el, appart.id)"
           />
+          <!-- <div class="join py-5">
+            <button class="join-item btn btn-md btn-active">1</button>
+            <button class="join-item btn btn-md">2</button>
+            <button class="join-item btn btn-md">{{ currentPage }}</button>
+            <button class="join-item btn btn-md">3</button>
+            <button class="join-item btn btn-md">4</button>
+          </div> -->
+
         </div>
+          <div class="join mx-auto">
+            <button class="join-item btn" @click="lastPage">«</button>
+            <button class="join-item btn">Page {{ currentPage }}</button>
+            <button class="join-item btn" @click="nextPage">»</button>
+          </div>
       </div>
       <div
         :class="{
@@ -455,11 +501,7 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
                   :img="appart.img"
                   :address="appart.fullAddress"
                   :location="appart.location"
-                  :ref="
-                    (el) => {
-                      setItemRef(el.$el, appart.id);
-                    }
-                  "
+                  :ref="(el) => {setItemRef(el.$el, appart.id);}"
                 />
               </LPopup>
             </l-marker>

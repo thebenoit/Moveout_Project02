@@ -6,7 +6,7 @@ module.exports = app.post("/page", async (req, res) => {
 	try {
 		const pageNumber = req.body.pageNumber || 1
 
-		appartData = await fetchPage(pageNumber, 434);
+		appartData = await fetchPage(pageNumber, 24);
 
 		try{
 			appartData = appartData.map((appart) => {
