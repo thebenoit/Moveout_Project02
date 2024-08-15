@@ -197,14 +197,14 @@ onMounted(async () => {
   // }
 });
 
-watch(
-  [selectedBudget.value.minValue, selectedBudget.value.maxValue],
-  async () => {
-    console.log("dans Watcher: ");
-    updateQueryString();
-    await fetchData();
-  }
-);
+// watch(
+//   [selectedBudget.value.minValue, selectedBudget.value.maxValue],
+//   async () => {
+//     console.log("dans Watcher: ");
+//     updateQueryString();
+//     await fetchData();
+//   }
+// );
 
 function updateChange() {
   console.log("dans updateChange: ");
