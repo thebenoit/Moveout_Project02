@@ -1,6 +1,8 @@
 <script setup>
 import utils from "../utils/utils.js";
-import { ref, onMounted,onUnmounted, computed, watch } from "vue";
+import { ref, onMounted, onUnmounted, computed, watch } from "vue";
+import { useRouter } from 'vue-router';
+
 
 // leaflet
 import {
@@ -32,6 +34,7 @@ import { useMapStore } from "@/stores/mapStore.js";
 import BetaLogo from "@/components/BetaLogo.vue";
 
 const mapStore = useMapStore();
+const router = useRouter();
 
 // Initialize the `apparts` ref as an empty array
 const apparts = ref([
@@ -52,6 +55,8 @@ const inputPrixMax = ref(0);
 const zoom = ref(12);
 const currentPage = ref(1);
 const totalPages = ref(100);
+const queryString = ref("");
+
 const isRendered = ref(false);
 
 const selectedBedrooms = ref([]);
@@ -97,23 +102,117 @@ function extractCity(fullAddress) {
     return null;
   }
 }
+const updateQueryString = () => {
+  let query = "";
+  if (selectedBedrooms.value) {
+    console.log(`numberBedrooms=${selectedBedrooms.value}&`);
 
-onMounted(async () => {
+    query += `numberBedrooms=${selectedBedrooms.value}&`;
+  }
+
+  if (selectedBudget.value.minValue) {
+    console.log(`minPrice=${selectedBudget.value.minValue}&`);
+    query += `minPrice=${selectedBudget.value.minValue}&`;
+  }
+  if (selectedBudget.value.maxValue) {
+    console.log(`maxPrice=${selectedBudget.value.maxValue}&`);
+    query += `maxPrice=${selectedBudget.value.maxValue}&`;
+  }
+  // Remove the last "&" if it exists
+  queryString.value = query.slice(0, -1);
+  console.log(`query ${query}`);
+};
+
+const fetchData = async () => {
   try {
+    let response = "";
+
     mapStore.map = map.value;
 
-    // Await the result of `utils.post` and assign it to `apparts.value`
-    // const response = await utils.post("api/appartements/page", {
-    //   pageNumer: 1,
-    // });
-    // apparts.value = response;
-    fetchPage(currentPage.value)
+    if (!queryString.value) {
+      response = await utils.post(`api/appartements/page`, {
+        pageNumber: 1,
+      });
+    } else {
+      response = await utils.post(
+        `api/appartements/page?${queryString.value}`,
+        {
+          pageNumber: 1,
+        }
+      );
+    }
 
+    apparts.value = response;
+    isRendered.value = true;
   } catch (error) {
     console.error("Error fetching apartments:", error);
   }
+};
+
+onMounted(async () => {
+  updateQueryString();
+  await fetchData();
+  // try {
+  //   let response ="";
+  //   let queryString = "";
+
+  //   mapStore.map = map.value;
+
+  //   console.log(`minPrice=${selectedBudget.value.minValue}&`)
+  //     queryString += `minPrice=${selectedBudget.value.minValue}&`;
+
+  //     console.log(`maxPrice=${selectedBudget.value.maxValue}&`)
+  //     queryString += `maxPrice=${selectedBudget.value.maxValue}&`;
+
+  //   //si le bedrooms n'est pas undefined ajoute le dans le queryString
+  //   // if (selectedBedrooms.value) {
+  //   //   queryString += `bedrooms=${selectedBedrooms.value}&`;
+  //   // }
+
+  //   // Retirer le dernier "&" si nécessaire
+  //   queryString = queryString.slice(0, -1);
+
+  //   //si le query string est undefined
+  //   if (!queryString) {
+  //      response = await utils.post(`api/appartements/page`, {
+  //       pageNumer: 1,
+  //     });
+
+  //     //sinon
+  //   } else {
+  //     console.log('queryString: ', queryString)
+  //     // Await the result of `utils.post` and assign it to `apparts.value`
+  //      response = await utils.post(
+  //       `api/appartements/page?${queryString}`,
+  //       {
+  //         pageNumer: 1,
+  //       }
+  //     );
+  //   }
+
+  //   apparts.value = response;
+
+  //   // Set the rendered flag
+  //   isRendered.value = true;
+  // } catch (error) {
+  //   console.error("Error fetching apartments:", error);
+  // }
 });
 
+// watch(
+//   [selectedBudget.value.minValue, selectedBudget.value.maxValue],
+//   async () => {
+//     console.log("dans Watcher: ");
+//     updateQueryString();
+//     await fetchData();
+//   }
+// );
+
+function updateChange() {
+  console.log("dans updateChange: ");
+  updateQueryString();
+  fetchData();
+}
 async function fetchPage(pageNumber) {
   try {
     isRendered.value = false;
@@ -154,7 +253,7 @@ const lastPage = async () => {
 };
 
 onUnmounted(() => {
-    // Nettoyage ou annulation des opérations en cours
+  // Nettoyage ou annulation des opérations en cours
 });
 
 // Use ref to access the item container and individual listingCards
@@ -190,39 +289,66 @@ const toggleBedroomsSelection = (bedrooms) => {
   }
 };
 
+const filteredApparts = computed(() => {
+  try {
+    const filtered = apparts.value.filter((appart) => {
+      // Si price est déjà un nombre, vous pouvez l'utiliser directement sans conversion.
+      const price = parseFloat(
+        appart.price.replace(/[^0-9.,]/g, "").replace(",", ".")
+      );
+
+      //extraire le premier caractère qui est  bedroom et converti le en float
+      let bedrooms = extractBedrooms(appart.customTitle);
+      // si ce n'est pas un nombre comme s dans studio ou c dans chambre privé met 1
+      if (isNaN(bedrooms)) {
+        bedrooms = 1;
+      }
+
+      console.log(`bedrooms: ${bedrooms}`);
+
+      console.log("price: ", price);
+
+      // Retournez la condition de filtrage directement
+      return selectedBedrooms.value.includes(bedrooms); //price <= selectedBudget.value.maxValue && price >= selectedBudget.value.minValue
+    });
+    return filtered;
+  } catch (error) {
+    console.log(`erreur lors de la filtration d'appartement ${error}`);
+  }
+});
+
 function scrollToItem(id) {
   //setTimeout(() => {
-    // Existing code
-    try {
-      const item = itemRefs.value[id];
-      if (item && item.nodeType === 1) {
-        console.log('item node: ',item )
-        // Ensuring it's an element node
-        item.nextElementSibling.scrollIntoView({ behavior: "smooth" });
-      } else if (item && item.nextElementSibling) {
-        console.log('element: ',item )
-        console.warn(
-          `Item with id ${id} is not an element, but has a next sibling`
-        );
-        item.nextElementSibling.scrollIntoView({ behavior: "smooth" });
-      } else {
-        console.warn(`Item with id ${id} not found or has no next sibling`);
-      }
-    } catch (error) {
-      console.log("Error during scrollToItem:", error);
+  // Existing code
+  try {
+    const item = itemRefs.value[id];
+    if (item && item.nodeType === 1) {
+      console.log("item node: ", item);
+      // Ensuring it's an element node
+      item.nextElementSibling.scrollIntoView({ behavior: "smooth" });
+    } else if (item && item.nextElementSibling) {
+      console.log("element: ", item);
+      console.warn(
+        `Item with id ${id} is not an element, but has a next sibling`
+      );
+      item.nextElementSibling.scrollIntoView({ behavior: "smooth" });
+    } else {
+      console.warn(`Item with id ${id} not found or has no next sibling`);
     }
+  } catch (error) {
+    console.log("Error during scrollToItem:", error);
+  }
   //}, 0); // Adjust the delay as necessary
 }
 const handleMinValueChange = (value) => {
-  console.log('Min value changed:', value); // Vérifiez la valeur reçue
+  console.log("Min value changed:", value); // Vérifiez la valeur reçue
   selectedBudget.value.minValue = value;
 };
 
 const handleMaxValueChange = (value) => {
-  console.log('Max value changed:', value); // Vérifiez la valeur reçue
+  console.log("Max value changed:", value); // Vérifiez la valeur reçue
   selectedBudget.value.maxValue = value;
 };
-
 
 const resultsCount = computed(() => apparts.value.length);
 
@@ -266,47 +392,60 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
                     <input type="checkbox" class="toggle my-auto toggle-primary" checked="checked" /> -->
           </div>
         </div>
-       
-        <div class=" h-14 mt-2 flex w-full justify-between ">
+
+        <div class="h-14 mt-2 flex w-full justify-between">
           <div class="overflow-x-auto whitespace-nowrap space-x-3">
-             <!-- cache tout ce qui est plus grand qu'un petit écran -->
-           
-         
-            
-            <div class="btn bg-blue-main btn-sm text-white border-gray-400">
+            <!-- cache tout ce qui est plus grand qu'un petit écran -->
+
+            <div class="btn bg-red-400 btn-sm text-white border-gray-400" @click="router.push('/foryou')">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
               </svg>
               
-              <div>For rent</div>
+
+              <div>Pour toi</div>
             </div>
 
-             
-           <!-- Open the modal using ID.showModal() method -->
-<button class="btn btn-sm" onclick="my_modal_1.showModal()">
-  <div>
-    <CurrencyDollarIcon class="size-6" />
-  </div>
-  <div>Prix</div></button>
-<dialog id="my_modal_1" class="modal">
-  <div class="modal-box">
-    <h3 class="text-lg font-bold text-blue-main text-center">Prix</h3>
-    <p class="py-4 text-center">Inscrivez les prix qui vous conviennent</p>
-    <MultiSlider
-    :min="0"
-    :max="100"
-    @update:minValue="handleMinValueChange"
-    @update:maxValue="handleMaxValueChange"
-  ></MultiSlider>
-    <div class="modal-action">
-      <form method="dialog">
-        <!-- if there is a button in form, it will close the modal -->
-        <button class="btn bg-blue-main text-white">Continuer</button>
-      </form>
-    </div>
-  </div>
-</dialog>
-            <button class="btn btn-sm border-gray-400 " onclick="my_modal_2.showModal()">
+            <!-- Open the modal using ID.showModal() method -->
+            <button class="btn btn-sm" onclick="my_modal_1.showModal()">
+              <div>
+                <CurrencyDollarIcon class="size-6" />
+              </div>
+              <div>Prix</div>
+            </button>
+            <dialog id="my_modal_1" class="modal">
+              <div class="modal-box">
+                <h3 class="text-lg font-bold text-blue-main text-center">
+                  Prix
+                </h3>
+
+                <p class="py-4 text-center">
+                  Inscrivez les prix qui vous conviennent
+                </p>
+                <MultiSlider
+                  :min="0"
+                  :max="100"
+                  @update:minValue="handleMinValueChange"
+                  @update:maxValue="handleMaxValueChange"
+                ></MultiSlider>
+                <div class="modal-action">
+                  <form method="dialog">
+                    <!-- if there is a button in form, it will close the modal -->
+
+                    <button
+                      class="btn bg-blue-main text-white"
+                      @click="updateChange"
+                    >
+                      Continuer
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </dialog>
+            <button
+              class="btn btn-sm border-gray-400"
+              onclick="my_modal_2.showModal()"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="#686868"
@@ -329,42 +468,47 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
                   </clipPath>
                 </defs>
               </svg>
-              <div>Bedrooms</div>
+              <div>Chambres</div>
             </button>
             <dialog id="my_modal_2" class="modal">
-              <div class="modal-box ">
-                <h3 class="text-lg font-bold text-blue-main text-center">Chambres</h3>
-                <p class="py-4 text-center">Chosisez le nombre de chambre qui vous intéresse</p>
-                
-                <div class="flex justify-center ">
-                  <button
-                
-                  v-for="bedrooms in ['1', '2', '3', '4', '5+']"
-                  :key="bedrooms"
-                  @click="toggleBedroomsSelection(bedrooms)"
-                  :class="{
-                    '  bg-blue-main text-white ':
-                      selectedBedrooms.includes(bedrooms),
-                    ' bg-gray-200 text-gray-700 ':
-                      !selectedBedrooms.includes(bedrooms),
-                  }"
-                  class="px-4 py-2 rounded-md border m-2"
-                >
-                  {{ bedrooms }}
-                </button>
+              <div class="modal-box">
+                <h3 class="text-lg font-bold text-blue-main text-center">
+                  Chambres
+                </h3>
+                <p class="py-4 text-center">
+                  Chosisez le nombre de chambre qui vous intéresse
+                </p>
 
+                <div class="flex justify-center">
+                  <button
+                    v-for="bedrooms in ['1', '2', '3', '4', '5+']"
+                    :key="bedrooms"
+                    @click="toggleBedroomsSelection(bedrooms)"
+                    :class="{
+                      '  bg-blue-main text-white ':
+                        selectedBedrooms.includes(bedrooms),
+                      ' bg-gray-200 text-gray-700 ':
+                        !selectedBedrooms.includes(bedrooms),
+                    }"
+                    class="px-4 py-2 rounded-md border m-2"
+                  >
+                    {{ bedrooms }}
+                  </button>
                 </div>
-                
+
                 <div class="modal-action">
                   <form method="dialog">
                     <!-- if there is a button in form, it will close the modal -->
-                    <button class="btn btn-active btn-accent  bg-blue-main text-white">Continuer</button>
+                    <button
+                      @click="updateChange"
+                      class="btn btn-active btn-accent bg-blue-main text-white"
+                    >
+                      Continuer
+                    </button>
                   </form>
                 </div>
               </div>
             </dialog>
-
-
 
             <!-- <button class="btn btn-sm border-gray-400 " onclick="my_modal_3.showModal()">
               <svg
@@ -413,13 +557,12 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
                 
                 <div class="modal-action">
                   <form method="dialog"> -->
-                    <!-- if there is a button in form, it will close the modal -->
-                    <!-- <button class="btn btn-active btn-accent  bg-blue-main text-white">Continuer</button>
+            <!-- if there is a button in form, it will close the modal -->
+            <!-- <button class="btn btn-active btn-accent  bg-blue-main text-white">Continuer</button>
                   </form>
                 </div>
               </div>
             </dialog>  -->
-
 
             <!-- <div class="btn btn-sm border-gray-400"
            >
@@ -428,7 +571,6 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
               </div>
               <div>location</div>
             </div> -->
-          
           </div>
           <!-- <div class="my-auto min-w-fit ml-10">display modesa</div> -->
         </div>

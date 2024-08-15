@@ -1,6 +1,7 @@
 <script setup>
 import utils from "../utils/utils.js";
-import { ref, onMounted,onUnmounted, computed, watch } from "vue";
+import { ref, onMounted, onUnmounted, computed, watch } from "vue";
+import { useRouter } from "vue-router";
 
 // leaflet
 import {
@@ -31,10 +32,8 @@ import icon from "../assets/images/marker-icon.png";
 import { useMapStore } from "@/stores/mapStore.js";
 import BetaLogo from "@/components/BetaLogo.vue";
 
-
-
-
 const mapStore = useMapStore();
+const router = useRouter();
 
 // Initialize the `apparts` ref as an empty array
 const apparts = ref([
@@ -46,6 +45,7 @@ const map = ref();
 
 const displayModeIsMap = ref(true);
 
+const nomUser = ref("")
 const bedrooms = ref(0);
 const prixMin = ref(0);
 const prixMax = ref(0);
@@ -96,28 +96,39 @@ function extractCity(fullAddress) {
 onMounted(async () => {
   try {
     //get le token et le decode
-    const token =  await decodeJwt(utils.getToken())
-    
-    
-    const pref = await utils.get(`api/client/preference/${token.prefId}`)
+    const token = await decodeJwt(utils.getToken());
 
-    if(!pref){
-        console.log('preference nexiste pas: ')
+    //get la préférence spécifique
+    const pref = await utils.get(`api/client/preference/${token.prefId}`);
+    const user = await utils.get(`api/client/login/${token.prefId}`);
+
+    if (user.length > 0) {
+  const firstUser = user[0];
+  console.log("Prénom de l'utilisateur :", firstUser.firstName);
+  nomUser.value = firstUser.firstName;
+  // Accédez à d'autres propriétés si nécessaire
+} else {
+  console.log(`user n'existe pas`)}
+
+  
+
+    if (!pref) {
+      console.log("preference nexiste pas: ");
     }
 
-    console.log('pref: ',pref)
-
+    
+    // console.log('pref: ',pref)
 
     mapStore.map = map.value;
 
     // Await the result of `utils.post` and assign it to `apparts.value`
-    const response = await utils.post(
-            'api/appartements/pageForYou', 
-            { "pageNumber": 1, 
-           "priceMin": pref.budget.minValue,
-            "priceMax": pref.budget.maxValue,
-            "numberBedrooms":pref.numberOfBedrooms,
-            "location":pref.locationPreferences});
+    const response = await utils.post("api/appartements/pageForYou", {
+      pageNumber: 1,
+      priceMin: pref.budget.minValue,
+      priceMax: pref.budget.maxValue,
+      numberBedrooms: pref.numberOfBedrooms,
+      location: pref.locationPreferences,
+    });
     apparts.value = response;
 
     // Set the rendered flag
@@ -128,7 +139,7 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-    // Nettoyage ou annulation des opérations en cours
+  // Nettoyage ou annulation des opérations en cours
 });
 
 // Use ref to access the item container and individual listingCards
@@ -141,16 +152,16 @@ function setItemRef(el, idx) {
 }
 
 function scrollToItem(id) {
-  //setTimeout(() => {
-    // Existing code
+  setTimeout(() => {
+    //Existing code
     try {
       const item = itemRefs.value[id];
       if (item && item.nodeType === 1) {
-        console.log('item node: ',item )
+        console.log("item node: ", item);
         // Ensuring it's an element node
         item.nextElementSibling.scrollIntoView({ behavior: "smooth" });
       } else if (item && item.nextElementSibling) {
-        console.log('element: ',item )
+        console.log("element: ", item);
         console.warn(
           `Item with id ${id} is not an element, but has a next sibling`
         );
@@ -161,7 +172,7 @@ function scrollToItem(id) {
     } catch (error) {
       console.log("Error during scrollToItem:", error);
     }
-  //}, 0); // Adjust the delay as necessary
+  }, 0); // Adjust the delay as necessary
 }
 
 const resultsCount = computed(() => apparts.value.length);
@@ -171,20 +182,33 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
 
 <template>
   <div>
-    <div v-if="!utils.getToken()" class="text-center p-6 rounded-lg shadow-md h-screen flex items-center justify-center">
-        <div class="w-full max-w-md bg-gray-200 backdrop-blur-3xl p-6 rounded-lg shadow-lg text-center">
-            <p class="text-sm text-gray-100">
-                <a href="https://www.freepik.com/free-vector/mobile-login-concept-illustration_4957412.htm#from_view=detail_alsolike">Image by storyset on Freepik</a>
-            </p>
-            <img src="@/assets/images/needLogin.png" alt="Success Image" class="w-full h-auto mb-4">
-            <h1 class="text-2xl font-bold mb-2">Oups!</h1>
-            <p class="text-lg mb-4">Vous devez être connecté pour avoir accès aux listings personnalisés</p>
-            <a class="btn btn-primary" href="/login">Je me connecte!</a>
-            
-        </div>
+    <div
+      v-if="!utils.getToken()"
+      class="text-center p-6 rounded-lg shadow-md h-screen flex items-center justify-center"
+    >
+      <div
+        class="w-full max-w-md bg-gray-200 backdrop-blur-3xl p-6 rounded-lg shadow-lg text-center"
+      >
+        <p class="text-sm text-gray-100">
+          <a
+            href="https://www.freepik.com/free-vector/mobile-login-concept-illustration_4957412.htm#from_view=detail_alsolike"
+            >Image by storyset on Freepik</a
+          >
+        </p>
+        <img
+          src="@/assets/images/needLogin.png"
+          alt="Success Image"
+          class="w-full h-auto mb-4"
+        />
+        <h1 class="text-2xl font-bold mb-2">Oups!</h1>
+        <p class="text-lg mb-4">
+          Vous devez être connecté pour avoir accès aux listings personnalisés
+        </p>
+        <a class="btn btn-primary" href="/login">Je me connecte!</a>
+      </div>
     </div>
-    <div v-else
-    
+    <div
+      v-else
       class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 lg:hidden"
     >
       <button
@@ -210,6 +234,8 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
           <div>
             <h1 class="text-2xl font-medium">Montreal</h1>
             <p class="">{{ resultsCount }} results</p>
+            
+            
           </div>
           <div class="flex h-full my-auto space-x-2">
             <!-- <div>saved</div>
@@ -217,7 +243,53 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
           </div>
         </div>
         <div class="h-14 mt-2 flex w-full justify-between">
-          <div class="overflow-x-auto whitespace-nowrap space-x-3">
+          
+           <div class="overflow-x-auto whitespace-nowrap space-x-3">
+            <div
+            class="btn bg-blue-main btn-sm text-white border-gray-400"
+            @click="router.push('/listings')"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3"
+              />
+            </svg>
+
+            <div>Main</div>
+          </div>
+
+          
+            <div
+            class="btn bg-red-400 btn-sm text-white border-gray-400"
+          
+          >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+          </svg>
+          
+
+            <div class="text-sm">Bienvenue {{ nomUser }}!</div>
+          </div>
+        
+            <!--- <div class="btn bg-blue-main btn-sm text-white border-gray-400" @click="router.push('/listings')">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
+              </svg>
+              
+              
+
+              <div>Main</div>
+            </div>
+
             <div class="btn btn-sm border-gray-400">
               <div>
                 <CurrencyDollarIcon class="size-6" />
@@ -277,8 +349,8 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
                 <MapPinIcon class="size-6" />
               </div>
               <div>location</div>
-            </div>
-          </div>
+            </div> -->
+          </div> 
           <!-- <div class="my-auto min-w-fit ml-10">display modesa</div> -->
         </div>
         <div
@@ -298,7 +370,10 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
             :location="appart.location"
             :ref="
               (el) => {
-                setItemRef(el.$el, appart.id);
+                //si le composant n'est pas null
+                if (el && el.$el) {
+                  setItemRef(el.$el, appart.id);
+                }
               }
             "
           />
@@ -345,7 +420,10 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
                   :location="appart.location"
                   :ref="
                     (el) => {
-                      setItemRef(el.$el, appart.id);
+                      //si le composant n'est pas null
+                      if (el && el.$el) {
+                        setItemRef(el.$el, appart.id);
+                      }
                     }
                   "
                 />

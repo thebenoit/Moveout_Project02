@@ -68,7 +68,7 @@
 
   const emit = defineEmits(['update:minValue', 'update:maxValue']);
   
-  const minprice = ref(1000);
+  const minprice = ref(100);
   const maxprice = ref(7000);
   const min = ref(100);
   const max = ref(10000);

@@ -5,7 +5,7 @@ const generateJTW = require("../../../mongo/interface/JWT");
 const jwt = require("jsonwebtoken");
 const User = require("../../../mongo/schemas/user");
 
-module.exports = app.post("/login", async (req, res) => {
+app.post("/login", async (req, res) => {
   try {
     const response = await login(req.body.identifier, req.body.password);
     const user = await User.findById(response.userId);
@@ -23,3 +23,25 @@ module.exports = app.post("/login", async (req, res) => {
     res.status(500).send("Erreur lors de la récupération des données");
   }
 });
+
+app.get("/login/:id",async (req, res) => {
+
+  try{
+
+    const user = await User.find({'preferencesId':req.params.id});
+    
+
+    if (!user) {
+      return res.status(404).json({ error: "user non trouvée" });
+    }
+    //retourne preference en json
+    res.json(user);
+
+  }catch(error){
+      console.log('erreur lors de la recherche dans login')
+      res.status(500).send("erreur lors de la recherche dans login");
+  }
+
+})
+
+module.exports = app
