@@ -219,7 +219,7 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
         <ArrowsRightLeftIcon class="size-7" />
         <MapIcon class="size-7" />
       </button>
-    </div>
+    
     <div
       class="grid grid-cols-12 relative z-10 h-[85vh] m-6 transition-all duration-300"
     >
@@ -433,6 +433,7 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
         </l-map>
       </div>
     </div>
+  </div>
   </div>
 </template>
 
