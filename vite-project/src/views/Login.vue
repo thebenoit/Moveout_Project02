@@ -54,7 +54,7 @@ async function login(){
 <template>
   <div class="w-full min-h-screen grid lg:grid-cols-2 ">
     <div class="mx-auto max-w-sm content-center w-full">
-      <Card class="bg-gray-200 backdrop-blur-3xl mt-16 lg:mt-0">
+      <Card class="bg-gray-200 text-center backdrop-blur-3xl mt-16 lg:mt-0 m-5 sm:m-0">
         <CardHeader>
           <p class="text-red-500 m-2 ">{{messageErreur}}</p>
           <CardTitle class="text-xl">
@@ -77,13 +77,13 @@ async function login(){
             <div class="grid mt-1">
               <Input id="phone" type="phone" placeholder="Phone number" required />
             </div> -->
-            <div class="grid mt-1">
-              <input id="email" placeholder="Email ou Tel" v-model="identifier" required />
+            <div class="grid mt-1 ">
+              <input class="rounded-md text-center" id="email" placeholder="Email ou Tel" v-model="identifier" required />
             </div>
             <div class="grid mt-1">
-              <input id="password" type="password" placeholder="mot de passe" v-model="password" required />
+              <input class="rounded-md text-center" id="password" type="password" placeholder="mot de passe" v-model="password" required />
             </div>
-            <Button type="submit" class="w-full bg-cyan-500" @click="login">
+            <Button  type="submit" class="w-full bg-cyan-500 rounded-md" @click="login">
               Log in
             </Button>
           </div>
