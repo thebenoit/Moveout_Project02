@@ -1,8 +1,7 @@
 <script setup>
 import utils from "../utils/utils.js";
 import { ref, onMounted, onUnmounted, computed, watch } from "vue";
-import { useRouter } from 'vue-router';
-
+import { useRouter } from "vue-router";
 
 // leaflet
 import {
@@ -128,7 +127,7 @@ const fetchData = async () => {
   try {
     let response = "";
 
-    mapStore.map = map.value;
+    mapStore.map = map.value; 
 
     if (!queryString.value) {
       response = await utils.post(`api/appartements/page`, {
@@ -151,63 +150,13 @@ const fetchData = async () => {
 };
 
 onMounted(async () => {
-  updateQueryString();
+  
+  updateQueryString();  
   await fetchData();
-  // try {
-  //   let response ="";
-  //   let queryString = "";
-
-  //   mapStore.map = map.value;
-
-  //   console.log(`minPrice=${selectedBudget.value.minValue}&`)
-  //     queryString += `minPrice=${selectedBudget.value.minValue}&`;
-
-  //     console.log(`maxPrice=${selectedBudget.value.maxValue}&`)
-  //     queryString += `maxPrice=${selectedBudget.value.maxValue}&`;
-
-  //   //si le bedrooms n'est pas undefined ajoute le dans le queryString
-  //   // if (selectedBedrooms.value) {
-  //   //   queryString += `bedrooms=${selectedBedrooms.value}&`;
-  //   // }
-
-  //   // Retirer le dernier "&" si nécessaire
-  //   queryString = queryString.slice(0, -1);
-
-  //   //si le query string est undefined
-  //   if (!queryString) {
-  //      response = await utils.post(`api/appartements/page`, {
-  //       pageNumer: 1,
-  //     });
-
-  //     //sinon
-  //   } else {
-  //     console.log('queryString: ', queryString)
-  //     // Await the result of `utils.post` and assign it to `apparts.value`
-  //      response = await utils.post(
-  //       `api/appartements/page?${queryString}`,
-  //       {
-  //         pageNumer: 1,
-  //       }
-  //     );
-  //   }
-
-  //   apparts.value = response;
-
-  //   // Set the rendered flag
-  //   isRendered.value = true;
-  // } catch (error) {
-  //   console.error("Error fetching apartments:", error);
-  // }
+  // const totalPages = await utils.get('api/appartements/page/numberOfPage');
 });
 
-// watch(
-//   [selectedBudget.value.minValue, selectedBudget.value.maxValue],
-//   async () => {
-//     console.log("dans Watcher: ");
-//     updateQueryString();
-//     await fetchData();
-//   }
-// );
+
 
 function updateChange() {
   console.log("dans updateChange: ");
@@ -237,6 +186,8 @@ function updateChange() {
 
 const nextPage = async () => {
   if (currentPage.value < totalPages.value) {
+    console.log("currentPage: ", currentPage.value);
+    console.log("totalPages: ", totalPages.value);
     currentPage.value++;
     await fetchData();
   } else {
@@ -383,10 +334,8 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
         <div class="w-full flex justify-between">
           <div>
             <h1 class="text-2xl font-medium">Montreal</h1>
-            <p class=""> {{ currentPage }} sur {{ resultsCount }}</p>
-            <p> is large Screen?{{isLargeScreen}}</p>
-           
-            
+            <p class="">{{ currentPage }} sur {{ resultsCount }}</p>
+            <p>is large Screen?{{ isLargeScreen }}</p>
           </div>
           <div class="flex h-full my-auto space-x-2">
             <!-- <div>saved</div>
@@ -398,11 +347,24 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
           <div class="overflow-x-auto whitespace-nowrap space-x-3">
             <!-- cache tout ce qui est plus grand qu'un petit écran -->
 
-            <div class="btn bg-red-400 btn-sm text-white border-gray-400" @click="router.push('/foryou')">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+            <div
+              class="btn bg-red-400 btn-sm text-white border-gray-400"
+              @click="router.push('/foryou')"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+                />
               </svg>
-              
 
               <div>Pour toi</div>
             </div>
@@ -575,7 +537,9 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
           </div>
           <!-- <div class="my-auto min-w-fit ml-10">display modesa</div> -->
         </div>
-        <div class="w-full pt-5 space-y-4 h-[70vh] overflow-y-auto whitespace-nowrap p-2 flex flex-wrap gap-3 justify-around">
+        <div
+          class="w-full pt-5 space-y-4 h-[70vh] overflow-y-auto whitespace-nowrap p-2 flex flex-wrap gap-3 justify-around"
+        >
           <listingCard
             v-for="appart in apparts"
             :key="appart.id"
@@ -597,13 +561,12 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
             <button class="join-item btn btn-md">3</button>
             <button class="join-item btn btn-md">4</button>
           </div> -->
-
         </div>
-          <div class="join mx-auto">
-            <button class="join-item btn" @click="lastPage">«</button>
-            <button class="join-item btn">Page {{ currentPage }}</button>
-            <button class="join-item btn" @click="nextPage">»</button>
-          </div>
+        <div class="join mx-auto">
+          <button class="join-item btn" @click="lastPage">«</button>
+          <button class="join-item btn">Page {{ currentPage }}</button>
+          <button class="join-item btn" @click="nextPage">»</button>
+        </div>
       </div>
       <div
         :class="{
@@ -613,42 +576,42 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
         }"
       >
         <l-map
-    ref="map"
-    v-model:zoom="mapStore.currentZoom"
-    v-model:center="mapStore.currentLocation"
-    class="h-full"
-    :options="{ zoomControl: false }"
-  >
-    <l-tile-layer
-      url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-      layer-type="base"
-      name="OpenStreetMap"
-    ></l-tile-layer>
-    <l-control-zoom position="bottomright"></l-control-zoom>
-    <l-marker-cluster-group ref="markerCluster">
-      <l-marker
-        v-for="appart in apparts"
-        :key="appart.id"
-        :lat-lng="appart.location"
-        @click="scrollToItem(appart.id)"
-      >
-        <LPopup class="p-0">
-          <listingCard
-            :key="appart.id"
-            :id="appart.id"
-            :price="appart.price"
-            :city="extractCity(appart.fullAddress)"
-            :bedrooms="extractBedrooms(appart.customTitle)"
-            :bathrooms="extractBathrooms(appart.customTitle)"
-            :rating="0"
-            :img="appart.img"
-            :address="appart.fullAddress"
-            :location="appart.location"
-          />
-        </LPopup>
-      </l-marker>
-    </l-marker-cluster-group>
-  </l-map>
+          ref="map"
+          v-model:zoom="mapStore.currentZoom"
+          v-model:center="mapStore.currentLocation"
+          class="h-full"
+          :options="{ zoomControl: false }"
+        >
+          <l-tile-layer
+            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+            layer-type="base"
+            name="OpenStreetMap"
+          ></l-tile-layer>
+          <l-control-zoom position="bottomright"></l-control-zoom>
+          <l-marker-cluster-group ref="markerCluster">
+            <l-marker
+              v-for="appart in apparts"
+              :key="appart.id"
+              :lat-lng="appart.location"
+              @click="scrollToItem(appart.id)"
+            >
+              <LPopup class="p-0">
+                <listingCard
+                  :key="appart.id"
+                  :id="appart.id"
+                  :price="appart.price"
+                  :city="extractCity(appart.fullAddress)"
+                  :bedrooms="extractBedrooms(appart.customTitle)"
+                  :bathrooms="extractBathrooms(appart.customTitle)"
+                  :rating="0"
+                  :img="appart.img"
+                  :address="appart.fullAddress"
+                  :location="appart.location"
+                />
+              </LPopup>
+            </l-marker>
+          </l-marker-cluster-group>
+        </l-map>
       </div>
     </div>
   </div>
