@@ -9,6 +9,7 @@ let totalPage = 0;
  */
 async function nbOfAppart() {
   const totalAppart = await facebook.countDocuments({});
+  console.log('totalAppart007 ', totalAppart)
   return totalAppart;
 }
 async function fetchPage(pageNumber, pageSize) {
@@ -35,7 +36,31 @@ async function fetchPage(pageNumber, pageSize) {
     throw err; // Re-throw the error after logging it
   }
 }
+async function fetchPage2(pageSize, pageNumber, appartData){
+    
+    const skipAmount = (pageNumber - 1) * pageSize;
+    console.log("skipAmountCustom: ", skipAmount);
 
+    const pageLimit = skipAmount + pageSize;
+    console.log('pageLimitCustom: ',pageLimit)
+
+    appartData = appartData.slice(skipAmount, pageLimit).map((data, index)=>{
+
+      const actualIndex = skipAmount + index + 1; // Correct index calculation for display
+      console.log('Item index on this page: ', actualIndex);
+
+      return{
+        data
+      }
+
+    })//.catch((error) => console.log(`errueur durant le ferchPage2 ${error}`))
+
+    console.log('appartData in fetchPage length: ', appartData.length)
+    
+return appartData;
+
+
+}
 async function fetchPageForYou(
   pageNumber,
   pageSize,
@@ -72,12 +97,15 @@ async function fetchPageForYou(
 }
 
 async function getAllAppartments() {
-  const docCount = await appartments.countDocuments({});
-  console.log("NB_Documents 2", docCount);
+  const docCount = await facebook.countDocuments({});
+  console.log("NB_Documents", docCount);
 
   //data est égale à tout ce qu'il trouve dans la collection
-  const appartData = await appartments.find({});
-  //console.log("Données récupérées:" + appartData);
+  const appartData = await facebook
+  .find({})
+  .lean()
+  .exec();
+
 
   return appartData;
 }
@@ -112,4 +140,5 @@ module.exports = {
   fetchPage,
   fetchPageForYou,
   nbOfAppart,
+  fetchPage2,
 };

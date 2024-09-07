@@ -3,12 +3,15 @@ const app = express();
 const {
   fetchPage,
   nbOfAppart,
+  getAllAppartments,
+  fetchPage2,
+
 } = require("../../../mongo/interface/appartement");
 
 let total = 0;
 const SIZEPAGE = 10;
 
-app.get("/page/numberOfPage", async (req, res) => {
+app.get("/page/numberOfPage/:totalAppart", async (req, res) => {
   //total page est égale a total divise par le nombre d'appart dans la page et ont arrondo a l'entier superieur
   const totalPage = Math.ceil(total / SIZEPAGE);
   console.log("totalPage: ", totalPage);
@@ -22,9 +25,14 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
     const pageNumber = req.body.pageNumber;
     console.log("pageNumber: ", pageNumber);
 
-    appartData = await fetchPage(pageNumber, SIZEPAGE);
-    appartLength = await nbOfAppart()
-      .then(() => console.log(`nbOfAppart: `, nbOfAppart()))
+    appartData = await getAllAppartments()
+    //appartData = await fetchPage(pageNumber, SIZEPAGE)
+
+
+
+    console.log('appartData: ',appartData.length)
+    total =  await nbOfAppart()
+      .then((l) => console.log(`nbOfAppart: `, l))
       .catch((err) =>
         console.log(`erreur lors du compte d''appartement: `, err)
       );
@@ -100,9 +108,11 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
       console.log("Aucune donnée trouvée", appartData);
       return res.status(404).send("Aucune donnée trouvée");
     }
-    // total = appartData.length;
+   // console.log("choice length: ",appartData.length);
+    const appartCustom = fetchPage2(SIZEPAGE,pageNumber, appartData)
+    console.log('appartCustomLength: ', appartCustom.length);
 
-    res.send(appartData);
+    res.send(appartCustom);
   } catch (error) {
     console.error("Erreur lors de la récupération des données:", error);
     res.status(500).send("Erreur lors de la récupération des données");
