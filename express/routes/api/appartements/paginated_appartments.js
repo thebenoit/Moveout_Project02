@@ -5,7 +5,6 @@ const {
   nbOfAppart,
   getAllAppartments,
   fetchPage2,
-
 } = require("../../../mongo/interface/appartement");
 
 let total = 0;
@@ -25,13 +24,11 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
     const pageNumber = req.body.pageNumber;
     console.log("pageNumber: ", pageNumber);
 
-    appartData = await getAllAppartments()
-    //appartData = await fetchPage(pageNumber, SIZEPAGE)
+    appartData = await getAllAppartments();
+   // appartData = await fetchPage(pageNumber, SIZEPAGE)
 
-
-
-    console.log('appartData: ',appartData.length)
-    total =  await nbOfAppart()
+    console.log("appartData: ", appartData.length);
+    total = await nbOfAppart()
       .then((l) => console.log(`nbOfAppart: `, l))
       .catch((err) =>
         console.log(`erreur lors du compte d''appartement: `, err)
@@ -99,7 +96,9 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
           (appart) =>
             bedroomsArray.length === 0 ||
             bedroomsArray.includes(parseInt(appart.bedrooms))
-        );
+        )
+        
+
     } catch (error) {
       console.log(error);
     }
@@ -108,11 +107,16 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
       console.log("Aucune donnée trouvée", appartData);
       return res.status(404).send("Aucune donnée trouvée");
     }
-   // console.log("choice length: ",appartData.length);
-    const appartCustom = fetchPage2(SIZEPAGE,pageNumber, appartData)
-    console.log('appartCustomLength: ', appartCustom.length);
-
+    
+        console.log("choice length22: ",appartData.length)
+        const  appartCustom = await fetchPage2(SIZEPAGE, pageNumber, appartData)
+        console.log("appartCustomLength: ", appartCustom.length);
+        console.log("appartCustom: ", appartCustom);
+    
+    
+       
     res.send(appartCustom);
+    
   } catch (error) {
     console.error("Erreur lors de la récupération des données:", error);
     res.status(500).send("Erreur lors de la récupération des données");
