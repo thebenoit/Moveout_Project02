@@ -10,7 +10,7 @@ const {
 let total = 0;
 const SIZEPAGE = 10;
 
-app.get("/page/numberOfPage/:totalAppart", async (req, res) => {
+app.get("/page/totalAppart", async (req, res) => {
   //total page est égale a total divise par le nombre d'appart dans la page et ont arrondo a l'entier superieur
   const totalPage = Math.ceil(total / SIZEPAGE);
   console.log("totalPage: ", totalPage);
@@ -25,14 +25,9 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
     console.log("pageNumber: ", pageNumber);
 
     appartData = await getAllAppartments();
-   // appartData = await fetchPage(pageNumber, SIZEPAGE)
+    // appartData = await fetchPage(pageNumber, SIZEPAGE)
 
-    console.log("appartData: ", appartData.length);
-    total = await nbOfAppart()
-      .then((l) => console.log(`nbOfAppart: `, l))
-      .catch((err) =>
-        console.log(`erreur lors du compte d''appartement: `, err)
-      );
+    //console.log("appartData: ", appartData.length);
 
     // Initialiser un tableau pour stocker les valeurs des chambres
     let bedroomsArray = [];
@@ -68,6 +63,7 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
             }
 
             return {
+              total: total,
               id: appart.for_sale_item.id,
               location: [
                 appart.for_sale_item.location.latitude,
@@ -96,9 +92,7 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
           (appart) =>
             bedroomsArray.length === 0 ||
             bedroomsArray.includes(parseInt(appart.bedrooms))
-        )
-        
-
+        );
     } catch (error) {
       console.log(error);
     }
@@ -107,16 +101,18 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
       console.log("Aucune donnée trouvée", appartData);
       return res.status(404).send("Aucune donnée trouvée");
     }
+    total = appartData.length;
+    console.log("choice length22: ", appartData.length);
+    const appartCustom = await fetchPage2(SIZEPAGE, pageNumber, appartData);
     
-        console.log("choice length22: ",appartData.length)
-        const  appartCustom = await fetchPage2(SIZEPAGE, pageNumber, appartData)
-        console.log("appartCustomLength: ", appartCustom.length);
-        console.log("appartCustom: ", appartCustom);
-    
-    
-       
+    console.log('total2334: ',total);
+    const totalPage = Math.ceil(total / SIZEPAGE);
+    console.log("totalPage: ", totalPage);
+    //extremely guettho to pass the number of page data to the listings page
+    appartCustom[0].total = totalPage
+    console.log('appartCustom[0]: ', appartCustom[0].total )
+
     res.send(appartCustom);
-    
   } catch (error) {
     console.error("Erreur lors de la récupération des données:", error);
     res.status(500).send("Erreur lors de la récupération des données");

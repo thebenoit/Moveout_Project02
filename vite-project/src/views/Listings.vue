@@ -127,7 +127,7 @@ const fetchData = async () => {
   try {
     let response = "";
 
-    mapStore.map = map.value; 
+    mapStore.map = map.value;
 
     if (!queryString.value) {
       response = await utils.post(`api/appartements/page`, {
@@ -143,6 +143,12 @@ const fetchData = async () => {
     }
 
     apparts.value = response;
+    console.log("apparts.value[0].total: ", apparts.value[0].total);
+    totalPages.value = apparts.value[0].total;
+    console.log("totalPages: ", totalPages.value);
+
+    // totalPages.value = allPage
+
     isRendered.value = true;
   } catch (error) {
     console.error("Error fetching apartments:", error);
@@ -150,13 +156,10 @@ const fetchData = async () => {
 };
 
 onMounted(async () => {
-  
-  updateQueryString();  
+  updateQueryString();
   await fetchData();
   // const totalPages = await utils.get('api/appartements/page/numberOfPage');
 });
-
-
 
 function updateChange() {
   console.log("dans updateChange: ");
@@ -334,8 +337,7 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
         <div class="w-full flex justify-between">
           <div>
             <h1 class="text-2xl font-medium">Montreal</h1>
-            <p class="">{{ currentPage }} sur {{ resultsCount }}</p>
-            <p>is large Screen?{{ isLargeScreen }}</p>
+            <p class="">{{ currentPage }} sur {{ totalPages }}</p>
           </div>
           <div class="flex h-full my-auto space-x-2">
             <!-- <div>saved</div>

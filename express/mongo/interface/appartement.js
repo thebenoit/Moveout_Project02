@@ -46,14 +46,14 @@ async function fetchPage2(pageSize, pageNumber, appartData) {
 
   try {
     const skipAmount = (pageNumber - 1) * pageSize;
-    console.log("skipAmountCustom: ", skipAmount);
+    // console.log("skipAmountCustom: ", skipAmount);
 
     const pageLimit = skipAmount + pageSize;
-    console.log("pageLimitCustom: ", pageLimit);
+    // console.log("pageLimitCustom: ", pageLimit);
 
     appartData = appartData.slice(skipAmount, pageLimit).map((data, index) => {
       const actualIndex = skipAmount + index + 1; // Correct index calculation for display
-      console.log("Item index on this page: ", actualIndex);
+      // console.log("Item index on this page: ", actualIndex);
 
       return data;
     }); //.catch((error) => console.log(`errueur durant le ferchPage2 ${error}`))
