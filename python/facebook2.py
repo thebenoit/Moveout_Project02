@@ -13,6 +13,9 @@ import requests
 import json
 import time
 import urllib
+import urllib.parse
+
+
 
 
 class Bd:
@@ -44,8 +47,10 @@ class Scraper:
         # }
 
         proxies = {
-            'http': 'http://2dh0lrid:ae1hsoYLTkR7BBUv_country-Canada_session-CQa8U4iO@proxy.proxy-cheap.com:31112',
-            'https': 'http://2dh0lrid:ae1hsoYLTkR7BBUv_country-Canada_session-CQa8U4iO@proxy.proxy-cheap.com:31112'
+            'http': 'http://2dh0lrid:ae1hsoYLTkR7BBUv@proxy.proxy-cheap.com:31112',
+            'https': 'http://2dh0lrid:ae1hsoYLTkR7BBUv@proxy.proxy-cheap.com:31112'
+
+
         }
 
         options = Options()
@@ -58,8 +63,8 @@ class Scraper:
         self.session.proxies.update(proxies)
         self.session.verify = False
         
-        self.bd = Bd("mongodb+srv://moveout:qFCPn6LARdjfBAYQ@cluster0.iowm3fd.mongodb.net/", "Appartements_moveout", "facebook_old")
-        
+        self.bd = Bd("mongodb+srv://moveout:qFCPn6LARdjfBAYQ@cluster0.iowm3fd.mongodb.net/", "Appartements_moveout", "appartments")
+        #
         self.init_session()
         self.driver.close()
 
@@ -107,8 +112,16 @@ class Scraper:
         return data_dict
     
     def init_session(self):
-
-        headers, payload_to_send, resp_body = self.get_first_req()
+        try:
+            headers, payload_to_send, resp_body = self.get_first_req()  
+        except Exception as e:
+            print(f"Erreur lors de l'obtention de la première requête : {e} header: {headers}")              
+        
+        
+        
+        
+        
+        
         self.next_cursor = self.get_next_cursor(resp_body)
 
         # add the first few results
