@@ -38,9 +38,14 @@ class Scraper:
     def __init__(self) -> None:
         self.url = "https://www.facebook.com/marketplace/montreal/propertyrentals?locale=fr_CA"
 
+        # proxies = {
+        #     'http': 'http://rdqnojgj:nOEVjKbkfAnM3zGP_country-Canada@proxy.proxy-cheap.com:31112',
+        #     'https': 'http://rdqnojgj:nOEVjKbkfAnM3zGP_country-Canada@proxy.proxy-cheap.com:31112'
+        # }
+
         proxies = {
-            'http': 'http://rdqnojgj:nOEVjKbkfAnM3zGP_country-Canada@proxy.proxy-cheap.com:31112',
-            'https': 'http://rdqnojgj:nOEVjKbkfAnM3zGP_country-Canada@proxy.proxy-cheap.com:31112'
+            'http': 'http://2dh0lrid:ae1hsoYLTkR7BBUv_country-Canada_session-CQa8U4iO@proxy.proxy-cheap.com:31112',
+            'https': 'http://2dh0lrid:ae1hsoYLTkR7BBUv_country-Canada_session-CQa8U4iO@proxy.proxy-cheap.com:31112'
         }
 
         options = Options()

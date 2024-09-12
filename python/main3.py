@@ -8,7 +8,7 @@ import time
 import os
 
 
-path = os.environ["PATH"]
+path = os.environ["PATH"] 
 
 
 class Scraper:

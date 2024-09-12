@@ -11,7 +11,7 @@ const facebookSchema = new Schema({
   date_scraped: { type: Date },
 });
 
-const Facebook = mongoose.model('facebook', facebookSchema, 'facebook');
+const Facebook = mongoose.model('facebook', facebookSchema, 'facebook_backup');
 
 module.exports = Facebook;
 
