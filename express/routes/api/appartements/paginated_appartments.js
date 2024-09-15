@@ -78,7 +78,7 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
               img: appart.for_sale_item.listing_photos[0]?.image?.uri ?? "",
             };
           } catch (error) {
-            console.log(appart.for_sale_item.id);
+            //console.log(appart.for_sale_item.id);
             return null; // Or handle the error as needed
           }
         })

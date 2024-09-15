@@ -107,7 +107,7 @@ async function getAllAppartments() {
 
   //data est égale à tout ce qu'il trouve dans la collection
   const appartData = await facebook.find({}).lean().limit(400).exec();
-
+ 
   return appartData;
 }
 /**

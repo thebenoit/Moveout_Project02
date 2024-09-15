@@ -32,6 +32,9 @@ class Bd:
         self.client = MongoClient(uri)
         self.db = self.client[table]
         self.collection = self.db[collection]
+        
+        # Suppression de tous les documents dans la collection
+        self.collection.delete_many({})
 
     def add_data(self, data):
         try:
