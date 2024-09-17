@@ -17,7 +17,7 @@ class Bd:
         self.collection = self.db[collection]
     
   
-moveoutBd = Bd("mongodb+srv://moveout:qFCPn6LARdjfBAYQ@cluster0.iowm3fd.mongodb.net/", "Appartements_moveout", "appartments")    
+moveoutBd = Bd("mongodb+srv://moveout:qFCPn6LARdjfBAYQ@cluster0.iowm3fd.mongodb.net/", "Appartements_moveout", "gettoCollection")    
     
 def url_to_bytes(image_url):
     response = requests.get(image_url)
@@ -34,12 +34,15 @@ for document in cursor:
                     images_bytes = url_to_bytes(image_url)
                      #mettre à jour le document avec les nouvelles données d'image
                      
-                     moveoutBd.collection.update_one(
-                         
-                         
+                    moveoutBd.collection.update_one(
+                        {"_id": document["_id"], "for_sale_item.listing_photos.id": photo['id']},
+                        {"$set": {"for_sale_item.listing_photos.$.image_bytes": images_bytes}}                              
                      )
+                    print(F"Image mise à jour pour le document {document['_id']}, photo ID: {photo['id']}")
                 except Exception as e:
                     print(F"Erreur lors de la récupération de l'image {image_url}: {e}")
+                    
+print("Mise à jour terminée pour tous les documents")
                      
                 
                 
