@@ -10,6 +10,9 @@ from selenium.webdriver.common.by import By
 from pymongo import MongoClient 
 from seleniumwire.utils import decode
 from selenium.webdriver.chrome.options import Options
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+
 
 # rotating ip library
 from requests_ip_rotator import ApiGateway
@@ -22,6 +25,7 @@ import urllib
 import urllib.parse
 
 
+chromedriver_path = "/Users/jerrybenoit/Desktop/chromedriver-mac-arm64/chromedriver"
 class Bd:
 
     def __init__(self, uri, table, collection):
@@ -66,7 +70,10 @@ class Scraper:
         chrome_options.add_argument('--ignore-ssl-errors=yes')
         chrome_options.add_argument('--ignore-certificate-errors')
 
+        service = Service(chromedriver_path)
+
         self.driver = uc.Chrome(
+            service=service,
             options=chrome_options,
             seleniumwire_options=proxy_options
         )
