@@ -106,7 +106,7 @@ async function getAllAppartments() {
   console.log("NB_Documents", docCount);
 
   //data est égale à tout ce qu'il trouve dans la collection
-  const appartData = await facebook.find({}).lean().limit(400).exec();
+  const appartData = await facebook.find({}).lean().limit(500).exec();
  
   return appartData;
 }

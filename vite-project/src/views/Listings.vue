@@ -337,7 +337,7 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
         <div class="w-full flex justify-between">
           <div>
             <h1 class="text-2xl font-medium">Montreal</h1>
-            <p class="">{{ currentPage }} sur {{ totalPages }}</p>
+            <p class="">{{ currentPage }} sur {{ totalPages }} pages</p>
           </div>
           <div class="flex h-full my-auto space-x-2">
             <!-- <div>saved</div>
