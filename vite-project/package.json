@@ -23,6 +23,7 @@
     "leaflet-geosearch": "^4.0.0",
     "lucide-vue-next": "^0.397.0",
     "maplibre-gl": "^4.4.1",
+    "mixpanel-browser": "^2.55.1",
     "pinia": "^2.2.0",
     "radix-vue": "^1.8.5",
     "tailwind-merge": "^2.3.0",

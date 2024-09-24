@@ -3,6 +3,11 @@ const cors = require("cors"); // permit to access server from differents domain
 const bodyParser = require("body-parser"); //for form post
 const path = require("path");
 const mongoose = require("./mongo/client.js");
+// Grab the Mixpanel factory
+var Mixpanel = require("mixpanel");
+ 
+// Create an instance of the mixpanel client
+var mixpanel = Mixpanel.init("d41fbc564b7544ce2d7c92cb6d8beb63");
 
 // routes
 
