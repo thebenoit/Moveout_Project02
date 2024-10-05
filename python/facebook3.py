@@ -185,7 +185,7 @@ class Scraper:
             self.add_listings(resp_body.json())
 
         except Exception as e:
-            print("Error", e)
+            print("Error in scrape", e)
 
         time.sleep(5)
 
