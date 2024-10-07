@@ -98,23 +98,23 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
     }
 
     if (appartData.length === 0) {
-      console.log("Aucune donnée trouvée", appartData);
+      
       return res.status(404).send("Aucune donnée trouvée");
     }
     total = appartData.length;
-    console.log("choice length22: ", appartData.length);
+   
     const appartCustom = await fetchPage2(SIZEPAGE, pageNumber, appartData);
     
-    console.log('total2334: ',total);
+    
     const totalPage = Math.ceil(total / SIZEPAGE);
-    console.log("totalPage: ", totalPage);
+   
     //extremely guettho to pass the number of page data to the listings page
     appartCustom[0].total = totalPage
-    console.log('appartCustom[0]: ', appartCustom[0].total )
+ 
 
     res.send(appartCustom);
   } catch (error) {
-    console.error("Erreur lors de la récupération des données:", error);
+  
     res.status(500).send("Erreur lors de la récupération des données");
   }
 });

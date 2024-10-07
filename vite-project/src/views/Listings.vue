@@ -105,7 +105,7 @@ function extractCity(fullAddress) {
 const updateQueryString = () => {
   let query = "";
   if (selectedBedrooms.value) {
-    console.log(`numberBedrooms=${selectedBedrooms.value}&`);
+    
 
     query += `numberBedrooms=${selectedBedrooms.value}&`;
   }
@@ -134,6 +134,7 @@ const fetchData = async () => {
         pageNumber: currentPage.value,
       });
     } else {
+      console.log('queryStringValue: ', queryString.value);
       response = await utils.post(
         `api/appartements/page?${queryString.value}`,
         {
@@ -143,9 +144,9 @@ const fetchData = async () => {
     }
 
     apparts.value = response;
-    console.log("apparts.value[0].total: ", apparts.value[0].total);
+
     totalPages.value = apparts.value[0].total;
-    console.log("totalPages: ", totalPages.value);
+
 
     // totalPages.value = allPage
 
