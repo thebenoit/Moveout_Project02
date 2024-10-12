@@ -5,9 +5,12 @@ const path = require("path");
 const mongoose = require("./mongo/client.js");
 // Grab the Mixpanel factory
 var Mixpanel = require("mixpanel");
- 
+
 // Create an instance of the mixpanel client
-var mixpanel = Mixpanel.init("d41fbc564b7544ce2d7c92cb6d8beb63");
+var mixpanel = Mixpanel.init("d41fbc564b7544ce2d7c92cb6d8beb63", {
+  track_pageview: true,
+  debug: true,
+});
 
 // routes
 
@@ -23,7 +26,7 @@ const client_lead = require("./routes/api/client/leads.js");
 
 const client_logout = require("./routes/api/client/logout.js");
 const client_appartements = require("./routes/api/client/custom_appartements.js");
-const client_preference = require("./routes/api/client/preference.js")
+const client_preference = require("./routes/api/client/preference.js");
 
 // config
 require("dotenv/config");
@@ -55,8 +58,6 @@ app.use("/api/client", client_preference);
 app.use("/api/appartements", paginated_appartments);
 // apparts personalisé
 app.use("/api/appartements", paginated_forYouPage);
-
-
 
 // app.use("/api/client/", client_logout);
 // app.use("/client/", client_appartements);

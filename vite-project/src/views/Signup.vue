@@ -59,7 +59,7 @@ const customService = ref("");
 // };
 
 const errorMessages = ref("");
-const preferenceSurveyError = ref("")
+const preferenceSurveyError = ref("");
 const hiddenFirst = ref(false);
 
 const quartiers = {
@@ -159,14 +159,13 @@ const toggleReferenceSelection = (reference) => {
   selectedReference.value = reference;
 };
 
-
 const handleMinValueChange = (value) => {
-  console.log('Min value changed:', value); // Vérifiez la valeur reçue
+  console.log("Min value changed:", value); // Vérifiez la valeur reçue
   selectedBudget.value.minValue = value;
 };
 
 const handleMaxValueChange = (value) => {
-  console.log('Max value changed:', value); // Vérifiez la valeur reçue
+  console.log("Max value changed:", value); // Vérifiez la valeur reçue
   selectedBudget.value.maxValue = value;
 };
 
@@ -268,20 +267,18 @@ async function preferenceCreation() {
     if (result.error) {
       console.log("result.errorPreference: ", result.error?.message);
       //errorMessages.value = result.error?.message;
-      preferenceSurveyError.value = result.error
-      
+      preferenceSurveyError.value = result.error;
     } else {
       console.log("resultPreference ", result);
       //result = await result.json();
 
       if (result.token) {
         utils.setToken(result.token);
-        
       }
       if (result.success) {
-     router.push({ path: "/foryou" });
-      console.log("changement de page: ");
-}
+        router.push({ path: "/foryou" });
+        console.log("changement de page: ");
+      }
     }
   } catch (error) {
     console.error("Error during signup Preference:", error);
@@ -646,7 +643,9 @@ async function preferenceCreation() {
               </li> -->
             <!-- </ul> -->
           </div>
-          <p class="text-red-500 text-center mt-2">{{ preferenceSurveyError }}</p>
+          <p class="text-red-500 text-center mt-2">
+            {{ preferenceSurveyError }}
+          </p>
           <button
             @click="preferenceCreation"
             class="btn btn-accent w-full mt-6"

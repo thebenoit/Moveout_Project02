@@ -3,6 +3,7 @@ const app = express();
 const { createAccount } = require("../../../mongo/interface/client");
 const jwt = require("jsonwebtoken");
 const preference = require("./preference");
+const Preference = require("../../../mongo/schemas/preference");
 
 require("dotenv").config(); // Load environment variables from .env file at the very beginning
 
@@ -23,17 +24,22 @@ module.exports = app.post("/signup", async (req, res) => {
       return res.status(400).send(response);
     }
     console.log("sign up response: ", response.preferenceId);
-
+    
     // Ensure preferenceId is present
     if (!response.preferenceId) {
       console.error("PreferenceId is missing in the response");
       return res.status(500).send("PreferenceId is missing.");
     }
+    preferenceId = response.preferenceId;
+
+    userPreference = Preference.findone({preferenceId});
+
+    
     // Note: you must supply the USER_ID
     //j'ai mis phone car le schema n'a pas le userId
     mixpanel.track("Sign Up", {
       distinct_id: this.response.phone,
-      "Signup Type": "Referral",
+      "Signup Type": userPreference.addOnService,
     });
     //génère un token
     //const token = utils.

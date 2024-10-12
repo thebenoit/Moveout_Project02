@@ -24,51 +24,7 @@ async function emailToUserId(email) {
 
 async function phoneToUserId(phone) {}
 
-// async function createAccount(firstName, lastName, phone, email, password, confirmPassword) {
-//     try {
-//         // Run checks
-//         if (password !== confirmPassword) {
-//             return { error: responses.errors.client.notMatchingPasswords };
-//         }
 
-//         // Check if the user already exists
-//         const existingUser = await Users.findOne({ email: email });
-//         if (existingUser) {
-//             return { error: responses.errors.client.alreadyExists };
-//         }
-
-//         // Check if other required fields are not empty
-//         if (!firstName || !lastName || !phone || !email || !password) {
-//             return { error: responses.errors.client.missingFields };
-//         }
-
-//         // Hash password
-//         const hashPassword = await bcrypt.hash(password, 10);
-
-//         // Create user
-//         const newUser = new Users({
-//             firstName: firstName,
-//             lastName: lastName,
-//             phone: phone,
-//             email: email,
-//             password: hashPassword,
-//         });
-
-//         // Insert the user into the database
-//         // const result = await Users.insertOne(newUser);
-//         const savedUser = await newUser.save();
-//         const user_id = savedUser._id;
-
-//         // Return user_id
-//         return user_id
-//     } catch (error) {
-//         console.error(error);
-//         return { error: responses.errors.client.accountCreationError };
-//     } finally {
-//         // Close the connection to the MongoDB cluster
-//         // await client.close();
-//     }
-// }
 
 function isStrongPassword(password) {
   const passwordRegex =
@@ -164,7 +120,7 @@ async function createPreference(
   age,
   sex,
   occupation,
-  //salary,
+  reference,
   addOnService
 ) {
   //find the id preference
@@ -181,6 +137,8 @@ async function createPreference(
         return { error: "La case Genre est manquante." };
       case !occupation || occupation.trim() === "":
         return { error: "La case Occupation est manquante." };
+      case !reference || reference.trim() === "":
+          return { error: "La case reference est manquante." };  
       case !addOnService || addOnService.trim() === "":
         return { error: "La case Service supplémentaire est manquante." };
     }
@@ -199,7 +157,7 @@ async function createPreference(
     preference.age = age;
     preference.gender = sex;
     preference.occupation = occupation;
-    //preference.salary = salary;
+    preference.reference = reference;
     preference.addOnService = addOnService;
 
     // Save the updated preference
