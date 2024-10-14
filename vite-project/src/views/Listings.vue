@@ -13,6 +13,7 @@ import {
 } from "@vue-leaflet/vue-leaflet";
 import { LMarkerClusterGroup } from "vue-leaflet-markercluster";
 import "leaflet/dist/leaflet.css";
+import mapPage from "../components/mapPage.vue";
 //import 'vue-leaflet-markercluster/dist/style.css'
 
 // icons
@@ -51,6 +52,7 @@ const prixMin = ref(0);
 const prixMax = ref(0);
 const inputPrixMin = ref(0);
 const inputPrixMax = ref(0);
+const noData = ref(false);
 
 const zoom = ref(12);
 const currentPage = ref(1);
@@ -69,42 +71,6 @@ const selectedBudget = ref({
   maxValue: 100,
 });
 
-function extractBathrooms(description) {
-  // Use a regular expression to find the number of bathrooms
-  const bathroomMatch = splitDescription(description)[1];
-
-  // Extract and return the number of bathrooms if a match is found
-  return bathroomMatch;
-}
-
-function splitDescription(description) {
-  return description.split("·")[0].trim()[0];
-}
-
-function extractBedrooms(description) {
-  // Use a regular expression to find the number of bedrooms
-  const bedroomMatch = splitDescription(description)[0];
-
-  // Extract and return the number of bedrooms if a match is found
-  return bedroomMatch;
-}
-
-function extractCity(fullAddress) {
-  // Split the address by comma
-
-  const parts = fullAddress.split(",");
-
-  // Reverse the array of parts
-  const reversedParts = parts.slice().reverse();
-
-  // Check if there are at least two parts and return the second item from the reversed array
-  if (reversedParts.length >= 2) {
-    return reversedParts[1].trim();
-  } else {
-    console.error("Address does not have enough parts");
-    return null;
-  }
-}
 const updateQueryString = () => {
   let query = "";
   if (selectedBedrooms.value) {
@@ -174,8 +140,6 @@ function updateChange() {
 
 const nextPage = async () => {
   if (currentPage.value < totalPages.value) {
-    console.log("currentPage: ", currentPage.value);
-    console.log("totalPages: ", totalPages.value);
     currentPage.value++;
     await fetchData();
   } else {
@@ -228,6 +192,41 @@ const toggleBedroomsSelection = (bedrooms) => {
     selectedBedrooms.value.push(bedrooms);
   }
 };
+
+function extractCity(fullAddress) {
+  // Split the address by comma
+
+  const parts = fullAddress.split(",");
+
+  // Reverse the array of parts
+  const reversedParts = parts.slice().reverse();
+
+  // Check if there are at least two parts and return the second item from the reversed array
+  if (reversedParts.length >= 2) {
+    return reversedParts[1].trim();
+  } else {
+    console.error("Address does not have enough parts");
+    return null;
+  }
+}
+function extractBathrooms(description) {
+  // Use a regular expression to find the number of bathrooms
+  const bathroomMatch = splitDescription(description)[1];
+
+  // Extract and return the number of bathrooms if a match is found
+  return bathroomMatch;
+}
+
+function splitDescription(description) {
+  return description.split("·")[0].trim()[0];
+}
+function extractBedrooms(description) {
+  // Use a regular expression to find the number of bedrooms
+  const bedroomMatch = splitDescription(description)[0];
+
+  // Extract and return the number of bedrooms if a match is found
+  return bedroomMatch;
+}
 
 const filteredApparts = computed(() => {
   try {
@@ -483,68 +482,6 @@ const clickPourToiButton = () => {
                 </div>
               </div>
             </dialog>
-
-            <!-- <button class="btn btn-sm border-gray-400 " onclick="my_modal_3.showModal()">
-              <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="#686868"
-                  viewBox="0 0 13 13"
-                  class="size-6"
-                >
-                  <g clip-path="url(#a)">
-                    <path
-                      fill="#686868"
-                      d="M.813 9.75a2.423 2.423 0 0 0 .812 1.805v1.039a.406.406 0 0 0 .406.406h.813a.406.406 0 0 0 .406-.406v-.407h6.5v.407a.406.406 0 0 0 .406.406h.813a.406.406 0 0 0 .406-.406v-1.04a2.421 2.421 0 0 0 .813-1.804V8.53H.812v1.22Zm11.78-3.25H2.032V1.758a.54.54 0 0 1 .921-.38l.49.488c-.334.759-.194 1.501.219 2.025l-.005.004a.406.406 0 0 0 0 .574l.287.287a.406.406 0 0 0 .575 0L7.193 2.08a.406.406 0 0 0 0-.574l-.287-.287a.406.406 0 0 0-.574 0l-.004.004C5.804.811 5.062.671 4.303 1.004l-.489-.49A1.758 1.758 0 0 0 .812 1.759V6.5H.406A.406.406 0 0 0 0 6.906v.406a.406.406 0 0 0 .406.407h12.188A.406.406 0 0 0 13 7.312v-.406a.406.406 0 0 0-.406-.406Z"
-                    />
-                  </g>
-                  <defs>
-                    <clipPath id="a">
-                      <path fill="#fff" d="M0 0h13v13H0z" />
-                    </clipPath>
-                  </defs>
-                </svg>
-              <div>Bathrooms</div>
-            </button>
-            <dialog id="my_modal_3" class="modal">
-              <div class="modal-box ">
-                <h3 class="text-lg font-bold text-blue-main text-center">Toilettex</h3>
-                <p class="py-4 text-center">Chosisez le nombre de Toilettes qui vous intéresse</p>
-                
-                <div class="flex justify-center ">
-                  <button
-                
-                  v-for="bathrooms in ['1', '2', '3', '4', '5+']"
-                  :key="bathrooms"
-                  @click="toggleBathroomsSelection(bathrooms)"
-                  :class="{
-                    '  bg-blue-main text-white ':
-                      selectedBathrooms.includes(bathrooms),
-                    ' bg-gray-200 text-gray-700 ':
-                      !selectedBathroomss.includes(bathrooms),
-                  }"
-                  class="px-4 py-2 rounded-md border m-2"
-                >
-                  {{ bathrooms }}
-                </button>
-
-                </div>
-                
-                <div class="modal-action">
-                  <form method="dialog"> -->
-            <!-- if there is a button in form, it will close the modal -->
-            <!-- <button class="btn btn-active btn-accent  bg-blue-main text-white">Continuer</button>
-                  </form>
-                </div>
-              </div>
-            </dialog>  -->
-
-            <!-- <div class="btn btn-sm border-gray-400"
-           >
-              <div>
-                <MapPinIcon class="size-6" />
-              </div>
-              <div>location</div>
-            </div> -->
           </div>
           <!-- <div class="my-auto min-w-fit ml-10">display modesa</div> -->
         </div>
@@ -579,7 +516,7 @@ const clickPourToiButton = () => {
           <button class="join-item btn" @click="nextPage">»</button>
         </div>
       </div>
-      <div
+      <!-- <div
         :class="{
           hidden: !displayModeIsMap,
           'w-full lg:p-4 col-span-12 block lg:col-start-7 h-full my-auto border-white shadow-2xl':
@@ -623,7 +560,13 @@ const clickPourToiButton = () => {
             </l-marker>
           </l-marker-cluster-group>
         </l-map>
-      </div>
+      </div> -->
+      <mapPage
+        :apparts="apparts"
+        :isLargeScreen="isLargeScreen"
+        :displayModeIsMap="displayModeIsMap"
+        :mapStore="mapStore"
+      />
     </div>
   </div>
 </template>
