@@ -31,6 +31,7 @@ import MultiSlider from "@/components/ui/input/multirange-input/multiRangeInput.
 // stores
 import { useMapStore } from "@/stores/mapStore.js";
 import BetaLogo from "@/components/BetaLogo.vue";
+import mixpanel from "mixpanel-browser";
 
 const mapStore = useMapStore();
 const router = useRouter();
@@ -56,6 +57,8 @@ const currentPage = ref(1);
 const totalPages = ref(100);
 const queryString = ref("");
 // const pageNumber = ref(1)
+const prixButtonEvent = "click sur prix button";
+const timerOn = ref(false);
 
 const isRendered = ref(false);
 
@@ -105,8 +108,6 @@ function extractCity(fullAddress) {
 const updateQueryString = () => {
   let query = "";
   if (selectedBedrooms.value) {
-    
-
     query += `numberBedrooms=${selectedBedrooms.value}&`;
   }
 
@@ -134,7 +135,7 @@ const fetchData = async () => {
         pageNumber: currentPage.value,
       });
     } else {
-      console.log('queryStringValue: ', queryString.value);
+      console.log("queryStringValue: ", queryString.value);
       response = await utils.post(
         `api/appartements/page?${queryString.value}`,
         {
@@ -147,7 +148,6 @@ const fetchData = async () => {
 
     totalPages.value = apparts.value[0].total;
 
-
     // totalPages.value = allPage
 
     isRendered.value = true;
@@ -159,6 +159,10 @@ const fetchData = async () => {
 onMounted(async () => {
   updateQueryString();
   await fetchData();
+
+  if (timerOn.value == true) {
+    windo;
+  }
   // const totalPages = await utils.get('api/appartements/page/numberOfPage');
 });
 
@@ -167,26 +171,6 @@ function updateChange() {
   updateQueryString();
   fetchData();
 }
-// async function fetchPage(pageNumber) {
-//   try {
-//     isRendered.value = false;
-
-//     const response = await utils.post("api/appartements/page", {
-//       pageNumber: pageNumber,
-//     });
-
-//     if (response) {
-//       apparts.value = response;
-//       console.log(response);
-//     } else {
-//       console.error("Failed to fetch data");
-//     }
-//   } catch (error) {
-//     console.error("Error fetching page:", error);
-//   } finally {
-//     isRendered.value = true;
-//   }
-// }
 
 const nextPage = async () => {
   if (currentPage.value < totalPages.value) {
@@ -309,6 +293,25 @@ const handleMaxValueChange = (value) => {
 const resultsCount = computed(() => apparts.value.length);
 
 const isLargeScreen = computed(() => window.innerWidth >= 1024);
+
+// const clickPrixButton = (modal) => {
+//   modal.showModal();
+//   //track et commence un timer quand user click sur le price button
+//   mixpanel.time_event("#prixButton", prixButtonEvent);
+
+//   timerOn.value = true;
+// };
+
+const clickPourToiButton = () => {
+  router.push("/foryou");
+
+  //méthode qui track les cliques sur le button
+  mixpanel.track("click sur pour toi", {
+    button_id: "pourToiButton",
+    button_name: "pour toi",
+    page: "foryou",
+  });
+};
 </script>
 
 <template>
@@ -351,8 +354,9 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
             <!-- cache tout ce qui est plus grand qu'un petit écran -->
 
             <div
+              id="pourToiButton"
               class="btn bg-red-400 btn-sm text-white border-gray-400"
-              @click="router.push('/foryou')"
+              @click="clickPourToiButton"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -373,7 +377,11 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
             </div>
 
             <!-- Open the modal using ID.showModal() method -->
-            <button class="btn btn-sm" onclick="my_modal_1.showModal()">
+            <button
+              id="prixButton"
+              class="btn btn-sm"
+              onclick="my_modal_1.showModal()"
+            >
               <div>
                 <CurrencyDollarIcon class="size-6" />
               </div>

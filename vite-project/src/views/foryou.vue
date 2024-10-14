@@ -45,7 +45,7 @@ const map = ref();
 
 const displayModeIsMap = ref(true);
 
-const nomUser = ref("")
+const nomUser = ref("");
 const bedrooms = ref(0);
 const prixMin = ref(0);
 const prixMax = ref(0);
@@ -103,20 +103,18 @@ onMounted(async () => {
     const user = await utils.get(`api/client/login/${token.prefId}`);
 
     if (user.length > 0) {
-  const firstUser = user[0];
-  console.log("Prénom de l'utilisateur :", firstUser.firstName);
-  nomUser.value = firstUser.firstName;
-  // Accédez à d'autres propriétés si nécessaire
-} else {
-  console.log(`user n'existe pas`)}
-
-  
+      const firstUser = user[0];
+      console.log("Prénom de l'utilisateur :", firstUser.firstName);
+      nomUser.value = firstUser.firstName;
+      // Accédez à d'autres propriétés si nécessaire
+    } else {
+      console.log(`user n'existe pas`);
+    }
 
     if (!pref) {
       console.log("preference nexiste pas: ");
     }
 
-    
     // console.log('pref: ',pref)
 
     mapStore.map = map.value;
@@ -135,6 +133,7 @@ onMounted(async () => {
     isRendered.value = true;
   } catch (error) {
     console.error("Error fetching apartments:", error);
+    
   }
 });
 
@@ -204,7 +203,13 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
         <p class="text-lg mb-4">
           Vous devez être connecté pour avoir accès aux listings personnalisés
         </p>
-        <a class="btn btn-primary" href="/login">Je me connecte!</a>
+
+        <a class="btn btn-primary" href="/login"
+          >Je veux des listings personnalisés!</a
+        >
+        <br />
+        <br />
+        <a class="btn btn-neutral" href="/listings">Retour</a>
       </div>
     </div>
     <div
@@ -219,68 +224,71 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
         <ArrowsRightLeftIcon class="size-7" />
         <MapIcon class="size-7" />
       </button>
-    
-    <div
-      class="grid grid-cols-12 relative z-10 h-[85vh] m-6 transition-all duration-300"
-    >
+
       <div
-        :class="{
-          hidden: displayModeIsMap,
-          'w-full h-full col-span-12 lg:col-span-6 sm:p-0 lg:p-6 my-auto lg:block':
-            !displayModeIsMap || isLargeScreen,
-        }"
+        class="grid grid-cols-12 relative z-10 h-[85vh] m-6 transition-all duration-300"
       >
-        <div class="w-full flex justify-between">
-          <div>
-            <h1 class="text-2xl font-medium">Montreal</h1>
-            <p class="">{{ resultsCount }} results</p>
-            
-            
-          </div>
-          <div class="flex h-full my-auto space-x-2">
-            <!-- <div>saved</div>
+        <div
+          :class="{
+            hidden: displayModeIsMap,
+            'w-full h-full col-span-12 lg:col-span-6 sm:p-0 lg:p-6 my-auto lg:block':
+              !displayModeIsMap || isLargeScreen,
+          }"
+        >
+          <div class="w-full flex justify-between">
+            <div>
+              <h1 class="text-2xl font-medium">Montreal</h1>
+              <p class="">{{ resultsCount }} results</p>
+            </div>
+            <div class="flex h-full my-auto space-x-2">
+              <!-- <div>saved</div>
                     <input type="checkbox" class="toggle my-auto toggle-primary" checked="checked" /> -->
+            </div>
           </div>
-        </div>
-        <div class="h-14 mt-2 flex w-full justify-between">
-          
-           <div class="overflow-x-auto whitespace-nowrap space-x-3">
-            <div
-            class="btn bg-blue-main btn-sm text-white border-gray-400"
-            @click="router.push('/listings')"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="size-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3"
-              />
-            </svg>
+          <div class="h-14 mt-2 flex w-full justify-between">
+            <div class="overflow-x-auto whitespace-nowrap space-x-3">
+              <div
+                class="btn bg-blue-main btn-sm text-white border-gray-400"
+                @click="router.push('/listings')"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="size-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3"
+                  />
+                </svg>
 
-            <div>Main</div>
-          </div>
+                <div>Main</div>
+              </div>
 
-          
-            <div
-            class="btn bg-red-400 btn-sm text-white border-gray-400"
-          
-          >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
-          </svg>
-          
+              <div class="btn bg-red-400 btn-sm text-white border-gray-400">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="size-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
+                  />
+                </svg>
 
-            <div class="text-sm">Bienvenue {{ nomUser }}!</div>
-          </div>
-        
-            <!--- <div class="btn bg-blue-main btn-sm text-white border-gray-400" @click="router.push('/listings')">
+                <div class="text-sm">Bienvenue {{ nomUser }}!</div>
+              </div>
+
+              <!--- <div class="btn bg-blue-main btn-sm text-white border-gray-400" @click="router.push('/listings')">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
               </svg>
@@ -350,90 +358,90 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
               </div>
               <div>location</div>
             </div> -->
-          </div> 
-          <!-- <div class="my-auto min-w-fit ml-10">display modesa</div> -->
-        </div>
-        <div
-          class="w-full pt-5 space-y-4 h-[75vh] overflow-y-auto whitespace-nowrap p-2 flex flex-wrap gap-3 justify-around"
-        >
-          <listingCard
-            v-for="appart in apparts"
-            :key="appart.id"
-            :id="appart.id"
-            :price="appart.price"
-            :city="extractCity(appart.fullAddress)"
-            :bedrooms="extractBedrooms(appart.customTitle)"
-            :bathrooms="extractBathrooms(appart.customTitle)"
-            :rating="0"
-            :img="appart.img"
-            :address="appart.fullAddress"
-            :location="appart.location"
-            :ref="
-              (el) => {
-                //si le composant n'est pas null
-                if (el && el.$el) {
-                  setItemRef(el.$el, appart.id);
-                }
-              }
-            "
-          />
-        </div>
-      </div>
-      <div
-        :class="{
-          hidden: !displayModeIsMap,
-          'w-full lg:p-4 col-span-12 block lg:col-start-7 h-full my-auto border-white shadow-2xl':
-            displayModeIsMap || isLargeScreen,
-        }"
-      >
-        <l-map
-          ref="map"
-          v-model:zoom="mapStore.currentZoom"
-          v-model:center="mapStore.currentLocation"
-          class="h-full"
-          :options="{ zoomControl: false }"
-        >
-          <l-tile-layer
-            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-            layer-type="base"
-            name="OpenStreetMap"
-          ></l-tile-layer>
-          <l-control-zoom position="bottomright"></l-control-zoom>
-          <l-marker-cluster-group>
-            <l-marker
+            </div>
+            <!-- <div class="my-auto min-w-fit ml-10">display modesa</div> -->
+          </div>
+          <div
+            class="w-full pt-5 space-y-4 h-[75vh] overflow-y-auto whitespace-nowrap p-2 flex flex-wrap gap-3 justify-around"
+          >
+            <listingCard
               v-for="appart in apparts"
               :key="appart.id"
-              :lat-lng="appart.location"
-              @click="scrollToItem(appart.id)"
-            >
-              <LPopup class="p-0">
-                <listingCard
-                  :key="appart.id"
-                  :id="appart.id"
-                  :price="appart.price"
-                  :city="extractCity(appart.fullAddress)"
-                  :bedrooms="extractBedrooms(appart.customTitle)"
-                  :bathrooms="extractBathrooms(appart.customTitle)"
-                  :rating="0"
-                  :img="appart.img"
-                  :address="appart.fullAddress"
-                  :location="appart.location"
-                  :ref="
-                    (el) => {
-                      //si le composant n'est pas null
-                      if (el && el.$el) {
-                        setItemRef(el.$el, appart.id);
+              :id="appart.id"
+              :price="appart.price"
+              :city="extractCity(appart.fullAddress)"
+              :bedrooms="extractBedrooms(appart.customTitle)"
+              :bathrooms="extractBathrooms(appart.customTitle)"
+              :rating="0"
+              :img="appart.img"
+              :address="appart.fullAddress"
+              :location="appart.location"
+              :ref="
+                (el) => {
+                  //si le composant n'est pas null
+                  if (el && el.$el) {
+                    setItemRef(el.$el, appart.id);
+                  }
+                }
+              "
+            />
+          </div>
+        </div>
+        <div
+          :class="{
+            hidden: !displayModeIsMap,
+            'w-full lg:p-4 col-span-12 block lg:col-start-7 h-full my-auto border-white shadow-2xl':
+              displayModeIsMap || isLargeScreen,
+          }"
+        >
+          <l-map
+            ref="map"
+            v-model:zoom="mapStore.currentZoom"
+            v-model:center="mapStore.currentLocation"
+            class="h-full"
+            :options="{ zoomControl: false }"
+          >
+            <l-tile-layer
+              url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+              layer-type="base"
+              name="OpenStreetMap"
+            ></l-tile-layer>
+            <l-control-zoom position="bottomright"></l-control-zoom>
+            <l-marker-cluster-group>
+              <l-marker
+                v-for="appart in apparts"
+                :key="appart.id"
+                :lat-lng="appart.location"
+                @click="scrollToItem(appart.id)"
+              >
+                <LPopup class="p-0">
+                  <listingCard
+                    :key="appart.id"
+                    :id="appart.id"
+                    :price="appart.price"
+                    :city="extractCity(appart.fullAddress)"
+                    :bedrooms="extractBedrooms(appart.customTitle)"
+                    :bathrooms="extractBathrooms(appart.customTitle)"
+                    :rating="0"
+                    :img="appart.img"
+                    :address="appart.fullAddress"
+                    :location="appart.location"
+                    :ref="
+                      (el) => {
+                        //si le composant n'est pas null
+                        if (el && el.$el) {
+                          setItemRef(el.$el, appart.id);
+                        }
                       }
-                    }
-                  "
-                />
-              </LPopup>
-            </l-marker>
-          </l-marker-cluster-group>
-        </l-map>
+                    "
+                  />
+                </LPopup>
+              </l-marker>
+            </l-marker-cluster-group>
+          </l-map>
+        </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 
