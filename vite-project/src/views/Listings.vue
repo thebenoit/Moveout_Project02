@@ -108,13 +108,16 @@ const fetchData = async () => {
           pageNumber: currentPage.value,
         }
       );
-    }
 
+      console.log("response: ", response);
+    }
+    //si il n'y a pas d'appartement disponible afficher page
+    if(appart.value.length == 0){
+      noData=true;
+    }
     apparts.value = response;
 
     totalPages.value = apparts.value[0].total;
-
-    // totalPages.value = allPage
 
     isRendered.value = true;
   } catch (error) {
@@ -485,7 +488,19 @@ const clickPourToiButton = () => {
           </div>
           <!-- <div class="my-auto min-w-fit ml-10">display modesa</div> -->
         </div>
+
         <div
+          v-if="noData == true"
+          class="w-full pt-5 space-y-4 h-[70vh] overflow-y-auto whitespace-nowrap p-2 flex flex-wrap gap-3 justify-around"
+        >
+          <h1>Pas d'appartement disponible</h1>
+          <div>
+            <img class="object-contain" src="../assets/images/no_data.svg" />
+          </div>
+        </div>
+
+        <div
+          v-else
           class="w-full pt-5 space-y-4 h-[70vh] overflow-y-auto whitespace-nowrap p-2 flex flex-wrap gap-3 justify-around"
         >
           <listingCard
@@ -502,13 +517,6 @@ const clickPourToiButton = () => {
             :location="appart.location"
             :ref="(el) => setItemRef(el, appart.id)"
           />
-          <!-- <div class="join py-5">
-            <button class="join-item btn btn-md btn-active">1</button>
-            <button class="join-item btn btn-md">2</button>
-            <button class="join-item btn btn-md">{{ currentPage }}</button>
-            <button class="join-item btn btn-md">3</button>
-            <button class="join-item btn btn-md">4</button>
-          </div> -->
         </div>
         <div class="join mx-auto">
           <button class="join-item btn" @click="lastPage">«</button>
@@ -516,51 +524,7 @@ const clickPourToiButton = () => {
           <button class="join-item btn" @click="nextPage">»</button>
         </div>
       </div>
-      <!-- <div
-        :class="{
-          hidden: !displayModeIsMap,
-          'w-full lg:p-4 col-span-12 block lg:col-start-7 h-full my-auto border-white shadow-2xl':
-            displayModeIsMap || isLargeScreen,
-        }"
-      >
-        <l-map
-          ref="map"
-          v-model:zoom="mapStore.currentZoom"
-          v-model:center="mapStore.currentLocation"
-          class="h-full"
-          :options="{ zoomControl: false }"
-        >
-          <l-tile-layer
-            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-            layer-type="base"
-            name="OpenStreetMap"
-          ></l-tile-layer>
-          <l-control-zoom position="bottomright"></l-control-zoom>
-          <l-marker-cluster-group ref="markerCluster">
-            <l-marker
-              v-for="appart in apparts"
-              :key="appart.id"
-              :lat-lng="appart.location"
-              @click="scrollToItem(appart.id)"
-            >
-              <LPopup class="p-0">
-                <listingCard
-                  :key="appart.id"
-                  :id="appart.id"
-                  :price="appart.price"
-                  :city="extractCity(appart.fullAddress)"
-                  :bedrooms="extractBedrooms(appart.customTitle)"
-                  :bathrooms="extractBathrooms(appart.customTitle)"
-                  :rating="0"
-                  :img="appart.img"
-                  :address="appart.fullAddress"
-                  :location="appart.location"
-                />
-              </LPopup>
-            </l-marker>
-          </l-marker-cluster-group>
-        </l-map>
-      </div> -->
+
       <mapPage
         :apparts="apparts"
         :isLargeScreen="isLargeScreen"
