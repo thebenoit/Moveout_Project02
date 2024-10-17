@@ -112,9 +112,12 @@ const fetchData = async () => {
       console.log("response: ", response);
     }
     //si il n'y a pas d'appartement disponible afficher page
-    if(appart.value.length == 0){
-      noData=true;
+    if (response.length != 10) {
+      noData.value = true;
+    } else {
+      noData.value = false;
     }
+    console.log("appart length: ", response.length);
     apparts.value = response;
 
     totalPages.value = apparts.value[0].total;
@@ -197,6 +200,10 @@ const toggleBedroomsSelection = (bedrooms) => {
 };
 
 function extractCity(fullAddress) {
+  if (!fullAddress) {
+    console.log("valeurs fulladress undefined");
+    return " ";
+  }
   // Split the address by comma
 
   const parts = fullAddress.split(",");
@@ -213,6 +220,10 @@ function extractCity(fullAddress) {
   }
 }
 function extractBathrooms(description) {
+  if (!description) {
+    console.log("valeurs description undefined");
+    return " ";
+  }
   // Use a regular expression to find the number of bathrooms
   const bathroomMatch = splitDescription(description)[1];
 
@@ -224,6 +235,10 @@ function splitDescription(description) {
   return description.split("·")[0].trim()[0];
 }
 function extractBedrooms(description) {
+  if (!description) {
+    console.log("valeurs description undefined");
+    return " ";
+  }
   // Use a regular expression to find the number of bedrooms
   const bedroomMatch = splitDescription(description)[0];
 
@@ -493,7 +508,7 @@ const clickPourToiButton = () => {
           v-if="noData == true"
           class="w-full pt-5 space-y-4 h-[70vh] overflow-y-auto whitespace-nowrap p-2 flex flex-wrap gap-3 justify-around"
         >
-          <h1>Pas d'appartement disponible</h1>
+          <h1>0 appartements trouvée</h1>
           <div>
             <img class="object-contain" src="../assets/images/no_data.svg" />
           </div>

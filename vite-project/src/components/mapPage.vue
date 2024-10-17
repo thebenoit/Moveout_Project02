@@ -47,6 +47,12 @@ const props = defineProps({
 });
 
 function extractBathrooms(description) {
+
+  if(!description){
+    console.log('valeurs description undefined')
+    return " ";
+  }
+
   // Use a regular expression to find the number of bathrooms
   const bathroomMatch = splitDescription(description)[1];
 
@@ -55,6 +61,11 @@ function extractBathrooms(description) {
 }
 
 function splitDescription(description) {
+  if(!description){
+    console.log('valeurs description undefined')
+    return " ";
+  }
+
   return description.split("·")[0].trim()[0];
 }
 function scrollToItem(id) {
@@ -82,6 +93,12 @@ function scrollToItem(id) {
 }
 
 function extractCity(fullAddress) {
+
+  if(!fullAddress){
+    console.log('valeurs fulladress undefined')
+    return " ";
+  }
+
   // Split the address by comma
 
   const parts = fullAddress.split(",");
@@ -99,6 +116,12 @@ function extractCity(fullAddress) {
 }
 
 function extractBedrooms(description) {
+
+  if(!description){
+    console.log('valeurs description undefined')
+    return " ";
+  }
+
   // Use a regular expression to find the number of bedrooms
   const bedroomMatch = splitDescription(description)[0];
 
