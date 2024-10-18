@@ -120,7 +120,10 @@ const fetchData = async () => {
     console.log("appart length: ", response.length);
     apparts.value = response;
 
-    totalPages.value = apparts.value[0].total;
+    //extremely guetto way to pass total page into a variable
+    //totalPages.value = apparts.value[0].total;
+
+    totalPages.value = await pageAndPageTotal(apparts);
 
     isRendered.value = true;
   } catch (error) {
@@ -160,6 +163,20 @@ const lastPage = async () => {
   } else {
     console.log("You are on the first page.");
   }
+};
+/**
+ * méthode qui permet d'avoir le nombre de page total
+ * et de reset la position de la page à 1
+ * @param apparts
+ */
+const pageAndPageTotal = async (apparts) => {
+  //si la page actuellee st plus grande que
+  //le nombre total de page reset la valeur
+  if (currentPage.value > apparts.value[0].total) {
+    currentPage.value = 1;
+  }
+
+  return apparts.value[0].total;
 };
 
 onUnmounted(() => {
