@@ -1,9 +1,9 @@
 {
     "rewrites": [
         {"source": "/(.*)", "destination": "/"}
-    ],
+    ]
 
-    "framework": "vue.js"
+    
 
     
 }
