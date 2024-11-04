@@ -37,7 +37,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname + "/")));
 
 const corsOptions = {
-  origin: "*",
+  origin: "https://www.moveout.ai",
   credentials: true,
   optionSuccessStatus: 200,
 };
