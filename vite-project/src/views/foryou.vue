@@ -51,6 +51,7 @@ const prixMin = ref(0);
 const prixMax = ref(0);
 const inputPrixMin = ref(0);
 const inputPrixMax = ref(0);
+const alwaysTrue = ref(true);
 
 const zoom = ref(12);
 
@@ -177,12 +178,15 @@ function scrollToItem(id) {
 const resultsCount = computed(() => apparts.value.length);
 
 const isLargeScreen = computed(() => window.innerWidth >= 1024);
+
+//!utils.getToken()
 </script>
 
 <template>
   <div>
     <div
-      v-if="!utils.getToken()"
+    
+      v-if="alwaysTrue"
       class="text-center p-6 rounded-lg shadow-md h-screen flex items-center justify-center"
     >
       <div
@@ -200,15 +204,20 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
           class="w-full h-auto mb-4"
         />
         <h1 class="text-2xl font-bold mb-2">Oups!</h1>
-        <p class="text-lg mb-4">
+        
+        <!-- <p class="text-lg mb-4">
           Vous devez être connecté pour avoir accès aux listings personnalisés
+        </p> -->
+
+        <p class="text-lg mb-4">
+          Cette section du site est en cours de développement et sera disponible prochainement. Merci de votre patience.
         </p>
 
-        <a class="btn btn-primary" href="/login"
+        <!-- <a class="btn btn-primary" href="/login"
           >Je veux des listings personnalisés!</a
-        >
-        <br />
-        <br />
+        > -->
+        <!-- <br />
+        <br /> -->
         <a class="btn btn-neutral" href="/listings">Retour</a>
       </div>
     </div>
@@ -226,7 +235,7 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
       </button>
 
       <div
-        class="grid grid-cols-12 relative z-10 h-[85vh] m-6 transition-all duration-300"
+        class="grid grid-col-12 relative z-10 h-[85vh] m-6 transition-all duration-300"
       >
         <div
           :class="{
@@ -237,7 +246,7 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
         >
           <div class="w-full flex justify-between">
             <div>
-              <h1 class="text-2xl font-medium">Montreal</h1>
+              <h1 class=" font-medium">Montreal</h1>
               <p class="">{{ resultsCount }} results</p>
             </div>
             <div class="flex h-full my-auto space-x-2">

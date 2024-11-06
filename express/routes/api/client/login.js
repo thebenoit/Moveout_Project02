@@ -4,6 +4,7 @@ const { login } = require("../../../mongo/interface/client");
 const generateJTW = require("../../../mongo/interface/JWT");
 const jwt = require("jsonwebtoken");
 const User = require("../../../mongo/schemas/user");
+const mixpanel = require("mixpanel");
 
 app.post("/login", async (req, res) => {
   try {
@@ -13,13 +14,13 @@ app.post("/login", async (req, res) => {
     if (response.error) {
       return res.status(400).send(response);
     }
-    mixpanel.identify(response.userId);
+    // mixpanel.identify(response.userId);
 
-    mixpanel.people.set({
-      $name: user.firstName,
-      $email: user.email,
-      $phone: user.phone,
-    });
+    // mixpanel.people.set({
+    //   $name: user.firstName,
+    //   $email: user.email,
+    //   $phone: user.phone,
+    // });
     console.log("user access token; ", user.accessToken);
     console.log("user name ", user.firstName);
     res.send({ token: user.accessToken });
