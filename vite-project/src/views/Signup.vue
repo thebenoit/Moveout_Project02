@@ -237,6 +237,9 @@ async function signup() {
     console.log("error2: ", errorMessages);
   }
 }
+const versConnection = () => {
+  router.push({ path: "/login" });
+};
 
 async function preferenceCreation() {
   try {
@@ -357,7 +360,12 @@ async function preferenceCreation() {
                   v-model="password"
                 />
               </div>
-
+              <p>
+                Vous avez déjà un compte?
+                <a @click="versConnection" class="underline text-blue-main"
+                  >Connectez-vous</a
+                >
+              </p>
               <Button
                 type="submit"
                 class="btn btn-lg w-full text-base bg-blue-main hover: overflow-hidden"

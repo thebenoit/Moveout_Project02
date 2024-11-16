@@ -83,13 +83,13 @@ async function login(){
             <div class="grid mt-1">
               <input class="rounded-md text-center" id="password" type="password" placeholder="mot de passe" v-model="password" required />
             </div>
-            <Button  type="submit" class="w-full bg-cyan-500 rounded-md" @click="login">
+            <Button  type="submit" class="w-full bg-blue-main rounded-md" @click="login">
               Log in
             </Button>
           </div>
           <div class="mt-4 text-center text-sm">
             Vous n'avez pas de compte?
-            <a href="/signup" class="underline">
+            <a href="/signup" class="underline text-blue-main">
               Inscrivez-vous
             </a>
           </div>

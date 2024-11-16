@@ -18,6 +18,8 @@ import { decodeJwt } from "jose";
 
 // icons
 import listingCard from "@/components/listingCard.vue";
+import WarningPage from "@/components/PageWarning.vue";
+import mapPage from "../components/mapPage.vue";
 import {
   CurrencyDollarIcon,
   MapPinIcon,
@@ -54,6 +56,8 @@ const inputPrixMax = ref(0);
 const alwaysTrue = ref(true);
 
 const zoom = ref(12);
+const currentPage = ref(1);
+const totalPages = ref(100);
 
 const isRendered = ref(false);
 
@@ -134,7 +138,6 @@ onMounted(async () => {
     isRendered.value = true;
   } catch (error) {
     console.error("Error fetching apartments:", error);
-    
   }
 });
 
@@ -179,47 +182,16 @@ const resultsCount = computed(() => apparts.value.length);
 
 const isLargeScreen = computed(() => window.innerWidth >= 1024);
 
-//!utils.getToken()
+//
 </script>
 
 <template>
   <div>
     <div
-    
-      v-if="alwaysTrue"
+      v-if="!utils.getToken()"
       class="text-center p-6 rounded-lg shadow-md h-screen flex items-center justify-center"
     >
-      <div
-        class="w-full max-w-md bg-gray-200 backdrop-blur-3xl p-6 rounded-lg shadow-lg text-center"
-      >
-        <p class="text-sm text-gray-100">
-          <a
-            href="https://www.freepik.com/free-vector/mobile-login-concept-illustration_4957412.htm#from_view=detail_alsolike"
-            >Image by storyset on Freepik</a
-          >
-        </p>
-        <img
-          src="@/assets/images/needLogin.png"
-          alt="Success Image"
-          class="w-full h-auto mb-4"
-        />
-        <h1 class="text-2xl font-bold mb-2">Oups!</h1>
-        
-        <!-- <p class="text-lg mb-4">
-          Vous devez être connecté pour avoir accès aux listings personnalisés
-        </p> -->
-
-        <p class="text-lg mb-4">
-          Cette section du site est en cours de développement et sera disponible prochainement. Merci de votre patience.
-        </p>
-
-        <!-- <a class="btn btn-primary" href="/login"
-          >Je veux des listings personnalisés!</a
-        > -->
-        <!-- <br />
-        <br /> -->
-        <a class="btn btn-neutral" href="/listings">Retour</a>
-      </div>
+      <WarningPage />
     </div>
     <div
       v-else
@@ -246,8 +218,8 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
         >
           <div class="w-full flex justify-between">
             <div>
-              <h1 class=" font-medium">Montreal</h1>
-              <p class="">{{ resultsCount }} results</p>
+              <h1 class="text-2xl font-medium">Montreal</h1>
+              <p class="">{{ currentPage }} sur {{ totalPages }} pages</p>
             </div>
             <div class="flex h-full my-auto space-x-2">
               <!-- <div>saved</div>
@@ -371,7 +343,7 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
             <!-- <div class="my-auto min-w-fit ml-10">display modesa</div> -->
           </div>
           <div
-            class="w-full pt-5 space-y-4 h-[75vh] overflow-y-auto whitespace-nowrap p-2 flex flex-wrap gap-3 justify-around"
+            class="w-full pt-5 space-y-4 h-[70vh] overflow-y-auto whitespace-nowrap p-2 flex flex-wrap gap-3"
           >
             <listingCard
               v-for="appart in apparts"
@@ -396,60 +368,14 @@ const isLargeScreen = computed(() => window.innerWidth >= 1024);
             />
           </div>
         </div>
-        <div
-          :class="{
-            hidden: !displayModeIsMap,
-            'w-full lg:p-4 col-span-12 block lg:col-start-7 h-full my-auto border-white shadow-2xl':
-              displayModeIsMap || isLargeScreen,
-          }"
-        >
-          <l-map
-            ref="map"
-            v-model:zoom="mapStore.currentZoom"
-            v-model:center="mapStore.currentLocation"
-            class="h-full"
-            :options="{ zoomControl: false }"
-          >
-            <l-tile-layer
-              url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-              layer-type="base"
-              name="OpenStreetMap"
-            ></l-tile-layer>
-            <l-control-zoom position="bottomright"></l-control-zoom>
-            <l-marker-cluster-group>
-              <l-marker
-                v-for="appart in apparts"
-                :key="appart.id"
-                :lat-lng="appart.location"
-                @click="scrollToItem(appart.id)"
-              >
-                <LPopup class="p-0">
-                  <listingCard
-                    :key="appart.id"
-                    :id="appart.id"
-                    :price="appart.price"
-                    :city="extractCity(appart.fullAddress)"
-                    :bedrooms="extractBedrooms(appart.customTitle)"
-                    :bathrooms="extractBathrooms(appart.customTitle)"
-                    :rating="0"
-                    :img="appart.img"
-                    :address="appart.fullAddress"
-                    :location="appart.location"
-                    :ref="
-                      (el) => {
-                        //si le composant n'est pas null
-                        if (el && el.$el) {
-                          setItemRef(el.$el, appart.id);
-                        }
-                      }
-                    "
-                  />
-                </LPopup>
-              </l-marker>
-            </l-marker-cluster-group>
-          </l-map>
-        </div>
+        <mapPage
+          :apparts="apparts"
+          :isLargeScreen="isLargeScreen"
+          :displayModeIsMap="displayModeIsMap"
+          :mapStore="mapStore"
+        />
       </div>
+      
     </div>
   </div>
 </template>

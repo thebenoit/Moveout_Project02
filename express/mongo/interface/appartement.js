@@ -37,12 +37,7 @@ async function fetchPage(pageNumber, pageSize) {
   }
 }
 async function fetchPage2(pageSize, pageNumber, appartData) {
-  const fieldsToSelect = [
-    "for_sale_item.location",
-    "for_sale_item.custom_title",
-    "for_sale_item.custom_sub_titles_with_rendering_flags",
-    "for_sale_item.formatted_price.text",
-  ].join(" ");
+  
 
   try {
     const skipAmount = (pageNumber - 1) * pageSize;
@@ -106,10 +101,11 @@ async function getAllAppartments() {
   console.log("NB_Documents", docCount);
 
   //data est égale à tout ce qu'il trouve dans la collection
-  const appartData = await facebook.find({}).lean().limit(700).exec();
+  const appartData = await facebook.find({}).lean().exec();//.limit(4000).exec();
  
   return appartData;
 }
+
 /**
  * méthode qui prend les données de la bd facebook et le mets
  * dans la constante appartData

@@ -8,7 +8,7 @@ const {
 } = require("../../../mongo/interface/appartement");
 
 let total = 0;
-const SIZEPAGE = 10;
+const SIZEPAGE = 10000;
 
 app.get("/page/totalAppart", async (req, res) => {
   //total page est égale a total divise par le nombre d'appart dans la page et ont arrondo a l'entier superieur
@@ -21,7 +21,9 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
   try {
     // Récupérer les paramètres de la query
     const { numberBedrooms, minPrice, maxPrice } = req.query;
+    //Récupérer le nombre de page 
     const pageNumber = req.body.pageNumber;
+
     console.log("pageNumber: ", pageNumber);
 
     appartData = await getAllAppartments();
@@ -103,14 +105,18 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
     }
     total = appartData.length;
    
-    const appartCustom = await fetchPage2(SIZEPAGE, pageNumber, appartData);
+    const appartCustom = await fetchPage2(
+      //SIZEPAGE, 
+      total,
+      pageNumber, 
+      appartData);
     
     
     const totalPage = Math.ceil(total / SIZEPAGE);
    
     //extremely guettho to pass the number of page data to the listings page
     appartCustom[0].total = totalPage
- 
+    //
 
     res.send(appartCustom);
   } catch (error) {

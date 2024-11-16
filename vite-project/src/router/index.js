@@ -15,6 +15,7 @@ import LandingPageSignup from '@/views/landingPages/landingPage-signup.vue'
 import LandingPageSuccess from '@/views/landingPages/landingPage-success.vue'
 import Erreur404 from '@/views/Erreur404.vue'
 import Listings from '@/views/Listings.vue'
+import HomeSimple from '@/views/HomeSimple.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,6 +24,11 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: Home
+    },
+    {
+      path: '/home2',
+      name: 'home2',
+      component: HomeSimple
     },
     // {
     //   path: '/appartements',
@@ -59,11 +65,11 @@ const router = createRouter({
       name: 'foryou',
       component: Foryou
     },
-    // {
-    //   path: '/preferences',
-    //   name: 'preferences',
-    //   component: Preferences
-    // },
+    {
+      path: '/preferences',
+      name: 'preferences',
+      component: Preferences
+    },
     // {
     //   path: '/settings',
     //   name: 'settings',
