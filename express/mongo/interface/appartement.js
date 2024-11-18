@@ -37,8 +37,6 @@ async function fetchPage(pageNumber, pageSize) {
   }
 }
 async function fetchPage2(pageSize, pageNumber, appartData) {
-  
-
   try {
     const skipAmount = (pageNumber - 1) * pageSize;
     // console.log("skipAmountCustom: ", skipAmount);
@@ -70,20 +68,10 @@ async function fetchPageForYou(
   location
 ) {
   try {
-    const fieldsToSelect = [
-      "for_sale_item.location",
-      "for_sale_item.custom_title",
-      "for_sale_item.custom_sub_titles_with_rendering_flags",
-      "for_sale_item.formatted_price.text",
-    ].join(" ");
-
     const skipAmount = (pageNumber - 1) * pageSize;
     //find appartements on the bd according to preference
     const results = await facebook
-      .find({
-        //'for_sale_item.formatted_price.text': { $gte: priceMin, $lte: priceMax },
-        //'for_sale_item.bedrooms': numberBedrooms,
-      })
+      .find({})
       .skip(skipAmount)
       .limit(pageSize)
       .lean()
@@ -96,14 +84,32 @@ async function fetchPageForYou(
   }
 }
 
-async function getAllAppartments() {
-  const docCount = await facebook.countDocuments({});
-  console.log("NB_Documents", docCount);
+async function getAllAppartments(limitAppart) {
+  try {
+    const docCount = await facebook.countDocuments({});
+    console.log("NB_Documents", docCount);
+    let appartData;
 
-  //data est égale à tout ce qu'il trouve dans la collection
-  const appartData = await facebook.find({}).lean().exec();//.limit(4000).exec();
- 
-  return appartData;
+    //appartData = await facebook.find({}).lean().limit(100);
+
+    //si limite est plus grand ou égale à zero on ne met pas de limite
+    if (limitAppart <= 0) {
+      console.log(`Pas de limite`);
+      //data est égale à tout ce qu'il trouve dans la collection
+      appartData = await facebook.find({}).lean(); //.limit(4000).exec();
+      console.log("appart: ", appartData);
+    } else {
+      console.log(`limite: ${limitAppart}`);
+      //data est égale à tout ce qu'il trouve dans la collection
+      appartData = await facebook.find({}).lean().limit(limitAppart); //.limit(4000).exec();
+      console.log(`Passée limite:`);
+    }
+
+    return appartData;
+  } catch (error) {
+    console.log(`erreur dans le getAllAppartments: ${error}`);
+    throw error;
+  }
 }
 
 /**

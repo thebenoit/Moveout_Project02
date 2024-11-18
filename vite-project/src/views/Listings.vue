@@ -42,6 +42,10 @@ const apparts = ref([
   // Your list of apartments
 ]);
 
+const appartsMap = ref([
+  // Your list of apartments
+]);
+
 // variable qui contient la map leaflet
 const map = ref();
 
@@ -58,7 +62,10 @@ const zoom = ref(12);
 const currentPage = ref(1);
 const totalPages = ref(100);
 const queryString = ref("");
-// const pageNumber = ref(1)
+//load 10 card par page
+const pageSize = ref(10);
+//permetra de load toute la liste sur la map
+const pageSizeMap = ref(1000);
 const prixButtonEvent = "click sur prix button";
 const timerOn = ref(false);
 
@@ -97,28 +104,47 @@ const fetchData = async () => {
     mapStore.map = map.value;
 
     if (!queryString.value) {
+      //api call pour la liste de card
       response = await utils.post(`api/appartements/page`, {
         pageNumber: currentPage.value,
+        pageSize: pageSize.value,
       });
+      //reponse for map
+      // responseMap = await utils.post(`api/appartements/page`, {
+      //   pageNumber: currentPage.value,
+      //   pageSize: pageSizeMap.value,
+      // });
     } else {
       console.log("queryStringValue: ", queryString.value);
+      //api call pour la liste de card
       response = await utils.post(
         `api/appartements/page?${queryString.value}`,
         {
           pageNumber: currentPage.value,
+          pageSize: pageSize.value,
         }
       );
 
+      // responseMap = await utils.post(
+      //   `api/appartements/page?${queryString.value}`,
+      //   {
+      //     pageNumber: currentPage.value,
+      //     pageSize: pageSizeMap.value,
+      //   }
+      // );
+
       console.log("response: ", response);
     }
-    //si il n'y a pas d'appartement disponible afficher page
-    if (response.length != 10) {
+    //si il n'y a pas d'appartement disponible afficher page(refaire logique)
+    if (response.length === 0) {
       noData.value = true;
     } else {
       noData.value = false;
     }
+
     console.log("appart length: ", response.length);
     apparts.value = response;
+    // appartsMap.value = responseMap
 
     //extremely guetto way to pass total page into a variable
     //totalPages.value = apparts.value[0].total;
@@ -128,17 +154,13 @@ const fetchData = async () => {
     isRendered.value = true;
   } catch (error) {
     console.error("Error fetching apartments:", error);
+    console.log(`appart length: `, response.length)
   }
 };
 
 onMounted(async () => {
   updateQueryString();
   await fetchData();
-
-  if (timerOn.value == true) {
-    windo;
-  }
-  // const totalPages = await utils.get('api/appartements/page/numberOfPage');
 });
 
 function updateChange() {
@@ -265,6 +287,7 @@ function extractBedrooms(description) {
 
 const filteredApparts = computed(() => {
   try {
+    console.log("computed: ");
     const filtered = apparts.value.filter((appart) => {
       // Si price est déjà un nombre, vous pouvez l'utiliser directement sans conversion.
       const price = parseFloat(
