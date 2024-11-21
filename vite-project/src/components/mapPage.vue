@@ -11,12 +11,14 @@ import {
   LMarker,
   LPopup,
 } from "@vue-leaflet/vue-leaflet";
+import Supercluster from "supercluster";
 import { LMarkerClusterGroup } from "vue-leaflet-markercluster";
 import "leaflet/dist/leaflet.css";
 //import 'vue-leaflet-markercluster/dist/style.css'
 
 // icons
 import listingCard from "@/components/listingCard.vue";
+
 import {
   CurrencyDollarIcon,
   MapPinIcon,
@@ -26,6 +28,9 @@ import {
 } from "@heroicons/vue/24/outline";
 
 import icon from "../assets/images/marker-icon.png";
+
+const supercluster = ref("");
+const clusters = ref([])
 
 const props = defineProps({
   isLargeScreen: {
@@ -46,10 +51,38 @@ const props = defineProps({
   },
 });
 
-function extractBathrooms(description) {
+//https://chatgpt.com/share/673eb5cb-f830-8012-91c6-158d3d65e1a4
+function initializeSupercluster() {
+  //convertir les données en format GeoJson
+  const geojsonPoints = this.apparts.map((appart) => ({
+    type: "Feature",
+    properties: {
+      id: appart.id,
+      name: appart.name,
+    },
+    geometry: {
+      type: "Point",
+      coordinates: appart.location,
+    },
+  }));
 
-  if(!description){
-    console.log('valeurs description undefined')
+  //Créer une instance de Supercluster
+  this.supercluster = new Supercluster({
+    radius: 40, // Rayon pour regrouper les points (en pixels)
+    maxZoom: 16,// zoom max pour regrouper
+  });
+
+  // charger les points dans Supercluster
+  this.supercluster.load(geojsonPoints);
+
+  //calculer les clusters initiaux
+  this.updateClusters();
+
+}
+
+function extractBathrooms(description) {
+  if (!description) {
+    console.log("valeurs description undefined");
     return " ";
   }
 
@@ -61,8 +94,8 @@ function extractBathrooms(description) {
 }
 
 function splitDescription(description) {
-  if(!description){
-    console.log('valeurs description undefined')
+  if (!description) {
+    console.log("valeurs description undefined");
     return " ";
   }
 
@@ -93,9 +126,8 @@ function scrollToItem(id) {
 }
 
 function extractCity(fullAddress) {
-
-  if(!fullAddress){
-    console.log('valeurs fulladress undefined')
+  if (!fullAddress) {
+    console.log("valeurs fulladress undefined");
     return " ";
   }
 
@@ -116,9 +148,8 @@ function extractCity(fullAddress) {
 }
 
 function extractBedrooms(description) {
-
-  if(!description){
-    console.log('valeurs description undefined')
+  if (!description) {
+    console.log("valeurs description undefined");
     return " ";
   }
 
@@ -150,6 +181,7 @@ function extractBedrooms(description) {
         name="OpenStreetMap"
       ></l-tile-layer>
       <l-control-zoom position="bottomright"></l-control-zoom>
+
       <l-marker-cluster-group ref="markerCluster">
         <l-marker
           v-for="appart in apparts"
