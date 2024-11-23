@@ -1,6 +1,15 @@
 <script setup>
 import utils from "../utils/utils.js";
-import { ref, onMounted, onUnmounted, computed, watch, defineProps } from "vue";
+import {
+  ref,
+  onMounted,
+  onUnmounted,
+  computed,
+  watch,
+  defineProps,
+  nextTick,
+
+} from "vue";
 import { useRouter } from "vue-router";
 
 // leaflet
@@ -29,8 +38,11 @@ import {
 
 import icon from "../assets/images/marker-icon.png";
 
-const supercluster = ref("");
-const clusters = ref([])
+let supercluster = null;
+const clusters = ref([]);
+const bounds = ref();
+
+const map = ref(null) // référence à la carte leaflet
 
 const props = defineProps({
   isLargeScreen: {
@@ -51,14 +63,20 @@ const props = defineProps({
   },
 });
 
+
+
 //https://chatgpt.com/share/673eb5cb-f830-8012-91c6-158d3d65e1a4
-function initializeSupercluster() {
-  //convertir les données en format GeoJson
-  const geojsonPoints = this.apparts.map((appart) => ({
+const initializeSupercluster = () => {
+  try{
+//convertir les données en format GeoJson
+const geojsonPoints = props.apparts.map((appart) => ({
     type: "Feature",
     properties: {
       id: appart.id,
-      name: appart.name,
+      price: appart.price,
+      fullAddress: appart.fullAddress,
+      customTitle: appart.customTitle,
+      img: appart.img,
     },
     geometry: {
       type: "Point",
@@ -67,18 +85,68 @@ function initializeSupercluster() {
   }));
 
   //Créer une instance de Supercluster
-  this.supercluster = new Supercluster({
-    radius: 40, // Rayon pour regrouper les points (en pixels)
-    maxZoom: 16,// zoom max pour regrouper
+  supercluster = new Supercluster({
+    radius: 60, // Rayon pour regrouper les points (en pixels)
+    maxZoom: 16, // zoom max pour regrouper
   });
 
   // charger les points dans Supercluster
-  this.supercluster.load(geojsonPoints);
+  supercluster.load(geojsonPoints);
 
   //calculer les clusters initiaux
-  this.updateClusters();
+  updateClusters();
+  }catch(error){
+    console.log(`erreur dans initializeSupercluster: `,error)
+  }
+  
+};
+
+const updateClusters = () => {
+  try{
+    const map1 = map.value.leafletObject;
+  // obtenir les clusters visibles en fontion du zoom et des limites actuelles
+  const bounds = map.value.leafletObject.getBounds(); // Récupère les limites de la carte Leaflet
+  const zoomLevel = map.value.zoom;
+
+  const clusters = supercluster.getClusters(
+    [bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()],
+    zoomLevel
+  );
+  }catch(error){
+
+    console.log(`erreur dans updateClusters: `,error)
+
+  }
+
+};
+
+const handleClusterClick = (cluster) => {
+  if (cluster.properties.cluster) {
+    //zoom pour voir les détails d'un cluster
+    const [lng, lat] = cluster.geometry.coordinates;
+    map.value.center = [lat, lng];
+    map.value.zoom += 2; // Approfondir le zoom
+  }
+};
+
+//https://stackoverflow.com/questions/77920777/cannot-access-leaflet-mapobject-in-vue3
+//check if the map is fully initialized
+function isReady() {
+  if (map.value) {
+    //transform into leafletObject to access specific methods like getBounds()
+    const leafletObject = map.value.leafletObject
+    console.log('map est ready: ',map.value.leafletObject)
+    console.log('leaflet bounds: ', leafletObject.getBounds())
+    initializeSupercluster();
+    //watch when map stop moving then update clusters
+    leafletObject.on("moveend", updateClusters);
+  }
 
 }
+
+onMounted(() => {
+  
+});
 
 function extractBathrooms(description) {
   if (!description) {
@@ -94,6 +162,7 @@ function extractBathrooms(description) {
 }
 
 function splitDescription(description) {
+  //$refs.map.Object.geojsonPoints();
   if (!description) {
     console.log("valeurs description undefined");
     return " ";
@@ -172,6 +241,7 @@ function extractBedrooms(description) {
       ref="map"
       v-model:zoom="mapStore.currentZoom"
       v-model:center="mapStore.currentLocation"
+      @ready="isReady"
       class="h-full"
       :options="{ zoomControl: false }"
     >
@@ -184,23 +254,25 @@ function extractBedrooms(description) {
 
       <l-marker-cluster-group ref="markerCluster">
         <l-marker
-          v-for="appart in apparts"
-          :key="appart.id"
-          :lat-lng="appart.location"
-          @click="scrollToItem(appart.id)"
+          v-for="cluster in clusters"
+          :key="cluster.properties.cluster_id || cluster.properties.id"
+          :lat-lng="[
+            cluster.geometry.coordinates[1],
+            cluster.geometry.coordinates[0],
+          ]"
+          @click="handleClusterClick(cluster)"
         >
           <LPopup class="p-0">
             <listingCard
-              :key="appart.id"
-              :id="appart.id"
-              :price="appart.price"
-              :city="extractCity(appart.fullAddress)"
-              :bedrooms="extractBedrooms(appart.customTitle)"
-              :bathrooms="extractBathrooms(appart.customTitle)"
+              :id="cluster.properties.id"
+              :price="cluster.properties.price"
+              :city="extractCity(cluster.properties.fullAddress)"
+              :bedrooms="extractBedrooms(cluster.properties.customTitle)"
+              :bathrooms="extractBathrooms(cluster.properties.customTitle)"
               :rating="0"
-              :img="appart.img"
-              :address="appart.fullAddress"
-              :location="appart.location"
+              :img="cluster.properties.img"
+              :address="cluster.properties.fullAddress"
+              :location="cluster.geometry.coordinates"
             />
           </LPopup>
         </l-marker>
