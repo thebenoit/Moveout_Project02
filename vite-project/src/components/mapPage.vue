@@ -8,7 +8,6 @@ import {
   watch,
   defineProps,
   nextTick,
-
 } from "vue";
 import { useRouter } from "vue-router";
 
@@ -23,7 +22,7 @@ import {
 import Supercluster from "supercluster";
 import { LMarkerClusterGroup } from "vue-leaflet-markercluster";
 import "leaflet/dist/leaflet.css";
-//import 'vue-leaflet-markercluster/dist/style.css'
+import "vue-leaflet-markercluster/dist/style.css";
 
 // icons
 import listingCard from "@/components/listingCard.vue";
@@ -42,7 +41,7 @@ let supercluster = null;
 const clusters = ref([]);
 const bounds = ref();
 
-const map = ref(null) // référence à la carte leaflet
+const map = ref(null); // référence à la carte leaflet
 
 const props = defineProps({
   isLargeScreen: {
@@ -63,61 +62,72 @@ const props = defineProps({
   },
 });
 
-
-
 //https://chatgpt.com/share/673eb5cb-f830-8012-91c6-158d3d65e1a4
 const initializeSupercluster = () => {
-  try{
-//convertir les données en format GeoJson
-const geojsonPoints = props.apparts.map((appart) => ({
-    type: "Feature",
-    properties: {
-      id: appart.id,
-      price: appart.price,
-      fullAddress: appart.fullAddress,
-      customTitle: appart.customTitle,
-      img: appart.img,
-    },
-    geometry: {
-      type: "Point",
-      coordinates: appart.location,
-    },
-  }));
+  try {
+    //convertir les données en format GeoJson
+    const geojsonPoints = props.apparts.map((appart) => ({
+      type: "Feature",
+      properties: {
+        id: appart.id,
+        price: appart.price,
+        fullAddress: appart.fullAddress,
+        customTitle: appart.customTitle,
+        img: appart.img,
+      },
+      geometry: {
+        type: "Point",
+        coordinates: [appart.location[1], appart.location[0]], // Inversez si nécessaire
+      },
+    }));
 
-  //Créer une instance de Supercluster
-  supercluster = new Supercluster({
-    radius: 60, // Rayon pour regrouper les points (en pixels)
-    maxZoom: 16, // zoom max pour regrouper
-  });
+    //Créer une instance de Supercluster
+    supercluster = new Supercluster({
+      radius: 60, // Rayon pour regrouper les points (en pixels)
+      maxZoom: 16, // zoom max pour regrouper
+    });
 
-  // charger les points dans Supercluster
-  supercluster.load(geojsonPoints);
+    // charger les points dans Supercluster
+    supercluster.load(geojsonPoints);
 
-  //calculer les clusters initiaux
-  updateClusters();
-  }catch(error){
-    console.log(`erreur dans initializeSupercluster: `,error)
+    console.log(`GeojsonPoints: `, geojsonPoints);
+    console.log(`supercluster: `, supercluster);
+
+    //calculer les clusters initiaux
+    updateClusters();
+  } catch (error) {
+    console.log(`erreur dans initializeSupercluster: `, error);
   }
-  
 };
 
 const updateClusters = () => {
-  try{
-    const map1 = map.value.leafletObject;
-  // obtenir les clusters visibles en fontion du zoom et des limites actuelles
-  const bounds = map.value.leafletObject.getBounds(); // Récupère les limites de la carte Leaflet
-  const zoomLevel = map.value.zoom;
-
-  const clusters = supercluster.getClusters(
-    [bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()],
-    zoomLevel
-  );
-  }catch(error){
-
-    console.log(`erreur dans updateClusters: `,error)
-
+  try {
+    if (!map.value || !supercluster) {
+      console.log(`rien à rétourner`);
+      return;
+    }
+    console.log(`supercluster dans update: `, supercluster);
+    // obtenir les clusters visibles en fontion du zoom et des limites actuelles
+    const bounds = map.value.leafletObject.getBounds(); // Récupère les limites de la carte Leaflet
+    const zoomLevel = map.value.zoom;
+    console.log('Bounds: ',bounds)
+    const clusters = supercluster.getClusters(
+      [
+        bounds.getWest(),
+        bounds.getSouth(),
+        bounds.getEast(),
+        bounds.getNorth(),
+      ],
+      zoomLevel
+    );
+   
+    console.log(`zoomLevel: `, zoomLevel);
+    console.log(`clusters: `, clusters);
+    console.log(`Bounds Sud-Ouest :`,bounds._southWest)
+    console.log(`Bounds Sud-Ouest :`,bounds._northEast)
+  } catch (error) {
+    console.log(`erreur dans updateClusters: `, error);
   }
-
 };
 
 const handleClusterClick = (cluster) => {
@@ -134,19 +144,14 @@ const handleClusterClick = (cluster) => {
 function isReady() {
   if (map.value) {
     //transform into leafletObject to access specific methods like getBounds()
-    const leafletObject = map.value.leafletObject
-    console.log('map est ready: ',map.value.leafletObject)
-    console.log('leaflet bounds: ', leafletObject.getBounds())
+    const leafletObject = map.value.leafletObject;
     initializeSupercluster();
     //watch when map stop moving then update clusters
     leafletObject.on("moveend", updateClusters);
   }
-
 }
 
-onMounted(() => {
-  
-});
+onMounted(() => {});
 
 function extractBathrooms(description) {
   if (!description) {
@@ -252,17 +257,22 @@ function extractBedrooms(description) {
       ></l-tile-layer>
       <l-control-zoom position="bottomright"></l-control-zoom>
 
-      <l-marker-cluster-group ref="markerCluster">
-        <l-marker
-          v-for="cluster in clusters"
-          :key="cluster.properties.cluster_id || cluster.properties.id"
-          :lat-lng="[
-            cluster.geometry.coordinates[1],
-            cluster.geometry.coordinates[0],
-          ]"
-          @click="handleClusterClick(cluster)"
-        >
-          <LPopup class="p-0">
+      <!-- <l-marker-cluster-group ref="markerCluster"> -->
+      <l-marker
+        v-for="cluster in clusters"
+        :key="cluster.properties.cluster_id || cluster.properties.id"
+        :lat-lng="[
+          cluster.geometry.coordinates[1],
+          cluster.geometry.coordinates[0],
+        ]"
+        @click="handleClusterClick(cluster)"
+      >
+      {{ console.log('dans le dom cluster: ',cluster) }} <!-- Vérifie si cela s'affiche dans la console -->
+        <LPopup class="p-0">
+          <div v-if="cluster.properties.cluster">
+            <p>{{ cluster.properties.point_count }} points regroupés ici</p>
+          </div>
+          <div v-else>
             <listingCard
               :id="cluster.properties.id"
               :price="cluster.properties.price"
@@ -274,9 +284,10 @@ function extractBedrooms(description) {
               :address="cluster.properties.fullAddress"
               :location="cluster.geometry.coordinates"
             />
-          </LPopup>
-        </l-marker>
-      </l-marker-cluster-group>
+          </div>
+        </LPopup>
+      </l-marker>
+      <!-- </l-marker-cluster-group> -->
     </l-map>
   </div>
 </template>
