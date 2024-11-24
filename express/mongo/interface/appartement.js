@@ -39,7 +39,7 @@ async function fetchPage(pageNumber, pageSize) {
 async function fetchPage2(pageSize, pageNumber, appartData) {
   try {
     const skipAmount = (pageNumber - 1) * pageSize;
-    // console.log("skipAmountCustom: ", skipAmount);
+     console.log("skipAmountCustom: ", skipAmount);
 
     const pageLimit = skipAmount + pageSize;
     // console.log("pageLimitCustom: ", pageLimit);
