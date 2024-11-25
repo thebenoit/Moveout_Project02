@@ -88,7 +88,7 @@ const initializeSupercluster = () => {
     },
   };
 });
-console.log("GeoJSON Points après mapping:", geojsonPoints);
+//console.log("GeoJSON Points après mapping:", geojsonPoints);
 
     //Créer une instance de Supercluster
     supercluster = new Supercluster({
@@ -96,7 +96,7 @@ console.log("GeoJSON Points après mapping:", geojsonPoints);
       maxZoom: 16, // zoom max pour regrouper
     });
     geoPoints.value = geojsonPoints;
-    console.log(`GeoPoints dans initialize: `, geoPoints.value);
+    //console.log(`GeoPoints dans initialize: `, geoPoints.value);
     // charger les points dans Supercluster
     supercluster.load(geoPoints.value);
 
@@ -113,11 +113,11 @@ const updateClusters = () => {
       console.log(`rien à rétourner`);
       return;
     }
-    console.log(`apparts length: `, props.apparts.length);
+    //console.log(`apparts length: `, props.apparts.length);
     // obtenir les clusters visibles en fontion du zoom et des limites actuelles
     const bounds = map.value.leafletObject.getBounds(); // Récupère les limites de la carte Leaflet
     zoom.value = map.value.zoom;
-    console.log(`GeoPoints dans update: `, geoPoints.value);
+    //console.log(`GeoPoints dans update: `, geoPoints.value);
     console.log(
       "West:",
       bounds.getWest(),
@@ -141,8 +141,8 @@ const updateClusters = () => {
       zoom.value
     );
    
-    console.log(`clusters: `, clusters);
-    console.log(`avant array cluster: `, clusters.value.length);
+   // console.log(`clusters: `, clusters);
+  //  console.log(`avant array cluster: `, clusters.value.length);
 
     if (clusters.value.length === 0) {
       console.warn("No clusters to display.");
@@ -154,6 +154,7 @@ const updateClusters = () => {
 const handleClusterClick = (cluster) => {
   console.log(`Click on cluster!`);
   if (cluster.properties.cluster) {
+    console.log('click geo: ',cluster.geometry.coordinates)
     //zoom pour voir les détails d'un cluster
     const [lng, lat] = cluster.geometry.coordinates;
     map.value.center = [lat, lng];
@@ -311,7 +312,7 @@ function extractBedrooms(description) {
       ></l-tile-layer>
       <l-control-zoom position="bottomright"></l-control-zoom>
 
-      <!-- <l-marker-cluster-group :options="{ iconCreateFunction: createClusterIcon }"> -->
+      <!-- <l-marker-cluster-group> -->
       <l-marker
         v-for="cluster in clusters"
         :key="cluster.properties.cluster_id || cluster.properties.id"
