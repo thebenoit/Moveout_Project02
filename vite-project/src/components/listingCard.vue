@@ -136,13 +136,13 @@ const clickMap = (location) => {
           </p>
         </div>
         <div class="justify-around w-1/2 flex">
-          <button
+          <!-- <button
             id="mapButton"
             @click="clickMap(props.location)"
             class="btn btn-ghost px-3"
           >
             <MapIcon class="size-8 my-auto stroke-blue-main" />
-          </button>
+          </button> -->
           <button id="arrowLink" class="btn btn-ghost px-0">
             <ArrowRightCircleIcon
               class="size-8 my-auto stroke-blue-main"

@@ -1,83 +1,91 @@
 <script setup>
-import { useRouter } from 'vue-router';
-import Hero from "../components/HeroSection.vue";
-import conect from '@/assets/images/conect.png';
-import camionDemenage from '@/assets/images/camionDemenage.svg';
-import robot from '@/assets/images/robot.png';
-import detente from '@/assets/images/detente.png';
-import homeImg from '@/assets/images/main1.jpg'
-
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import connect from "@/assets/images/conect.png";
+import robot from "@/assets/images/robot.png";
+import detente from "@/assets/images/detente.png";
 const router = useRouter();
-
 function handleSubmitButton() {
-  router.push('/listings');
-  console.log('Navigating to apartments...');
+  router.push("/listings");
+  console.log("Navigating to apartments...");
 }
+//slide pour les images
+const slides = ref([
+  {
+    image: `${connect}`,
+    title: "1. Inscrivez-vous sur Moveout",
+    description:
+      "Moveout.ai recherche tout les sites web de listing sur internet.",
+  },
+
+  {
+    image: `${robot}`,
+    title: "2. Communiquez-nous vos préférences",
+    description:
+      "Moveout.ai analyse les meilleurs listings selon vos goûts et préférences jour et nuit.",
+  },
+  {
+    image: `${detente}`,
+    title: "3. Relaxez, on s'occupe du rest",
+    description:
+      "Dès qu'un appartement apparaît sur le web, vous serez le premier à le savoir.",
+  },
+]);
+
+const currentSlideIndex = ref(0);
+
+const changeSlide = () => {
+  currentSlideIndex.value = (currentSlideIndex.value + 1) % slides.value.length;
+};
+onMounted(() => {
+  setInterval(changeSlide, 5000);
+});
 </script>
 
 <template>
-  <div class="bg-gray-100 min-h-screen flex flex-col items-center">
-    <!-- Hero Section -->
-    <div class="bg-fixed bg-no-repeat bg-cover bg-center h-[35vh] w-full flex items-center justify-center" 
-        :style="{ backgroundImage: `url(${homeImg})` }"
-         >
-      <div class="text-center text-white">
-        <h1 class="font-poppins text-4xl md:text-5xl mb-6">Trouve un appartement abordable</h1>
-        <button 
-          @click="handleSubmitButton"
-          class="bg-blue-main text-white py-3 px-6 rounded-full text-lg md:text-xl font-semibold hover:bg-blue-700 transition-colors">
-          Commencer la recherche
-        </button>
-      </div>
+  <div class="flex flex-col justify-center items-center h-screen">
+    <!-- source: https://chatgpt.com/c/6733d1cb-7d6c-8012-8978-dbeae9b43ac6 -->
+    <div class="flex flex-col items-center mb-10 md:mb-0 max-w-xs">
+      <transition name="slide-fade" mode="out-in">
+        <img
+          :key="currentSlideIndex"
+          :src="slides[currentSlideIndex].image"
+          alt="Image"
+          class="w-32 h-32 mb-4"
+        />
+      </transition>
+      <!-- <transition name="slide-fade" mode="out-in">
+        <h3
+          :key="'title-' + currentSlideIndex"
+          class="text-xl font-semibold mb-2 text-blue-main"
+        >
+          {{ slides[currentSlideIndex].title }}
+        </h3>
+      </transition> -->
+      <!-- <transition name="slide-fade" mode="out-in">
+        <p :key="'desc-' + currentSlideIndex" class="text-gray-600">
+          {{ slides[currentSlideIndex].description }}
+        </p>
+      </transition> -->
     </div>
 
-    <!-- How It Works Section -->
-    <section class="text-center mt-12 w-full px-4">
-      <h2 class="text-3xl md:text-4xl font-bold text-blue-main mb-8">Comment ça marche ?</h2>
-      <div class="flex flex-col md:flex-row justify-around items-center">
-        <!-- Step 1 -->
-        <div class="flex flex-col items-center mb-10 md:mb-0 max-w-xs">
-          <img :src="conect" alt="Inscrivez-vous" class="w-32 h-32 mb-4">
-          <h3 class="text-xl font-semibold mb-2 text-blue-main">1. Inscrivez-vous sur Moveout</h3>
-          <p class="text-gray-600">Moveout.ai recherche tout les sites web de listing sur internet... vraiment tout.</p>
-        </div>
-        <!-- Step 2 -->
-        <div class="flex flex-col items-center mb-10 md:mb-0 max-w-xs">
-          <img :src="robot" alt="Préférences" class="w-32 h-32 mb-4">
-          <h3 class="text-xl font-semibold mb-2 text-blue-main">2. Communiquez-nous vos préférences</h3>
-          <p class="text-gray-600">Moveout.ai analyse les meilleurs listings selon vos goûts et préférences jour et nuit.</p>
-        </div>
-        <!-- Step 3 -->
-        <div class="flex flex-col items-center max-w-xs">
-          <img :src="detente" alt="Relaxez" class="w-32 h-32 mb-4">
-          <h3 class="text-xl font-semibold mb-2 text-blue-main">3. Relaxez, on s'occupe du reste</h3>
-          <p class="text-gray-600">Dès qu'un appartement apparaît sur le web, vous serez le premier à le savoir.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Start Button Section -->
-    <div class="flex justify-center my-12">
-      <button 
-        @click="handleSubmitButton"
-        class="bg-blue-main text-white py-4 px-8 rounded-full text-2xl font-bold hover:bg-blue-700 transition-colors shadow-lg">
-        Start today for <u>free</u>!
-      </button>
-    </div>
+    <button
+      @click="handleSubmitButton"
+      class="bg-blue-main text-white py-3 px-6 rounded-full text-lg md:text-xl font-semibold hover:bg-blue-400 transition-colors shadow-lg hover:shadow-xl"
+    >
+      Trouve ton appartement!
+    </button>
   </div>
 </template>
 
 <style scoped>
-/* Add custom styles for responsiveness */
-@media (min-width: 768px) {
-  .text-3xl {
-    font-size: 2rem;
-  }
-  .text-4xl {
-    font-size: 2.5rem;
-  }
-  .text-5xl {
-    font-size: 3rem;
-  }
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateX(120px);
 }
 </style>

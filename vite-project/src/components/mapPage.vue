@@ -161,6 +161,20 @@ const handleClusterClick = (cluster) => {
   }
 };
 
+function createClusterIcon(clusters) {
+      const count = clusters.getChildCount(); // Nombre total de points dans le cluster
+      
+      const size =
+        count < 10 ? 'small' :
+        count < 100 ? 'medium' : 'large';
+
+      return map.value.leafletObject.divIcon({
+        html: `<div><span>${count}</span></div>`, // Affiche le nombre total d'appartements
+        className: `marker-cluster marker-cluster-${size}`, // Classe CSS pour la taille
+        iconSize: map.value.leafletObject.point(40, 40), // Taille de l'icône
+      });
+    }
+
 //https://stackoverflow.com/questions/77920777/cannot-access-leaflet-mapobject-in-vue3
 //check if the map is fully initialized
 function isReady() {
@@ -297,7 +311,7 @@ function extractBedrooms(description) {
       ></l-tile-layer>
       <l-control-zoom position="bottomright"></l-control-zoom>
 
-      <!-- <l-marker-cluster-group> -->
+      <!-- <l-marker-cluster-group :options="{ iconCreateFunction: createClusterIcon }"> -->
       <l-marker
         v-for="cluster in clusters"
         :key="cluster.properties.cluster_id || cluster.properties.id"

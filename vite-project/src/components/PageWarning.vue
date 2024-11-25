@@ -29,9 +29,9 @@
       Cette section du site est en cours de développement et sera disponible prochainement. Merci de votre patience.
     </p>
 
-    <a class="btn btn-primary" href="/login"
+    <!-- <a class="btn btn-primary" href="/login"
       >Je veux des listings personnalisés!</a
-    >
+    > -->
     <!-- <br />
     <br /> -->
     <a class="btn btn-neutral" href="/listings">Retour</a>

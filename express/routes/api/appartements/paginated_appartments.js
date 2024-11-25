@@ -29,7 +29,7 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
 
     console.log("pageSizeCard: ", pageSize);
 
-    appartData = await getAllAppartments(1000);
+    appartData = await getAllAppartments(10000);
 
     // if (pageSize === 10) {
     //   console.log(`Passer ici!`);

@@ -43,7 +43,7 @@ const apparts = ref([
 ]);
 
 const appartsMap = ref([
-  // Your list of apartments
+  // Your list of apartments for map
 ]);
 
 // variable qui contient la map leaflet
@@ -63,9 +63,9 @@ const currentPage = ref(1);
 const totalPages = ref(100);
 const queryString = ref("");
 //load 10 card par page
-const pageSize = ref(3000);
+const pageSize = ref(30);
 //permetra de load toute la liste sur la map
-const pageSizeMap = ref(1000);
+const pageSizeMap = ref(3000);
 const prixButtonEvent = "click sur prix button";
 const timerOn = ref(false);
 
@@ -100,6 +100,7 @@ const updateQueryString = () => {
 const fetchData = async () => {
   try {
     let response = "";
+    let responseMap = "";
 
     mapStore.map = map.value;
 
@@ -111,8 +112,8 @@ const fetchData = async () => {
       });
       //reponse for map
       // responseMap = await utils.post(`api/appartements/page`, {
-      //   pageNumber: currentPage.value,
-      //   pageSize: pageSizeMap.value,
+      // pageNumber: currentPage.value,
+      // pageSize: pageSizeMap.value,
       // });
     } else {
       console.log("queryStringValue: ", queryString.value);
@@ -125,13 +126,13 @@ const fetchData = async () => {
         }
       );
 
-      // responseMap = await utils.post(
-      //   `api/appartements/page?${queryString.value}`,
-      //   {
-      //     pageNumber: currentPage.value,
-      //     pageSize: pageSizeMap.value,
-      //   }
-      // );
+      responseMap = await utils.post(
+        `api/appartements/page?${queryString.value}`,
+        {
+          pageNumber: currentPage.value,
+          pageSize: pageSizeMap.value,
+        }
+      );
 
       console.log("response: ", response);
       console.log("pageSize.value: ", pageSize.value);
@@ -144,8 +145,9 @@ const fetchData = async () => {
     }
 
     console.log("appart length: ", response.length);
+    console.log("appartMap length: ", responseMap.length);
     apparts.value = response;
-    // appartsMap.value = responseMap
+    appartsMap.value = responseMap
 
     //extremely guetto way to pass total page into a variable
     //totalPages.value = apparts.value[0].total;
@@ -209,6 +211,11 @@ onUnmounted(() => {
 // Use ref to access the item container and individual listingCards
 const itemRefs = ref({});
 
+const handleDisplayModeMap = () =>{
+  console.log(`Display mode map clicked!`)
+  displayModeIsMap.value = !displayModeIsMap.value
+
+}
 function setItemRef(el, idx) {
   if (el) {
     itemRefs.value[idx] = el;
@@ -379,11 +386,11 @@ const clickPourToiButton = () => {
     >
       <button
         class="bg-blue-main text-white rounded-full flex space-x-4 p-2 px-4"
-        @click="displayModeIsMap = !displayModeIsMap"
+        @click="handleDisplayModeMap"
       >
-        <Squares2X2Icon class="size-7" />
-        <ArrowsRightLeftIcon class="size-7" />
-        <MapIcon class="size-7" />
+        <Squares2X2Icon class="size-10" />
+        <ArrowsRightLeftIcon class="size-10" />
+        <MapIcon class="size-10" />
       </button>
     </div>
     <div
@@ -582,7 +589,7 @@ const clickPourToiButton = () => {
       </div>
 
       <mapPage
-        :apparts="apparts"
+        :apparts="appartsMap"
         :isLargeScreen="isLargeScreen"
         :displayModeIsMap="displayModeIsMap"
         :mapStore="mapStore"
