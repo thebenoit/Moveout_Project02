@@ -37,10 +37,11 @@ import {
 
 import icon from "../assets/images/marker-icon.png";
 
-let supercluster = null;
+let supercluster = ref(null);
 const clusters = ref([]);
 const bounds = ref();
-const geoPoints = ref();
+const geoPoints = ref([]);
+const zoom = ref();
 
 const map = ref(null); // référence à la carte leaflet
 
@@ -67,30 +68,37 @@ const props = defineProps({
 const initializeSupercluster = () => {
   try {
     //convertir les données en format GeoJson
-    const geojsonPoints = props.apparts.map((appart) => ({
-      type: "Feature",
-      properties: {
-        id: appart.id,
-        price: appart.price,
-        fullAddress: appart.fullAddress,
-        customTitle: appart.customTitle,
-        img: appart.img,
-      },
-      geometry: {
-        type: "Point",
-        coordinates: [appart.location[1], appart.location[0]], // Inversez si nécessaire
-      },
-    }));
+    const geojsonPoints = props.apparts.map((appart, index) => {
+  if (!appart.location || appart.location.length !== 2) {
+    console.warn(`Location invalide à l'index ${index}:`, appart);
+  }
+
+  return {
+    type: "Feature",
+    properties: {
+      id: appart.id,
+      price: appart.price,
+      fullAddress: appart.fullAddress,
+      customTitle: appart.customTitle,
+      img: appart.img,
+    },
+    geometry: {
+      type: "Point",
+      coordinates: [appart.location[1], appart.location[0]], // Vérifie si inversion nécessaire
+    },
+  };
+});
+console.log("GeoJSON Points après mapping:", geojsonPoints);
 
     //Créer une instance de Supercluster
     supercluster = new Supercluster({
-      radius: 60, // Rayon pour regrouper les points (en pixels)
+      radius: 5, // Rayon pour regrouper les points (en pixels)
       maxZoom: 16, // zoom max pour regrouper
     });
     geoPoints.value = geojsonPoints;
-    console.log(`GeojsonPoints: `, geoPoints);
+    console.log(`GeoPoints dans initialize: `, geoPoints.value);
     // charger les points dans Supercluster
-    supercluster.load(geojsonPoints);
+    supercluster.load(geoPoints.value);
 
     //calculer les clusters initiaux
     updateClusters();
@@ -105,11 +113,24 @@ const updateClusters = () => {
       console.log(`rien à rétourner`);
       return;
     }
-    console.log(`supercluster dans update: `, supercluster);
+    console.log(`apparts length: `, props.apparts.length);
     // obtenir les clusters visibles en fontion du zoom et des limites actuelles
     const bounds = map.value.leafletObject.getBounds(); // Récupère les limites de la carte Leaflet
-    const zoomLevel = map.value.zoom;
+    zoom.value = map.value.zoom;
+    console.log(`GeoPoints dans update: `, geoPoints.value);
+    console.log(
+      "West:",
+      bounds.getWest(),
+      "South:",
+      bounds.getSouth(),
+      "East:",
+      bounds.getEast(),
+      "North:",
+      bounds.getNorth()
+    );
+    console.log(`zoom: `, zoom.value);
 
+    //créer les clusters à l'aide de supercluster
     clusters.value = supercluster.getClusters(
       [
         bounds.getWest(),
@@ -117,27 +138,21 @@ const updateClusters = () => {
         bounds.getEast(),
         bounds.getNorth(),
       ],
-      zoomLevel
+      zoom.value
     );
-    console.log(`GeojsonPoints dans  update: `, geoPoints);
-    console.log("Bounds: ", bounds);
-    console.log(`zoomLevel: `, zoomLevel);
+   
     console.log(`clusters: `, clusters);
     console.log(`avant array cluster: `, clusters.value.length);
 
     if (clusters.value.length === 0) {
-      console.log("Quand cluster est égale à zéro");
-      console.log(`apparts: `, props.apparts.length);
-      console.log("geoPoinst when clusters null: ", geoPoints);
-      console.log("clusters length 0: ", clusters);
       console.warn("No clusters to display.");
-    }
-  } catch (error) {
+  }} catch (error) {
     console.log(`erreur dans updateClusters: `, error);
   }
 };
 
 const handleClusterClick = (cluster) => {
+  console.log(`Click on cluster!`);
   if (cluster.properties.cluster) {
     //zoom pour voir les détails d'un cluster
     const [lng, lat] = cluster.geometry.coordinates;
@@ -149,17 +164,34 @@ const handleClusterClick = (cluster) => {
 //https://stackoverflow.com/questions/77920777/cannot-access-leaflet-mapobject-in-vue3
 //check if the map is fully initialized
 function isReady() {
-  if (map.value) {
+  if (map.value && map.value.leafletObject) { // Vérifie les deux conditions
     console.log(`Map is ready`);
-    //transform into leafletObject to access specific methods like getBounds()
     const leafletObject = map.value.leafletObject;
     initializeSupercluster();
-    //watch when map stop moving then update clusters
-    leafletObject.on("moveend", updateClusters);
+    leafletObject.on("moveend", updateClusters); // Ajoute le listener seulement si l'objet existe
+  } else {
+    console.warn('La carte n\'est pas encore initialisée.');
   }
 }
 
-onMounted(() => {});
+watch(
+  () => props.apparts, // Observe le changement des données
+  (newApparts) => {
+    if (newApparts && newApparts.length) {
+      initializeSupercluster(); // Appelle la fonction lorsque les données sont disponibles
+    }
+  },
+  { immediate: true }
+);
+
+onMounted(() => {
+  if (map.value && map.value.leafletObject) {
+    isReady(); // Appelle dès que le composant est monté
+  } else {
+    // Attendre un peu si la carte prend du temps à se charger
+    setTimeout(isReady, 1000); // Ajuste le délai si nécessaire
+  }
+});
 
 function extractBathrooms(description) {
   if (!description) {
@@ -265,36 +297,36 @@ function extractBedrooms(description) {
       ></l-tile-layer>
       <l-control-zoom position="bottomright"></l-control-zoom>
 
-      <l-marker-cluster-group ref="markerCluster">
-        <l-marker
-          v-for="cluster in clusters"
-          :key="cluster.properties.cluster_id || cluster.properties.id"
-          :lat-lng="[
-            cluster.geometry.coordinates[1],
-            cluster.geometry.coordinates[0],
-          ]"
-          @click="handleClusterClick(cluster)"
-        >
-          <LPopup class="p-0">
-            <div v-if="cluster.properties.cluster">
-              <p>{{ cluster.properties.point_count }} points regroupés ici</p>
-            </div>
-            <div v-else>
-              <listingCard
-                :id="cluster.properties.id"
-                :price="cluster.properties.price"
-                :city="extractCity(cluster.properties.fullAddress)"
-                :bedrooms="extractBedrooms(cluster.properties.customTitle)"
-                :bathrooms="extractBathrooms(cluster.properties.customTitle)"
-                :rating="0"
-                :img="cluster.properties.img"
-                :address="cluster.properties.fullAddress"
-                :location="cluster.geometry.coordinates"
-              />
-            </div>
-          </LPopup>
-        </l-marker>
-      </l-marker-cluster-group>
+      <!-- <l-marker-cluster-group> -->
+      <l-marker
+        v-for="cluster in clusters"
+        :key="cluster.properties.cluster_id || cluster.properties.id"
+        :lat-lng="[
+          cluster.geometry.coordinates[1],
+          cluster.geometry.coordinates[0],
+        ]"
+        @click="handleClusterClick(cluster)"
+      >
+        <LPopup class="p-0">
+          <div v-if="cluster.properties.cluster">
+            <p>{{ cluster.properties.point_count }} points regroupés ici</p>
+          </div>
+          <div v-else>
+            <listingCard
+              :id="cluster.properties.id"
+              :price="cluster.properties.price"
+              :city="extractCity(cluster.properties.fullAddress)"
+              :bedrooms="extractBedrooms(cluster.properties.customTitle)"
+              :bathrooms="extractBathrooms(cluster.properties.customTitle)"
+              :rating="0"
+              :img="cluster.properties.img"
+              :address="cluster.properties.fullAddress"
+              :location="cluster.geometry.coordinates"
+            />
+          </div>
+        </LPopup>
+      </l-marker>
+      <!-- </l-marker-cluster-group> -->
     </l-map>
   </div>
 </template>

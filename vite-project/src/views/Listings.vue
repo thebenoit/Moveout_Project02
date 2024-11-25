@@ -63,7 +63,7 @@ const currentPage = ref(1);
 const totalPages = ref(100);
 const queryString = ref("");
 //load 10 card par page
-const pageSize = ref(30);
+const pageSize = ref(3000);
 //permetra de load toute la liste sur la map
 const pageSizeMap = ref(1000);
 const prixButtonEvent = "click sur prix button";
