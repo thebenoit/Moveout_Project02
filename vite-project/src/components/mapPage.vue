@@ -312,7 +312,7 @@ function extractBedrooms(description) {
       ></l-tile-layer>
       <l-control-zoom position="bottomright"></l-control-zoom>
 
-      <!-- <l-marker-cluster-group> -->
+      <l-marker-cluster-group>
       <l-marker
         v-for="cluster in clusters"
         :key="cluster.properties.cluster_id || cluster.properties.id"
@@ -341,7 +341,7 @@ function extractBedrooms(description) {
           </div>
         </LPopup>
       </l-marker>
-      <!-- </l-marker-cluster-group> -->
+      </l-marker-cluster-group>
     </l-map>
   </div>
 </template>
