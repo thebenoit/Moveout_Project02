@@ -1,4 +1,4 @@
-modifie ces codes pour que cela concorde parfaitement: # # # will scrape using facebook's map api
+
 # # # this is done because facebook provides way more information,
 # # # eg. up to 100 listings per request, exact location of each listing, etc
 # # # which are all super useful and will save us from making a request to each listing
