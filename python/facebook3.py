@@ -239,24 +239,30 @@ def move_west(latitude, longitude, distance_in_km):
 # Initialisation des variables
 current_km = 1 # Distance courante du centre
 reqs = 0 # Compteur de requêtes
-lat = 45.50889 # Latitude de départ (Montréal)
-lon = -73.63167 # Longitude de départ
+lat = 45.49971 # Latitude de départ (Montréal)
+lon = -73.66610 # Longitude de départ
 
 # Crée une instance du scraper et fait une première requête
 scraper = Scraper()
 scraper.scrape(lat, lon)
 
 # Boucle principale qui parcourt la zone en spirale
-while current_km <= 50:
+while current_km <= 20:
     # Déplace vers l'est
     for _ in range(current_km):
         lat, lon = move_east(lat, lon, 1)
+        print("east")
+        print(f"current_km: {current_km}")
+        print(f"lat, {lat}, lon: {lon}")
         scraper.scrape(lat, lon)
         time.sleep(5)
 
     # Déplace vers le nord
     for _ in range(current_km):
         lat, lon = move_north(lat, lon, 1)
+        print("north")
+        print(f"current_km: {current_km}")
+        print(f"lat, {lat}, lon: {lon}")
         scraper.scrape(lat, lon)
         time.sleep(5)
 
@@ -265,12 +271,18 @@ while current_km <= 50:
     # Déplace vers l'ouest
     for _ in range(current_km):
         lat, lon = move_west(lat, lon, 1)
+        print("west")
+        print(f"current_km: {current_km}")
+        print(f"lat, {lat}, lon: {lon}")
         scraper.scrape(lat, lon)
         time.sleep(5)
 
     # Déplace vers le sud
     for _ in range(current_km):
         lat, lon = move_south(lat, lon, 1)
+        print("south")
+        print(f"current_km: {current_km}")
+        print(f"lat, {lat}, lon: {lon}")
         scraper.scrape(lat, lon)
         time.sleep(5)
 
