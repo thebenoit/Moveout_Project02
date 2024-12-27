@@ -1,310 +1,177 @@
-
-# # # this is done because facebook provides way more information,
-# # # eg. up to 100 listings per request, exact location of each listing, etc
-# # # which are all super useful and will save us from making a request to each listing
-
-# selenium
-from seleniumwire import webdriver  # Import from seleniumwire
+import math
+import time
+from seleniumwire import webdriver
 import seleniumwire.undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
-from pymongo import MongoClient 
+from pymongo import MongoClient
 from seleniumwire.utils import decode
-from selenium.webdriver.chrome.options import Options
-from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-
-
-# rotating ip library
-from requests_ip_rotator import ApiGateway
-
-# # other
 import requests
 import json
-import time
-import urllib
 import urllib.parse
 
-##change dépendementd de l'ordi install ici: https://googlechromelabs.github.io/chrome-for-testing/#stable
-chromedriver_path = "/Users/jerrybenoit/Downloads/chromedriver-mac-arm64_2/chromedriver"
-class Bd:
-
-    def __init__(self, uri, table, collection):
-        self.table = table
-        self.collection = collection
-
-        # connection à la BD
-        self.client = MongoClient(uri)
-        self.db = self.client[table]
-        self.collection = self.db[collection]
+class OptimizedScrapper:
+    def __init__(self):
+        # Configuration MongoDB
+        self.uri = "mongodb+srv://moveout:qFCPn6LARdjfBAYQ@cluster0.iowm3fd.mongodb.net/"
+        self.db_name = "Appartements_moveout"
+        self.collection_name = "appartments"
         
-        # Suppression de tous les documents dans la collection
+        # Configuration du driver Chrome
+        self.chromedriver_path = "/Users/jerrybenoit/Downloads/chromedriver-mac-arm64_2/chromedriver"
+        
+        # Définir les limites de Montreal
+        self.MONTREAL_BOUNDS = {
+            'north': 45.7059,
+            'south': 45.4139,
+            'east': -73.4733,
+            'west': -73.9529
+        }
+        
+        # Rayon de recherche optimal (en km)
+        self.SEARCH_RADIUS = 2
+        
+        # Chevauchement pour éviter de manquer des annonces (en km)
+        self.OVERLAP_DISTANCE = 0.5
+        
+        # Initialisation de la base de données
+        self.init_database()
+        
+        # Initialisation du scraper
+        self.init_scraper()
+
+    def init_database(self):
+        self.client = MongoClient(self.uri)
+        self.db = self.client[self.db_name]
+        self.collection = self.db[self.collection_name]
         self.collection.delete_many({})
 
-    def add_data(self, data):
-        try:
-            self.collection.insert_one(data)
-            print(data)
-        except Exception as e:
-            print(f"Erreur lors de l'insertion : {e}")
-
-class Scraper:
-
-    def __init__(self) -> None:
-        #self.url = "https://www.facebook.com/marketplace/montreal/propertyrentals?exact=false&latitude=45.50889&longitude=-73.63167&radius=7&locale=fr_CA"
-        self.url = "https://www.facebook.com/marketplace/montreal/propertyrentals?locale=fr_CA"
-        
-        proxies = {
-            'http': 'http://2dh0lrid:ae1hsoYLTkR7BBUv@proxy.proxy-cheap.com:31112',
-            'https': 'http://2dh0lrid:ae1hsoYLTkR7BBUv@proxy.proxy-cheap.com:31112'
-
-        }
-
-        proxy_options = {
-            # 'proxy': {
-            #     'http': 'http://rdqnojgj:Ma94RUM5saytuL5u@proxy.proxy-cheap.com:31112',
-            #     'https': 'http://rdqnojgj:Ma94RUM5saytuL5u@proxy.proxy-cheap.com:31112'
-            # }
-        }
-
+    def init_scraper(self):
         chrome_options = uc.ChromeOptions()
         chrome_options.add_argument('--ignore-ssl-errors=yes')
         chrome_options.add_argument('--ignore-certificate-errors')
 
-        service = Service(chromedriver_path)
-
+        service = Service(self.chromedriver_path)
+        
         self.driver = uc.Chrome(
             service=service,
             options=chrome_options,
-            seleniumwire_options=proxy_options
+            seleniumwire_options={}
         )
-
+        
         self.session = requests.Session()
-        self.session.proxies.update(proxies)
         self.session.verify = False
         
-        self.bd = Bd("mongodb+srv://moveout:qFCPn6LARdjfBAYQ@cluster0.iowm3fd.mongodb.net/", "Appartements_moveout", "appartments")
+        # Initialisation des variables pour Facebook
+        self.variables = {
+            "buyLocation": {"latitude": 45.4722, "longitude": -73.5848},
+            "categoryIDArray": [1468271819871448],
+            "numericVerticalFields": [],
+            "numericVerticalFieldsBetween": [],
+            "priceRange": [0, 214748364700],
+            "radius": 2000,
+            "stringVerticalFields": []
+        }
         
-        self.init_session()
-        self.driver.close()
+        self.init_facebook_session()
 
+    def init_facebook_session(self):
+        try:
+            headers, payload, resp_body = self.get_first_facebook_request()
+            self.load_headers(headers)
+            self.payload = self.parse_payload(payload)
+            self.payload["fb_api_req_friendly_name"] = "CometMarketplaceRealEstateMapStoryQuery"
+        except Exception as e:
+            print(f"Erreur d'initialisation Facebook : {e}")
 
-    def get_first_req(self):
-        self.driver.get(f"https://www.facebook.com/marketplace/montreal/propertyrentals?exact=false&latitude=45.50889&longitude=-73.63167&radius=7&locale=fr_CA")
-        #self.driver.get(f"https://www.facebook.com/marketplace/montreal/propertyrentals?exact=false&latitude=45.6006&longitude=-72.862&radius=40&locale=fr_CA")
+    def get_first_facebook_request(self):
+        self.driver.get("https://www.facebook.com/marketplace/montreal/propertyrentals?locale=fr_CA")
         time.sleep(15)
-
-        # get first request through selenium to get the headers and first results
+        
         for request in self.driver.requests:
-            if request.response:
-                if "graphql" in request.url:
-                    print("graphql request found")
-                    resp_body = decode(request.response.body, request.response.headers.get('Content-Encoding', 'identity'))
-                    resp_body = json.loads(resp_body)
+            if request.response and "graphql" in request.url:
+                resp_body = decode(request.response.body, request.response.headers.get('Content-Encoding', 'identity'))
+                resp_body = json.loads(resp_body)
+                if "marketplace_rentals_map_view_stories" in resp_body["data"]["viewer"]:
+                    return request.headers.__dict__["_headers"], request.body, resp_body
+        return None
 
-                    if "marketplace_rentals_map_view_stories" in resp_body["data"]["viewer"]:
-                        return request.headers.__dict__["_headers"], request.body, resp_body
-        print("No matching request found")
-        return None            
-    
     def load_headers(self, headers):
-
         for key, value in headers:
             self.session.headers.update({key: value})
-    
         self.session.headers.update({"x-fb-friendly-name": "CometMarketplaceRealEstateMapStoryQuery"})
 
-    # def get_next_cursor(self, body):
-    #     return body["data"]["viewer"]["marketplace_feed_stories"]["page_info"]["end_cursor"]
-    def get_next_cursor(self, body):
-        try:
-            return body["data"]["marketplace_feed_stories"]["page_info"]["end_cursor"]
-        except KeyError as e:
-            print(f"Erreur d'accès aux données : {e}")
-        # Vous pouvez ajouter ici un logging plus détaillé de la structure de body
-        return None
-    
-    def add_listings(self, body):
-        #return [self.bd.add_data(listing["node"]["listing"]) for listing in body["data"]["viewer"]["marketplace_feed_stories"]["edges"]]
-
-        for node in body["data"]["viewer"]["marketplace_rentals_map_view_stories"]["edges"]:
-            self.bd.add_data(node["node"])
-    
     def parse_payload(self, payload):
-        # Decode the data string
         decoded_str = urllib.parse.unquote(payload.decode())
-
-        # Parse the string into a dictionary
-        data_dict = dict(urllib.parse.parse_qsl(decoded_str))
-        
-        return data_dict
-    
-    def init_session(self):
-        try:
-            headers, payload_to_send, resp_body = self.get_first_req()  
-        except Exception as e:
-            print(f"Erreur lors de l'obtention de la première requête : {e} header: {headers}")  
- 
-       
-       
-       
-        self.next_cursor = self.get_next_cursor(resp_body)
-
-        # add the first few results
-        self.add_listings(resp_body)
-
-        # load headers to requests Sesssion
-        self.load_headers(headers)
-
-        # parse payload to normal format
-        self.payload_to_send = self.parse_payload(payload_to_send)
-
-        # update the api name we're using (map api)
-        self.payload_to_send["fb_api_req_friendly_name"] = "CometMarketplaceRealEstateMapStoryQuery"
-        
-        # self.variables = json.loads(self.payload_to_send["variables"])
-        self.variables =  {"buyLocation":{"latitude":45.4722,"longitude":-73.5848},"categoryIDArray":[1468271819871448],"numericVerticalFields":[],"numericVerticalFieldsBetween":[],"priceRange":[0,214748364700],"radius":2000,"stringVerticalFields":[]}
+        return dict(urllib.parse.parse_qsl(decoded_str))
 
     def scrape(self, lat, lon):
-
         try:
-
-            #update location
             self.variables["buyLocation"]["latitude"] = lat
             self.variables["buyLocation"]["longitude"] = lon
-
             
-            self.payload_to_send["variables"] = json.dumps(self.variables)
-
-            resp_body = self.session.post("https://www.facebook.com/api/graphql/", data=urllib.parse.urlencode(self.payload_to_send))
+            self.payload["variables"] = json.dumps(self.variables)
             
-            while "marketplace_rentals_map_view_stories" not in resp_body.json()["data"]["viewer"]:
-                print("error")
-                print(resp_body.json()["data"]["viewer"])
-                resp_body = self.session.post("https://www.facebook.com/api/graphql/", data=urllib.parse.urlencode(self.payload_to_send))
-
-            self.add_listings(resp_body.json())
-
+            response = self.session.post(
+                "https://www.facebook.com/api/graphql/", 
+                data=urllib.parse.urlencode(self.payload)
+            )
+            
+            data = response.json()
+            if "marketplace_rentals_map_view_stories" in data["data"]["viewer"]:
+                for node in data["data"]["viewer"]["marketplace_rentals_map_view_stories"]["edges"]:
+                    self.collection.insert_one(node["node"])
+                    
         except Exception as e:
-            print("Error in scrape", e)
+            print(f"Erreur lors du scraping : {e}")
+            time.sleep(10)
 
-        time.sleep(5)
-
-
-import math
-
-def move_north(latitude, longitude, distance_in_km):
-    km_per_degree_latitude = 111
-    delta_latitude = distance_in_km / km_per_degree_latitude
-    new_latitude = latitude + delta_latitude
-    return new_latitude, longitude
-
-def move_south(latitude, longitude, distance_in_km):
-    km_per_degree_latitude = 111
-    delta_latitude = distance_in_km / km_per_degree_latitude
-    new_latitude = latitude - delta_latitude
-    return new_latitude, longitude
-
-def move_east(latitude, longitude, distance_in_km):
-    km_per_degree_longitude = math.cos(latitude * (math.pi / 180)) * 111.32
-    delta_longitude = distance_in_km / km_per_degree_longitude
-    new_longitude = longitude + delta_longitude
-    return latitude, new_longitude
-
-def move_west(latitude, longitude, distance_in_km):
-    km_per_degree_longitude = math.cos(latitude * (math.pi / 180)) * 111.32
-    delta_longitude = distance_in_km / km_per_degree_longitude
-    new_longitude = longitude - delta_longitude
-    return latitude, new_longitude
-
-current_km = 1
-reqs = 0
-
-lat = 45.50889
-lon = -73.63167
-
-scraper = Scraper()
-scraper.scrape(lat, lon)
-
-while current_km <= 50:
-
-    for _ in range(current_km):
-        lat, lon = move_east(lat, lon, 1)
-        scraper.scrape(lat, lon)
-        time.sleep(5)
-
-    for _ in range(current_km):
-        lat, lon = move_north(lat, lon, 1)
-        scraper.scrape(lat, lon)
-        time.sleep(5)
-
-
-    current_km += 1
-
-    for _ in range(current_km):
-        lat, lon = move_west(lat, lon, 1)
-        scraper.scrape(lat, lon)
-        time.sleep(5)
-
-    for _ in range(current_km):
-        lat, lon = move_south(lat, lon, 1)
-        scraper.scrape(lat, lon)
-        time.sleep(5)
-
-    current_km += 1
-
-
-import math
-
-def move_north(latitude, longitude, distance_in_km):
-    km_per_degree_latitude = 111
-    delta_latitude = distance_in_km / km_per_degree_latitude
-    new_latitude = latitude + delta_latitude
-    return new_latitude, longitude
-
-def move_south(latitude, longitude, distance_in_km):
-    km_per_degree_latitude = 111
-    delta_latitude = distance_in_km / km_per_degree_latitude
-    new_latitude = latitude - delta_latitude
-    return new_latitude, longitude
-
-def move_east(latitude, longitude, distance_in_km):
-    km_per_degree_longitude = math.cos(latitude * (math.pi / 180)) * 111.32
-    delta_longitude = distance_in_km / km_per_degree_longitude
-    new_longitude = longitude + delta_longitude
-    return latitude, new_longitude
-
-def move_west(latitude, longitude, distance_in_km):
-    km_per_degree_longitude = math.cos(latitude * (math.pi / 180)) * 111.32
-    delta_longitude = distance_in_km / km_per_degree_longitude
-    new_longitude = longitude - delta_longitude
-    return latitude, new_longitude
-
-current_km = 1
-reqs = 0
-
-lat = 45.50889
-lon = -73.63167
-
-while current_km <= 50:
-
-    for _ in range(current_km):
-        lat, lon = move_east(lat, lon, 1)
-        print(lat, lon)
-
-    for _ in range(current_km):
-        lat, lon = move_north(lat, lon, 1)
-        print(lat, lon)
+    def generate_grid_points(self):
+        # Initialise une liste vide pour stocker les points de la grille
+        points = []
         
-    current_km += 1
+        # Commence à la latitude la plus au sud de Montréal
+        current_lat = self.MONTREAL_BOUNDS['south']
+        
+        # Boucle jusqu'à atteindre la latitude nord de Montréal
+        while current_lat <= self.MONTREAL_BOUNDS['north']:
+            # Pour chaque latitude, commence à la longitude ouest
+            current_lon = self.MONTREAL_BOUNDS['west']
 
-    for _ in range(current_km):
-        lat, lon = move_west(lat, lon, 1)
-        print(lat, lon)
+            # Boucle jusqu'à atteindre la longitude est
+            while current_lon <= self.MONTREAL_BOUNDS['east']:
+                # Ajoute le point courant (lat,lon) à la liste
+                points.append((current_lat, current_lon))
+                
+                # Calcule le prochain point longitude:
+                # - Multiplie le rayon par 2 pour couvrir le diamètre
+                # - Soustrait le chevauchement pour éviter les trous
+                # - Divise par 111.32 pour convertir km en degrés
+                # - Ajuste selon la latitude avec cos() car les longitudes se resserrent aux pôles
+                current_lon += (self.SEARCH_RADIUS * 2 - self.OVERLAP_DISTANCE) / 111.32 / math.cos(current_lat * math.pi / 180)
+                
+            # Passe à la latitude suivante en convertissant km en degrés (111.32 km/degré)    
+            current_lat += (self.SEARCH_RADIUS * 2 - self.OVERLAP_DISTANCE) / 111.32
+            
+        # Retourne la grille complète de points
+        return points
+        
+    def scrape_montreal(self):
+        # Génère la grille de points
+        points = self.generate_grid_points()
+        total_points = len(points)
+        
+        for i, (lat, lon) in enumerate(points):
+            try:
+                self.scrape(lat, lon) 
+                print(f"Progress: {i+1}/{total_points} points ({((i+1)/total_points)*100:.2f}%)")
+                time.sleep(5)
+            except Exception as e:
+                print(f"Error scraping point {lat}, {lon}: {e}")
+                time.sleep(10)
+                # Sauvegarder le point d'erreur pour réessayer plus tard
+                
+    
+    
 
-    for _ in range(current_km):
-        lat, lon = move_south(lat, lon, 1)
-        print(lat, lon)
-
-    current_km += 1
-
-print(reqs)
+        

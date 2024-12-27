@@ -25,7 +25,7 @@ import urllib
 import urllib.parse
 
 ##change dépendementd de l'ordi install ici: https://googlechromelabs.github.io/chrome-for-testing/#stable
-chromedriver_path = "/Users/jerrybenoit/Downloads/chromedriver-mac-arm64_2/chromedriver"
+chromedriver_path = "/Users/jerrybenoit/Downloads/chromedriver-mac-arm64/chromedriver"
 class Bd:
 
     def __init__(self, uri, table, collection):
@@ -43,7 +43,7 @@ class Bd:
     def add_data(self, data):
         try:
             self.collection.insert_one(data)
-            print(data)
+            ##print(data)
         except Exception as e:
             print(f"Erreur lors de l'insertion : {e}")
 
@@ -52,7 +52,7 @@ class Scraper:
     def __init__(self) -> None:
         #self.url = "https://www.facebook.com/marketplace/montreal/propertyrentals?exact=false&latitude=45.50889&longitude=-73.63167&radius=7&locale=fr_CA"
         self.url = "https://www.facebook.com/marketplace/montreal/propertyrentals?locale=fr_CA"
-        
+        #configuration des proxies
         proxies = {
             'http': 'http://2dh0lrid:ae1hsoYLTkR7BBUv@proxy.proxy-cheap.com:31112',
             'https': 'http://2dh0lrid:ae1hsoYLTkR7BBUv@proxy.proxy-cheap.com:31112'
@@ -90,31 +90,41 @@ class Scraper:
 
     def get_first_req(self):
         self.driver.get(f"https://www.facebook.com/marketplace/montreal/propertyrentals?exact=false&latitude=45.50889&longitude=-73.63167&radius=7&locale=fr_CA")
-        #self.driver.get(f"https://www.facebook.com/marketplace/montreal/propertyrentals?exact=false&latitude=45.6006&longitude=-72.862&radius=40&locale=fr_CA")
+        #allow the page to load fully including any JavaScript that triggers API requests
         time.sleep(15)
 
         # get first request through selenium to get the headers and first results
         for request in self.driver.requests:
+            #if request is a response
             if request.response:
+                #if request is a graphql request
                 if "graphql" in request.url:
                     print("graphql request found")
+                    #decode the response body
                     resp_body = decode(request.response.body, request.response.headers.get('Content-Encoding', 'identity'))
+                    #convert the response body to a json object
                     resp_body = json.loads(resp_body)
 
+                    #if the response body contains the data we want
                     if "marketplace_rentals_map_view_stories" in resp_body["data"]["viewer"]:
+                        #return the headers, body, and response body
                         return request.headers.__dict__["_headers"], request.body, resp_body
         print("No matching request found")
         return None            
     
     def load_headers(self, headers):
-
+        # Cette méthode charge les en-têtes HTTP dans la session
+        
+        # Pour chaque paire clé-valeur dans les en-têtes fournis
         for key, value in headers:
+            # Met à jour les en-têtes de la session avec la nouvelle paire clé-valeur
             self.session.headers.update({key: value})
-    
+        
+        # Ajoute un en-tête spécifique pour identifier le type de requête Facebook
+        # Cet en-tête indique qu'on utilise l'API de recherche immobilière sur la carte
         self.session.headers.update({"x-fb-friendly-name": "CometMarketplaceRealEstateMapStoryQuery"})
 
-    # def get_next_cursor(self, body):
-    #     return body["data"]["viewer"]["marketplace_feed_stories"]["page_info"]["end_cursor"]
+
     def get_next_cursor(self, body):
         try:
             return body["data"]["marketplace_feed_stories"]["page_info"]["end_cursor"]
@@ -124,7 +134,7 @@ class Scraper:
         return None
     
     def add_listings(self, body):
-        #return [self.bd.add_data(listing["node"]["listing"]) for listing in body["data"]["viewer"]["marketplace_feed_stories"]["edges"]]
+
 
         for node in body["data"]["viewer"]["marketplace_rentals_map_view_stories"]["edges"]:
             self.bd.add_data(node["node"])
@@ -165,86 +175,100 @@ class Scraper:
         self.variables =  {"buyLocation":{"latitude":45.4722,"longitude":-73.5848},"categoryIDArray":[1468271819871448],"numericVerticalFields":[],"numericVerticalFieldsBetween":[],"priceRange":[0,214748364700],"radius":2000,"stringVerticalFields":[]}
 
     def scrape(self, lat, lon):
-
+        # Méthode pour scraper les données à une position géographique donnée
         try:
-
-            #update location
+            # Met à jour les coordonnées de recherche dans les variables
             self.variables["buyLocation"]["latitude"] = lat
             self.variables["buyLocation"]["longitude"] = lon
-
             
+            # Convertit les variables en JSON et les ajoute au payload
             self.payload_to_send["variables"] = json.dumps(self.variables)
 
+            # Fait une requête POST à l'API GraphQL de Facebook
             resp_body = self.session.post("https://www.facebook.com/api/graphql/", data=urllib.parse.urlencode(self.payload_to_send))
             
+            # Vérifie que la réponse contient bien les données d'appartements
             while "marketplace_rentals_map_view_stories" not in resp_body.json()["data"]["viewer"]:
-                print("error")
-                print(resp_body.json()["data"]["viewer"])
+                print("error") # Affiche une erreur
+                #print(resp_body.json()["data"]["viewer"]) # Affiche la réponse pour debug
+                # Réessaie la requête
                 resp_body = self.session.post("https://www.facebook.com/api/graphql/", data=urllib.parse.urlencode(self.payload_to_send))
 
+            # Ajoute les annonces trouvées à la base de données
             self.add_listings(resp_body.json())
 
         except Exception as e:
             print("Error in scrape", e)
 
+        # Attend 5 secondes entre chaque requête
         time.sleep(5)
 
 
+# Importe le module math pour les calculs géographiques
 import math
 
+# Fonctions utilitaires pour déplacer le point de recherche dans différentes directions
 def move_north(latitude, longitude, distance_in_km):
-    km_per_degree_latitude = 111
+    # Déplace le point vers le nord d'une distance donnée
+    km_per_degree_latitude = 111 # 1 degré = 111km en latitude
     delta_latitude = distance_in_km / km_per_degree_latitude
     new_latitude = latitude + delta_latitude
     return new_latitude, longitude
 
 def move_south(latitude, longitude, distance_in_km):
+    # Déplace le point vers le sud
     km_per_degree_latitude = 111
-    delta_latitude = distance_in_km / km_per_degree_latitude
+    delta_latitude = distance_in_km / km_per_degree_latitude 
     new_latitude = latitude - delta_latitude
     return new_latitude, longitude
 
 def move_east(latitude, longitude, distance_in_km):
+    # Déplace le point vers l'est en tenant compte de la latitude
     km_per_degree_longitude = math.cos(latitude * (math.pi / 180)) * 111.32
     delta_longitude = distance_in_km / km_per_degree_longitude
     new_longitude = longitude + delta_longitude
     return latitude, new_longitude
 
 def move_west(latitude, longitude, distance_in_km):
+    # Déplace le point vers l'ouest
     km_per_degree_longitude = math.cos(latitude * (math.pi / 180)) * 111.32
     delta_longitude = distance_in_km / km_per_degree_longitude
     new_longitude = longitude - delta_longitude
     return latitude, new_longitude
 
-current_km = 1
-reqs = 0
+# Initialisation des variables
+current_km = 1 # Distance courante du centre
+reqs = 0 # Compteur de requêtes
+lat = 45.50889 # Latitude de départ (Montréal)
+lon = -73.63167 # Longitude de départ
 
-lat = 45.50889
-lon = -73.63167
-
+# Crée une instance du scraper et fait une première requête
 scraper = Scraper()
 scraper.scrape(lat, lon)
 
+# Boucle principale qui parcourt la zone en spirale
 while current_km <= 50:
-
+    # Déplace vers l'est
     for _ in range(current_km):
         lat, lon = move_east(lat, lon, 1)
         scraper.scrape(lat, lon)
         time.sleep(5)
 
+    # Déplace vers le nord
     for _ in range(current_km):
         lat, lon = move_north(lat, lon, 1)
         scraper.scrape(lat, lon)
         time.sleep(5)
 
-
     current_km += 1
 
+    # Déplace vers l'ouest
     for _ in range(current_km):
         lat, lon = move_west(lat, lon, 1)
         scraper.scrape(lat, lon)
         time.sleep(5)
 
+    # Déplace vers le sud
     for _ in range(current_km):
         lat, lon = move_south(lat, lon, 1)
         scraper.scrape(lat, lon)
@@ -253,58 +277,6 @@ while current_km <= 50:
     current_km += 1
 
 
-import math
 
-def move_north(latitude, longitude, distance_in_km):
-    km_per_degree_latitude = 111
-    delta_latitude = distance_in_km / km_per_degree_latitude
-    new_latitude = latitude + delta_latitude
-    return new_latitude, longitude
-
-def move_south(latitude, longitude, distance_in_km):
-    km_per_degree_latitude = 111
-    delta_latitude = distance_in_km / km_per_degree_latitude
-    new_latitude = latitude - delta_latitude
-    return new_latitude, longitude
-
-def move_east(latitude, longitude, distance_in_km):
-    km_per_degree_longitude = math.cos(latitude * (math.pi / 180)) * 111.32
-    delta_longitude = distance_in_km / km_per_degree_longitude
-    new_longitude = longitude + delta_longitude
-    return latitude, new_longitude
-
-def move_west(latitude, longitude, distance_in_km):
-    km_per_degree_longitude = math.cos(latitude * (math.pi / 180)) * 111.32
-    delta_longitude = distance_in_km / km_per_degree_longitude
-    new_longitude = longitude - delta_longitude
-    return latitude, new_longitude
-
-current_km = 1
-reqs = 0
-
-lat = 45.50889
-lon = -73.63167
-
-while current_km <= 50:
-
-    for _ in range(current_km):
-        lat, lon = move_east(lat, lon, 1)
-        print(lat, lon)
-
-    for _ in range(current_km):
-        lat, lon = move_north(lat, lon, 1)
-        print(lat, lon)
-        
-    current_km += 1
-
-    for _ in range(current_km):
-        lat, lon = move_west(lat, lon, 1)
-        print(lat, lon)
-
-    for _ in range(current_km):
-        lat, lon = move_south(lat, lon, 1)
-        print(lat, lon)
-
-    current_km += 1
-
+# Imprime le nombre total de requêtes
 print(reqs)
