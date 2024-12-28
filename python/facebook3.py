@@ -143,7 +143,7 @@ lat = 45.49971 # Latitude de départ (Montréal)
 lon = -73.66610 # Longitude de départ
 
 # Crée une instance du scraper et fait une première requête
-scraper = FacebookMarketplaceScraper(
+scraper = Scraper(
    os.getenv('MONGODB_URI'),
    os.getenv('DATABASE_NAME'),
    os.getenv('APARTMENTS_COLLECTION'),
