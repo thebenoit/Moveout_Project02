@@ -156,7 +156,7 @@ class Scraper:
             for node in body["data"]["viewer"]["marketplace_rentals_map_view_stories"]["edges"]:
                 if "for_sale_item" in node["node"] and "id" in node["node"]["for_sale_item"]:
                     listing_id = node["node"]["for_sale_item"]["id"]
-                    if not self.bd.exists(listing_id):
+                    if not self.bd.apartments.find_one({"_id": listing_id}):
                         data = node["node"]
                         if self.validate_data(data):
                             self.bd.add_data(data)
