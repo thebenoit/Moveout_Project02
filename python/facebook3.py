@@ -12,6 +12,9 @@ from seleniumwire.utils import decode
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 from dotenv import load_dotenv
 import os
@@ -65,44 +68,171 @@ class Bd:
             return {'lat': result[0], 'lon': result[1], 'current_km': result[2]}
         return None
 
-from Scraper import Scraper
+class Scraper:
 
-class FacebookMarketplaceScraper(Scraper):
-    def __init__(self, connection_string, database_name, collection_name, progress_collection):
-        base_url = "https://www.facebook.com/marketplace/montreal/propertyrentals?locale=fr_CA"
-        super().__init__(connection_string, database_name, collection_name, progress_collection, base_url)
-        
-        # Configuration spécifique pour Facebook
-        self.variables = {
-            "buyLocation": {"latitude": 45.4722, "longitude": -73.5848},
-            "categoryIDArray": [1468271819871448],
-            "numericVerticalFields": [],
-            "numericVerticalFieldsBetween": [],
-            "priceRange": [0, 214748364700],
-            "radius": 2000,
-            "stringVerticalFields": []
+    def __init__(self,connection_string, database_name,collection_name,progress_collection) -> None:
+    
+        self.url = "https://www.facebook.com/marketplace/montreal/propertyrentals?locale=fr_CA"
+        #configuration des proxies
+        proxies = {
+            'http': 'http://2dh0lrid:ae1hsoYLTkR7BBUv@proxy.proxy-cheap.com:31112',
+            'https': 'http://2dh0lrid:ae1hsoYLTkR7BBUv@proxy.proxy-cheap.com:31112'
+
         }
+
+        proxy_options = {
+          
+        }
+
+        chrome_options = uc.ChromeOptions()
+        chrome_options.add_argument('--ignore-ssl-errors=yes')
+        chrome_options.add_argument('--ignore-certificate-errors')
+
+        service = Service(chromedriver_path)
+
+        self.driver = uc.Chrome(
+            service=service,
+            options=chrome_options,
+            seleniumwire_options=proxy_options
+        )
+
+        self.session = requests.Session()
+        self.session.proxies.update(proxies)
+        self.session.verify = False
         
-        self.configure_graphql("CometMarketplaceRealEstateMapStoryQuery", self.variables)
+        self.bd = Bd(connection_string, database_name, collection_name, progress_collection)
         
-    def scrape(self, lat, lon):
+        self.init_session()
+        self.driver.close()
+
+
+    def get_first_req(self):
+        self.driver.get(f"https://www.facebook.com/marketplace/montreal/propertyrentals?exact=false&latitude=45.50889&longitude=-73.63167&radius=7&locale=fr_CA")
+        #allow the page to load fully including any JavaScript that triggers API requests
+        time.sleep(7)
+
+        # get first request through selenium to get the headers and first results
+        for request in self.driver.requests:
+            #if request is a response
+            if request.response:
+                #if request is a graphql request
+                if "graphql" in request.url:
+                    print("graphql request found")
+                    #decode the response body
+                    resp_body = decode(request.response.body, request.response.headers.get('Content-Encoding', 'identity'))
+                    #convert the response body to a json object
+                    resp_body = json.loads(resp_body)
+
+                    #if the response body contains the data we want
+                    if "marketplace_rentals_map_view_stories" in resp_body["data"]["viewer"]:
+                        #return the headers, body, and response body
+                        return request.headers.__dict__["_headers"], request.body, resp_body
+        print("No matching request found")
+        return None            
+    
+    def load_headers(self, headers):
+        # Cette méthode charge les en-têtes HTTP dans la session
+        
+        # Pour chaque paire clé-valeur dans les en-têtes fournis
+        for key, value in headers:
+            # Met à jour les en-têtes de la session avec la nouvelle paire clé-valeur
+            self.session.headers.update({key: value})
+        
+        # Ajoute un en-tête spécifique pour identifier le type de requête Facebook
+        # Cet en-tête indique qu'on utilise l'API de recherche immobilière sur la carte
+        self.session.headers.update({"x-fb-friendly-name": "CometMarketplaceRealEstateMapStoryQuery"})
+
+
+    def get_next_cursor(self, body):
         try:
+            return body["data"]["marketplace_feed_stories"]["page_info"]["end_cursor"]
+        except KeyError as e:
+            print(f"Erreur d'accès aux données : {e}")
+        # Vous pouvez ajouter ici un logging plus détaillé de la structure de body
+        return None
+    
+    def add_listings(self, body):
+        try:
+            for node in body["data"]["viewer"]["marketplace_rentals_map_view_stories"]["edges"]:
+                if "for_sale_item" in node["node"] and "id" in node["node"]["for_sale_item"]:
+                    listing_id = node["node"]["for_sale_item"]["id"]
+                    if not self.bd.exists(listing_id):
+                        data = node["node"]
+                        if self.validate_data(data):
+                            self.bd.add_data(data)
+        except KeyError as e:
+            print(f"Erreur de structure dans le body : {e}")
+
+    def validate_data(self, data):
+        # Vérifiez ici les champs nécessaires
+        required_fields = ["id", "location", "price"]
+        return all(field in data for field in required_fields)
+
+    
+    def parse_payload(self, payload):
+        # Decode the data string
+        decoded_str = urllib.parse.unquote(payload.decode())
+
+        # Parse the string into a dictionary
+        data_dict = dict(urllib.parse.parse_qsl(decoded_str))
+        
+        return data_dict
+    
+    def init_session(self):
+        try:
+            headers, payload_to_send, resp_body = self.get_first_req()  
+        except Exception as e:
+            print(f"Erreur lors de l'obtention de la première requête : {e} header: {headers}")  
+ 
+       
+       
+       
+        self.next_cursor = self.get_next_cursor(resp_body)
+
+        # add the first few results
+        self.add_listings(resp_body)
+
+        # load headers to requests Sesssion
+        self.load_headers(headers)
+
+        # parse payload to normal format
+        self.payload_to_send = self.parse_payload(payload_to_send)
+
+        # update the api name we're using (map api)
+        self.payload_to_send["fb_api_req_friendly_name"] = "CometMarketplaceRealEstateMapStoryQuery"
+        
+        # self.variables = json.loads(self.payload_to_send["variables"])
+        self.variables =  {"buyLocation":{"latitude":45.4722,"longitude":-73.5848},"categoryIDArray":[1468271819871448],"numericVerticalFields":[],"numericVerticalFieldsBetween":[],"priceRange":[0,214748364700],"radius":2000,"stringVerticalFields":[]}
+
+    def scrape(self, lat, lon):
+        # Méthode pour scraper les données à une position géographique donnée
+        try:
+            # Met à jour les coordonnées de recherche dans les variables
             self.variables["buyLocation"]["latitude"] = lat
             self.variables["buyLocation"]["longitude"] = lon
             
-            payload = {
-                "variables": json.dumps(self.variables),
-                "fb_api_req_friendly_name": self.graphql_api_name
-            }
+            # Convertit les variables en JSON et les ajoute au payload
+            self.payload_to_send["variables"] = json.dumps(self.variables)
+
+            # Fait une requête POST à l'API GraphQL de Facebook
+            resp_body = self.session.post("https://www.facebook.com/api/graphql/", data=urllib.parse.urlencode(self.payload_to_send))
             
-            response = self.make_request("https://www.facebook.com/api/graphql/", payload)
-            if response and "marketplace_rentals_map_view_stories" in response["data"]["viewer"]:
-                self.add_listings(response)
-                
+            # Vérifie que la réponse contient bien les données d'appartements
+            while "marketplace_rentals_map_view_stories" not in resp_body.json()["data"]["viewer"]:
+                print("error") # Affiche une erreur
+                #print(resp_body.json()["data"]["viewer"]) # Affiche la réponse pour debug
+                # Réessaie la requête
+                resp_body = self.session.post("https://www.facebook.com/api/graphql/", data=urllib.parse.urlencode(self.payload_to_send))
+
+            # Ajoute les annonces trouvées à la base de données
+            self.add_listings(resp_body.json())
+
         except Exception as e:
-            print(f"Erreur lors du scraping: {e}")
-            
+            print("Error in scrape", e)
+
+        # Attend 5 secondes entre chaque requête
         time.sleep(5)
+
 
 # Importe le module math pour les calculs géographiques
 import math
