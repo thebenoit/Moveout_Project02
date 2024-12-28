@@ -13,6 +13,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 import logging
+import sys
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -27,8 +28,10 @@ from requests_ip_rotator import ApiGateway
 import requests
 import json
 import time
+import random
 import urllib
 import urllib.parse
+from time import sleep
 
 ##change dépendementd de l'ordi install ici: https://googlechromelabs.github.io/chrome-for-testing/#stable
 chromedriver_path = "/Users/jerrybenoit/Downloads/chromedriver-mac-arm64/chromedriver"
@@ -104,6 +107,9 @@ class Scraper:
         
         self.init_session()
         self.driver.close()
+        
+        self.max_retries = 3
+        self.retry_delay = 10
 
 
     def get_first_req(self):
@@ -156,8 +162,10 @@ class Scraper:
             for node in body["data"]["viewer"]["marketplace_rentals_map_view_stories"]["edges"]:
                 if "for_sale_item" in node["node"] and "id" in node["node"]["for_sale_item"]:
                     listing_id = node["node"]["for_sale_item"]["id"]
+                    # Utiliser listing_id comme _id dans le document
+                    data = node["node"]
+                    data["_id"] = listing_id  # Ajouter l'ID explicitement
                     if not self.bd.apartments.find_one({"_id": listing_id}):
-                        data = node["node"]
                         if self.validate_data(data):
                             self.bd.add_data(data)
         except KeyError as e:
@@ -205,33 +213,42 @@ class Scraper:
         self.variables =  {"buyLocation":{"latitude":45.4722,"longitude":-73.5848},"categoryIDArray":[1468271819871448],"numericVerticalFields":[],"numericVerticalFieldsBetween":[],"priceRange":[0,214748364700],"radius":2000,"stringVerticalFields":[]}
 
     def scrape(self, lat, lon):
-        # Méthode pour scraper les données à une position géographique donnée
-        try:
-            # Met à jour les coordonnées de recherche dans les variables
-            self.variables["buyLocation"]["latitude"] = lat
-            self.variables["buyLocation"]["longitude"] = lon
-            
-            # Convertit les variables en JSON et les ajoute au payload
-            self.payload_to_send["variables"] = json.dumps(self.variables)
+        for attempt in range(self.max_retries):
+            # Méthode pour scraper les données à une position géographique donnée
+            try:
+                # Met à jour les coordonnées de recherche dans les variables
+                self.variables["buyLocation"]["latitude"] = lat
+                self.variables["buyLocation"]["longitude"] = lon
+                
+                # Convertit les variables en JSON et les ajoute au payload
+                self.payload_to_send["variables"] = json.dumps(self.variables)
 
-            # Fait une requête POST à l'API GraphQL de Facebook
-            resp_body = self.session.post("https://www.facebook.com/api/graphql/", data=urllib.parse.urlencode(self.payload_to_send))
-            
-            # Vérifie que la réponse contient bien les données d'appartements
-            while "marketplace_rentals_map_view_stories" not in resp_body.json()["data"]["viewer"]:
-                print("error") # Affiche une erreur
-                #print(resp_body.json()["data"]["viewer"]) # Affiche la réponse pour debug
-                # Réessaie la requête
+                # Fait une requête POST à l'API GraphQL de Facebook
                 resp_body = self.session.post("https://www.facebook.com/api/graphql/", data=urllib.parse.urlencode(self.payload_to_send))
+                
+                # Vérifie que la réponse contient bien les données d'appartements
+                while "marketplace_rentals_map_view_stories" not in resp_body.json()["data"]["viewer"]:
+                    print("error") # Affiche une erreur
+                    #print(resp_body.json()["data"]["viewer"]) # Affiche la réponse pour debug
+                    # Réessaie la requête
+                    resp_body = self.session.post("https://www.facebook.com/api/graphql/", data=urllib.parse.urlencode(self.payload_to_send))
 
-            # Ajoute les annonces trouvées à la base de données
-            self.add_listings(resp_body.json())
+                # Ajoute les annonces trouvées à la base de données
+                self.add_listings(resp_body.json())
 
-        except Exception as e:
-            print("Error in scrape", e)
+            except Exception as e:
+                print(f"Erreur lors de la tentatice {attempt + 1}: {str(e)}")
+                if attempt < self.max_retries - 1:
+                    sleep_time = self.retry_delay * (attempt + 1) + random.uniform(1, 5)
+                    print(f"Nouvelle tentative dans {sleep_time} secondes...")
+                    sleep(sleep_time)
+                else:
+                    print("Nombre maximum de tentatives atteint, passage au point suivant")
+                    return False
 
-        # Attend 5 secondes entre chaque requête
-        time.sleep(5)
+            # Attend 5 secondes entre chaque requête
+            time.sleep(5)
+        return False    
 
 
 # Importe le module math pour les calculs géographiques
@@ -272,58 +289,77 @@ reqs = 0 # Compteur de requêtes
 lat = 45.49971 # Latitude de départ (Montréal)
 lon = -73.66610 # Longitude de départ
 
-# Crée une instance du scraper et fait une première requête
-scraper = Scraper(
-   os.getenv('MONGODB_URI'),
-   os.getenv('DATABASE_NAME'),
-   os.getenv('APARTMENTS_COLLECTION'),
-   os.getenv('PROGRESS_COLLECTION')
-)
-scraper.scrape(lat, lon)
+def main():
 
-# Boucle principale qui parcourt la zone en spirale
-while current_km <= 20:
-    # Déplace vers l'est
-    for _ in range(current_km):
-        lat, lon = move_east(lat, lon, 1)
-        print("east")
-        print(f"current_km: {current_km}")
-        print(f"lat, {lat}, lon: {lon}")
-        scraper.scrape(lat, lon)
-        time.sleep(5)
+    # Crée une instance du scraper et fait une première requête
+    scraper = Scraper(
+    os.getenv('MONGODB_URI'),
+    os.getenv('DATABASE_NAME'),
+    os.getenv('APARTMENTS_COLLECTION'),
+    os.getenv('PROGRESS_COLLECTION')
+    )
+    #db = Bd(connection_string, database_name, collection_name, progress_collection)
+    #scraper.scrape(lat, lon)
+    
+    last_progress = scraper.bd.get_last_progress()
+    if last_progress:
+        lat = last_progress['lat']
+        lon = last_progress['lon']
+        current_km = last_progress['current_km']
+        print(f"Reprise depuis: lat={lat}, lon={lon}, km={current_km}")
+    else:
+        lat = 45.49971
+        lon = -73.66610
+        current_km = 1
+    
+    try:
+        while current_km <= 20:
+        # Déplace vers l'est
+            for _ in range(current_km):
+                lat, lon = move_east(lat, lon, 1)
+                print(f"east - current_km: {current_km}, lat: {lat}, lon: {lon}")
+                if scraper.scrape(lat, lon):
+                    scraper.bd.save_progress(lat, lon, current_km)
+                    sleep(random.uniform(3, 7))  # Délai aléatoire
 
-    # Déplace vers le nord
-    for _ in range(current_km):
-        lat, lon = move_north(lat, lon, 1)
-        print("north")
-        print(f"current_km: {current_km}")
-        print(f"lat, {lat}, lon: {lon}")
-        scraper.scrape(lat, lon)
-        time.sleep(5)
+            # Déplace vers le nord
+            for _ in range(current_km):
+                lat, lon = move_north(lat, lon, 1)
+                print(f"north - current_km: {current_km}, lat: {lat}, lon: {lon}")
+                if scraper.scrape(lat, lon):
+                    scraper.bd.save_progress(lat, lon, current_km)
+                    sleep(random.uniform(3, 7))  # Délai aléatoire
 
-    current_km += 1
+            current_km += 1
 
-    # Déplace vers l'ouest
-    for _ in range(current_km):
-        lat, lon = move_west(lat, lon, 1)
-        print("west")
-        print(f"current_km: {current_km}")
-        print(f"lat, {lat}, lon: {lon}")
-        scraper.scrape(lat, lon)
-        time.sleep(5)
-
-    # Déplace vers le sud
-    for _ in range(current_km):
-        lat, lon = move_south(lat, lon, 1)
-        print("south")
-        print(f"current_km: {current_km}")
-        print(f"lat, {lat}, lon: {lon}")
-        scraper.scrape(lat, lon)
-        time.sleep(5)
-
-    current_km += 1
+            # Déplace vers l'ouest
+            for _ in range(current_km):
+                lat, lon = move_west(lat, lon, 1)
+                print(f"west - current_km: {current_km}, lat: {lat}, lon: {lon}")
+                if scraper.scrape(lat, lon):
+                    scraper.bd.save_progress(lat, lon, current_km)
+                    sleep(random.uniform(3, 7))  # Délai aléatoire
 
 
+            # Déplace vers le sud
+            for _ in range(current_km):
+                lat, lon = move_south(lat, lon, 1)
+                print(f"south - current_km: {current_km}, lat: {lat}, lon: {lon}")
+                if scraper.scrape(lat, lon):
+                    scraper.bd.save_progress(lat, lon, current_km)
+                    sleep(random.uniform(3, 7))  # Délai aléatoire
 
-# Imprime le nombre total de requêtes
-print(reqs)
+                
+            current_km += 1
+
+    except KeyboardInterrupt:
+        print("\nInterruption détectée, sauvegarde de la progression...")
+        scraper.bd.save_progress(lat, lon, current_km)
+        print(f"Progression sauvegardée à: lat={lat}, lon={lon}, km={current_km}")
+        sys.exit(0)
+
+    # Imprime le nombre total de requêtes
+    print(reqs)
+
+if __name__ == "__main__":
+   main()
