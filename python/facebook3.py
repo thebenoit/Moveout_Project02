@@ -14,8 +14,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 import logging
 import sys
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+#logging.basicConfig(level=logging.INFO)
+#logger = logging.getLogger(__name__)
 
 from dotenv import load_dotenv
 import os
@@ -54,6 +54,7 @@ class Bd:
 
     def add_data(self, data):
         try:
+            print("Ajout de data")
             self.apartments.insert_one(data)
             ##print(data)
         except Exception as e:
@@ -68,7 +69,11 @@ class Bd:
       #trie par date de dernière mise à jour
         result = self.progress.find_one(sort=[("last_updated", -1)])
         if result:
-            return {'lat': result[0], 'lon': result[1], 'current_km': result[2]}
+            return {
+            'lat': result['lat'],
+            'lon': result['lon'],
+            'current_km': result['current_km']
+        }
         return None
 
 class Scraper:
@@ -78,9 +83,8 @@ class Scraper:
         self.url = "https://www.facebook.com/marketplace/montreal/propertyrentals?locale=fr_CA"
         #configuration des proxies
         proxies = {
-            'http': 'http://2dh0lrid:ae1hsoYLTkR7BBUv@proxy.proxy-cheap.com:31112',
-            'https': 'http://2dh0lrid:ae1hsoYLTkR7BBUv@proxy.proxy-cheap.com:31112'
-
+            "http": "http://pc7PiGyTTw-res-any:PC_7kzkaLvMO2XGBa07q@proxy-us.proxy-cheap.com:5959",
+            "https": "http://pc7PiGyTTw-res-any:PC_7kzkaLvMO2XGBa07q@proxy-us.proxy-cheap.com:5959"
         }
 
         proxy_options = {
@@ -115,7 +119,7 @@ class Scraper:
     def get_first_req(self):
         self.driver.get(f"https://www.facebook.com/marketplace/montreal/propertyrentals?exact=false&latitude=45.50889&longitude=-73.63167&radius=7&locale=fr_CA")
         #allow the page to load fully including any JavaScript that triggers API requests
-        time.sleep(7)
+        time.sleep(15)
 
         # get first request through selenium to get the headers and first results
         for request in self.driver.requests:
@@ -131,6 +135,7 @@ class Scraper:
 
                     #if the response body contains the data we want
                     if "marketplace_rentals_map_view_stories" in resp_body["data"]["viewer"]:
+                        print("marketplace_rentals_map_view_stories found")
                         #return the headers, body, and response body
                         return request.headers.__dict__["_headers"], request.body, resp_body
         print("No matching request found")
@@ -167,6 +172,8 @@ class Scraper:
                     data["_id"] = listing_id  # Ajouter l'ID explicitement
                     if not self.bd.apartments.find_one({"_id": listing_id}):
                         if self.validate_data(data):
+                            print("Ajout de data--------->:")
+                            print(data)
                             self.bd.add_data(data)
         except KeyError as e:
             print(f"Erreur de structure dans le body : {e}")
@@ -229,7 +236,7 @@ class Scraper:
                 # Vérifie que la réponse contient bien les données d'appartements
                 while "marketplace_rentals_map_view_stories" not in resp_body.json()["data"]["viewer"]:
                     print("error") # Affiche une erreur
-                    #print(resp_body.json()["data"]["viewer"]) # Affiche la réponse pour debug
+                    print(resp_body.json()["data"]["viewer"]) # Affiche la réponse pour debug
                     # Réessaie la requête
                     resp_body = self.session.post("https://www.facebook.com/api/graphql/", data=urllib.parse.urlencode(self.payload_to_send))
 
@@ -283,11 +290,6 @@ def move_west(latitude, longitude, distance_in_km):
     new_longitude = longitude - delta_longitude
     return latitude, new_longitude
 
-# Initialisation des variables
-current_km = 1 # Distance courante du centre
-reqs = 0 # Compteur de requêtes
-lat = 45.49971 # Latitude de départ (Montréal)
-lon = -73.66610 # Longitude de départ
 
 def main():
 
@@ -359,7 +361,7 @@ def main():
         sys.exit(0)
 
     # Imprime le nombre total de requêtes
-    print(reqs)
+    #print(reqs)
 
 if __name__ == "__main__":
    main()
