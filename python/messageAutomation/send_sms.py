@@ -28,7 +28,8 @@ def envoyer_sms_personnalise(nom_client, numero_telephone):
 
 Nous avons trouvé de nouveaux appartements qui pourraient vous intéresser!😆
 
-Consultez votre liste personnalisée sur notre site.
+Voici un appartement qui pourrait vous plaire:
+https://www.facebook.com/marketplace/item/269473882927938/?ref=browse_tab&referral_code=marketplace_top_picks&referral_story_type=top_picks&locale=fr_CA
 
 À bientôt,
 L'équipe MoveOut🏠"""
@@ -38,7 +39,8 @@ L'équipe MoveOut🏠"""
         message = client.messages.create(
             body=message_texte,
             from_=numero_twilio,
-            to=numero_telephone
+            to=numero_telephone,
+            media_url=["https://scontent.fymq2-1.fna.fbcdn.net/v/t45.5328-4/463425096_8629748043735064_1439418837299247984_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=100&ccb=1-7&_nc_sid=247b10&_nc_ohc=iDmSQbC0AZIQ7kNvgE2VOfz&_nc_zt=23&_nc_ht=scontent.fymq2-1.fna&_nc_gid=Atu8tkrWx_dgGKyJ0brkA5U&oh=00_AYBCXBfa4TVqzxycX0YpxnKTzgo5bU2cO1oWcBW3-mIW9A&oe=677B4674"]
         )
         print(f"SMS envoyé avec succès! SID: {message.sid}")
         return True
@@ -62,21 +64,23 @@ def envoyer_sms_multiple(clients):
 
     resultats = []
     for nom_client, numero_telephone in clients:
-        message_texte = f"""
-        Bonjour {nom_client}!🫡,
-        
-        Nous avons trouvé de nouveaux appartements qui pourraient vous intéresser!😆
-        Consultez votre liste personnalisée sur notre site.
-        
-        À bientôt,
-        L'équipe MoveOut
-        """
+        message_texte = f"""Bonjour {nom_client}! 🫡
+
+✨ Nouveaux appartements trouvés pour vous! ✨
+
+🏠 Voici un appartement qui pourrait vous plaire:
+
+👉 https://www.facebook.com/marketplace/item/269473882927938
+
+À bientôt!
+- L'équipe MoveOut 🏡"""
 
         try:
             message = client.messages.create(
                 body=message_texte,
                 from_=numero_twilio,
-                to=numero_telephone
+                to=numero_telephone,
+                media_url=["https://scontent.fymq2-1.fna.fbcdn.net/v/t45.5328-4/463425096_8629748043735064_1439418837299247984_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=100&ccb=1-7&_nc_sid=247b10&_nc_ohc=iDmSQbC0AZIQ7kNvgE2VOfz&_nc_zt=23&_nc_ht=scontent.fymq2-1.fna&_nc_gid=Atu8tkrWx_dgGKyJ0brkA5U&oh=00_AYBCXBfa4TVqzxycX0YpxnKTzgo5bU2cO1oWcBW3-mIW9A&oe=677B4674"]
             )
             resultats.append((numero_telephone, True, message.sid))
             print(f"SMS envoyé à {nom_client}: {message.sid} Status: {message.status}")
@@ -89,11 +93,11 @@ def envoyer_sms_multiple(clients):
 
 # Exemple d'utilisation
 if __name__ == "__main__":
-    envoyer_sms_personnalise("Kemmy Will ", "+14385239294")
+    # envoyer_sms_personnalise("Kemmy Will ", "+14385239294")
     
 
-    # clients = [
-    #     ("Jean Dupont", "+14501234567"),
-    #     ("Marie Martin", "+33612345678")
-    # ]
-    # envoyer_sms_multiple(clients) 
+    clients = [
+        ("Kemmy Will Benoit", "+14385239294"),
+        ("Roos Keen Ely benoit", "+15145891865")
+    ]
+    envoyer_sms_multiple(clients) 
