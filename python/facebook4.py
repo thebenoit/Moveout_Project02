@@ -50,9 +50,9 @@ class Bd:
         self.progress = self.db[progress_collection]
         
         # Suppression de tous les documents dans la collection
-        print(f"Avant Suppression de tous les documents dans la collection {self.apartments.count_documents({})}")
-        self.apartments.delete_many({})
-        print(f"Après Suppression de tous les documents dans la collection {self.apartments.count_documents({})}")
+      
+        #self.apartments.delete_many({})
+       
 
     def add_data(self, data):
         try:
@@ -175,6 +175,7 @@ class Scraper:
                     if not self.bd.apartments.find_one({"_id": listing_id}):
                         print("Ajout de data--------->:")
                         #print(data)
+                        data["scraped_at"] = time.time()  # Ajoute un timestamp UNIX
                         self.bd.add_data(data)
         except KeyError as e:
             print(f"Erreur de structure dans le body : {e}")
@@ -293,7 +294,7 @@ def main():
     scraper = Scraper(
     os.getenv('MONGODB_URI'),
     os.getenv('DATABASE_NAME'),
-    os.getenv('COLLECTIONS_TEST'),
+    os.getenv('APARTMENTS_COLLECTION'),
     os.getenv('PROGRESS_COLLECTION')
     )
     #db = Bd(connection_string, database_name, collection_name, progress_collection)
@@ -304,7 +305,8 @@ def main():
         lat = last_progress['lat']
         lon = last_progress['lon']
         current_km = last_progress['current_km']
-        print(f"Reprise depuis: lat={lat}, lon={lon}, km={current_km}")
+        last_run = time.time()
+        print(f"Reprise depuis: lat={lat}, lon={lon}, km={current_km} time={last_run}")
     else:
         lat = 45.49971
         lon = -73.66610
