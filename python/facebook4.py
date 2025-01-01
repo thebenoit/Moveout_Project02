@@ -174,7 +174,7 @@ class Scraper:
                     data["_id"] = listing_id  # Ajouter l'ID explicitement
                     if not self.bd.apartments.find_one({"_id": listing_id}):
                         print("Ajout de data--------->:")
-                        print(data)
+                        #print(data)
                         self.bd.add_data(data)
         except KeyError as e:
             print(f"Erreur de structure dans le body : {e}")
