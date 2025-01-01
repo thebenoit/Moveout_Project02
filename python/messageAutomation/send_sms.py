@@ -1,8 +1,10 @@
 from twilio.rest import Client
+
 import os
 from dotenv import load_dotenv
 from pymongo import MongoClient
 from datetime import datetime
+from bson.objectid import ObjectId
 
 # Charger les variables d'environnement
 load_dotenv()
@@ -37,56 +39,40 @@ class send_sms():
         try:
             # Récupérer l'utilisateur et ses préférences
             user = self.collection_users.find_one({"_id": user_id})
+            
+           
+            
             if not user or "preferencesId" not in user:
+                print("user not found or preferencesId not in user")
                 return None
                 
             preferences = self.collection_preferences.find_one({"_id": user["preferencesId"]})
             if not preferences:
+                print("preferences not found")
                 return None
-                
+            
+            print("preferencesID", preferences["_id"])
             # Construire la requête en fonction des préférences
-            query = {
-                "$and": [
-                    {"for_sale_item.formatted_price.text": {
-                        "$regex": f"^[0-9 ]+\\$",  # Prix en format "XXXX $"
-                        "$exists": True
-                    }},
-                    {"for_sale_item.custom_title": {
-                        "$regex": f"({'|'.join(preferences['numberOfBedrooms'])})",
-                        "$options": "i"
-                    }},
-                    {"for_sale_item.custom_sub_titles_with_rendering_flags": {
-                        "$elemMatch": {
-                            "subtitle": {
-                                "$regex": f"({'|'.join(preferences['locationPreferences'])})",
-                                "$options": "i"
-                            }
-                        }
-                    }}
-                ]
+            # Construire la requête pour le prix
+            # Convertir le prix de "X XXX $" en int pour la comparaison
+            price_query = {
+                "$expr": {
+                    "$and": [
+                        {"$lte": [{"$toInt": {"$replaceAll": {"input": "$for_sale_item.formatted_price.text", "find": " $", "replacement": ""}}}, 1500]},
+                        {"$gte": [{"$toInt": {"$replaceAll": {"input": "$for_sale_item.formatted_price.text", "find": " $", "replacement": ""}}}, 100]}
+                    ]
+                }
             }
             
-            # Ajouter le filtre de budget
-            if "budget" in preferences:
-                price_query = {
-                    "$expr": {
-                        "$and": [
-                            {"$gte": [
-                                {"$toInt": {"$replaceAll": {"input": "$for_sale_item.formatted_price.text", "find": " $", "replacement": ""}}},
-                                preferences["budget"]["minValue"]
-                            ]},
-                            {"$lte": [
-                                {"$toInt": {"$replaceAll": {"input": "$for_sale_item.formatted_price.text", "find": " $", "replacement": ""}}},
-                                preferences["budget"]["maxValue"]
-                            ]}
-                        ]
-                    }
-                }
-                query["$and"].append(price_query)
+            print("price_query", price_query)
+            
+            # Ajout d'un print pour déboguer
+            # print("Query finale:", query)
             
             # Récupérer l'appartement le plus récent
             apartment = self.collection_apartments.find_one(
-                query,
+                 #query,
+                price_query,
                 sort=[("scraped_at", -1)]
             )
             
@@ -95,8 +81,6 @@ class send_sms():
         except Exception as e:
             print(f"Erreur lors de la récupération de l'appartement: {e}")
             return None
-        finally:
-            self.client.close()
 
     def envoyer_sms_personnalise(self, user_id, nom_client, numero_telephone):
         """
@@ -107,8 +91,9 @@ class send_sms():
             nom_client (str): Nom du client
             numero_telephone (str): Numéro de téléphone au format +1XXXXXXXXXX
         """
+        user_id_object = ObjectId(user_id)
         # Récupérer l'appartement correspondant aux critères
-        appartement = self.get_latest_matching_apartment(user_id)
+        appartement = self.get_latest_matching_apartment(user_id_object)
         if not appartement:
             print(f"Aucun appartement trouvé pour l'utilisateur {user_id}")
             return False
@@ -128,18 +113,18 @@ class send_sms():
         photo_url = appartement['for_sale_item']['listing_photos'][0]['image']['uri'] if appartement['for_sale_item']['listing_photos'] else None
 
         # Message personnalisé
-        message_texte = f"""Bonjour {nom_client}!🫡
+        message_texte = f"""Bonjour {nom_client}! 🫡
 
-    Nous avons trouvé un nouvel appartement qui correspond à vos critères!😆
+Nous avons trouvé un nouvel appartement qui correspond à vos critères! 😆
 
-    {titre}
-    Prix: {prix}
+{titre}
+Prix: {prix}
 
-    Voici le lien:
-    {lien}
+Voici le lien:
+{lien}
 
-    À bientôt,
-    L'équipe MoveOut🏠"""
+À bientôt,
+L'équipe MoveOut 🏠"""
 
         try:
             # Paramètres du message
@@ -155,7 +140,7 @@ class send_sms():
 
             # Envoi du SMS
             message = client.messages.create(**message_params)
-            print(f"SMS envoyé avec succès! SID: {message.sid}")
+            print(f"SMS envoyé avec succès à {nom_client}!")
             return True
             
         except Exception as e:
@@ -173,20 +158,28 @@ class send_sms():
             tuple: (nom_complet, numero_telephone) ou (None, None) si non trouvé
         """
         try:
-            user = self.collection_users.find_one({"_id": user_id})
+            # Convertir la chaîne user_id en ObjectId
+            user_id_object = ObjectId(user_id)
+            
+            total_users = self.collection_users.count_documents({})
+           
+            
+            user = self.collection_users.find_one({"_id": user_id_object})  # Utiliser l'ObjectId
+            
             if not user:
                 return None, None
                 
             nom_complet = f"{user['firstName']} {user['lastName']}"
-            numero_telephone = f"+1{user['phone']}"
+            # Convertir en string et vérifier le format du numéro
+            numero_telephone = str(user['phone'])
+            if not numero_telephone.startswith('+1'):
+                numero_telephone = f"+1{numero_telephone}"
             
             return nom_complet, numero_telephone
             
         except Exception as e:
             print(f"Erreur lors de la récupération des informations utilisateur: {e}")
             return None, None
-        finally:
-            self.client.close()
 
     def envoyer_sms_pour_utilisateur(self, user_id):
         """
@@ -200,7 +193,7 @@ class send_sms():
         """
         nom_client, numero_telephone = self.get_user_info(user_id)
         if not nom_client or not numero_telephone:
-            print(f"Impossible de trouver les informations pour l'utilisateur {user_id}")
+            print(f"Impossible de trouver les informations pour l'utilisateur {user_id} {nom_client} {numero_telephone}")
             return False
             
         return self.envoyer_sms_personnalise(user_id, nom_client, numero_telephone)
@@ -221,12 +214,12 @@ class send_sms():
 # Exemple d'utilisation
 if __name__ == "__main__":
     # Test avec un seul utilisateur
-    user_id = "66bd41ade6e37be2ef4b4fc2"
-    send_sms().envoyer_sms_pour_utilisateur(user_id)
+    # user_id = "66bd41ade6e37be2ef4b4fc2"
+    # send_sms().envoyer_sms_pour_utilisateur(user_id)
     
     # Test avec plusieurs utilisateurs
     user_ids = [
-        "66bd41ade6e37be2ef4b4fc2",
-        "66bd5b9fdcd4af9a94dcf0d1"
+        "66bd41ade6e37be2ef4b4fc2"
+        # "66bd5b9fdcd4af9a94dcf0d1"
     ]
     send_sms().envoyer_sms_multiple_par_ids(user_ids) 
