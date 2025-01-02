@@ -8,7 +8,7 @@ const {
 } = require("../../../mongo/interface/appartement");
 
 let total = 0;
-const SIZEPAGE = 10;
+const SIZEPAGE = 30;
 
 app.get("/page/totalAppart", async (req, res) => {
   //total page est égale a total divise par le nombre d'appart dans la page et ont arrondo a l'entier superieur

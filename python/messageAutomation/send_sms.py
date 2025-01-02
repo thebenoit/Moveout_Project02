@@ -25,7 +25,13 @@ class send_sms():
         self.collection_apartments = self.db[os.getenv('APARTMENTS_COLLECTION')]
         
    
-
+    def clean_price(self, price):
+        try:
+            # Supprime tous les caractères non numériques sauf le point
+            cleaned = ''.join(char for char in price if char.isdigit() or char == '.')
+            return float(cleaned)
+        except:
+            return None
     def get_latest_matching_apartment(self, user_id):
         """
         Récupère l'appartement le plus récent correspondant aux critères de l'utilisateur
@@ -55,28 +61,33 @@ class send_sms():
             # Construire la requête en fonction des préférences
             # Construire la requête pour le prix
             # Convertir le prix de "X XXX $" en int pour la comparaison
+            
+            
             price_query = {
-                "$expr": {
-                    "$and": [
-                        {"$lte": [{"$toInt": {"$replaceAll": {"input": "$for_sale_item.formatted_price.text", "find": " $", "replacement": ""}}}, 1500]},
-                        {"$gte": [{"$toInt": {"$replaceAll": {"input": "$for_sale_item.formatted_price.text", "find": " $", "replacement": ""}}}, 100]}
-                    ]
+                "for_sale_item.formatted_price.text": {
+                    "$exists": True
+                },
+                "scraped_at": {
+                    "$exists": True
                 }
             }
-            
-            print("price_query", price_query)
-            
-            # Ajout d'un print pour déboguer
-            # print("Query finale:", query)
-            
+            apartments = self.collection_apartments.find(price_query)
+            sorted_appartments = []
             # Récupérer l'appartement le plus récent
-            apartment = self.collection_apartments.find_one(
-                 #query,
-                price_query,
-                sort=[("scraped_at", -1)]
-            )
+            #apartment = apartments.sort([("scraped_at", -1)]
+                                        #)#find_one(sort=[("scraped_at", -1)])#self.collection_apartments.find_one(price_query, sort=[("scraped_at", -1)])
+            for apartment in apartments:
+                if apartment:
+                    price = self.clean_price(apartment["for_sale_item"]["formatted_price"]["text"])
+                    print("price", price)
+                    if price and preferences["budget"]["minValue"] <= price <= preferences["budget"]["maxValue"]:
+                        sorted_appartments.append(apartment)
             
-            return apartment
+            sorted_appartments.sort(key=lambda x: x["scraped_at"], reverse=True)
+            if sorted_appartments != []:
+                #return the most recent apartment
+                return sorted_appartments[0]
+            return None
             
         except Exception as e:
             print(f"Erreur lors de la récupération de l'appartement: {e}")
@@ -219,7 +230,10 @@ if __name__ == "__main__":
     
     # Test avec plusieurs utilisateurs
     user_ids = [
-        "66bd41ade6e37be2ef4b4fc2"
-        # "66bd5b9fdcd4af9a94dcf0d1"
+        "66bd41ade6e37be2ef4b4fc2",
+        "66bd5b9fdcd4af9a94dcf0d1",
+        "67763e39302fa56cd30159bb",
+        "67763f7d302fa56cd30159be"
+        
     ]
     send_sms().envoyer_sms_multiple_par_ids(user_ids) 

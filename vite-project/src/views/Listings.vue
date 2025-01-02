@@ -58,9 +58,9 @@ const inputPrixMin = ref(0);
 const inputPrixMax = ref(0);
 const noData = ref(false);
 
-const zoom = ref(12);
+const zoom = ref(13);
 const currentPage = ref(1);
-const totalPages = ref(100);
+const totalPages = ref();
 const queryString = ref("");
 //load 10 card par page
 const pageSize = ref(30);
