@@ -33,12 +33,10 @@ import moveoutBot_smsInfo from "./routes/api/moveoutBot/smsInfo.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
 const app = express(); //calling express to use server
 app.use(bodyParser.json()); //apcepting as json data to read it
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "/")));
-
 
 const corsOptions = {
   origin: "*",
