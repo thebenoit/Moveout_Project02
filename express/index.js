@@ -29,7 +29,7 @@ const client_lead = require("./routes/api/client/leads.js");
 const client_logout = require("./routes/api/client/logout.js");
 const client_appartements = require("./routes/api/client/custom_appartements.js");
 const client_preference = require("./routes/api/client/preference.js");
-const moveoutBot_smsAutomation = require("./routes/api/moveoutBot/smsInfo.js");
+const moveoutBot_smsInfo = require("./routes/api/moveoutBot/smsInfo.js");
 // config
 require("dotenv/config"); 
 
@@ -64,7 +64,7 @@ app.use("/api/appartements", paginated_appartments);
 app.use("/api/appartements", paginated_forYouPage);
 
 // moveoutBot
-app.use("/api/moveoutBot", moveoutBot_smsAutomation);
+app.use("/api/moveoutBot", moveoutBot_smsInfo);
 
 // app.use("/api/client/", client_logout);
 // app.use("/client/", client_appartements);
