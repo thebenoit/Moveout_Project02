@@ -1,16 +1,16 @@
-const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv");
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 dotenv.config();
 
-const Users = require("../schemas/user");
-const Leads = require("../schemas/leads");
-const Preferences = require("../schemas/preference");
-const responses = require("../../responses");
-const bcrypt = require("bcryptjs");
-const validator = require("validator");
-const createLog = require("../interface/logs");
-const { generateJwt } = require("../interface/JWT");
-const { response } = require("../../routes/api/appartement");
+import Users from "../schemas/user.js";
+import Leads from "../schemas/leads.js";
+import Preferences from "../schemas/preference.js";
+import responses from "../../responses.js";
+import bcrypt from "bcryptjs";
+import validator from "validator";
+import createLog from "../interface/logs.js";
+import jwtInterface from '../interface/JWT.js';
+
 
 /**
  * function qui permet de get tout les appart de la base de données
@@ -18,23 +18,27 @@ const { response } = require("../../routes/api/appartement");
  * @returns
  */
 
-async function emailToUserId(email) {
+const emailToUserId = async (email) => {
   const user = await Users.find({});
-}
+};
 
-async function phoneToUserId(phone) {}
+const phoneToUserId = async (phone) => {};
 
-
-
-function isStrongPassword(password) {
+const isStrongPassword = (password) => {
   const passwordRegex =
     /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
 
   return passwordRegex.test(password);
-}
+};
 
 // async function createAccount(firstName, lastName, phone, email, confirmEmail, password, confirmPassword) {
-async function createAccount(firstName, lastName, phone, email, password) {
+ const createAccount = async (
+  firstName,
+  lastName,
+  phone,
+  email,
+  password
+) => {
   try {
     // Run checks
 
@@ -93,7 +97,7 @@ async function createAccount(firstName, lastName, phone, email, password) {
       date: Date.now(),
     });
 
-    newUser.accessToken = await generateJwt(newUser._id, newUser.preferencesId);
+    newUser.accessToken = await jwtInterface.generateJwt(newUser._id, newUser.preferencesId);
 
     // Save the user to the database
     const savedUser = await newUser.save();
@@ -109,9 +113,9 @@ async function createAccount(firstName, lastName, phone, email, password) {
     console.error(error);
     return { error: responses.errors.client.accountCreationError };
   }
-}
+};
 
-async function createPreference(
+const createPreference = async (
   idPreference,
   bedrooms,
   maxValue,
@@ -122,7 +126,7 @@ async function createPreference(
   occupation,
   reference,
   addOnService
-) {
+) => {
   //find the id preference
   try {
     // Vérification des champs manquants
@@ -138,7 +142,7 @@ async function createPreference(
       case !occupation || occupation.trim() === "":
         return { error: "La case Occupation est manquante." };
       case !reference || reference.trim() === "":
-          return { error: "La case reference est manquante." };  
+        return { error: "La case reference est manquante." };
       case !addOnService || addOnService.trim() === "":
         return { error: "La case Service supplémentaire est manquante." };
     }
@@ -169,9 +173,9 @@ async function createPreference(
     console.error("Error updating preference:", error);
     throw error;
   }
-}
+};
 
-async function login(identifier, password) {
+const login = async (identifier, password) => {
   try {
     let user;
 
@@ -194,29 +198,24 @@ async function login(identifier, password) {
       return { error: responses.errors.client.invalidPassword };
     }
     //si user.accessToken est vide créer un accesToken
-    if(!user.accessToken){
-      console.log('accès token créer car vide')
+    if (!user.accessToken) {
+      console.log("accès token créer car vide");
 
-       //create Access Token
-    const { error, token } = await generateJwt(user.id,user.preferencesId);
-    console.log('uerA: ',user.accessToken )
-    //assigne access token
-    user.accessToken = token;
+      //create Access Token
+      const { error, token } = await generateJwt(user.id, user.preferencesId);
+      console.log("uerA: ", user.accessToken);
+      //assigne access token
+      user.accessToken = token;
 
-
-    if (!token) {
-      return {
-        error: `impossible de créer un accès de token veuillez réessayer plus tard ${error}`,
-      };
+      if (!token) {
+        return {
+          error: `impossible de créer un accès de token veuillez réessayer plus tard ${error}`,
+        };
+      }
+    } else {
+      console.log("accès token pas créer car pas vide");
     }
-    
 
-    }else{
-      console.log('accès token pas créer car pas vide')
-    }
-   
-    
-    
     //save dans la bd
     await user.save();
 
@@ -228,33 +227,27 @@ async function login(identifier, password) {
     console.error(error);
     return { error: responses.errors.client.loginError };
   }
-}
+};
 
-async function logout(req,res) {
-
+const logout = async (req, res) => {
   try {
-    const {username} = req.decoded
+    const { username } = req.decoded;
 
-    let user = await Users.findOne({username});
+    let user = await Users.findOne({ username });
 
     user.accessToken = "";
 
-    await user.save()
+    await user.save();
 
-    return {message: responses.success.accountLogout}
+    return { message: responses.success.accountLogout };
+  } catch (error) {
+    console.log("erreur lors du logout: ", error);
 
-    
-  }catch(error){
-    console.log('erreur lors du logout: ', error)
-
-    return {error: responses.errors.client.logoutError}
-    
-
-    
+    return { error: responses.errors.client.logoutError };
   }
-}
+};
 
-async function createLead(firstName, lastName, phone, email) {
+const createLead = async (firstName, lastName, phone, email) => {
   try {
     if (!validator.isEmail(email)) {
       // console.log(email, responses.errors.client.invalidEmail)
@@ -315,9 +308,9 @@ async function createLead(firstName, lastName, phone, email) {
     console.error(error);
     return { error: responses.errors.client.loginError };
   }
-}
+};
 
-module.exports = {
+export default {
   createAccount,
   login,
   logout,

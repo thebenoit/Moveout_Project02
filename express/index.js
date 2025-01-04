@@ -1,12 +1,11 @@
-const express = require("express");
-const cors = require("cors"); // permit to access server from differents domain
-const bodyParser = require("body-parser"); //for form post
-const path = require("path");
-const mongoose = require("./mongo/client.js");
-// Grab the Mixpanel factory
-
-
-var Mixpanel = require("mixpanel");
+import express from "express";
+import cors from "cors"; // permit to access server from differents domain
+import bodyParser from "body-parser"; //for form post
+import path from "path";
+import mongoose from "./mongo/client.js";
+import Mixpanel from "mixpanel";
+import dotenv from "dotenv/config";
+import { fileURLToPath } from "url";
 
 // Create an instance of the mixpanel client
 var mixpanel = Mixpanel.init("d41fbc564b7544ce2d7c92cb6d8beb63", {
@@ -17,31 +16,34 @@ var mixpanel = Mixpanel.init("d41fbc564b7544ce2d7c92cb6d8beb63", {
 // routes
 
 // apparts
-const appartments = require("./routes/api/appartement.js");
-const paginated_appartments = require("./routes/api/appartements/paginated_appartments.js");
-const paginated_forYouPage = require("./routes/api/appartements/paginated_forYouPage.js");
+import appartments from "./routes/api/appartement.js";
+import paginated_appartments from "./routes/api/appartements/paginated_appartments.js";
+import paginated_forYouPage from "./routes/api/appartements/paginated_forYouPage.js";
 
 // client
-const client_singup = require("./routes/api/client/signup.js");
-const client_login = require("./routes/api/client/login.js");
-const client_lead = require("./routes/api/client/leads.js");
+import client_singup from "./routes/api/client/signup.js";
+import client_login from "./routes/api/client/login.js";
+import client_lead from "./routes/api/client/leads.js";
 
-const client_logout = require("./routes/api/client/logout.js");
-const client_appartements = require("./routes/api/client/custom_appartements.js");
-const client_preference = require("./routes/api/client/preference.js");
-const moveoutBot_smsInfo = require("./routes/api/moveoutBot/smsInfo.js");
-// config
-require("dotenv/config"); 
+import client_logout from "./routes/api/client/logout.js";
+import client_preference from "./routes/api/client/preference.js";
+import moveoutBot_smsInfo from "./routes/api/moveoutBot/smsInfo.js";
+
+// Obtenir __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 
 const app = express(); //calling express to use server
 app.use(bodyParser.json()); //apcepting as json data to read it
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname + "/")));
+app.use(express.static(path.join(__dirname, "/")));
+
 
 const corsOptions = {
   origin: "*",
   credentials: true,
-  optionSuccessStatus: 200, 
+  optionSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));

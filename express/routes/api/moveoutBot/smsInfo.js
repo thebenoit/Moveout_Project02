@@ -1,6 +1,8 @@
-const express = require("express");
+import express from "express";
 const app = express();
-const User = require("../../../mongo/schemas/user");
+import User from "../../../mongo/schemas/user.js";
+import { envoyer_reponse } from "../../../logMessages.js";
+import httpStatus from "../../../http_status.js";
 
 // informations  envoyer un sms
 app.post("/smsInfo/:id", async (req, res) => {
@@ -9,16 +11,14 @@ app.post("/smsInfo/:id", async (req, res) => {
     console.log("User ID", req.params.id);
     const sms_info = await User.findById(req.params.id);
     console.log("First Name", sms_info.firstName);
-    res.json({ message: `smsInfo made ` });
+    envoyer_reponse(req, res, "smsInfo made", httpStatus.Success);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Erreur lors de la récupération des données" });
+    envoyer_reponse(req, res, "Erreur lors de la récupération des données", httpStatus.Internal_server);
   }
 });
 
-app.get("/moveoutBot/:id", async (req, res) => {
-  res.json({ message: "Hello World" });
+app.get("/smsInfo/:id", async (req, res) => {
+  envoyer_reponse(req, res, "smsInfo made", httpStatus.Success);
 });
 
-module.exports = app;
+export default app;

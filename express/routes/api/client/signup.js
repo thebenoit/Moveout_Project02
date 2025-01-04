@@ -1,15 +1,15 @@
-const express = require("express");
+import express from "express";
 const app = express();
-const { createAccount } = require("../../../mongo/interface/client");
-const jwt = require("jsonwebtoken");
-const preference = require("./preference");
-const Preference = require("../../../mongo/schemas/preference");
+import client from "../../../mongo/interface/client.js";
+import jwt from "jsonwebtoken";
+import preference from "./preference.js";
+import Preference from "../../../mongo/schemas/preference.js";
+import dotenv from "dotenv";
+dotenv.config(); // Load environment variables from .env file at the very beginning
 
-require("dotenv").config(); // Load environment variables from .env file at the very beginning
-
-module.exports = app.post("/signup", async (req, res) => {
+app.post("/signup", async (req, res) => {
   try {
-    response = await createAccount(
+    response = await client.createAccount(
       req.body.firstName,
       req.body.lastName,
       req.body.phone,
@@ -24,7 +24,7 @@ module.exports = app.post("/signup", async (req, res) => {
       return res.status(400).send(response);
     }
     console.log("sign up response: ", response.preferenceId);
-    
+
     // Ensure preferenceId is present
     if (!response.preferenceId) {
       console.error("PreferenceId is missing in the response");
@@ -32,9 +32,8 @@ module.exports = app.post("/signup", async (req, res) => {
     }
     preferenceId = response.preferenceId;
 
-    userPreference = Preference.findone({preferenceId});
+    userPreference = Preference.findone({ preferenceId });
 
-    
     // Note: you must supply the USER_ID
     //j'ai mis phone car le schema n'a pas le userId
     mixpanel.track("Sign Up", {
@@ -51,3 +50,5 @@ module.exports = app.post("/signup", async (req, res) => {
     res.status(500).send("Erreur lors de la récupération des données");
   }
 });
+
+export default app;

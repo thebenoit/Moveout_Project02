@@ -1,4 +1,4 @@
-const Logs = require("../schemas/logs");
+import Logs from "../schemas/logs.js";
 
 
 async function createLog(log, error) {
@@ -23,4 +23,4 @@ async function createLog(log, error) {
 }
 
 
-module.exports = createLog;
+export default createLog;

@@ -1,14 +1,14 @@
-const express = require("express");
+import express from "express";
 const app = express();
-const { login } = require("../../../mongo/interface/client");
-const generateJTW = require("../../../mongo/interface/JWT");
-const jwt = require("jsonwebtoken");
-const User = require("../../../mongo/schemas/user");
-const mixpanel = require("mixpanel");
+import client from "../../../mongo/interface/client.js";
+import generateJTW from "../../../mongo/interface/JWT.js";
+import jwt from "jsonwebtoken";
+import User from "../../../mongo/schemas/user.js";
+import mixpanel from "mixpanel";
 
 app.post("/login", async (req, res) => {
   try {
-    const response = await login(req.body.identifier, req.body.password);
+    const response = await client.login(req.body.identifier, req.body.password);
     const user = await User.findById(response.userId);
 
     if (response.error) {
@@ -46,4 +46,4 @@ app.get("/login/:id", async (req, res) => {
   }
 });
 
-module.exports = app;
+export default app;

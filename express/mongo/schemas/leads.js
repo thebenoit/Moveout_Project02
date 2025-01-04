@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const leadsSchema = new Schema({
@@ -11,4 +11,4 @@ const leadsSchema = new Schema({
 
 const Leads = mongoose.model('leads', leadsSchema, 'leads');
 
-module.exports = Leads;
+export default Leads;

@@ -1,16 +1,16 @@
-const express = require("express");
+import express from "express";
 const app = express();
-const {logout} = require("../../../mongo/interface/client")
+import client from "../../../mongo/interface/client.js";
 
-const jwt = require("jsonwebtoken");
-const User = require("../../../mongo/schemas/user");
+import jwt from "jsonwebtoken";
+import User from "../../../mongo/schemas/user.js";
 
 
-module.exports =  app.post('logout', async(req, res) => {
+app.post('logout', async(req, res) => {
 
     try{
 
-       result = await logout(req,res);
+       result = await client.logout(req,res);
 
        if(result.error){
         console.log('erreur dans le resultat du logout: ', result)
@@ -23,3 +23,5 @@ module.exports =  app.post('logout', async(req, res) => {
 
     }
 })
+
+export default app;

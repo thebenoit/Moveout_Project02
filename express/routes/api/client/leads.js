@@ -1,10 +1,11 @@
-const express = require("express");
+import express from "express";
 const app = express();
-const { createLead } = require("../../../mongo/interface/client");
+import client from "../../../mongo/interface/client.js";
 
-require('dotenv').config(); // Load environment variables from .env file at the very beginning
+import dotenv from 'dotenv';
+dotenv.config(); // Load environment variables from .env file at the very beginning
 
-module.exports = app.post("/lead", async (req, res) => {
+app.post("/lead", async (req, res) => {
 	try {	
 		response = await createLead(
 			req.body.firstName,
@@ -23,3 +24,5 @@ module.exports = app.post("/lead", async (req, res) => {
 		res.status(500).send("Erreur lors de la récupération des données");
 	}
 });
+
+export default app;

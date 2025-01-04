@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const appartmentSchema = new Schema({
@@ -24,7 +24,7 @@ const Appartments = mongoose.model(
 );
 // const mySchemas = { Appartments: Appartments }; // Ici, vous devez passer les objets modèles
 
-module.exports = Appartments;
+export default  Appartments;
 
 
 /** 

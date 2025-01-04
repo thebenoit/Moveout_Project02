@@ -1,10 +1,8 @@
-const express = require("express");
+import express from "express";
 const app = express();
-const {
-  fetchPageForYou,
-} = require("../../../mongo/interface/appartement");
+import appartement from "../../../mongo/interface/appartement.js";
 
-module.exports = app.post("/pageForYou", async (req, res) => {
+export default app.post("/pageForYou", async (req, res) => {
   try {
     console.log("Requête reçue avec req.body :", req.body);
     const {
@@ -21,7 +19,7 @@ module.exports = app.post("/pageForYou", async (req, res) => {
       console.log('passé par la:');
     }
 
-    let appartData = await fetchPageForYou(
+    let appartData = await appartement.fetchPageForYou(
       pageNumber,
       500,
       priceMin,

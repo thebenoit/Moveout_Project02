@@ -1,11 +1,7 @@
-const express = require("express");
+import  express  from "express";
 const app = express();
-const {
-  fetchPage,
-  nbOfAppart,
-  getAllAppartments,
-  fetchPage2,
-} = require("../../../mongo/interface/appartement");
+import appartement from "../../../mongo/interface/appartement.js";
+
 
 let total = 0;
 const SIZEPAGE = 30;
@@ -29,7 +25,7 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
 
     console.log("pageSizeCard: ", pageSize);
 
-    appartData = await getAllAppartments(10000);
+    appartData = await appartement.getAllAppartments(10000);
 
     // if (pageSize === 10) {
     //   console.log(`Passer ici!`);
@@ -115,7 +111,7 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
     }
     total = appartData.length;
 
-    const appartCustom = await fetchPage2(
+    const appartCustom = await appartement.fetchPage2(
       //SIZEPAGE,
       // total,
       pageSize,
@@ -135,4 +131,4 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
   }
 });
 
-module.exports = app;
+export default app;

@@ -1,8 +1,8 @@
-const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv");
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 dotenv.config();
 
-const User = require("../schemas/user");
+import User from "../schemas/user.js";
 
 /**
  * méthode qui génère un token avec userId & userPreference comme payload
@@ -21,7 +21,7 @@ async function generateJwt(userId, prefId) {
 
     return token;
 
-    console.log('generateJwt; ', token)
+    console.log("generateJwt; ", token);
   } catch (error) {
     console.log("erreur lors de la création de token: ");
     return { error: true };
@@ -30,40 +30,39 @@ async function generateJwt(userId, prefId) {
 
 /**
  * middleware qui vérrifie si le il y a un token dans le header de la requete
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
- * @returns 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
  */
-async function validateToken(req, res){
-
+async function validateToken(req, res) {
   const authorizationHeader = req.headers.authorization;
 
   let result;
 
-  if(!authorizationHeader){
+  if (!authorizationHeader) {
     return res.status(401).json({
       error: true,
       message: "Access token is missing",
-    })
+    });
   }
 
-  const token = req.headers.authorization.split(" ")[1]
+  const token = req.headers.authorization.split(" ")[1];
 
   const options = {
-    expireIn: '3h',
+    expireIn: "3h",
   };
 
   try {
     let user = await User.findOne({
-      accessToken: token
-    })
+      accessToken: token,
+    });
 
-    if (!user){
-      result ={
+    if (!user) {
+      result = {
         error: true,
-        message: "Authorization error"
-      }
+        message: "Authorization error",
+      };
 
       return res.status(403).json(result);
     }
@@ -81,28 +80,27 @@ async function validateToken(req, res){
 
     req.decoded = result;
 
-    console.log('re.decoded: ', req.decoded)
+    console.log("re.decoded: ", req.decoded);
 
     return req.decoded;
-
-
-  }catch(error){
-    console.log('erreur lors de la validation du token: ',error)
+  } catch (error) {
+    console.log("erreur lors de la validation du token: ", error);
 
     if (error.name === "TokenExpiredError") {
       return res.status(403).json({
         error: true,
-        message: "Token expired"
-      })
+        message: "Token expired",
+      });
     }
 
     return res.status(403).json({
       error: true,
-      message: `Erreur d'authentification`
-    })
+      message: `Erreur d'authentification`,
+    });
   }
 }
 
-module.exports = {
+export default {
   generateJwt,
+  validateToken,
 };

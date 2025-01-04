@@ -26,4 +26,4 @@ const responses = {
     }
 };
 
-module.exports = responses;
+export default responses;

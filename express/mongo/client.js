@@ -1,6 +1,7 @@
-const mongoose = require("mongoose");
+import  mongoose from  "mongoose";
 
-require("dotenv/config");
+import dotenv from "dotenv";
+dotenv.config();
 
 const dbOptions = { useNewUrlParser: true, useUnifiedTopology: true };
 //connection à la bd
@@ -9,4 +10,4 @@ mongoose
   .then(() => console.log(mongoose.modelNames(), "DB Connected"))
   .catch((err) => console.log(err));
 
-module.exports = mongoose;
+export default mongoose;

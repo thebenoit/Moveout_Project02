@@ -1,9 +1,10 @@
-const express = require("express");
+import express from "express";
 const app = express();
-const { createPreference } = require("../../../mongo/interface/client");
-const Preference = require("../../../mongo/schemas/preference");
+import client from "../../../mongo/interface/client.js";
+import Preference from "../../../mongo/schemas/preference.js";
 
-require("dotenv").config(); // Load environment variables from .env file at the very beginning
+import dotenv from "dotenv";
+dotenv.config(); // Load environment variables from .env file at the very beginning
 /**
  * permet de retrouver préférence grace à son ID
  */
@@ -48,4 +49,4 @@ app.post("/preference", async (req, res) => {
   }
 });
 
-module.exports = app;
+export default app;

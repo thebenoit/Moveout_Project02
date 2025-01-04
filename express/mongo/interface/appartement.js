@@ -1,5 +1,5 @@
-const appartments = require("../schemas/appartement");
-const facebook = require("../schemas/facebook");
+import appartments from "../schemas/appartement.js";
+import facebook from "../schemas/facebook.js";
 
 let totalPage = 0;
 
@@ -38,10 +38,10 @@ async function fetchPage(pageNumber, pageSize) {
 }
 async function fetchPage2(pageSize, pageNumber, appartData) {
   try {
-    console.log(`pageSize: `,pageSize);
-    console.log(`pageNumber: `,pageNumber);
+    console.log(`pageSize: `, pageSize);
+    console.log(`pageNumber: `, pageNumber);
     const skipAmount = (pageNumber - 1) * pageSize;
-     console.log("skipAmountCustom: ", skipAmount);
+    console.log("skipAmountCustom: ", skipAmount);
 
     const pageLimit = skipAmount + pageSize;
     // console.log("pageLimitCustom: ", pageLimit);
@@ -124,22 +124,11 @@ async function getFacebookListings() {
   console.log("NB_Documents facebook", docCount);
 
   const appartData = await facebook.find({}).limit(100);
-  // let apparts = [];
-
-  // try {
-  //     apparts = appartData.map((listing) => ({
-  //         price: listing.listing_price.amount,
-  //         city: listing.reverse_geocode.city,
-  //         custom_title: listing.custom_title,
-  //     }));
-  // } catch (error) {
-  //     console.error("An error occurred while mapping apartment data:", error);
-  // }
 
   return appartData;
 }
 
-module.exports = {
+export default {
   getAllAppartments,
   getFacebookListings,
   fetchPage,

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const facebookSchema = new Schema({
@@ -13,7 +13,7 @@ const facebookSchema = new Schema({
 
 const Facebook = mongoose.model('facebook', facebookSchema, 'appartments');
 
-module.exports = Facebook;
+export default Facebook;
 
 
 /** 
