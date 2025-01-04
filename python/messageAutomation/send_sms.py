@@ -231,9 +231,9 @@ if __name__ == "__main__":
     # Test avec plusieurs utilisateurs
     user_ids = [
         "66bd41ade6e37be2ef4b4fc2",
-        "66bd5b9fdcd4af9a94dcf0d1",
-        "67763e39302fa56cd30159bb",
-        "67763f7d302fa56cd30159be"
+        "66bd5b9fdcd4af9a94dcf0d1",#Liam
+        #"67763e39302fa56cd30159bb",#Nathan
+        #"67763f7d302fa56cd30159be"#Gesther
         
     ]
     send_sms().envoyer_sms_multiple_par_ids(user_ids) 
