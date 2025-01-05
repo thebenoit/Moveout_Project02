@@ -28,7 +28,7 @@ app.get("/smsInfo/:id", async (req, res) => {
     const user = await User.findById(req.params.id);
 
     const preferences = await Preferences.findById(user.preferencesId);
-
+    //Créer un objet avec les données de l'utilisateur et les préférences
     const sms_info = {
       user: user.toObject(),
       preferences: preferences.toObject(),
