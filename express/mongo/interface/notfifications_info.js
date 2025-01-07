@@ -7,6 +7,29 @@ async function clean_price(price) {
   return price.replace(/[^0-9.]/g, "");
 }
 
+const create_notification = async (
+  event,
+  userId,
+  notificationTimes,
+  notificationDays,
+  preferencesId
+) => {
+  try {
+    const notification = new Notification({
+      event: event,
+      userId: userId,
+      notificationTimes: notificationTimes,
+      notificationDays: notificationDays,
+      preferenceId: preferencesId,
+    });
+
+    await notification.save();
+  } catch (error) {
+    console.error("Erreur lors de la création de la notification:", error);
+    throw error;
+  }
+};
+
 async function getAppartmentQueue(preferencesId) {
   const preferences = await Preferences.findById(preferencesId);
 
