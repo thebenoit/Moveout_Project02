@@ -14,8 +14,8 @@ const preferencesSchema = new Schema({
   // salary: { type: Schema.Types.Number, required: false },
   reference: { type: Schema.Types.String, required: false },
   addOnService: { type: Schema.Types.String, required: false },
-  notificationTimes: { type: [Schema.Types.Array], required: false }, // Liste de dates durant la journée
-  frequencyOfUpdates: { type: Schema.Types.String, enum: ['everyday', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'], required: false },
+  notificationTimes: { type: Schema.Types.Array, required: false }, // Heure, Minute pour recevoir les notifications
+  notificationDays: { type: Schema.Types.Array, required: false },// jours pour recevoir les notifications ex: [monday, tuesday, wednesday, thursday, friday, saturday, sunday]
 
   // preferences
   //priceRange: { type: Schema.Types.String, required: false },

@@ -6,24 +6,28 @@ import { envoyer_reponse } from "../../../logMessages.js";
 import httpStatus from "../../../http_status.js";
 
 // informations  envoyer un sms
-app.post("/smsInfo/:id", async (req, res) => {
+app.post("/notification/send", async (req, res) => {
   try {
-    console.log("dans smsInfo");
-    console.log("User ID", req.params.id);
-    const sms_info = await User.findById(req.params.id);
-    console.log("First Name", sms_info.firstName);
-    envoyer_reponse(req, res, "smsInfo made", httpStatus.Success);
+    const event = req.body.event;
+    const userId = req.body.userId;
+    const preferencesId = req.body.preferencesId;
+
+    console.log("event: ", event);
+    const user = await User.findById(userId);
+    const preferences = await Preferences.findById(preferencesId);
+
+    let appartmentQueue = await getAppartmentQueue(preferences);
+    
+    res.status(200).json({
+      message: "Données récupérées avec succès",
+      data: event,
+    });
   } catch (error) {
-    envoyer_reponse(
-      req,
-      res,
-      "Erreur lors de la récupération des données",
-      httpStatus.Internal_server
-    );
+    console.log("error: ", error);
   }
 });
 
-app.get("/smsInfo/:id", async (req, res) => {
+app.get("/notification/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
 

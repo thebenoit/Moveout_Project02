@@ -89,22 +89,22 @@ async function fetchPageForYou(
 async function getAllAppartments(limitAppart) {
   try {
     const docCount = await facebook.countDocuments({});
-    console.log("NB_Documents", docCount);
+   
     let appartData;
 
     //appartData = await facebook.find({}).lean().limit(100);
 
     //si limite est plus grand ou égale à zero on ne met pas de limite
     if (limitAppart <= 0) {
-      console.log(`Pas de limite`);
+      
       //data est égale à tout ce qu'il trouve dans la collection
       appartData = await facebook.find({}).lean(); //.limit(4000).exec();
       console.log("appart: ", appartData);
     } else {
-      console.log(`limite: ${limitAppart}`);
+     
       //data est égale à tout ce qu'il trouve dans la collection
       appartData = await facebook.find({}).lean().limit(limitAppart); //.limit(4000).exec();
-      console.log(`Passée limite:`);
+      
     }
 
     return appartData;

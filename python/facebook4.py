@@ -51,7 +51,7 @@ class Bd:
         
         # Suppression de tous les documents dans la collection
       
-        #self.apartments.delete_many({})
+        self.apartments.delete_many({})
        
 
     def add_data(self, data):

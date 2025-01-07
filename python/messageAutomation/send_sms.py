@@ -3,9 +3,9 @@ from twilio.rest import Client
 import os
 from dotenv import load_dotenv
 from pymongo import MongoClient
-from datetime import datetime
+from datetime import datetime, timedelta
 from bson.objectid import ObjectId
-
+import pytz
 # Charger les variables d'environnement
 load_dotenv()
 
@@ -23,6 +23,11 @@ class send_sms():
         self.collection_users = self.db[os.getenv('USERS_COLLECTION')]
         self.collection_preferences = self.db[os.getenv('PREFERENCES_COLLECTION')]
         self.collection_apartments = self.db[os.getenv('APARTMENTS_COLLECTION')]
+         # Identifiants Twilio
+        self.account_sid = os.getenv('TWILIO_ACCOUNT_SID')
+        self.auth_token = os.getenv('TWILIO_AUTH_TOKEN')
+        self.numero_twilio = os.getenv('TWILIO_PHONE_NUMBER')
+        self.message_sid = os.getenv("TWILIO_MESSAGE_SID")
         
    
     def clean_price(self, price):
@@ -32,6 +37,10 @@ class send_sms():
             return float(cleaned)
         except:
             return None
+    
+
+        
+       
     def get_latest_matching_apartment(self, user_id):
         """
         Récupère l'appartement le plus récent correspondant aux critères de l'utilisateur
@@ -93,7 +102,7 @@ class send_sms():
             print(f"Erreur lors de la récupération de l'appartement: {e}")
             return None
 
-    def envoyer_sms_personnalise(self, user_id, nom_client, numero_telephone):
+    def envoyer_sms_personnalise(self, user_id, nom_client, numero_telephone,date_pour_envoyer):
         """
         Envoie un SMS personnalisé au client avec l'appartement le plus récent correspondant à ses critères
         
@@ -103,19 +112,18 @@ class send_sms():
             numero_telephone (str): Numéro de téléphone au format +1XXXXXXXXXX
         """
         user_id_object = ObjectId(user_id)
+        
+        
         # Récupérer l'appartement correspondant aux critères
         appartement = self.get_latest_matching_apartment(user_id_object)
         if not appartement:
             print(f"Aucun appartement trouvé pour l'utilisateur {user_id}")
             return False
 
-        # Identifiants Twilio
-        account_sid = os.getenv('TWILIO_ACCOUNT_SID')
-        auth_token = os.getenv('TWILIO_AUTH_TOKEN')
-        numero_twilio = os.getenv('TWILIO_PHONE_NUMBER')
+       
 
         # Initialiser le client Twilio
-        client = Client(account_sid, auth_token)
+        client = Client(self.account_sid, self.auth_token)
 
         # Extraire les informations de l'appartement
         prix = appartement['for_sale_item']['formatted_price']['text']
@@ -141,7 +149,10 @@ L'équipe MoveOut 🏠"""
             # Paramètres du message
             message_params = {
                 'body': message_texte,
-                'from_': numero_twilio,
+                "messaging_service_sid": self.message_sid,
+                'send_at': date_pour_envoyer,
+                'schedule_type': "fixed",
+                'from_': self.numero_twilio,
                 'to': numero_telephone
             }
             
@@ -157,6 +168,51 @@ L'équipe MoveOut 🏠"""
         except Exception as e:
             print(f"Erreur lors de l'envoi du SMS: {e}")
             return False
+
+    def get_date_list(self, user_id):
+        date_now = datetime.now(pytz.utc)
+        date_list = []
+        preferences = self.collection_preferences.find_one({"_id":user_id})
+        notification_days = str(preferences["notificationDays"])
+        notification_times = str(preferences["notificationTimes"])
+         
+        for day in notification_days:
+             
+                 # Convertir le jour en numéro de jour de la semaine
+             match day.lower():
+                 case "sunday":
+                         jour_semaine = 6
+                         NextSunday = date_now + timedelta(days=6)
+                 case "monday": 
+                         jour_semaine = 0
+                 case "tuesday":
+                         jour_semaine = 1
+                 case "wednesday":
+                         jour_semaine = 2
+                 case "thursday":
+                         jour_semaine = 3
+                 case "friday":
+                         jour_semaine = 4
+                 case "saturday":
+                         jour_semaine = 5
+                 case _:
+                         print(f"Jour invalide: {day}")
+                         continue
+                date_list.append('Monday',day,time)
+     
+        
+        
+        
+        
+        # preference_days = preferences["notificationDays"]
+        # preference_times = preferences["notificationTimes"]
+        
+    def create_schedule_message(self,schedule_time_list):
+        for time in schedule_time_list:
+            formatted_time = time.strftime('%Y-%m-%dT%H:%M:%SZ')  # Conversion en format ISO 8601
+            print(formatted_time)
+            self.envoyer_sms_pour_utilisateur("66bd41ade6e37be2ef4b4fc2")   
+            
 
     def get_user_info(self,user_id):
         """
@@ -218,6 +274,12 @@ L'équipe MoveOut 🏠"""
         """
         resultats = []
         for user_id in user_ids:
+            
+            preference = self.collection_preferences.find_one({"_id":user_id})
+            schedule_time_list = preference["notificationTimes"]
+            self.create_schedule_message(schedule_time_list)
+            
+            
             succes = self.envoyer_sms_pour_utilisateur(user_id)
             resultats.append((user_id, succes))
         return resultats

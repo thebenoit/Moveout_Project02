@@ -1,7 +1,6 @@
-import  express  from "express";
+import express from "express";
 const app = express();
 import appartement from "../../../mongo/interface/appartement.js";
-
 
 let total = 0;
 const SIZEPAGE = 30;
@@ -14,6 +13,7 @@ app.get("/page/totalAppart", async (req, res) => {
   return totalPage;
 });
 app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
+  console.log("Dans le post");
   try {
     // Récupérer les paramètres de la query
     const { numberBedrooms, minPrice, maxPrice } = req.query;
@@ -21,15 +21,13 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
     const pageNumber = req.body.pageNumber;
     const pageSize = req.body.pageSize;
 
-    console.log("pageNumber: ", pageNumber);
-
-    console.log("pageSizeCard: ", pageSize);
-
-    appartData = await appartement.getAllAppartments(10000);
+    
+   let appartData = await appartement.getAllAppartments(10000);
+    
 
     // if (pageSize === 10) {
     //   console.log(`Passer ici!`);
-    //   
+    //
     // } else {
     //   appartData = await getAllAppartments(0);
     // }
@@ -123,8 +121,8 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
 
     //extremely guettho to pass the number of page data to the listings page
     appartCustom[0].total = totalPage;
-    //
-
+    console.log("avant appartCustom");
+    console.log("appartCustom: ", appartCustom);
     res.send(appartCustom);
   } catch (error) {
     res.status(500).send("Erreur lors de la récupération des données");
