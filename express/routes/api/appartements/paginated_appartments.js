@@ -25,16 +25,6 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
    let appartData = await appartement.getAllAppartments(10000);
     
 
-    // if (pageSize === 10) {
-    //   console.log(`Passer ici!`);
-    //
-    // } else {
-    //   appartData = await getAllAppartments(0);
-    // }
-
-    // appartData = await fetchPage(pageNumber, SIZEPAGE)
-
-    //console.log("appartData: ", appartData.length);
 
     // Initialiser un tableau pour stocker les valeurs des chambres
     let bedroomsArray = [];

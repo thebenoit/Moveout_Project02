@@ -2,6 +2,8 @@ import express from "express";
 const app = express();
 import User from "../../../mongo/schemas/user.js";
 import Preferences from "../../../mongo/schemas/preference.js";
+import Notification from "../../../mongo/schemas/Notification.js";
+import notification_infos from "../../../mongo/interface/notfifications_info.js";
 import { envoyer_reponse } from "../../../logMessages.js";
 import httpStatus from "../../../http_status.js";
 
@@ -10,20 +12,36 @@ app.post("/notification/send", async (req, res) => {
   try {
     const event = req.body.event;
     const userId = req.body.userId;
-    const preferencesId = req.body.preferencesId;
+    const notificationTimes = req.body.notificationTimes;
+    const notificationDays = req.body.notificationDays;
+    const preferenceId = req.body.preferenceId;
 
-    console.log("event: ", event);
-    const user = await User.findById(userId);
-    const preferences = await Preferences.findById(preferencesId);
+    //créer la notification et ajouter à la base de données
+    let notification = await notification_infos.create_notification(
+      event,
+      userId,
+      notificationTimes,
+      notificationDays,
+      preferenceId
+    );
 
-    let appartmentQueue = await getAppartmentQueue(preferences);
-    
+    // const user = await User.findById(userId);
+    // const preferences = await Preferences.findById(preferenceId);
+
+    let appartmentQueue = await notification_infos.getAppartmentQueue(
+      notification
+    );
+
     res.status(200).json({
       message: "Données récupérées avec succès",
-      data: event,
+      data: appartmentQueue,
     });
   } catch (error) {
     console.log("error: ", error);
+    res.status(500).json({
+      message: "Erreur lors de la création de la notification",
+      data: error,
+    });
   }
 });
 
@@ -31,7 +49,7 @@ app.get("/notification/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
 
-    const preferences = await Preferences.findById(user.preferencesId);
+    const preferences = await Preferences.findById(user.preferenceId);
     //Créer un objet avec les données de l'utilisateur et les préférences
     const sms_info = {
       user: user.toObject(),
