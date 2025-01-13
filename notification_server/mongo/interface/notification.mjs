@@ -9,7 +9,6 @@ const RABBITMQ_URI = process.env.RABBITMQ_URI;
 const AMQP_PORT = process.env.AMQP_PORT;
 
 async function AjouterDansQueue(notification) {
-
   const Queue = "notification";
 
   try {

@@ -1,0 +1,17 @@
+import mongoose  from "mongoose";
+const Schema = mongoose.Schema;
+
+const usersSchema = new Schema({
+  firstName: { type: Schema.Types.String },
+  lastName: { type: Schema.Types.String },
+  phone: { type: Schema.Types.String },
+  email: { type: Schema.Types.String },
+  password: { type: Schema.Types.String },
+  preferencesId: { type: Schema.Types.ObjectId },
+  accessToken: { type: Schema.Types.String },
+  date: { type: Schema.Types.Date },
+});
+
+const Users = mongoose.model("users", usersSchema, "users");
+
+export default Users;
