@@ -3,7 +3,10 @@ const app = express();
 import User from "../../../mongo/schemas/user.js";
 import Preferences from "../../../mongo/schemas/preference.js";
 import Notification from "../../../mongo/schemas/Notification.js";
-import notification_infos from "../../../mongo/interface/notfifications_info.js";
+import {
+  getAppartmentQueue,
+  create_notification,
+} from "../../../mongo/interface/notfifications_info.js";
 import { envoyer_reponse } from "../../../logMessages.js";
 import httpStatus from "../../../http_status.js";
 
@@ -17,7 +20,7 @@ app.post("/notification/send", async (req, res) => {
     const preferenceId = req.body.preferenceId;
 
     //créer la notification et ajouter à la base de données
-    let notification = await notification_infos.create_notification(
+    let notification = await create_notification(
       event,
       userId,
       notificationTimes,
@@ -28,9 +31,7 @@ app.post("/notification/send", async (req, res) => {
     // const user = await User.findById(userId);
     // const preferences = await Preferences.findById(preferenceId);
 
-    let appartmentQueue = await notification_infos.getAppartmentQueue(
-      notification
-    );
+    let appartmentQueue = await getAppartmentQueue(notification);
 
     res.status(200).json({
       message: "Données récupérées avec succès",

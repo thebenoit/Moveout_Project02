@@ -5,7 +5,6 @@ import Facebook from "../schemas/facebook.js";
 import Notification from "../schemas/Notification.js";
 
 async function clean_price(price) {
-  console.log("price: avant formatage ", price);
   if (!price || typeof price !== "string") {
     console.error("Prix invalide:", price);
     return null;
@@ -14,8 +13,41 @@ async function clean_price(price) {
   // Nettoyer le prix
   price = price.replace(/[^0-9,]/g, "").replace(",", ".");
   price = parseFloat(price);
-  console.log("price après formatage: ", price);
+
   return price;
+}
+
+async function intoArrayNumber(number) {
+  if (typeof number === "string" && number.startsWith("[")) {
+    return JSON.parse(number).map(Number);
+  }
+
+  if (number.includes(",")) {
+    console.log("Yes Il y a une virgule");
+
+    return number.split(",").map(Number);
+  } else {
+    console.log("No Il n'y a pas de virgule");
+    return [Number(number)];
+  }
+}
+
+async function clean_bedrooms(bedrooms) {
+  // Vérifier si bedrooms est une chaîne de caractères
+  if (typeof bedrooms !== "string") {
+    console.error("Format de chambres invalide:", bedrooms);
+    return 1;
+  }
+
+  // Extraire le nombre de chambres
+  const bedroomCount = parseFloat(bedrooms.split("·")[0].trim());
+
+  // Si ce n'est pas un nombre valide, retourner 1 (pour les studios)
+  if (isNaN(bedroomCount)) {
+    return 1;
+  }
+
+  return bedroomCount;
 }
 
 const create_notification = async (
@@ -49,21 +81,25 @@ async function compterNombreNotifications(notification) {
   let nombreTimes = notification.notificationTimes.length;
   let nombreNotifications = nombreDays + nombreTimes;
   console.log("nombreNotifications: ", nombreNotifications);
-  
+
   return nombreNotifications;
 }
 
 async function getAppartmentQueue(notification) {
-
   //récupère les préférences de l'utilisateur
-  const preferences = await Preferences.findById(notification.preferenceId).lean();
+  const preferences = await Preferences.findById(
+    notification.preferenceId
+  ).lean();
   console.log("preferences: ", preferences);
 
   if (!preferences) {
-    console.error("Preferences non trouvées pour l'utilisateur:", notification.userId);
+    console.error(
+      "Preferences non trouvées pour l'utilisateur:",
+      notification.userId
+    );
     return [];
   }
-  
+
   let nombre_notifications = await compterNombreNotifications(notification);
 
   const price_query = {
@@ -79,23 +115,40 @@ async function getAppartmentQueue(notification) {
   let sorted_appartments = [];
 
   for (const apartment of appartmentQueue) {
- 
     // Vérifier que l'appartement a bien la structure attendue
     if (apartment?.for_sale_item?.formatted_price?.text) {
-      
       try {
+        //clean the price
         const price = await clean_price(
           apartment.for_sale_item.formatted_price.text
         );
-        console.log("preferences: ", preferences);
-        console.log("preferences.budget.minValue ", preferences.budget.minValue);
+        //clean the bedrooms
+        const bedrooms = await clean_bedrooms(
+          apartment.for_sale_item.custom_title
+        );
+
         if (
           price &&
           price >= preferences.budget.minValue &&
           price <= preferences.budget.maxValue
         ) {
-          
-          sorted_appartments.push(apartment);
+          let appart = {
+            id: apartment._id,
+            price: price,
+            bedrooms: "",
+          };
+
+          let numberOfBedrooms = JSON.stringify(preferences.numberOfBedrooms);
+
+          const arrayBedrooms = await intoArrayNumber(numberOfBedrooms);
+
+          if (arrayBedrooms.includes(bedrooms)) {
+            appart.bedrooms = bedrooms;
+            sorted_appartments.push(appart);
+          } else {
+            console.log("bedrooms not in array");
+            continue;
+          }
         }
       } catch (error) {
         console.error("Erreur lors du traitement du prix:", error);
@@ -114,9 +167,10 @@ async function getAppartmentQueue(notification) {
   return sorted_appartments;
 }
 
-export default {
+export {
   create_notification,
   getAppartmentQueue,
   compterNombreNotifications,
   clean_price,
+  clean_bedrooms,
 };
