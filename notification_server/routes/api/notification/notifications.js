@@ -28,12 +28,16 @@ app.post("/notification/send", async (req, res) => {
       preferenceId
     );
     // Ajouter notificationDays et notificationTimes dans les préférences
-    await Preferences.findByIdAndUpdate(preferenceId, {
-      $set: {
-        notificationDays: notificationDays,
-        notificationTimes: notificationTimes,
-      },
-    });
+    await Preferences.findByIdAndUpdate(
+        preferenceId,
+        {
+          $set: {
+            notificationDays: notificationDays,
+            notificationTimes: notificationTimes,
+          },
+        },
+        { new: true, upsert: true }
+      );
     
     //ajouter la notification dans la queue
     // await AjouterDansQueue(notification);

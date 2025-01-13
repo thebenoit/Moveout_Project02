@@ -4,6 +4,7 @@ import Preferences from "../schemas/preference.js";
 import Facebook from "../schemas/facebook.js";
 import Notification from "../schemas/notification.js";
 import amqp from "amqplib";
+import mongoose from "mongoose";
 
 const RABBITMQ_URI = process.env.RABBITMQ_URI;
 const AMQP_PORT = process.env.AMQP_PORT;
@@ -78,6 +79,22 @@ async function clean_bedrooms(bedrooms) {
   return bedroomCount;
 }
 
+async function ensureConnection() {
+    if (mongoose.connection.readyState !== 1) {
+      try {
+        await mongoose.connect(process.env.MONGODB_URI, {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+          serverSelectionTimeoutMS: 5000,
+        });
+        console.log('✅ Connexion MongoDB établie');
+      } catch (error) {
+        console.error('❌ Erreur de connexion MongoDB:', error);
+        throw error;
+      }
+  }
+}
+
 const create_notification = async (
   event,
   userId,
@@ -86,6 +103,8 @@ const create_notification = async (
   preferencesId
 ) => {
   try {
+     // S'assurer que la connexion est établie avant de continuer
+     await ensureConnection();
     //crée la notification
     const notification = new Notification({
       event: event,
@@ -96,7 +115,9 @@ const create_notification = async (
     });
     console.log("notification: ", notification);
     //enregistre la notification
+    console.log("Avant save");
     await notification.save();
+    console.log("Après save");
     return notification;
   } catch (error) {
     console.error("Erreur lors de la création de la notification:", error);

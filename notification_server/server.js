@@ -5,14 +5,19 @@ import path from "path";
 import Mixpanel from "mixpanel";
 import dotenv from "dotenv/config";
 import { fileURLToPath } from "url";
+import mongoose from "./mongo/client.mjs";
 
 import notification from "./routes/api/notification/notifications.js";
 
 const app = express();
+// Obtenir __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Ajouter ces middlewares avant vos routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname + "/")));
 
 // Configuration détaillée de CORS
 app.use(
