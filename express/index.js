@@ -27,7 +27,6 @@ import client_lead from "./routes/api/client/leads.js";
 
 import client_logout from "./routes/api/client/logout.js";
 import client_preference from "./routes/api/client/preference.js";
-import moveoutBot_smsInfo from "./routes/api/moveoutBot/smsInfo.js";
 
 // Obtenir __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -62,9 +61,6 @@ app.use("/api/client", client_preference);
 app.use("/api/appartements", paginated_appartments);
 // apparts personalisé
 app.use("/api/appartements", paginated_forYouPage);
-
-// moveoutBot
-app.use("/api/moveoutBot", moveoutBot_smsInfo);
 
 // app.use("/api/client/", client_logout);
 // app.use("/client/", client_appartements);

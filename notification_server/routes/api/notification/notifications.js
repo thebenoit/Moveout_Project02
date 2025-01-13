@@ -2,7 +2,7 @@ import express from "express";
 const app = express();
 import User from "../../../mongo/schemas/user.js";
 import Preferences from "../../../mongo/schemas/preference.js";
-import Notification from "../../../mongo/schemas/Notification.js";
+import Notification from "../../../mongo/schemas/notification.js";
 import {
   getAppartmentQueue,
   create_notification,

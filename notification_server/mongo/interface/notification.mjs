@@ -2,7 +2,7 @@
 import User from "../schemas/user.js";
 import Preferences from "../schemas/preference.js";
 import Facebook from "../schemas/facebook.js";
-import Notification from "../schemas/Notification.js";
+import Notification from "../schemas/notification.js";
 import amqp from "amqplib";
 
 const RABBITMQ_URI = process.env.RABBITMQ_URI;
