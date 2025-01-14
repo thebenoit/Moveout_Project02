@@ -5,16 +5,18 @@ import Facebook from "../schemas/facebook.js";
 import Notification from "../schemas/notification.js";
 import amqp from "amqplib";
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 
 const RABBITMQ_URI = process.env.RABBITMQ_URI;
 const AMQP_PORT = process.env.AMQP_PORT;
 
 async function AjouterDansQueue(notification) {
   const Queue = "notification";
+  let connection;
 
   try {
     //connect to rabbitmq
-    const connection = await amqp.connect(RABBITMQ_URI);
+     connection = await amqp.connect(process.env.RABBITMQ_URI);
     //create a channel
     const channel = await connection.createChannel();
     //queue existe? et il doir etre durable
@@ -215,6 +217,75 @@ async function getAppartmentQueue(notification) {
   console.log("sorted_appartments.length: ", sorted_appartments.length);
   return sorted_appartments;
 }
+
+async function envoyer_sms_personnalise(user_id, nom_client, numero_telephone, date_pour_envoyer) {
+  /**
+   * Envoie un SMS personnalisé au client avec l'appartement le plus récent correspondant à ses critères
+   *
+   * Args:
+   *     user_id (str): ID de l'utilisateur
+   *     nom_client (str): Nom du client
+   *     numero_telephone (str): Numéro de téléphone au format +1XXXXXXXXXX
+   */
+  const user_id_object = mongoose.Types.ObjectId(user_id);
+
+  // Récupérer l'appartement correspondant aux critères
+  const appartement = await get_latest_matching_apartment(user_id_object);
+  if (!appartement) {
+    console.log(`Aucun appartement trouvé pour l'utilisateur ${user_id}`);
+    return false;
+  }
+
+  // Initialiser le client Twilio
+  const client = new Client(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
+  // Extraire les informations de l'appartement
+  const prix = appartement.for_sale_item.formatted_price.text;
+  const titre = appartement.for_sale_item.marketplace_listing_title;
+  const lien = appartement.for_sale_item.share_uri;
+  const photo_url = appartement.for_sale_item.listing_photos.length > 0 ? appartement.for_sale_item.listing_photos[0].image.uri : null;
+
+  // Message personnalisé
+  const message_texte = `Bonjour ${nom_client}! 🫡
+
+Nous avons trouvé un nouvel appartement qui correspond à vos critères! 😆
+
+${titre}
+Prix: ${prix}
+
+Voici le lien:
+${lien}
+
+À bientôt,
+L'équipe MoveOut 🏠`;
+
+  try {
+    // Paramètres du message
+    const message_params = {
+      body: message_texte,
+      messaging_service_sid: process.env.TWILIO_MESSAGE_SID,
+      send_at: date_pour_envoyer,
+      schedule_type: "fixed",
+      from: process.env.TWILIO_NUMERO_TWILIO,
+      to: numero_telephone
+    };
+
+    // Ajouter l'image si disponible
+    if (photo_url) {
+      message_params.media_url = [photo_url];
+    }
+
+    // Envoi du SMS
+    const message = await client.messages.create(message_params);
+    console.log(`SMS envoyé avec succès à ${nom_client}!`);
+    return true;
+
+  } catch (error) {
+    console.log(`Erreur lors de l'envoi du SMS: ${error}`);
+    return false;
+  }
+}
+
 
 export {
   create_notification,

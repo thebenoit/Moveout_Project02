@@ -6,6 +6,7 @@ import Mixpanel from "mixpanel";
 import dotenv from "dotenv/config";
 import { fileURLToPath } from "url";
 import mongoose from "./mongo/client.mjs";
+import startWorker from "./workers/scheduling_worker.js";
 
 import notification from "./routes/api/notification/notifications.js";
 
@@ -38,5 +39,10 @@ app.use(
 app.use("/api/", notification);
 
 app.listen(process.env.PORT, () => {
-  console.log(`Server is running on port ${process.env.PORT}`);
+  console.log(`notification server is running on port ${process.env.PORT}`);
+});
+
+//Démarrer le worker dans le même processus
+startWorker().catch(error => {
+  console.error("❌ Erreur worker:", error);
 });

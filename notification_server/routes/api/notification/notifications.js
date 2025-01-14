@@ -6,9 +6,11 @@ import Notification from "../../../mongo/schemas/notification.js";
 import {
   getAppartmentQueue,
   create_notification,
+  AjouterDansQueue,
 } from "../../../mongo/interface/notification.mjs";
 import { envoyer_reponse } from "../../../logMessages.js";
 import httpStatus from "../../../httpStatus.mjs";
+import dotenv from "dotenv";
 
 // informations  envoyer un sms
 app.post("/notification/send", async (req, res) => {
@@ -40,7 +42,7 @@ app.post("/notification/send", async (req, res) => {
       );
     
     //ajouter la notification dans la queue
-    // await AjouterDansQueue(notification);
+    await AjouterDansQueue(notification);
 
     res.status(200).json({
       message: "Notification mise en file d'attente",
