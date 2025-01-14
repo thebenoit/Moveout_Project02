@@ -6,9 +6,37 @@ import Notification from "../schemas/notification.js";
 import amqp from "amqplib";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import agenda from "../../config/agenda.js";
 
 const RABBITMQ_URI = process.env.RABBITMQ_URI;
 const AMQP_PORT = process.env.AMQP_PORT;
+
+async function planifierAjouterDansQueue(notification){
+  const {notificationDays, notificationTimes} = notification
+
+  const joursCron = {
+    'sunday': '0',
+    'monday': '1',
+    'tuesday': '2',
+    'wednesday': '3',
+    'thursday': '4',
+    'friday': '5',
+    'saturday': '6'
+  }
+
+  for (const jour of notificationDays) {
+    for(const heure of notificationTimes){
+      const [heures,minutes] = heure.split(":");
+
+      //set 20 minute avant l'heure
+      const cronExpression = `${(minutes - 20 + 60) % 60} ${(heures - (minutes < 20 ? 1 : 0) + 24) % 24} * * ${joursCron[jour]}`
+      console.log("Schedule the notification in the queue", cronExpression);
+      await agenda.schedule(cronExpression, "sendNotificationToQueue", {notification});
+
+    }
+  }
+  
+}
 
 async function AjouterDansQueue(notification) {
   const Queue = "notification";
@@ -294,4 +322,5 @@ export {
   clean_price,
   clean_bedrooms,
   AjouterDansQueue,
+  planifierAjouterDansQueue
 };

@@ -6,7 +6,8 @@ import Mixpanel from "mixpanel";
 import dotenv from "dotenv/config";
 import { fileURLToPath } from "url";
 import mongoose from "./mongo/client.mjs";
-import startWorker from "./workers/scheduling_worker.js";
+import startWorker from "./workers/messenger_worker.js";
+import startAgenda from "./workers/scheduling_worker.js";
 
 import notification from "./routes/api/notification/notifications.js";
 
@@ -45,4 +46,8 @@ app.listen(process.env.PORT, () => {
 //Démarrer le worker dans le même processus
 startWorker().catch(error => {
   console.error("❌ Erreur worker:", error);
+});
+
+startAgenda().catch(error => {
+  console.error("❌ Erreur agenda:", error);
 });

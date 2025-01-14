@@ -7,6 +7,7 @@ import {
   getAppartmentQueue,
   create_notification,
   AjouterDansQueue,
+  planifierAjouterDansQueue,
 } from "../../../mongo/interface/notification.mjs";
 import { envoyer_reponse } from "../../../logMessages.js";
 import httpStatus from "../../../httpStatus.mjs";
@@ -42,10 +43,11 @@ app.post("/notification/send", async (req, res) => {
       );
     
     //ajouter la notification dans la queue
-    await AjouterDansQueue(notification);
+    //await AjouterDansQueue(notification);
+    await planifierAjouterDansQueue(notification);
 
     res.status(200).json({
-      message: "Notification mise en file d'attente",
+      message: "Notification planifiée d'attente",
       data: notification,
     });
   } catch (error) {
