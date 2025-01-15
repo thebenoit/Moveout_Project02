@@ -41,10 +41,9 @@ app.post("/notification/send", async (req, res) => {
         },
         { new: true, upsert: true }
       );
+
+      await AjouterDansQueue(notification,"publisherToWaitingQueue","waiting_notification");
     
-    //ajouter la notification dans la queue
-    //await AjouterDansQueue(notification);
-    await planifierAjouterDansQueue(notification);
 
     res.status(200).json({
       message: "Notification planifiée d'attente",

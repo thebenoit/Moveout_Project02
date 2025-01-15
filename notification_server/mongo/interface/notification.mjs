@@ -7,60 +7,72 @@ import amqp from "amqplib";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import agenda from "../../config/agenda.js";
+import rabbitmq from "../../config/rabbitmq.js";
 
 const RABBITMQ_URI = process.env.RABBITMQ_URI;
 const AMQP_PORT = process.env.AMQP_PORT;
 
-async function planifierAjouterDansQueue(notification){
-  const {notificationDays, notificationTimes} = notification
-
-  const joursCron = {
-    'sunday': '0',
-    'monday': '1',
-    'tuesday': '2',
-    'wednesday': '3',
-    'thursday': '4',
-    'friday': '5',
-    'saturday': '6'
-  }
-
-  for (const jour of notificationDays) {
-    for(const heure of notificationTimes){
-      const [heures,minutes] = heure.split(":");
-
-      //set 20 minute avant l'heure
-      const cronExpression = `${(minutes - 20 + 60) % 60} ${(heures - (minutes < 20 ? 1 : 0) + 24) % 24} * * ${joursCron[jour]}`
-      console.log("Schedule the notification in the queue", cronExpression);
-      await agenda.schedule(cronExpression, "sendNotificationToQueue", {notification});
-
-    }
-  }
-  
+///retourne le jour actuelle
+async function whatDayIsIt() {
+  const daysOfTheWeek = [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+  ];
+  const today = new Date();
+  const currentDay = daysOfTheWeek[today.getDay()];
+  console.log(`Today is ${currentDay}`);
+  return currentDay;
 }
-
-async function AjouterDansQueue(notification) {
-  const Queue = "notification";
-  let connection;
+///retourne l'heure et la minute actuelle
+async function whatTimeIsIt() {
+  const today = new Date();
+  const currentHour = today.getHours();
+  const currentMinute = today.getMinutes();
+  const currentTime = `${currentHour
+    .toString()
+    .padStart(2, "0")}:${currentMinute.toString().padStart(2, "0")}`;
+  console.log(`Current time is ${currentTime}`);
+  return currentTime;
+}
+//Planifie quand l'envoyer dans la Queue
+async function planifierAjouterDansQueue(notification) {
+ 
+  const { notificationDays, notificationTimes } = notification;
 
   try {
-    //connect to rabbitmq
-     connection = await amqp.connect(process.env.RABBITMQ_URI);
+    for (const jour of notificationDays) {
+      for (const heure of notificationTimes) {
+        console.log("🚀notif scheduled");
+        await agenda.schedule("in 60 seconds", "sendNotificationToQueue", {
+          notification,
+        });
+      }
+    }
+  } catch (error) {
+    console.error("Erreur lors de la planification de la notification:", error);
+  }
+}
+
+async function AjouterDansQueue(notification, channelId, Queue) {
+  try {
     //create a channel
-    const channel = await connection.createChannel();
+    const channel = await rabbitmq.createChannel(channelId);
     //queue existe? et il doir etre durable
     await channel.assertQueue(Queue, { durable: false });
 
     channel.sendToQueue(Queue, Buffer.from(JSON.stringify(notification)), {
       persistent: false,
     });
-
-    // await channel.close();
-    // await connection.close();
   } catch (error) {
     console.error("Erreur lors de l'ajout dans la queue:", error);
   }
 
-  return connection;
+  return rabbitmq.connection;
 }
 
 async function clean_price(price) {
@@ -110,18 +122,18 @@ async function clean_bedrooms(bedrooms) {
 }
 
 async function ensureConnection() {
-    if (mongoose.connection.readyState !== 1) {
-      try {
-        await mongoose.connect(process.env.MONGODB_URI, {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-          serverSelectionTimeoutMS: 5000,
-        });
-        console.log('✅ Connexion MongoDB établie');
-      } catch (error) {
-        console.error('❌ Erreur de connexion MongoDB:', error);
-        throw error;
-      }
+  if (mongoose.connection.readyState !== 1) {
+    try {
+      await mongoose.connect(process.env.MONGODB_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        serverSelectionTimeoutMS: 5000,
+      });
+      console.log("✅ Connexion MongoDB établie");
+    } catch (error) {
+      console.error("❌ Erreur de connexion MongoDB:", error);
+      throw error;
+    }
   }
 }
 
@@ -133,8 +145,8 @@ const create_notification = async (
   preferencesId
 ) => {
   try {
-     // S'assurer que la connexion est établie avant de continuer
-     await ensureConnection();
+    // S'assurer que la connexion est établie avant de continuer
+    await ensureConnection();
     //crée la notification
     const notification = new Notification({
       event: event,
@@ -143,11 +155,8 @@ const create_notification = async (
       notificationDays: notificationDays,
       preferenceId: preferencesId,
     });
-    console.log("notification: ", notification);
-    //enregistre la notification
-    console.log("Avant save");
+
     await notification.save();
-    console.log("Après save");
     return notification;
   } catch (error) {
     console.error("Erreur lors de la création de la notification:", error);
@@ -246,7 +255,12 @@ async function getAppartmentQueue(notification) {
   return sorted_appartments;
 }
 
-async function envoyer_sms_personnalise(user_id, nom_client, numero_telephone, date_pour_envoyer) {
+async function envoyer_sms_personnalise(
+  user_id,
+  nom_client,
+  numero_telephone,
+  date_pour_envoyer
+) {
   /**
    * Envoie un SMS personnalisé au client avec l'appartement le plus récent correspondant à ses critères
    *
@@ -265,13 +279,19 @@ async function envoyer_sms_personnalise(user_id, nom_client, numero_telephone, d
   }
 
   // Initialiser le client Twilio
-  const client = new Client(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+  const client = new Client(
+    process.env.TWILIO_ACCOUNT_SID,
+    process.env.TWILIO_AUTH_TOKEN
+  );
 
   // Extraire les informations de l'appartement
   const prix = appartement.for_sale_item.formatted_price.text;
   const titre = appartement.for_sale_item.marketplace_listing_title;
   const lien = appartement.for_sale_item.share_uri;
-  const photo_url = appartement.for_sale_item.listing_photos.length > 0 ? appartement.for_sale_item.listing_photos[0].image.uri : null;
+  const photo_url =
+    appartement.for_sale_item.listing_photos.length > 0
+      ? appartement.for_sale_item.listing_photos[0].image.uri
+      : null;
 
   // Message personnalisé
   const message_texte = `Bonjour ${nom_client}! 🫡
@@ -295,7 +315,7 @@ L'équipe MoveOut 🏠`;
       send_at: date_pour_envoyer,
       schedule_type: "fixed",
       from: process.env.TWILIO_NUMERO_TWILIO,
-      to: numero_telephone
+      to: numero_telephone,
     };
 
     // Ajouter l'image si disponible
@@ -307,13 +327,11 @@ L'équipe MoveOut 🏠`;
     const message = await client.messages.create(message_params);
     console.log(`SMS envoyé avec succès à ${nom_client}!`);
     return true;
-
   } catch (error) {
     console.log(`Erreur lors de l'envoi du SMS: ${error}`);
     return false;
   }
 }
-
 
 export {
   create_notification,
@@ -322,5 +340,7 @@ export {
   clean_price,
   clean_bedrooms,
   AjouterDansQueue,
-  planifierAjouterDansQueue
+  planifierAjouterDansQueue,
+  whatDayIsIt,
+  whatTimeIsIt,
 };

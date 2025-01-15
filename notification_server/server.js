@@ -5,7 +5,7 @@ import path from "path";
 import Mixpanel from "mixpanel";
 import dotenv from "dotenv/config";
 import { fileURLToPath } from "url";
-import mongoose from "./mongo/client.mjs";
+import mongoose from "./config/client.mjs";
 import startWorker from "./workers/messenger_worker.js";
 import startAgenda from "./workers/scheduling_worker.js";
 

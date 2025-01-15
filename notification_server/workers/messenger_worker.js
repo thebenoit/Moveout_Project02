@@ -5,6 +5,7 @@ import {
   getAppartmentQueue,
   compterNombreNotifications,
 } from "../mongo/interface/notification.mjs";
+import rabbitmq from "../config/rabbitmq.js";
 
 import user from "../mongo/schemas/user.js";
 import Notification from "../mongo/schemas/notification.js";
@@ -14,10 +15,8 @@ dotenv.config();
 async function startWorker() {
   const Queue = "notification";
 
-  //connect to rabbitmq
-  const connection = await amqp.connect(process.env.RABBITMQ_URI);
   //create a channel
-  const channel = await connection.createChannel();
+  const channel = await rabbitmq.createChannel("consumer");
   //queue existe? et il doir etre durable
   await channel.assertQueue(Queue, { durable: false });
 
@@ -28,17 +27,14 @@ async function startWorker() {
       const notification = JSON.parse(message.content.toString());
       console.log("🚀 Notification reçue:", notification);
 
-      //const appartmentQueue = await getAppartmentQueue(notification);
-      console.log("🚀 Notification userID", notification.userId);
       let client1 = await user.findById(notification.userId);
-      console.log("🚀 User:", client1);
+      console.log("🚀 User:", client1.firstName);
 
       const client = twilio(
         process.env.TWILIO_ACCOUNT_SID,
         process.env.TWILIO_AUTH_TOKEN
       );
-      console.log("👁Telephone Twilion", process.env.TWILIO_PHONE_NUMBER);
-      
+
       const message_texte = `Bonjour! ${client1.firstName} Votre Notification va être envoyée le ${notification.notificationDays[0]}.`;
 
       try {
@@ -49,14 +45,14 @@ async function startWorker() {
           // messaging_service_sid: process.env.TWILIO_MESSAGE_SID,
         };
 
-        const message = await client.messages.create(message_params);
+        // const message = await client.messages.create(message_params);
+        console.log("🚀 Message Sent!");
 
         await Notification.findByIdAndUpdate(
           notification._id,
           {
             $set: {
               status: "sent",
-              
             },
           },
           { new: true, upsert: true }
