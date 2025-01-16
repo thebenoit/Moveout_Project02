@@ -39,11 +39,11 @@ async function startAgenda() {
   const channel = await rabbitmq.createChannel("consumer_waiting_list");
   channel.assertQueue("waiting_notification", { durable: false });
   channel.consume("waiting_notification", async (message) => {
+    const notification = JSON.parse(message.content.toString());
     if (
-      message.status === "pending" &&
-      message.notificationDays === currentDay
+      notification.status === "pending" &&
+      notification.notificationDays === currentDay
     ) {
-      const notification = JSON.parse(message.content.toString());
       await planifierAjouterDansQueue(notification);
     }
   });

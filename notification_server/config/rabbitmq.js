@@ -5,6 +5,7 @@ class RabbitMQConnection {
     this.connection = null;
     this.channels = new Map(); //pour stocker plusieurs channels
     this.url = process.env.RABBITMQ_URI;
+    this.isReconnecting = false;
   }
 
   async connect() {
@@ -52,26 +53,26 @@ class RabbitMQConnection {
   }
 
   async reconnect() {
-    if (this.channels) {
-      try {
-        //fermer tous les channels
-        await this.channels.forEach(async (channel) => {
-          await channel.close();
-        });
-      } catch (error) {
-        console.error("Erreur fermeture canal:", error);
-      }
-    }
-    if (this.connection) {
-      try {
-        await this.connection.close();
-      } catch (error) {
-        console.error("Erreur fermeture connexion:", error);
-      }
-    }
+    console.log("🫡reconnexion en cours...");
+    try {
+      this.isReconnecting = true;
 
-    this.connection = null;
-    this.channel = null;
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+
+      //tenter une nouvelle connexion
+      await this.connect();
+
+      for (const [channelId, channel] of this.channels.entries()) {
+        console.log("🫡reconnexion en cours pour le canal", channelId);
+        await this.createChannel(channelId);
+      }
+
+      console.log("🫡reconnexion terminée");
+    } catch (error) {
+      console.log("erreur durant la reconnexion");
+    } finally {
+      this.isReconnecting = false;
+    }
 
     // Réessayer la connexion
     setTimeout(() => this.connect(), 5000);
