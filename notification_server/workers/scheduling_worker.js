@@ -8,6 +8,25 @@ import {
 } from "../mongo/interface/notification.mjs";
 import Notification from "../mongo/schemas/notification.js";
 import rabbitmq from "../config/rabbitmq.js";
+
+// Extraire la logique de vérification dans une fonction réutilisable
+async function checkAndPlanifyNotifications() {
+  const currentDay = await whatDayIsIt();
+  console.log(`Today is ${currentDay}`);
+
+  const currentHour = await whatTimeIsIt();
+  console.log(`Current time is ${currentHour}`);
+
+  const notifications = await Notification.find({
+    status: "pending",
+    notificationDays: currentDay,
+  });
+
+  for (const notification of notifications) {
+    await planifierAjouterDansQueue(notification);
+  }
+}
+
 /**
  * check a chaque 60s la notification qui est à 20 minutes d'etre envoyée
  * si elle est à 20 minutes, on l'envoie dans la queue
@@ -26,27 +45,18 @@ agenda.define("sendNotificationToQueue", async (job) => {
   }
 });
 
+agenda.define("checkNewNotifications", async (job) => {
+  await checkAndPlanifyNotifications();
+});
+
 async function startAgenda() {
   await agenda.start();
 
-  //affect le jour actuelle dans une variable
-  const currentDay = await whatDayIsIt();
-  console.log(`Today is ${currentDay}`);
-  //affecte l'heure et la minute actuelle dans une variable
-  const currentHour = await whatTimeIsIt();
-  console.log(`Current time is ${currentHour}`);
+  //premier lancement
+  await checkAndPlanifyNotifications();
 
-  const channel = await rabbitmq.createChannel("consumer_waiting_list");
-  channel.assertQueue("waiting_notification", { durable: false });
-  channel.consume("waiting_notification", async (message) => {
-    const notification = JSON.parse(message.content.toString());
-    if (
-      notification.status === "pending" &&
-      notification.notificationDays === currentDay
-    ) {
-      await planifierAjouterDansQueue(notification);
-    }
-  });
+  //vérification toutes les 60s
+  await agenda.every("60 seconds", "checkNewNotifications");
 
   console.log("🚀Agenda is working...");
 }
