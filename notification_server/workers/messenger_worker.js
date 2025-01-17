@@ -4,6 +4,7 @@ import {
   AjouterDansQueue,
   getAppartmentQueue,
   compterNombreNotifications,
+
 } from "../mongo/interface/notification.mjs";
 import rabbitmq from "../config/rabbitmq.js";
 
@@ -12,6 +13,8 @@ import Notification from "../mongo/schemas/notification.js";
 import twilio from "twilio";
 
 dotenv.config();
+
+
 async function startWorker() {
   const Queue = "notification";
 
@@ -26,6 +29,11 @@ async function startWorker() {
     if (message) {
       const notification = JSON.parse(message.content.toString());
       console.log("🚀 Notification reçue:", notification);
+
+      let appartments = await getAppartmentQueue(notification);
+      // console.log(`👉 Appartements:\n
+      //      ${appartments[0].for_sale_item.custom_title}\n
+      //      ${appartments[0].for_sale_item.formatted_price.text}`);
 
       let client1 = await user.findById(notification.userId);
       console.log("🚀 User:", client1.firstName);
@@ -46,7 +54,8 @@ async function startWorker() {
         };
 
         // const message = await client.messages.create(message_params);
-        console.log("🚀 Message Sent!");
+        console.log(`🚀 Message Sent to ${client1.firstName}\n
+          Appartment: ${appartments[0]._id}`);
 
         await Notification.findByIdAndUpdate(
           notification._id,

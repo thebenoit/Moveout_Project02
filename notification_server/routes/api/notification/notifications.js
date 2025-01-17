@@ -42,7 +42,7 @@ app.post("/notification/send", async (req, res) => {
         { new: true, upsert: true }
       );
 
-      await AjouterDansQueue(notification,"publisherToWaitingQueue","waiting_notification");
+      //await AjouterDansQueue(notification,"publisherToWaitingQueue","waiting_notification");
     
 
     res.status(200).json({

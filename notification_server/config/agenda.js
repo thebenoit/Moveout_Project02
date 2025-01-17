@@ -2,7 +2,10 @@ import Agenda from "agenda";
 
 const agenda = new Agenda({
   db: { address: process.env.DB_URI },
-  processEvery: "60 seconds",
+  processEvery: "10 seconds",
+  defaultConcurrency: 1,
+  maxConcurrency: 1,
+  locklimit: 1
 });
 
 // Force Agenda à rafraîchir son état

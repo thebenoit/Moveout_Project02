@@ -39,16 +39,32 @@ async function whatTimeIsIt() {
   console.log(`Current time is ${currentTime}`);
   return currentTime;
 }
+// Helper pour convertir le jour en expression cron
+function getCronDay(day) {
+  const cronDays = {
+    sunday: 0,
+    monday: 1,
+    tuesday: 2,
+    wednesday: 3,
+    thursday: 4,
+    friday: 5,
+    saturday: 6,
+  };
+  return cronDays[day.toLowerCase()];
+}
 //Planifie quand l'envoyer dans la Queue
 async function planifierAjouterDansQueue(notification) {
- 
   const { notificationDays, notificationTimes } = notification;
 
   try {
     for (const jour of notificationDays) {
       for (const heure of notificationTimes) {
         console.log("🚀notif scheduled");
-        await agenda.schedule("in 60 seconds", "sendNotificationToQueue", {
+        // Créer une expression cron
+        const [hours, minutes] = heure.split(":");
+        console.log("hours: ", hours, " minutes: ", minutes);
+        const cronExpression = `${minutes} ${hours} * * ${getCronDay(jour)}`;
+        await agenda.schedule(cronExpression, "sendNotificationToQueue", {
           notification,
         });
       }
