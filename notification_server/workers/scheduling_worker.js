@@ -8,6 +8,7 @@ import {
 } from "../mongo/interface/notification.mjs";
 import Notification from "../mongo/schemas/notification.js";
 import rabbitmq from "../config/rabbitmq.js";
+import { cleanNotifHistory } from "../mongo/interface/user.mjs";
 
 // Extraire la logique de vérification dans une fonction réutilisable
 async function checkAndPlanifyNotifications() {
@@ -16,7 +17,7 @@ async function checkAndPlanifyNotifications() {
   console.log(`Today is ${currentDay} à ${currentHour}`);
 
   const notifications = await Notification.find({
-    status: "pending",
+    status: "recurring",
     notificationDays: currentDay,
     notificationTimes: currentHour,
   });
@@ -25,6 +26,9 @@ async function checkAndPlanifyNotifications() {
     console.log(
       `🫡notification trouvé, ${notification._id} à ${new Date().toISOString()}`
     );
+    //clean the notifHistory of the user
+    await cleanNotifHistory(notification.userId);
+
     await planifierAjouterDansQueue(notification);
   }
 }

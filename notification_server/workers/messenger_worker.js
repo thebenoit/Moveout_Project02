@@ -28,11 +28,12 @@ async function startWorker() {
       const notification = JSON.parse(message.content.toString());
       console.log("🚀 Notification reçue:", notification);
 
-      let appartments = await getAppartmentQueue(notification);
-      console.log("🚀 Appartements:", appartments.length);
+      let appartment = await getAppartmentQueue(notification);
+      console.log("🚀 Appartement:", appartment.length);
 
 
       let client1 = await user.findById(notification.userId);
+      
       console.log("🚀 User:", client1.firstName);
 
       const client = twilio(
@@ -42,14 +43,13 @@ async function startWorker() {
 
       const message_texte = `Bonjour ${client1.firstName}!
 
-Votre notification va être envoyée le ${notification.notificationDays}.
+Voici l'appartement que j'ai trouvé pour vous!
 
-🏠 Appartement: ${appartments.titre}
-💰 Prix: ${appartments.price}
-🛏️ Nombre de chambres: ${appartments.bedrooms}
+🏠 Appartement: ${appartment.titre}
+💰 Prix: ${appartment.price}
+🛏️ Nombre de chambres: ${appartment.bedrooms}
 
-
-Merci de vérifier les détails de l'appartement.`;
+`;
 
       try {
         const message_params = {
@@ -58,24 +58,23 @@ Merci de vérifier les détails de l'appartement.`;
           to: "+14385239294",
           // messaging_service_sid: process.env.TWILIO_MESSAGE_SID,
         };
-
-        if(appartments.images.length > 0){
-          message_params.media_url = appartments.images;
+        console.log(appartment.images[0]);
+        if(appartment.images.length > 0){
+          message_params.mediaUrl = appartment.images[0].image.uri;
         }
         
         const message = await client.messages.create(message_params);
-        console.log(`🚀 Message Sent to ${client1.firstName}\n
-          Appartment: ${appartments.titre}`);
-        await Notification.findByIdAndUpdate(
-          notification._id,
-          {
-            $set: {
-              status: "sent",
-            },
-          },
-          { new: true, upsert: true }
-        );
-        console.log(`SMS envoyé avec succès!`);
+        
+        // await Notification.findByIdAndUpdate(
+        //   notification._id,
+        //   {
+        //     $set: {
+        //       status: "sent",
+        //     },
+        //   },
+        //   { new: true, upsert: true }
+        // );
+        console.log(`SMS envoyé avec succès! ${appartment.titre}`);
       } catch (error) {
         console.log(`Erreur lors de l'envoi du SMS: ${error}`);
       }

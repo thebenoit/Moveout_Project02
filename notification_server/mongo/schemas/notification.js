@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const notificationSchema = new Schema({
   event: { type: String },
   userId: { type: Schema.Types.ObjectId, ref: "users" },
-  status: { type: String, default: "pending" },
+  status: { type: String, default: "recurring" },
   retryCount: { type: Number, default: 0 },
   notificationTimes: [{ type: String }],
   notificationDays: [{ type: String }],

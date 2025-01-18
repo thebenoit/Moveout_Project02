@@ -37,6 +37,13 @@ app.use(
   })
 );
 
+// ✅ Solution recommandée(en production met ca)
+// app.use(cors({
+//   origin: process.env.ALLOWED_ORIGINS.split(','),
+//   credentials: true,
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+// }));
+
 app.use("/api/", notification);
 
 app.listen(process.env.PORT, () => {

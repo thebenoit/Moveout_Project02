@@ -57,18 +57,9 @@ async function planifierAjouterDansQueue(notification) {
   const { notificationDays, notificationTimes } = notification;
 
   try {
-    for (const jour of notificationDays) {
-      for (const heure of notificationTimes) {
-        console.log("🚀notif scheduled");
-        // Créer une expression cron
-        const [hours, minutes] = heure.split(":");
-        console.log("hours: ", hours, " minutes: ", minutes);
-        const cronExpression = `${minutes} ${hours} * * ${getCronDay(jour)}`;
-        await agenda.schedule(cronExpression, "sendNotificationToQueue", {
-          notification,
-        });
-      }
-    }
+    await agenda.schedule("in 1 seconds", "sendNotificationToQueue", {
+      notification,
+    });
   } catch (error) {
     console.error("Erreur lors de la planification de la notification:", error);
   }
@@ -195,13 +186,12 @@ async function getAppartmentQueue(notification) {
     notification.preferenceId
   ).lean();
 
-  const user = await User.findById(notification.userId)
+  const user = await User.findById(notification.userId);
 
-  if(!user){
+  if (!user) {
     console.error("User not found");
     return [];
   }
-
 
   if (!preferences) {
     console.error(
@@ -255,30 +245,22 @@ async function getAppartmentQueue(notification) {
 
           const arrayBedrooms = await intoArrayNumber(numberOfBedrooms);
           //si le field n'existe pas
-          if(!user.notifHistory){
+          if (!user.notifHistory) {
             //initialise le field
             user.notifHistory = [];
             await user.save();
-          }//si possede l'historique possède l'appartement
-          else if(user.notifHistory.includes(appart.id)){
+          } //si possede l'historique possède l'appartement
+          else if (user.notifHistory.includes(appart.id)) {
             //passer au suivant
             continue;
           }
 
           if (arrayBedrooms.includes(bedrooms)) {
-            
-
             appart.bedrooms = bedrooms;
             sorted_appartments.push(appart);
-
           } else {
-           
             continue;
           }
-         
-       
-
-
         }
       } catch (error) {
         console.error("Erreur lors du traitement du prix:", error);
@@ -292,8 +274,15 @@ async function getAppartmentQueue(notification) {
   );
 
   let latest_appartement = sorted_appartments[0];
-//ajoute l'appartement dans l'historique de l'utilisateur
-  user.notifHistory.push(latest_appartement._id);
+
+  // 2. Éviter les doublons
+  if (
+    latest_appartement &&
+    !user.notifHistory.includes(latest_appartement.id)
+  ) {
+    console.log("🚀 Ajout de l'appartement dans l'historique");
+    user.notifHistory.push(latest_appartement.id);
+  }
   await user.save();
 
   return latest_appartement;
