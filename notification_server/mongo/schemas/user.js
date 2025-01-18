@@ -7,6 +7,7 @@ const usersSchema = new Schema({
   phone: { type: Schema.Types.String },
   email: { type: Schema.Types.String },
   password: { type: Schema.Types.String },
+  notifHistory: [{ type: Schema.Types.ObjectId, ref: "appartments" }],
   preferencesId: { type: Schema.Types.ObjectId },
   accessToken: { type: Schema.Types.String },
   date: { type: Schema.Types.Date },

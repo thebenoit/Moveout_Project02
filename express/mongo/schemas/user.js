@@ -9,6 +9,7 @@ const usersSchema = new Schema({
   password: { type: Schema.Types.String },
   preferencesId: { type: Schema.Types.ObjectId },
   accessToken: { type: Schema.Types.String },
+  notifHistory: [{ type: Schema.Types.ObjectId, ref: "appartments" }],
   date: { type: Schema.Types.Date },
 });
 

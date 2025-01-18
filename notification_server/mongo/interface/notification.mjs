@@ -194,7 +194,14 @@ async function getAppartmentQueue(notification) {
   const preferences = await Preferences.findById(
     notification.preferenceId
   ).lean();
-  console.log("preferences: ", preferences);
+
+  const user = await User.findById(notification.userId)
+
+  if(!user){
+    console.error("User not found");
+    return [];
+  }
+
 
   if (!preferences) {
     console.error(
@@ -238,6 +245,8 @@ async function getAppartmentQueue(notification) {
         ) {
           let appart = {
             id: apartment._id,
+            titre: apartment.for_sale_item.custom_title,
+            images: apartment.for_sale_item.listing_photos,
             price: price,
             bedrooms: "",
           };
@@ -245,14 +254,31 @@ async function getAppartmentQueue(notification) {
           let numberOfBedrooms = JSON.stringify(preferences.numberOfBedrooms);
 
           const arrayBedrooms = await intoArrayNumber(numberOfBedrooms);
-
-          if (arrayBedrooms.includes(bedrooms)) {
-            appart.bedrooms = bedrooms;
-            sorted_appartments.push(appart);
-          } else {
-            console.log("bedrooms not in array");
+          //si le field n'existe pas
+          if(!user.notifHistory){
+            //initialise le field
+            user.notifHistory = [];
+            await user.save();
+          }//si possede l'historique possède l'appartement
+          else if(user.notifHistory.includes(appart.id)){
+            //passer au suivant
             continue;
           }
+
+          if (arrayBedrooms.includes(bedrooms)) {
+            
+
+            appart.bedrooms = bedrooms;
+            sorted_appartments.push(appart);
+
+          } else {
+           
+            continue;
+          }
+         
+       
+
+
         }
       } catch (error) {
         console.error("Erreur lors du traitement du prix:", error);
@@ -265,10 +291,12 @@ async function getAppartmentQueue(notification) {
     (a, b) => new Date(b.scraped_at) - new Date(a.scraped_at)
   );
 
-  sorted_appartments = sorted_appartments.slice(0, nombre_notifications);
+  let latest_appartement = sorted_appartments[0];
+//ajoute l'appartement dans l'historique de l'utilisateur
+  user.notifHistory.push(latest_appartement._id);
+  await user.save();
 
-  console.log("sorted_appartments.length: ", sorted_appartments.length);
-  return sorted_appartments;
+  return latest_appartement;
 }
 
 async function envoyer_sms_personnalise(

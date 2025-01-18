@@ -90,13 +90,13 @@ async function startAgenda() {
 
   await debugJobs();
 
-  await agenda.cancel({ name: "sendNotificationToQueue" });
+  await agenda.cancel({});
   console.log("\n Nettoyages des jobs sendNotificationToQueue");
 
   await debugJobs();
 
   // 5. Planifier nouveau job
-  const job = await agenda.every("60 seconds", "checkNewNotifications");
+  const job = await agenda.every("30 seconds", "checkNewNotifications");
   console.log("⏰ Nouveau job planifié avec ID:", job.attrs._id);
 
   // 6. Vérifier tous les types de jobs

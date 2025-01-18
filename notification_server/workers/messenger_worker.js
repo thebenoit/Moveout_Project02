@@ -4,7 +4,6 @@ import {
   AjouterDansQueue,
   getAppartmentQueue,
   compterNombreNotifications,
-
 } from "../mongo/interface/notification.mjs";
 import rabbitmq from "../config/rabbitmq.js";
 
@@ -13,7 +12,6 @@ import Notification from "../mongo/schemas/notification.js";
 import twilio from "twilio";
 
 dotenv.config();
-
 
 async function startWorker() {
   const Queue = "notification";
@@ -31,9 +29,8 @@ async function startWorker() {
       console.log("🚀 Notification reçue:", notification);
 
       let appartments = await getAppartmentQueue(notification);
-      // console.log(`👉 Appartements:\n
-      //      ${appartments[0].for_sale_item.custom_title}\n
-      //      ${appartments[0].for_sale_item.formatted_price.text}`);
+      console.log("🚀 Appartements:", appartments.length);
+
 
       let client1 = await user.findById(notification.userId);
       console.log("🚀 User:", client1.firstName);
@@ -43,7 +40,16 @@ async function startWorker() {
         process.env.TWILIO_AUTH_TOKEN
       );
 
-      const message_texte = `Bonjour! ${client1.firstName} Votre Notification va être envoyée le ${notification.notificationDays[0]}.`;
+      const message_texte = `Bonjour ${client1.firstName}!
+
+Votre notification va être envoyée le ${notification.notificationDays}.
+
+🏠 Appartement: ${appartments.titre}
+💰 Prix: ${appartments.price}
+🛏️ Nombre de chambres: ${appartments.bedrooms}
+
+
+Merci de vérifier les détails de l'appartement.`;
 
       try {
         const message_params = {
@@ -53,10 +59,13 @@ async function startWorker() {
           // messaging_service_sid: process.env.TWILIO_MESSAGE_SID,
         };
 
-        // const message = await client.messages.create(message_params);
+        if(appartments.images.length > 0){
+          message_params.media_url = appartments.images;
+        }
+        
+        const message = await client.messages.create(message_params);
         console.log(`🚀 Message Sent to ${client1.firstName}\n
-          Appartment: ${appartments[0]._id}`);
-
+          Appartment: ${appartments.titre}`);
         await Notification.findByIdAndUpdate(
           notification._id,
           {
