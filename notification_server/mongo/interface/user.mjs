@@ -4,9 +4,9 @@ import User from "../schemas/user.js";
 async function cleanNotifHistory(userId) {
   const user = await User.findById(userId);
   if (user.notifHistory.length > 7) {
-  user.notifHistory = [];
-  await user.save();
-}
+    user.notifHistory = [];
+    await user.save();
+  }
 }
 
 export { cleanNotifHistory };
