@@ -51,10 +51,10 @@ app.listen(process.env.PORT, () => {
 });
 
 //Démarrer le worker dans le même processus
-startWorker().catch(error => {
+startWorker().catch((error) => {
   console.error("❌ Erreur worker:", error);
 });
 
-startAgenda().catch(error => {
+startAgenda().catch((error) => {
   console.error("❌ Erreur agenda:", error);
 });
