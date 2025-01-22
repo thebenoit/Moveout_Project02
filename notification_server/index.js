@@ -46,6 +46,10 @@ app.use(
 
 app.use("/api/", notification);
 
+app.get("/", (req, res) => {
+  res.send("The notification server is running...");
+});
+
 app.listen(process.env.PORT, () => {
   console.log(`notification server is running on port ${process.env.PORT}`);
 });
