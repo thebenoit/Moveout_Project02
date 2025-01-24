@@ -69,12 +69,14 @@ async function AjouterDansQueue(notification, channelId, Queue) {
   try {
     //create a channel
     const channel = await rabbitmq.createChannel(channelId);
+
     //queue existe? et il doir etre durable
     await channel.assertQueue(Queue, { durable: false });
 
     channel.sendToQueue(Queue, Buffer.from(JSON.stringify(notification)), {
       persistent: false,
     });
+    console.log("\x1b[32mNotification envoyée dans la queue!\x1b[0m");
   } catch (error) {
     console.error("Erreur lors de l'ajout dans la queue:", error);
   }
@@ -239,6 +241,7 @@ async function getAppartmentQueue(notification) {
             images: apartment.for_sale_item.listing_photos,
             price: price,
             bedrooms: "",
+            link: apartment.for_sale_item.share_uri,
           };
 
           let numberOfBedrooms = JSON.stringify(preferences.numberOfBedrooms);

@@ -10,42 +10,46 @@ import Notification from "../mongo/schemas/notification.js";
 import rabbitmq from "../config/rabbitmq.js";
 import { cleanNotifHistory } from "../mongo/interface/user.mjs";
 
+async function getExactTime() {
+  console.log(
+    new Date().getHours(),
+    "h: ",
+    new Date().getMinutes(),
+    "m:",
+    new Date().getSeconds(),
+    "s",
+    new Date().getMilliseconds(),
+    "ms"
+  );
+}
+
+// async function removeLockedJobs(){
+//   const lockedJobs = await agenda.jobs({})
+// }
 // Extraire la logique de vérification dans une fonction réutilisable
 async function checkAndPlanifyNotifications() {
+  console.log("🚀 Début de checkAndPlanifyNotifications");
+
   const currentDay = await whatDayIsIt();
   const currentHour = await whatTimeIsIt();
   console.log(`Today is ${currentDay} à ${currentHour}`);
 
   const notifications = await Notification.find({
-    status: "recurring",
+    status: "test",
     notificationDays: currentDay,
     notificationTimes: currentHour,
   });
-
+  console.log("Avant for loop");
   for (const notification of notifications) {
     console.log(
       `🫡notification trouvé, ${notification._id} à ${new Date().toISOString()}`
     );
+    console.log("👁Avant cleanNotifHistory");
     //clean the notifHistory of the user
     await cleanNotifHistory(notification.userId);
 
     await planifierAjouterDansQueue(notification);
   }
-}
-
-async function debugJobs() {
-  const jobs = await agenda.jobs();
-
-  console.log("\n🔍 Analyse détaillée des jobs:");
-  jobs.forEach((job) => {
-    console.log(`\nJob: ${job.attrs.name}`, {
-      id: job.attrs._id,
-      status: job.attrs.status,
-      nextRunAt: job.attrs.nextRunAt,
-      lastRunAt: job.attrs.lastRunAt,
-      data: job.attrs.data,
-    });
-  });
 }
 
 /**
@@ -57,7 +61,6 @@ agenda.define("sendNotificationToQueue", async (job) => {
 
   try {
     await AjouterDansQueue(notification, "publisher", "notification");
-    console.log("\x1b[32mNotification envoyée dans la queue!\x1b[0m");
 
     await job.remove();
   } catch (error) {
@@ -70,19 +73,56 @@ agenda.define("sendNotificationToQueue", async (job) => {
     throw error;
   }
 });
+agenda.define("each10seconds", async (job) => {
+  console.log("🏃🏾 each10seconds--->");
+  await getExactTime();
+});
 
 agenda.define("checkNewNotifications", async (job) => {
-  console.log("\n🕒 Job de vérification démarré:", new Date().toISOString());
-  await checkAndPlanifyNotifications();
-  console.log("✅ Job de vérification terminé\n");
+  console.log("🏃🏾 checkNewNotifications");
+  try {
+    console.log("👁Avant checkAndPlanifyNotifications");
+    await checkAndPlanifyNotifications();
+  } catch (error) {
+    console.error("Erreur lors de checkNotification:", error);
+  }
+});
+
+agenda.on("ready", () => {
+  console.log("Agenda est prêt et connecté à MongoDB.");
+});
+agenda.on("error", (err) => {
+  console.error("Erreur de connexion MongoDB pour Agenda:", err);
 });
 
 agenda.on("start", (job) => {
-  console.log("🟢 job démarré:", job.attrs.name, new Date().toISOString());
+  console.log(
+    "🟢 job démarré:",
+    job.attrs.name,
+    new Date().getHours(),
+    "h: ",
+    new Date().getMinutes(),
+    "m:",
+    new Date().getSeconds(),
+    "s",
+    new Date().getMilliseconds(),
+    "ms"
+  );
 });
 
 agenda.on("complete", (job) => {
-  console.log("🏁 Job terminé:", job.attrs.name, new Date().toISOString());
+  console.log(
+    "🏁 Job terminé:",
+    job.attrs.name,
+    new Date().getHours(),
+    "h: ",
+    new Date().getMinutes(),
+    "m:",
+    new Date().getSeconds(),
+    "s",
+    new Date().getMilliseconds(),
+    "ms"
+  );
 });
 
 agenda.on("fail", (err, job) => {
@@ -90,30 +130,37 @@ agenda.on("fail", (err, job) => {
 });
 
 async function startAgenda() {
-  await agenda.start();
+  try {
+    await agenda.start();
+    await getExactTime();
 
-  await debugJobs();
+    await agenda.cancel({ name: "sendNotificationToQueue" });
+    console.log("\n Nettoyages des jobs sendNotificationToQueue");
 
-  await agenda.cancel({});
-  console.log("\n Nettoyages des jobs sendNotificationToQueue");
+   
+    // Planifier les nouveaux jobs avec try/catch séparés
+    if (agenda.jobs({ name: "checkNewNotifications" }).length === undefined) {
+      console.log("Planifie un checkNewNotification");
+      try {
+        await agenda.every(
+          "30 seconds",
+          "checkNewNotifications",
+          {},
+          {
+            skipImmediate: false,
+            timezone: "America/Toronto",
+          }
+        );
+        console.log("✅ Job checkNewNotifications planifié");
+      } catch (error) {
+        console.error("❌ Erreur planification checkNewNotifications:", error);
+      }
+    }
 
-  await debugJobs();
-
-  // 5. Planifier nouveau job
-  const job = await agenda.every("30 seconds", "checkNewNotifications");
-  console.log("⏰ Nouveau job planifié avec ID:", job.attrs._id);
-
-  // 6. Vérifier tous les types de jobs
-  const tousLesJobs = await agenda.jobs();
-  console.log("📋 Détail des jobs planifiés:", {
-    total: tousLesJobs.length,
-    parType: tousLesJobs.reduce((acc, job) => {
-      acc[job.attrs.name] = (acc[job.attrs.name] || 0) + 1;
-      return acc;
-    }, {}),
-  });
-
-  console.log("🚀 Agenda is working...");
+    console.log("🚀 Agenda is working...");
+  } catch (error) {
+    console.error("⛔️Erreur lors du démarrage du worker:", error);
+  }
 }
 
 export default startAgenda;
