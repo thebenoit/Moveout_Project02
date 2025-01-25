@@ -39,12 +39,12 @@ async function checkAndPlanifyNotifications() {
     notificationDays: currentDay,
     notificationTimes: currentHour,
   });
-  console.log("Avant for loop");
+  
   for (const notification of notifications) {
     console.log(
-      `🫡notification trouvé, ${notification._id} à ${new Date().toISOString()}`
+      `🫡notification trouvé, ${notification._id} à ${new Date().getHours()}h:${new Date().getMinutes()}m:${new Date().getSeconds()}s`
     );
-    console.log("👁Avant cleanNotifHistory");
+   
     //clean the notifHistory of the user
     await cleanNotifHistory(notification.userId);
 

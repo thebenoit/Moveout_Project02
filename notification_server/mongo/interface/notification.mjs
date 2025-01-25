@@ -76,6 +76,8 @@ async function AjouterDansQueue(notification, channelId, Queue) {
     channel.sendToQueue(Queue, Buffer.from(JSON.stringify(notification)), {
       persistent: false,
     });
+    console.log("channel length: ", channel.messageCount);
+    
     console.log("\x1b[32mNotification envoyée dans la queue!\x1b[0m");
   } catch (error) {
     console.error("Erreur lors de l'ajout dans la queue:", error);
@@ -184,9 +186,13 @@ async function compterNombreNotifications(notification) {
 
 async function getAppartmentQueue(notification) {
   //récupère les préférences de l'utilisateur
+
   const preferences = await Preferences.findById(
     notification.preferenceId
   ).lean();
+
+  
+
 
   const user = await User.findById(notification.userId);
 
@@ -287,7 +293,7 @@ async function getAppartmentQueue(notification) {
     user.notifHistory.push(latest_appartement.id);
   }
   await user.save();
-
+  console.log("Appartement trouvé!")
   return latest_appartement;
 }
 

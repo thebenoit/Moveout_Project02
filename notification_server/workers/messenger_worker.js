@@ -38,21 +38,19 @@ async function startWorker() {
 
         console.log("🚀 User:", client1.firstName);
 
-        try{
+        try {
           let result = await sendMoveoutMessage(client1, appartment);
 
-        if (!result) {
-          console.log("❌ Erreur lors de l'envoi du SMS");
+          if (!result) {
+            console.log("❌ Erreur lors de l'envoi du SMS");
+          }
+        } catch (error) {
+          console.error("Erreur lors de l'envoi du message:", error);
+        } finally {
+          console.log("Message ack");
+          channel.ack(message);
         }
-        }catch(error){
-          console.error("Erreur lors de l'envoi du message:",error);
-        }finally{
-        
-          
-        }
-        
 
-        channel.ack(message);
         console.log("😆 Notification traitée:");
       }
     });
