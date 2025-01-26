@@ -7,7 +7,7 @@ import Facebook from "../schemas/facebook.js";
 
 async function sendMoveoutMessage(user, appartment) {
   let phoneNumber = "";
-
+  console.log("messaging sid: ", process.env.TWILIO_MESSAGE_SID);
   const client = twilio(
     process.env.TWILIO_ACCOUNT_SID,
     process.env.TWILIO_AUTH_TOKEN
@@ -34,12 +34,18 @@ async function sendMoveoutMessage(user, appartment) {
     return;
   }
   try {
+    if (!process.env.TWILIO_MESSAGE_SID) {
+      throw new Error(
+        `Le SID du service de messagerie Twilio ${process.env.TWILIO_MESSAGE_SID} n'est pas défini.`
+      );
+    }
+
     console.log("phoneNumber4: ", phoneNumber);
     const message_params = {
+      messagingServiceSid: process.env.TWILIO_MESSAGE_SID,
       body: message_texte,
-      from: process.env.TWILIO_PHONE_NUMBER,
       to: phoneNumber,
-      messaging_service_sid: process.env.TWILIO_MESSAGE_SID,
+      from: process.env.TWILIO_PHONE_NUMBER,
     };
 
     if (appartment != undefined) {
@@ -51,12 +57,23 @@ async function sendMoveoutMessage(user, appartment) {
     //get les infos du message
     const messageDetails = await client.messages(message.sid).fetch();
     //si il y a une erreur throw une erreur
+
     console.log("messageDetails: ", messageDetails);
-    if (
-      messageDetails.status != "delivered" ||
-      messageDetails.status != "sent"
-    ) {
-      throw new Error("SMS non envoyé", messageDetails.status);
+
+    const estQueued = messageDetails.status === "queued";
+    const estSent = messageDetails.status === "sent";
+    const estDelivered = messageDetails.status === "delivered";
+    const estAccepted = messageDetails.status === "accepted";
+    console.log("message est Queued?: ", estQueued);
+    console.log("message est Sent?: ", estSent);
+    console.log("message est Delivered?: ", estDelivered);
+
+
+    if (!estDelivered && !estSent && !estQueued && !estAccepted) {
+      console.log("messageDetails status: ", messageDetails.status);
+      throw new Error(
+        `SMS non envoyé ce n'est pas le bon status ${messageDetails.status}`
+      );
     }
 
     //seulement en mode test avant de lancer le code en prod

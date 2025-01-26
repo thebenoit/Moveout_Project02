@@ -8,7 +8,7 @@ import {
   create_notification,
   AjouterDansQueue,
   planifierAjouterDansQueue,
-} from "../../../mongo/interface/notification.mjs";
+} from "../../../mongo/interface/notification.js";
 import httpStatus from "../../../httpStatus.mjs";
 import dotenv from "dotenv";
 

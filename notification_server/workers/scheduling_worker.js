@@ -5,7 +5,7 @@ import {
   planifierAjouterDansQueue,
   whatDayIsIt,
   whatTimeIsIt,
-} from "../mongo/interface/notification.mjs";
+} from "../mongo/interface/notification.js";
 import Notification from "../mongo/schemas/notification.js";
 import rabbitmq from "../config/rabbitmq.js";
 import { cleanNotifHistory } from "../mongo/interface/user.mjs";
@@ -39,15 +39,17 @@ async function checkAndPlanifyNotifications() {
     notificationDays: currentDay,
     notificationTimes: currentHour,
   });
-  
+
   for (const notification of notifications) {
     console.log(
-      `🫡notification trouvé, ${notification._id} à ${new Date().getHours()}h:${new Date().getMinutes()}m:${new Date().getSeconds()}s`
+      `🫡notification trouvé, ${
+        notification._id
+      } à ${new Date().getHours()}h:${new Date().getMinutes()}m:${new Date().getSeconds()}s`
     );
-   
+
     //clean the notifHistory of the user
     await cleanNotifHistory(notification.userId);
-
+    console.log("notification length:", notifications.length);
     await planifierAjouterDansQueue(notification);
   }
 }
@@ -137,13 +139,12 @@ async function startAgenda() {
     await agenda.cancel({ name: "sendNotificationToQueue" });
     console.log("\n Nettoyages des jobs sendNotificationToQueue");
 
-   
     // Planifier les nouveaux jobs avec try/catch séparés
     if (agenda.jobs({ name: "checkNewNotifications" }).length === undefined) {
       console.log("Planifie un checkNewNotification");
       try {
         await agenda.every(
-          "30 seconds",
+          "60 seconds",
           "checkNewNotifications",
           {},
           {

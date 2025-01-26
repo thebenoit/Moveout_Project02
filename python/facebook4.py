@@ -82,7 +82,8 @@ class Scraper:
 
     def __init__(self,connection_string, database_name,collection_name,progress_collection) -> None:
     
-        self.url = "https://www.facebook.com/marketplace/montreal/propertyrentals?locale=fr_CA"
+        self.url = "https://www.facebook.com/marketplace/montreal/propertyrentals?locale=fr_CA&checkpoint_src=any" 
+        #"https://www.facebook.com/marketplace/montreal/propertyrentals?locale=fr_CA"
         #configuration des proxies
         proxies = {
             "http": "http://pc7PiGyTTw-res-any:PC_7kzkaLvMO2XGBa07q@proxy-us.proxy-cheap.com:5959",

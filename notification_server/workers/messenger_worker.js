@@ -4,13 +4,13 @@ import {
   AjouterDansQueue,
   getAppartmentQueue,
   compterNombreNotifications,
-} from "../mongo/interface/notification.mjs";
+} from "../mongo/interface/notification.js";
 import rabbitmq from "../config/rabbitmq.js";
 
 import user from "../mongo/schemas/user.js";
 import Notification from "../mongo/schemas/notification.js";
 import twilio from "twilio";
-import { sendMoveoutMessage } from "../mongo/interface/twilio.mjs";
+import { sendMoveoutMessage } from "../mongo/interface/twilio.js";
 import agenda from "../config/agenda.js";
 
 dotenv.config();
@@ -28,6 +28,8 @@ async function startWorker() {
 
     channel.consume(Queue, async (message) => {
       if (message) {
+        console.log("Queue length: ", channel.messageCount);
+        
         const notification = JSON.parse(message.content.toString());
         console.log("🚀 Notification reçue:", notification);
 
