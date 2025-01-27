@@ -44,10 +44,14 @@ class RabbitMQConnection {
   async connect() {
     try {
       if (!this.connection) {
-        // Établir la connexion avec des options de heartbeat
+   
+    
+        //Établir la connexion avec des options de heartbeat
         this.connection = await amqp.connect(this.url, {
           heartbeat: 60, // Heartbeat toutes les 60 secondes
           timeout: 60000, // Timeout de connexion à 60 secondes
+          connectionTimeout: 30000,
+          keepAlive: true,
         });
 
         // Gérer la déconnexion
@@ -74,6 +78,7 @@ class RabbitMQConnection {
   }
 
   async setupExchangesAndQueues() {
+    console.log("👷‍♂️ Configuration des exchanges et queues...");
     try {
       const channel = await this.createChannel("setup");
 
@@ -119,6 +124,73 @@ class RabbitMQConnection {
     } catch (err) {
       console.error("Erreur de configuration des exchanges et queues", error);
       throw error;
+    }
+  }
+
+  async publishMessage(message, options = {}) {
+    try {
+      const channel = await this.getChannel("publisher");
+
+      const messageOptions = {
+        persistent: true,
+        priority: options.priority || 0,
+        headers: {
+          "x-retry-count": 0,
+          "x-first-death-reason": "",
+          "x-first-death-queue": "",
+          timestamp: new Date().toISOString(),
+        },
+        ...options,
+      };
+      return await channel.publish(
+        this.exchanges.notification.name,
+        "notification.routing",
+        Buffer.from(JSON.stringify(message)),
+        messageOptions
+      );
+    } catch (err) {
+      console.error("Erreur de publication du message", err);
+      throw err;
+    }
+  }
+
+  async consumeMessages(queueName, callback) {
+    try {
+      const channel = await this.getChannel("consumer");
+
+      await channel.consume(queueName, async (msg) => {
+        try {
+          await callback(msg);
+          channel.ack(msg);
+        } catch (error) {
+          const retryCount = (msg.properties.headers["x-retry-count"] || 0) + 1;
+
+          if (retryCount <= 3) {
+            //Republuer avec retry count incrémenté
+            const retryMessage = {
+              ...JSON.parse(msg.content.toString()),
+              headers: {
+                ...msg.properties.headers,
+                "x-retry-count": retryCount,
+              },
+            };
+            //Délai exponentiel
+            const delay = Math.pow(2, retryCount) * 1000;
+
+            setTimeount(() => {
+              this.publishMessage(retryMessage);
+            }, delay);
+
+            channel.ack(msg);
+          } else {
+            //Rejeter définitivement vers DLQ
+            channel.reject(msg, false);
+          }
+        }
+      });
+    } catch (err) {
+      console.error("Erreur de consommation du message", err);
+      throw err;
     }
   }
 

@@ -30,10 +30,12 @@ async function getExactTime() {
 async function checkAndPlanifyNotifications() {
   console.log("🚀 Début de checkAndPlanifyNotifications");
 
+  //get the current day and hour
   const currentDay = await whatDayIsIt();
   const currentHour = await whatTimeIsIt();
   console.log(`Today is ${currentDay} à ${currentHour}`);
 
+  //get the notifications that are to be sent today at the current hour
   const notifications = await Notification.find({
     status: "test",
     notificationDays: currentDay,

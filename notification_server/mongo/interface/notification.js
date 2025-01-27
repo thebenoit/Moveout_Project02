@@ -70,11 +70,14 @@ async function AjouterDansQueue(notification, channelId, Queue) {
     //create a channel
     const channel = await rabbitmq.createChannel(channelId);
 
-    //queue existe? et il doir etre durable
-    await channel.assertQueue(Queue, { durable: false });
+
 
     channel.sendToQueue(Queue, Buffer.from(JSON.stringify(notification)), {
-      persistent: false,
+      persistent: true,
+      headers: {
+        timestamp: new Date().getDate().toString(),
+        type: "notification"
+      }
     });
     console.log("channel length: ", channel.messageCount);
     

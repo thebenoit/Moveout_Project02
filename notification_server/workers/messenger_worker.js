@@ -21,12 +21,13 @@ async function startWorker() {
   try {
     //create a channel
     const channel = await rabbitmq.createChannel("consumer");
+    
     //queue existe? et il doir etre durable
     await channel.assertQueue(Queue, { durable: false });
 
     console.log("👂 Worker démarré et en attente de notifications...");
 
-    channel.consume(Queue, async (message) => {
+    rabbitmq.consumeMessages(Queue, async (message) => {
       if (message) {
         console.log("Queue length: ", channel.messageCount);
         
