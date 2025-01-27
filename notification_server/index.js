@@ -8,6 +8,8 @@ import { fileURLToPath } from "url";
 import mongoose from "./config/client.mjs";
 import startWorker from "./workers/messenger_worker.js";
 import startAgenda from "./workers/scheduling_worker.js";
+import startDLQWorker from "./workers/dlq_worker.js";
+import rabbitmq from "./config/rabbitmq.js";
 
 import notification from "./routes/api/notification/notifications.js";
 
@@ -54,6 +56,8 @@ app.listen(process.env.PORT, () => {
   console.log(`notification server is running on port ${process.env.PORT}`);
 });
 
+
+
 //Démarrer le worker dans le même processus
 startWorker().catch((error) => {
   console.error("❌ Erreur worker:", error);
@@ -61,4 +65,8 @@ startWorker().catch((error) => {
 
 startAgenda().catch((error) => {
   console.error("❌ Erreur agenda:", error);
+});
+
+startDLQWorker().catch((error) => {
+  console.error("❌ Erreur DLQ worker:", error);
 });

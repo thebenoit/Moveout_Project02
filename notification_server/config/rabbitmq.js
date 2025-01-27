@@ -84,15 +84,15 @@ class RabbitMQConnection {
 
       //Création des exchanges
       await channel.assertExchange(
-        this.exchanges.notification.name,
-        this.exchanges.notification.type,
-        this.exchanges.notification.options
+        this.exchange.notification.name,
+        this.exchange.notification.type,
+        this.exchange.notification.options
       );
 
       await channel.assertExchange(
-        this.exchanges.dlx.name,
-        this.exchanges.dlx.type,
-        this.exchanges.dlx.options
+        this.exchange.dlx.name,
+        this.exchange.dlx.type,
+        this.exchange.dlx.options
       );
 
       // Création des queues
@@ -103,25 +103,25 @@ class RabbitMQConnection {
 
       await channel.assertQueue(
         this.queues.dead.name,
-        this.queues.dead,
-        options
+        this.queues.dead.options
+        
       );
 
-      //Binding des queues aux exchanges
+      //Binding des queues aux exchange
       await channel.bindQueue(
         this.queues.notification.name,
-        this.exchanges.notification.name,
+        this.exchange.notification.name,
         "notification.routing"
       );
 
       await channel.bindQueue(
         this.queues.dead.name,
-        this.exchanges.dlx.name,
+        this.exchange.dlx.name,
         "notification.dead"
       );
 
       console.log("✅ Exchanges et queues créés et liés");
-    } catch (err) {
+    } catch (error) {
       console.error("Erreur de configuration des exchanges et queues", error);
       throw error;
     }
@@ -143,7 +143,7 @@ class RabbitMQConnection {
         ...options,
       };
       return await channel.publish(
-        this.exchanges.notification.name,
+        this.exchange.notification.name,
         "notification.routing",
         Buffer.from(JSON.stringify(message)),
         messageOptions
