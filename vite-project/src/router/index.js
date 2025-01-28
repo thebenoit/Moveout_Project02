@@ -1,34 +1,34 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from "vue-router";
 
-import Home from '@/views/Home.vue'
-import Appartements from '@/views/Appartements.vue'
-import Demenagement from '@/views/Demenagement.vue'
-import AboutUs from '@/views/AboutUs.vue'
-import ContactUs from '@/views/ContactUs.vue'
-import Login from '@/views/Login.vue'
-import Signup from '@/views/Signup.vue'
-import Foryou from '@/views/foryou.vue'
-import Preferences from '@/views/PreferenceSurvey/Preferences.vue'
-import Settings from '@/views/Settings.vue'
-import LandingPage from '@/views/landingPages/landingPage.vue'
-import LandingPageSignup from '@/views/landingPages/landingPage-signup.vue'
-import LandingPageSuccess from '@/views/landingPages/landingPage-success.vue'
-import Erreur404 from '@/views/Erreur404.vue'
-import Listings from '@/views/Listings.vue'
-import HomeSimple from '@/views/HomeSimple.vue'
+import Home from "@/views/Home.vue";
+import Appartements from "@/views/Appartements.vue";
+import Demenagement from "@/views/Demenagement.vue";
+import AboutUs from "@/views/AboutUs.vue";
+import ContactUs from "@/views/ContactUs.vue";
+import Login from "@/views/Login.vue";
+import Signup from "@/views/Signup.vue";
+import Foryou from "@/views/foryou.vue";
+import Preferences from "@/views/PreferenceSurvey/Preferences.vue";
+import Settings from "@/views/Settings.vue";
+import LandingPage from "@/views/landingPages/landingPage.vue";
+import LandingPageSignup from "@/views/landingPages/landingPage-signup.vue";
+import LandingPageSuccess from "@/views/landingPages/landingPage-success.vue";
+import Erreur404 from "@/views/Erreur404.vue";
+import Listings from "@/views/Listings.vue";
+import HomeSimple from "@/views/HomeSimple.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'home',
-      component: Home
+      path: "/",
+      name: "home",
+      component: Home,
     },
     {
-      path: '/home2',
-      name: 'home2',
-      component: HomeSimple
+      path: "/home2",
+      name: "home2",
+      component: HomeSimple,
     },
     // {
     //   path: '/appartements',
@@ -46,9 +46,9 @@ const router = createRouter({
     //   component: AboutUs
     // },
     {
-      path: '/signup',
-      name: 'signup',
-      component: Signup
+      path: "/signup",
+      name: "signup",
+      component: Signup,
     },
     // {
     //   path: '/contactus',
@@ -56,19 +56,19 @@ const router = createRouter({
     //   component: ContactUs
     // },
     {
-      path: '/login',
-      name: 'login',
-      component: Login
+      path: "/login",
+      name: "login",
+      component: Login,
     },
     {
-      path: '/foryou',
-      name: 'foryou',
-      component: Foryou
+      path: "/foryou",
+      name: "foryou",
+      component: Foryou,
     },
     {
-      path: '/preferences',
-      name: 'preferences',
-      component: Preferences
+      path: "/preferences",
+      name: "preferences",
+      component: Preferences,
     },
     // {
     //   path: '/settings',
@@ -76,33 +76,33 @@ const router = createRouter({
     //   component: Settings
     // },
     {
-      path: '/listings',
-      name: 'listings',
-      component: Listings
+      path: "/listings",
+      name: "listings",
+      component: Listings,
     },
     {
-      path: '/landingpage',
-      name: 'landingpage',
-      component: LandingPage
+      path: "/landingpage",
+      name: "landingpage",
+      component: LandingPage,
     },
     {
-      path: '/landingpage-success',
-      name: 'landing-page-success',
-      component: LandingPageSuccess
+      path: "/landingpage-success",
+      name: "landing-page-success",
+      component: LandingPageSuccess,
     },
     {
-      path: '/landingpage-signup',
-      name: 'landing-page-signup',
-      component: LandingPageSignup
+      path: "/landingpage-signup",
+      name: "landing-page-signup",
+      component: LandingPageSignup,
     },
     {
-      path: '/:pathMatch(.*)*',
-      name: 'erreur404',
+      path: "/:pathMatch(.*)*",
+      name: "erreur404",
       beforeEnter: (to, from, next) => {
-        next({ name: 'landingpage' }) // Redirect to the 'landingpage' route
-      }
-    }
-  ]
-})
+        next({ name: "landingpage" }); // Redirect to the 'landingpage' route
+      },
+    },
+  ],
+});
 
-export default router
+export default router;
