@@ -1,1 +1,14 @@
-{}
+{
+    "nav": {
+      "home": "Accueil",
+      "about": "À propos",
+      "settings": "Paramètres",
+      "login": "Connexion",
+      "logout": "Déconnexion"
+    },
+    "hero": {
+      "title": "Tu cherches un Appartement Abordable?",
+      "subtitle": "Appuie sur le bouton ci-dessous",
+      "button": "Trouver Un Appartement!"
+    }
+  }

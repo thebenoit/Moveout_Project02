@@ -16,6 +16,7 @@ import LandingPageSuccess from "@/views/landingPages/landingPage-success.vue";
 import Erreur404 from "@/views/Erreur404.vue";
 import Listings from "@/views/Listings.vue";
 import HomeSimple from "@/views/HomeSimple.vue";
+import Pricing_Page from "@/views/pricing_pages/pricing_page.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -79,6 +80,11 @@ const router = createRouter({
       path: "/listings",
       name: "listings",
       component: Listings,
+    },
+    {
+      path: "/pricing",
+      name: "pricing",
+      component: Pricing_Page,
     },
     {
       path: "/landingpage",
