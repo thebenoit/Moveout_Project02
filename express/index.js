@@ -28,6 +28,8 @@ import client_lead from "./routes/api/client/leads.js";
 import client_logout from "./routes/api/client/logout.js";
 import client_preference from "./routes/api/client/preference.js";
 
+
+
 // Obtenir __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -50,6 +52,7 @@ app.use(cors(corsOptions));
 app.use("/api", appartments);
 
 // api
+
 
 // client
 app.use("/api/client", client_singup);

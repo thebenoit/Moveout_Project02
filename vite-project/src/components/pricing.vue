@@ -1,4 +1,11 @@
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+
+//lien pour accéder au portail stripe
+const customerPortalLink = ref(
+  "https://buy.stripe.com/test_bIY01P7Jb9K665ydQQ"
+);
+</script>
 
 <template>
   <div
@@ -101,11 +108,13 @@
         >
           9.99$/mois
         </h3>
-        <button
-          class="bg-blue-main text-white mb-5 px-4 py-2 rounded-full w-full"
+        <a
+          :href="customerPortalLink"
+          target="_blank"
+          class="inline-block bg-blue-main text-white mb-5 px-4 py-2 rounded-full w-full text-center"
         >
           Aller Pro
-        </button>
+        </a>
       </div>
       <div class="flex flex-1 flex-col p-2 pt-0">
         <div

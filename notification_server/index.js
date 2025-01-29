@@ -12,6 +12,8 @@ import startDLQWorker from "./workers/dlq_worker.js";
 import rabbitmq from "./config/rabbitmq.js";
 
 import notification from "./routes/api/notification/notifications.js";
+// stripe
+import stripeWebhookRouter from './routes/api/stripe/route.js'
 
 const app = express();
 // Obtenir __dirname
@@ -46,6 +48,8 @@ app.use(
 //   methods: ['GET', 'POST', 'PUT', 'DELETE'],
 // }));
 
+// stripe
+app.use("/api/stripe", stripeWebhookRouter);
 app.use("/api/", notification);
 
 app.get("/", (req, res) => {

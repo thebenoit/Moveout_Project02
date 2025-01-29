@@ -25,6 +25,8 @@ router.post(
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
+    try{
+    //Gestion des évènements
     switch (event.type) {
       case "checkout.session.completed":
         const session = await stripe.checkout.sessions.retrieve(
@@ -57,9 +59,36 @@ router.post(
           user.hasAccess = true;
           await user.save();
 
+          //Envoi d'un email de confirmation
+
           break;
         }
+        case 'customer.subsciption.deleted': {
+            const subscription = await stripe.subscriptions.retrieve(
+                event.data.object.id
+            );
+
+            const user = await User.findOne({
+                customerId: subscription.customer
+            });
+
+            if (user) {
+                user.hasAccess = false;
+                await user.save();
+            }
+            break;
+        }
+        default:
+            console.log(`évènement non géré ${event.type}`)
     }
+    //Réponse de succès
+    res.json({received: true})
+} catch(error){
+    console.error(
+        `Erreur Stripe: ${error.message}  | Type d'évènement:${event.type}`
+    );
+    res.status(500).send('Erreur interne du serveur')
+}
   }
 );
 
