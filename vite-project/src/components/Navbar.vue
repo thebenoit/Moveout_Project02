@@ -39,93 +39,84 @@ function estConnecter() {
 </script>
 
 <template>
-  <!-- <nav class="fixed w-full z-20 top-0 start-0 bg-opacity-60 bg-gray-600 backdrop-blur-xl text-white font-poppins text-2xl font-light">
-  <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-3">
-  <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-12" fill="white" viewBox="0 0 499 496">
-      <path d="M134.461 43.508C90.507 87.058 55.424 129.803 16.712 185.45c-23.388 34.276-22.581 38.308 6.452 42.744 33.47 4.839 87.102 22.179 126.217 40.728 43.551 20.566 87.102 47.583 90.328 56.455 3.226 8.065 17.339 7.258 22.581-1.613 2.823-4.839 4.033 12.904 3.226 64.52-.806 45.97-2.822 70.165-5.242 68.552-2.016-1.21-10.484-6.855-18.146-12.098-39.921-27.017-122.991-60.89-166.541-67.342-16.937-2.823-18.953-4.033-18.953-13.711 0-16.533-8.065-106.457-10.081-116.538-1.21-4.839-4.033-8.872-6.049-8.872-6.452 0-5.242 147.186 1.21 152.025 2.42 2.419 12.097 5.645 20.969 7.258 52.825 9.275 122.587 39.922 176.622 77.021 32.26 22.178 40.325 25.404 45.567 17.339 4.033-6.855 91.941-63.713 141.944-92.343 25.001-14.114 45.97-28.631 47.18-32.26 3.226-11.291-4.839-121.378-9.275-125.814-8.468-8.468-13.307 16.937-12.501 68.956l.807 50.809-15.727 8.871c-8.468 4.839-16.936 7.662-18.953 6.452-2.016-1.209-2.822-29.84-2.419-64.116.806-35.083-.403-63.713-2.823-66.133-2.419-2.419-15.323 3.63-34.276 15.727l-30.647 19.759-2.419 49.196c-1.613 27.421-2.823 60.084-2.823 72.585v22.985l-28.227 18.953c-15.324 10.081-29.437 18.549-30.647 18.549-1.613 0-1.21-43.147.403-95.973l2.823-95.57 16.13-28.227c20.565-35.486 78.23-120.571 85.488-126.62 4.033-3.629 10.485 4.033 30.244 36.696 31.857 53.228 65.326 97.989 72.988 97.989 14.114 0 5.645-16.936-40.325-81.053-36.292-50.809-47.986-70.165-46.373-76.617.806-4.839-.404-10.484-3.226-12.5-5.243-4.436-145.976-60.488-165.332-66.133-19.759-5.646-22.179 2.42-3.629 13.71 8.468 5.646 43.954 22.582 77.826 37.099 34.277 14.92 62.504 27.42 62.907 27.824.403.403-11.291 17.743-26.614 38.712-24.598 34.679-61.697 94.36-90.731 146.379l-10.888 18.953-12.904-9.678c-35.485-27.018-125.813-64.923-180.252-75.408-14.516-2.823-27.017-5.645-27.824-6.452-2.42-1.613 43.954-64.116 72.182-97.586 14.113-16.936 41.938-47.18 61.293-67.342 19.356-20.163 34.277-37.905 32.664-39.115-6.452-6.855-15.727 0-56.455 40.325Zm263.321 276.628c0 24.598 1.21 50.809 2.823 58.067 2.419 12.098 1.612 13.308-19.76 25.808-12.097 6.855-22.582 12.098-23.388 11.291-.806-.806-.403-28.227.806-61.293l2.017-59.278 16.533-10.081c8.871-5.646 17.34-10.081 18.549-10.081 1.21 0 2.017 20.565 2.42 45.567Z"/>
-      <path d="M388.507 163.675c-1.21 3.63.807 9.678 4.436 13.711 8.065 8.871 8.468 18.146.403 24.598-7.662 6.452-14.114 1.613-14.114-10.484 0-12.904-10.887-12.904-16.936.403-11.291 25.404 28.227 42.341 48.39 20.969 12.904-13.711 12.097-35.889-1.613-46.777-12.904-10.081-17.34-10.485-20.566-2.42ZM107.443 298.764c-1.21 7.661-2.823 24.194-3.629 36.292l-.806 22.178 37.905 12.904c47.583 16.534 48.793 16.13 48.793-29.437v-33.873l-20.566-10.081c-20.969-10.887-35.889-12.097-39.115-2.822-.806 2.822 7.662 8.871 20.969 14.92 20.969 9.274 22.582 10.887 22.582 23.791 0 25.808-1.613 27.018-28.227 17.743l-23.792-7.661-2.823-22.986c-3.629-30.646-8.065-39.115-11.291-20.968Z"/>
-    </svg>
+  <div>
+    <div
+      class="navbar bg-white fixed top-0 z-50 font-normal py-4 px-10 hidden sm:flex"
+    >
+      <div class="flex-1">
+        <a href="/" class="flex items-center space-x-1 rtl:space-x-reverse">
+          <img
+            src="../assets/images/Moveout_Logo2.svg"
+            alt="Moveout Logo"
+            class="h-12 w-auto"
+          />
+          <span class="self-center whitespace-nowrap dark:text-white text-2xl"
+            >Moveout</span
+          >
+        </a>
 
-      <span class="self-center  whitespace-nowrap dark:text-white">Moveout</span>
-  </a>
-  <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-      <button type="button" class="text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm px-4 py-2 text-center bg-cyan-400 border-none hover:shadow-cyan-400 transition-all time shadow-cyan-200 shadow-lg">Get started</button>
-      <button data-collapse-toggle="navbar-sticky" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">
-        <span class="sr-only">Open main menu</span>
-        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
-        </svg>
-    </button>
-  </div>
-  <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 content-center" id="navbar-sticky">
-    <ul class="flex flex-col p-4 md:p-0 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row" >
-      <li>
-        <RouterLink to="/" class="block py-2 px-3 text-gray-900 rounded hover:text-gray-200 md:p-0">
-          Home
-          </RouterLink>
-      </li>
-      <li>
-        <RouterLink to="/Demenagement" class="block py-2 px-3 text-white rounded hover:text-cyan-300 md:p-0">
-          Demenagement   
-          </RouterLink>
-      </li>
-      <li>
-        <RouterLink to="/appartements" class="block py-2 px-3 text-white rounded hover:text-cyan-300 md:p-0">
-          Appartements
-          </RouterLink>
-      </li>
-      <li>
-        <RouterLink to="/signup" class="block py-2 px-3 text-white rounded hover:text-cyan-300 md:p-0">
-          Sign up
-          </RouterLink>
-      </li>
-      <li>
-        <RouterLink to="/login" class="block py-2 px-3 text-white rounded hover:text-cyan-300 md:p-0">
-          Log in
-          </RouterLink>
-      </li> 
-      <li>
-        <RouterLink to="/contactus" class="block py-2 px-3 text-white rounded hover:text-cyan-300 md:p-0">
-          Contact-us
-          </RouterLink>
-      </li>
-      <li>
-        <RouterLink to="/aboutus" class="block py-2 px-3 text-white rounded hover:text-cyan-300 md:p-0">
-          About-us
-          </RouterLink>
-      </li>
-      <li>
-        <RouterLink to="/preferences" class="block py-2 px-3 text-white rounded hover:text-cyan-300 md:p-0">
-          preferences
-          </RouterLink>
-      </li>
-      <li>
-        <RouterLink to="/settings" class="block py-2 px-3 text-white rounded hover:text-cyan-300 md:p-0">
-          settings
-          </RouterLink>
-      </li>
-      
-      <li>
-        <button class="block py-2 px-3 text-white rounded hover:text-cyan-300 md:p-0" @click="logout()">
-          Logout
+        <div
+          class="tooltip tooltip-bottom"
+          data-tip="Moveout.ai est en mode BETA"
+        >
+          <button>
+            <BetaLogo class="ml-2 mt-2" />
           </button>
-      </li>
-    </ul>
-  
-  </div>
-  </div>
-</nav> -->
+        </div>
+      </div>
+      <div class="flex-none">
+        <div class="flex-none">
+          <div class="dropdown dropdown-end">
+            <div
+              tabindex="0"
+              role="button"
+              class="btn btn-square bg-white border-none"
+            >
+              <div class="w-10 rounded-full">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  class="inline-block h-5 w-5 stroke-current"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+                  ></path>
+                </svg>
+              </div>
+            </div>
+            <ul
+              tabindex="0"
+              class="dropdown-content menu menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
+            >
+              <li v-if="!utils.getToken()">
+                <RouterLink to="/login" class=""> Log in </RouterLink>
+              </li>
 
-  <div
-    class="navbar bg-white fixed top-0 z-50 font-normal py-4 px-10 hidden sm:flex"
-  >
-    <div class="flex-1">
-      <a href="/" class="flex items-center space-x-1 rtl:space-x-reverse">
-        <img src="../assets/images/Moveout_Logo2.svg" alt="Moveout Logo" class="h-12 w-auto" />
-        <span class="self-center whitespace-nowrap dark:text-white text-2xl">Moveout</span>
-      </a>
-      
+              <!-- Sinon, affiche "signup" -->
+              <li v-else><a @click="logout">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="navbar bg-base-100 fixed top-0 z-50 font-normal p-4 sm:hidden flex justify-between"
+    >
+      <div>
+        <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
+          <img
+            src="../assets/images/Moveout_Logo2.svg"
+            alt="Moveout Logo"
+            class="h-12 w-auto"
+          />
+          <!-- <span class="self-center whitespace-nowrap dark:text-white text-2xl">Moveout</span> -->
+        </a>
+      </div>
       <div
         class="tooltip tooltip-bottom"
         data-tip="Moveout.ai est en mode BETA"
@@ -134,28 +125,9 @@ function estConnecter() {
           <BetaLogo class="ml-2 mt-2" />
         </button>
       </div>
-    </div>
-    <div class="flex-none">
-      <!-- <button class="btn btn-square mx-2 bg-white border-none">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-12" fill="none" viewBox="0 0 56 55">
-          <path fill="#0FB3AF" fill-rule="evenodd" d="M26.148 19.409v-2.356a1.137 1.137 0 0 1 2.274 0v2.356a7.957 7.957 0 0 1 6.822 7.876v4.28l.92 1.84a2.841 2.841 0 0 1-2.543 4.112h-5.199a1.138 1.138 0 0 1-2.274 0H20.95a2.842 2.842 0 0 1-2.543-4.113l.92-1.84v-4.279a7.959 7.959 0 0 1 6.821-7.876Zm1.137 2.192a5.684 5.684 0 0 0-5.684 5.684v4.548c0 .176-.042.35-.12.508l-1.04 2.08a.571.571 0 0 0 .509.823h12.67a.569.569 0 0 0 .508-.823l-1.04-2.08a1.144 1.144 0 0 1-.12-.508v-4.548a5.683 5.683 0 0 0-5.684-5.684Z" clip-rule="evenodd" />
-          <ellipse cx="42.364" cy="14" fill="#0FB3AF" rx="10.526" ry="10" />
-        </svg>
-      </button>
-
-      <button class="btn btn-square mx-2 bg-white border-none">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 m-auto" fill="none" viewBox="0 0 55 55">
-          <path fill="#0FB3AF" stroke="#0FB3AF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M33.268 18.322c1.1.128 1.907 1.077 1.907 2.185V36l-7.5-3.75-7.5 3.75V20.507c0-1.108.806-2.057 1.907-2.185a48.503 48.503 0 0 1 11.186 0Z" />
-        </svg>
-      </button> -->
-
       <div class="flex-none">
         <div class="dropdown dropdown-end">
-          <div
-            tabindex="0"
-            role="button"
-            class="btn btn-square bg-white border-none"
-          >
+          <div tabindex="0" role="button" class="btn btn-square btn-ghost">
             <div class="w-10 rounded-full">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -176,91 +148,10 @@ function estConnecter() {
             tabindex="0"
             class="dropdown-content menu menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
           >
-            <!-- <li>
-              <a class="justify-between">
-                Profile
-                <span class="badge">New</span>
-              </a>
-            </li>
-            <li><a>Settings</a></li> -->
-            <li v-if="!utils.getToken()">
-              <RouterLink to="/login" class=""> Log in </RouterLink>
-            </li>
-
-            <!-- Sinon, affiche "signup" -->
-            <li v-else><a @click="logout">Logout</a></li>
+            <li><a href="/">home</a></li>
+            <li><a href="/listings">Listings</a></li>
           </ul>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <div
-    class="navbar bg-base-100 fixed top-0 z-50 font-normal p-4 sm:hidden flex justify-between"
-  >
-    <!-- <button class="btn btn-square btn-ghost">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-12" fill="none" viewBox="0 0 56 55">
-          <path fill="#0FB3AF" fill-rule="evenodd" d="M26.148 19.409v-2.356a1.137 1.137 0 0 1 2.274 0v2.356a7.957 7.957 0 0 1 6.822 7.876v4.28l.92 1.84a2.841 2.841 0 0 1-2.543 4.112h-5.199a1.138 1.138 0 0 1-2.274 0H20.95a2.842 2.842 0 0 1-2.543-4.113l.92-1.84v-4.279a7.959 7.959 0 0 1 6.821-7.876Zm1.137 2.192a5.684 5.684 0 0 0-5.684 5.684v4.548c0 .176-.042.35-.12.508l-1.04 2.08a.571.571 0 0 0 .509.823h12.67a.569.569 0 0 0 .508-.823l-1.04-2.08a1.144 1.144 0 0 1-.12-.508v-4.548a5.683 5.683 0 0 0-5.684-5.684Z" clip-rule="evenodd" />
-          <ellipse cx="42.364" cy="14" fill="#0FB3AF" rx="10.526" ry="10" />
-        </svg>
-      </button> -->
-
-    <div>
-      <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-12"
-          fill="black"
-          viewBox="0 0 499 496"
-        >
-          <path
-            d="M134.461 43.508C90.507 87.058 55.424 129.803 16.712 185.45c-23.388 34.276-22.581 38.308 6.452 42.744 33.47 4.839 87.102 22.179 126.217 40.728 43.551 20.566 87.102 47.583 90.328 56.455 3.226 8.065 17.339 7.258 22.581-1.613 2.823-4.839 4.033 12.904 3.226 64.52-.806 45.97-2.822 70.165-5.242 68.552-2.016-1.21-10.484-6.855-18.146-12.098-39.921-27.017-122.991-60.89-166.541-67.342-16.937-2.823-18.953-4.033-18.953-13.711 0-16.533-8.065-106.457-10.081-116.538-1.21-4.839-4.033-8.872-6.049-8.872-6.452 0-5.242 147.186 1.21 152.025 2.42 2.419 12.097 5.645 20.969 7.258 52.825 9.275 122.587 39.922 176.622 77.021 32.26 22.178 40.325 25.404 45.567 17.339 4.033-6.855 91.941-63.713 141.944-92.343 25.001-14.114 45.97-28.631 47.18-32.26 3.226-11.291-4.839-121.378-9.275-125.814-8.468-8.468-13.307 16.937-12.501 68.956l.807 50.809-15.727 8.871c-8.468 4.839-16.936 7.662-18.953 6.452-2.016-1.209-2.822-29.84-2.419-64.116.806-35.083-.403-63.713-2.823-66.133-2.419-2.419-15.323 3.63-34.276 15.727l-30.647 19.759-2.419 49.196c-1.613 27.421-2.823 60.084-2.823 72.585v22.985l-28.227 18.953c-15.324 10.081-29.437 18.549-30.647 18.549-1.613 0-1.21-43.147.403-95.973l2.823-95.57 16.13-28.227c20.565-35.486 78.23-120.571 85.488-126.62 4.033-3.629 10.485 4.033 30.244 36.696 31.857 53.228 65.326 97.989 72.988 97.989 14.114 0 5.645-16.936-40.325-81.053-36.292-50.809-47.986-70.165-46.373-76.617.806-4.839-.404-10.484-3.226-12.5-5.243-4.436-145.976-60.488-165.332-66.133-19.759-5.646-22.179 2.42-3.629 13.71 8.468 5.646 43.954 22.582 77.826 37.099 34.277 14.92 62.504 27.42 62.907 27.824.403.403-11.291 17.743-26.614 38.712-24.598 34.679-61.697 94.36-90.731 146.379l-10.888 18.953-12.904-9.678c-35.485-27.018-125.813-64.923-180.252-75.408-14.516-2.823-27.017-5.645-27.824-6.452-2.42-1.613 43.954-64.116 72.182-97.586 14.113-16.936 41.938-47.18 61.293-67.342 19.356-20.163 34.277-37.905 32.664-39.115-6.452-6.855-15.727 0-56.455 40.325Zm263.321 276.628c0 24.598 1.21 50.809 2.823 58.067 2.419 12.098 1.612 13.308-19.76 25.808-12.097 6.855-22.582 12.098-23.388 11.291-.806-.806-.403-28.227.806-61.293l2.017-59.278 16.533-10.081c8.871-5.646 17.34-10.081 18.549-10.081 1.21 0 2.017 20.565 2.42 45.567Z"
-          />
-          <path
-            d="M388.507 163.675c-1.21 3.63.807 9.678 4.436 13.711 8.065 8.871 8.468 18.146.403 24.598-7.662 6.452-14.114 1.613-14.114-10.484 0-12.904-10.887-12.904-16.936.403-11.291 25.404 28.227 42.341 48.39 20.969 12.904-13.711 12.097-35.889-1.613-46.777-12.904-10.081-17.34-10.485-20.566-2.42ZM107.443 298.764c-1.21 7.661-2.823 24.194-3.629 36.292l-.806 22.178 37.905 12.904c47.583 16.534 48.793 16.13 48.793-29.437v-33.873l-20.566-10.081c-20.969-10.887-35.889-12.097-39.115-2.822-.806 2.822 7.662 8.871 20.969 14.92 20.969 9.274 22.582 10.887 22.582 23.791 0 25.808-1.613 27.018-28.227 17.743l-23.792-7.661-2.823-22.986c-3.629-30.646-8.065-39.115-11.291-20.968Z"
-          />
-        </svg>
-      </a>
-    </div>
-    <div class="tooltip tooltip-bottom" data-tip="Moveout.ai est en mode BETA">
-      <button>
-        <BetaLogo class="ml-2 mt-2" />
-      </button>
-    </div>
-    <div class="flex-none">
-      <div class="dropdown dropdown-end">
-        <div tabindex="0" role="button" class="btn btn-square btn-ghost">
-          <div class="w-10 rounded-full">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              class="inline-block h-5 w-5 stroke-current"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-              ></path>
-            </svg>
-          </div>
-        </div>
-        <ul
-          tabindex="0"
-          class="dropdown-content menu menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
-        >
-          <!-- <li>
-              <a class="justify-between">
-                Profile
-                <span class="badge">New</span>
-              </a>
-            </li> -->
-          <!-- <li><a>Settings</a></li> -->
-          <li><a href="/">home</a></li>
-          <li><a href="/listings">Listings</a></li>
-          <!-- <li><a>Logout</a></li> -->
-        </ul>
       </div>
     </div>
   </div>
