@@ -33,11 +33,13 @@ app.post("/login", async (req, res) => {
 
 app.get("/login/:id", async (req, res) => {
   try {
-    const user = await User.find({ preferencesId: req.params.id });
+    const user = await User.findById(req.params.id);
+
 
     if (!user) {
       return res.status(404).json({ error: "user non trouvée" });
     }
+    console.log("user trouvée: ", user);
     //retourne preference en json
     res.json(user);
   } catch (error) {

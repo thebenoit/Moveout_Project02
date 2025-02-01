@@ -39,7 +39,10 @@ async function login(){
   if(result.token){
     console.log('pass ici?????')
     utils.setToken(result.token)
-    router.push({ path: '/foryou' })
+    router.push({ 
+        path: '/foryou',
+        query: { refresh: Date.now() }
+      });
   }
 
   }catch(error){

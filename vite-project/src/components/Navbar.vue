@@ -150,6 +150,10 @@ function estConnecter() {
           >
             <li><a href="/">home</a></li>
             <li><a href="/listings">Listings</a></li>
+            <li v-if="!utils.getToken()">
+              <RouterLink to="/login" class=""> Log in </RouterLink>
+            </li>
+            <li v-else><a @click="logout">Logout</a></li>
           </ul>
         </div>
       </div>

@@ -1,10 +1,19 @@
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
+
+
+
+const btn_continuer_gratuitement = () =>{
+  router.push("/listings");
+}
 //lien pour accéder au portail stripe
 const customerPortalLink = ref(
   "https://buy.stripe.com/test_bIY01P7Jb9K665ydQQ"
 );
+
 </script>
 
 <template>
@@ -16,11 +25,19 @@ const customerPortalLink = ref(
     >
       <div class="p-8 pb-0 sm:p-10 sm:pb-0">
         <h3
-          class="text-2xl font-semibold leading-8 tracking-tight text-black-600 mb-5"
+          class="text-2xl font-semibold leading-8 tracking-tight text-black-600 mb-14"
           id="tier-hobby"
         >
           Gratuit
         </h3>
+
+        <a
+          @click="btn_continuer_gratuitement"
+          class="inline-block bg-black text-white mb-5 px-4 py-2 rounded-full w-full text-center"
+        >
+          Continuer gratuitement
+
+        </a>
       </div>
       <div class="flex flex-1 flex-col p-2 pt-0">
         <div
@@ -143,28 +160,7 @@ const customerPortalLink = ref(
                 Tout du plan Gratuit
               </p>
             </li>
-            <li class="flex items-start">
-              <div class="flex-shrink-0">
-                <svg
-                  class="h-6 w-6 text-blue-main"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M4.5 12.75l6 6 9-13.5"
-                  ></path>
-                </svg>
-              </div>
-              <p class="ml-3 text-sm leading-6 text-gray-600">
-                Accès aux annonces exclusives 🏡
-              </p>
-            </li>
+
             <li class="flex items-start">
               <div class="flex-shrink-0">
                 <svg
@@ -228,7 +224,7 @@ const customerPortalLink = ref(
                 </svg>
               </div>
               <p class="ml-3 text-sm leading-6 text-gray-600">
-                Optimisation du temps
+                +5 Appartements par jours 🏡
               </p>
             </li>
             <li class="flex items-start">
@@ -257,6 +253,83 @@ const customerPortalLink = ref(
         </div>
       </div>
     </div>
+    <!-- <div
+      class="flex flex-col border-amber-500 border-2 shadow-amber-500 shadow-lg rounded-3xl bg-white ring-1 ring-black/10"
+    >
+      <div class="p-8 pb-0 sm:p-10 sm:pb-0">
+        <h3
+          class="text-xl leading-8 tracking-tight text-amber-500"
+          id="tier-team"
+        >
+          Premium
+        </h3>
+        <h3
+          class="text-2xl font-semibold leading-8 tracking-tight text-amber-500 mb-5"
+          id="tier-team"
+        >
+          19.99$/mois
+        </h3>
+        <a
+          :href="customerPortalLink"
+          target="_blank"
+          class="inline-block bg-amber-500 text-white mb-5 px-4 py-2 rounded-full w-full text-center"
+        >
+          Aller Premium
+        </a>
+      </div>
+      <div class="flex flex-1 flex-col p-2 pt-0">
+        <div
+          class="flex flex-1 flex-col justify-between rounded-2xl p-6 pt-0 sm:p-8"
+        >
+          <ul role="list" class="space-y-6">
+            <li class="flex items-start">
+              <div class="flex-shrink-0">
+                <svg
+                  class="h-6 w-6 text-amber-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M4.5 12.75l6 6 9-13.5"
+                  ></path>
+                </svg>
+              </div>
+              <p class="ml-3 text-sm leading-6 text-gray-600">
+                Tout du plan Pro
+              </p>
+            </li>
+            <li class="flex items-start">
+              <div class="flex-shrink-0">
+                <svg
+                  class="h-6 w-6 text-amber-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M4.5 12.75l6 6 9-13.5"
+                  ></path>
+                </svg>
+              </div>
+              <p class="ml-3 text-sm leading-6 text-gray-600">
+                +10 Appartements par jours 🏡
+              </p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div> -->
   </div>
   <!-- <div class="w-full flex">
         <button @click="clickCta" class="mt-16 mb-5 mx-auto text-3xl shadow-lg shadow-black-600">Rejoignez Moveout aujourd'hui gratuitement</button>

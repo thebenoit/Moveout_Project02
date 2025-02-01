@@ -12,7 +12,7 @@ const usersSchema = new Schema({
   preferencesId: { type: Schema.Types.ObjectId },
   accessToken: { type: Schema.Types.String },
   customerId: { type: Schema.Types.String },
-  notifHistory: [{ type: Schema.Types.ObjectId, ref: "appartments" }],
+  notifHistory: [{ type: Schema.Types.String }],
   date: { type: Schema.Types.Date },
 });
 

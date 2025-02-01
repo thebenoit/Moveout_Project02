@@ -1,7 +1,8 @@
-import * as jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 const utils = {
     async get(endpoint) {
+
         try {
             let result = await fetch(`${import.meta.env.VITE_NODE_SERVER_URL}/${endpoint}`, {
                 method: "GET",
@@ -60,6 +61,10 @@ const utils = {
         }
         return null;
     },
+    getUserId(){
+        const decoded = this.decodeToken();
+        return decoded ? decoded.userId : null;
+    }
     
 }
 

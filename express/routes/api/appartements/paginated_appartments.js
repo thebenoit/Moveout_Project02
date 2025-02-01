@@ -111,8 +111,6 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
 
     //extremely guettho to pass the number of page data to the listings page
     appartCustom[0].total = totalPage;
-    console.log("avant appartCustom");
-    console.log("appartCustom: ", appartCustom);
     res.send(appartCustom);
   } catch (error) {
     res.status(500).send("Erreur lors de la récupération des données");
