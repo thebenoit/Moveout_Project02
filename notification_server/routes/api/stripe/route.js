@@ -2,6 +2,7 @@ import express from "express";
 import Stripe from "stripe";
 import dotenv from "dotenv";
 import User from "../../../mongo/schemas/user.js";
+import Notification from "../../../mongo/schemas/notification.js"
 
 const router = express.Router();
 
@@ -75,6 +76,16 @@ router.post(
           const user = await User.findOne({
             customerId: subscription.customer,
           });
+
+          const notification = await Notification.deleteOne({
+            userId: user._id,
+          });
+
+          // if (notification) {
+          //   notification.status = "disabled";
+          //   await notification.save();
+          // }
+
 
           if (user) {
             user.hasAccess = false;

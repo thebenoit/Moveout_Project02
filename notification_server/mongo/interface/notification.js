@@ -151,6 +151,13 @@ async function ensureConnection() {
   }
 }
 
+async function update_notification(notification) {
+  await Notification.findByIdAndUpdate(notification._id, {
+    notificationDays: notification.notificationDays,
+    notificationTimes: notification.notificationTimes,
+  });
+}
+
 const create_notification = async (
   event,
   userId,
@@ -388,4 +395,5 @@ export {
   planifierAjouterDansQueue,
   whatDayIsIt,
   whatTimeIsIt,
+  update_notification,
 };

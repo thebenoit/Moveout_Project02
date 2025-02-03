@@ -21,7 +21,22 @@ app.post("/notification/send", async (req, res) => {
     const notificationDays = req.body.notificationDays;
     const preferenceId = req.body.preferenceId;
 
+    let notifVerif = await Notification.findOne({
+      userId: userId,
+    });
+    //modifier la notification
+    if (notifVerif) {
+      await Notification.findByIdAndUpdate(notifVerif._id, {
+        notificationDays: notificationDays,
+      });
+      //retourner un message de succès
+      return res.status(200).json({
+        message: "Notification modifiée avec succès",
+      });
+    }
+
     //créer la notification et ajouter à la base de données
+
     let notification = await create_notification(
       event,
       userId,
@@ -31,21 +46,20 @@ app.post("/notification/send", async (req, res) => {
     );
     // Ajouter notificationDays et notificationTimes dans les préférences
     await Preferences.findByIdAndUpdate(
-        preferenceId,
-        {
-          $set: {
-            notificationDays: notificationDays,
-            notificationTimes: notificationTimes,
-          },
+      preferenceId,
+      {
+        $set: {
+          notificationDays: notificationDays,
+          notificationTimes: notificationTimes,
         },
-        { new: true, upsert: true }
-      );
+      },
+      { new: true, upsert: true }
+    );
 
-      //await AjouterDansQueue(notification,"publisherToWaitingQueue","waiting_notification");
-    
+    //await AjouterDansQueue(notification,"publisherToWaitingQueue","waiting_notification");
 
     res.status(200).json({
-      message: "Notification planifiée d'attente",
+      message: "Notification créer avec succès",
       data: notification,
     });
   } catch (error) {
@@ -56,6 +70,5 @@ app.post("/notification/send", async (req, res) => {
     });
   }
 });
-
 
 export default app;

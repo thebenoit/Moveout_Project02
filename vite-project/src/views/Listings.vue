@@ -85,16 +85,16 @@ const updateQueryString = () => {
   }
 
   if (selectedBudget.value.minValue) {
-    console.log(`minPrice=${selectedBudget.value.minValue}&`);
+   
     query += `minPrice=${selectedBudget.value.minValue}&`;
   }
   if (selectedBudget.value.maxValue) {
-    console.log(`maxPrice=${selectedBudget.value.maxValue}&`);
+   
     query += `maxPrice=${selectedBudget.value.maxValue}&`;
   }
   // Remove the last "&" if it exists
   queryString.value = query.slice(0, -1);
-  console.log(`query ${query}`);
+ 
 };
 
 const fetchData = async () => {
@@ -229,7 +229,7 @@ const toggleBathroomsSelection = (bathrooms) => {
       (n) => n !== bathrooms
     );
   } else {
-    console.log("push bathrooms: ", bathrooms);
+   
     selectedBathrooms.value.push(bathrooms);
   }
 };
@@ -241,7 +241,7 @@ const toggleBedroomsSelection = (bedrooms) => {
       (n) => n !== bedrooms
     );
   } else {
-    console.log("push bedrooms: ", bedrooms);
+
     selectedBedrooms.value.push(bedrooms);
   }
 };
