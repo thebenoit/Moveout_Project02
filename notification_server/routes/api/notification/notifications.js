@@ -17,7 +17,7 @@ app.post("/notification/send", async (req, res) => {
   try {
     const event = req.body.event;
     const userId = req.body.userId;
-    const notificationTimes = req.body.notificationTimes;
+    const notificationTimes = ["10:00"];//req.body.notificationTimes;
     const notificationDays = req.body.notificationDays;
     const preferenceId = req.body.preferenceId;
 

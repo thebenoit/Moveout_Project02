@@ -59,7 +59,7 @@ const hasNotification = (notification) =>{
     <pricingPage />
   </div>
   <div v-else-if="utils.getToken() && access">
-    <listings_pro />
+    <listings_pro :userId="user_id" :preferencesId="user.preferencesId" />
   </div>
 
   <!-- <PageWarning /> -->

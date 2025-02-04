@@ -68,7 +68,6 @@ async function sendMoveoutMessage(user, appartment) {
     console.log("message est Sent?: ", estSent);
     console.log("message est Delivered?: ", estDelivered);
 
-
     if (!estDelivered && !estSent && !estQueued && !estAccepted) {
       console.log("messageDetails status: ", messageDetails.status);
       throw new Error(
