@@ -41,12 +41,12 @@ const enregistrer = async () => {
   console.log("user id: ", props.userId);
   console.log("preference id: ", props.preferencesId);
   console.log("selected days: ", JSON.stringify(selectedDays.value));
-  response.value = await utils_notif.post("api/client/notification/send", {
+  response.value = await utils_notif.post("api/notification/send", {
     event: "notification_bot",
     preferenceId: props.preferencesId,
     notificationTimes: ["10:00"],
     userId: props.userId,
-    notificationDays: "[Lundi]",// JSON.stringify(selectedDays.value),
+    notificationDays:  JSON.stringify(selectedDays.value),
 
 
 

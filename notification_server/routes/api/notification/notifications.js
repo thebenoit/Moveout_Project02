@@ -17,7 +17,7 @@ app.post("/notification/send", async (req, res) => {
   try {
     const event = req.body.event;
     const userId = req.body.userId;
-    const notificationTimes = ["10:00"];//req.body.notificationTimes;
+    const notificationTimes = req.body.notificationTimes;
     const notificationDays = req.body.notificationDays;
     const preferenceId = req.body.preferenceId;
 
@@ -26,17 +26,22 @@ app.post("/notification/send", async (req, res) => {
     });
     //modifier la notification
     if (notifVerif) {
-      await Notification.findByIdAndUpdate(notifVerif._id, {
+      console.log("modifier notification");
+      await notifVerif.findByIdAndUpdate(notifVerif._id, {
         notificationDays: notificationDays,
       });
+
+      notifVerif.save();
+
       //retourner un message de succès
+
       return res.status(200).json({
         message: "Notification modifiée avec succès",
       });
     }
 
     //créer la notification et ajouter à la base de données
-
+    console.log("créer notification");
     let notification = await create_notification(
       event,
       userId,
