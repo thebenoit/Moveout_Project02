@@ -85,16 +85,13 @@ const updateQueryString = () => {
   }
 
   if (selectedBudget.value.minValue) {
-   
     query += `minPrice=${selectedBudget.value.minValue}&`;
   }
   if (selectedBudget.value.maxValue) {
-   
     query += `maxPrice=${selectedBudget.value.maxValue}&`;
   }
   // Remove the last "&" if it exists
   queryString.value = query.slice(0, -1);
- 
 };
 
 const fetchData = async () => {
@@ -147,7 +144,7 @@ const fetchData = async () => {
     console.log("appart length: ", response.length);
     console.log("appartMap length: ", responseMap.length);
     apparts.value = response;
-    appartsMap.value = responseMap
+    appartsMap.value = responseMap;
 
     //extremely guetto way to pass total page into a variable
     //totalPages.value = apparts.value[0].total;
@@ -211,11 +208,10 @@ onUnmounted(() => {
 // Use ref to access the item container and individual listingCards
 const itemRefs = ref({});
 
-const handleDisplayModeMap = () =>{
-  console.log(`Display mode map clicked!`)
-  displayModeIsMap.value = !displayModeIsMap.value
-
-}
+const handleDisplayModeMap = () => {
+  console.log(`Display mode map clicked!`);
+  displayModeIsMap.value = !displayModeIsMap.value;
+};
 function setItemRef(el, idx) {
   if (el) {
     itemRefs.value[idx] = el;
@@ -229,7 +225,6 @@ const toggleBathroomsSelection = (bathrooms) => {
       (n) => n !== bathrooms
     );
   } else {
-   
     selectedBathrooms.value.push(bathrooms);
   }
 };
@@ -241,7 +236,6 @@ const toggleBedroomsSelection = (bedrooms) => {
       (n) => n !== bedrooms
     );
   } else {
-
     selectedBedrooms.value.push(bedrooms);
   }
 };

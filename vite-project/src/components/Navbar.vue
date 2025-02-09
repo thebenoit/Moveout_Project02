@@ -27,6 +27,18 @@ function signup() {
   router.push({ path: "/signup" });
 }
 
+const customerPortalUrl = ref(
+  `https://billing.stripe.com/p/login/00g033aRe1av8es3cc` +
+    "?prefilled_email=" 
+
+);
+
+function billing() {
+  router.push({
+    path: "https://billing.stripe.com/p/login/test_8wMeWWb968B3cFO144",
+  });
+}
+
 function estConnecter() {
   if (utils.getToken()) {
     console.log("est connecté");
@@ -88,16 +100,26 @@ function estConnecter() {
                 </svg>
               </div>
             </div>
+            <!-- Si l'utilisateur n'est pas connecté, affiche "login" -->
             <ul
+              v-if="!utils.getToken()"
               tabindex="0"
               class="dropdown-content menu menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
             >
-              <li v-if="!utils.getToken()">
+              <li>
                 <RouterLink to="/login" class=""> Log in </RouterLink>
               </li>
-
-              <!-- Sinon, affiche "signup" -->
-              <li v-else><a @click="logout">Logout</a></li>
+            </ul>
+            <!-- Sinon, affiche "signup" -->
+            <ul
+              v-else
+              tabindex="0"
+              class="dropdown-content menu menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
+            >
+              <li><a @click="logout">Logout</a></li>
+              <li>
+                <a :href="customerPortalUrl" target="_blank">Billing</a>
+              </li>
             </ul>
           </div>
         </div>
@@ -145,16 +167,28 @@ function estConnecter() {
             </div>
           </div>
           <ul
+            v-if="!utils.getToken()"
             tabindex="0"
             class="dropdown-content menu menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
           >
-            <li><a href="/">home</a></li>
+           
             <li><a href="/listings">Listings</a></li>
-            <li v-if="!utils.getToken()">
+            <li >
               <RouterLink to="/login" class=""> Log in </RouterLink>
             </li>
-            <li v-else><a @click="logout">Logout</a></li>
           </ul>
+          <ul 
+          v-else
+          tabindex="0"
+          class="dropdown-content menu menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
+          >
+            <li ><a @click="logout">Logout</a></li>
+            <li >
+              <a :href="customerPortalUrl" target="_blank">Billing</a>
+            </li>
+          </ul>
+
+          
         </div>
       </div>
     </div>

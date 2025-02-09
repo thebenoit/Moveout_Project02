@@ -11,7 +11,7 @@ const btn_continuer_gratuitement = () =>{
 }
 //lien pour accéder au portail stripe
 const customerPortalLink = ref(
-  "https://buy.stripe.com/test_bIY01P7Jb9K665ydQQ"
+  "https://buy.stripe.com/9AQaH56ij0ba28U6oo"
 );
 
 </script>

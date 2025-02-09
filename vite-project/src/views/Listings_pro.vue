@@ -1,11 +1,10 @@
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 
 import utils_notif from "../utils/utils_notification_server.js";
-import utils from '../utils/utils.js'
+import utils from "../utils/utils.js";
 import ForYouModal from "../components/foryou_modal.vue";
-
-
 
 let props = defineProps({
   userId: {
@@ -18,15 +17,29 @@ let props = defineProps({
   },
 });
 
-onMounted(() => {
-  // apparts.value = utils.get("api/client/preference/" + props.preferencesId);
+onMounted(async () => {
+  response.value = await utils_notif.get("api/notification/" + props.userId);
+  console.log('userId: ', props.userId);
+  console.log("response: ", response.value);
+  notifStatus.value = await notifEstActif(response.value);
 });
 const apparts = ref([]);
 const selectedDays = ref([]);
 const response = ref([]);
+const notifStatus = ref(false);
+
+// vérifier si la notification est active
+const notifEstActif = async (notif) =>{
+  if(notif.data.status === "recurring"){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
 
 // Fonction pour gérer la sélection du nombre de chambres
-
 
 const toggleDaysSelection = (day) => {
   if (selectedDays.value.includes(day)) {
@@ -41,23 +54,30 @@ const enregistrer = async () => {
   console.log("user id: ", props.userId);
   console.log("preference id: ", props.preferencesId);
   console.log("selected days: ", JSON.stringify(selectedDays.value));
-  response.value = await utils_notif.post("api/notification/send", {
-    event: "notification_bot",
-    preferenceId: props.preferencesId,
-    notificationTimes: ["10:00"],
-    userId: props.userId,
-    notificationDays:  JSON.stringify(selectedDays.value),
+  try {
+    response.value = await utils_notif.post("api/notification/send", {
+      event: "notification_bot",
+      preferenceId: props.preferencesId,
+      notificationTimes: ["10:00"],
+      userId: props.userId,
+      notificationDays: selectedDays.value,
+    });
+    console.log("Enregistrer... ", response.value);
 
-
-
-  });
-  console.log("Enregistrer... ",response.value);
+    // Fermer le modal
+    document.getElementById('config_notif_modal').close();
+  } catch (error) {
+    console.log("erreur dans l'enregistrement: ", error);
+  }
 };
 </script>
 
 <template>
   <div>
-    <div class="flex flex-col items-center justify-center m-20 space-around gap-20">
+    <div
+      class="flex flex-col items-center justify-center m-20 space-around gap-20"
+  
+    >
       <button
         class="p-2 bg-blue-main rounded-xl w-16 h-16 shadow-lg"
         onclick="config_notif_modal.showModal()"
@@ -77,10 +97,27 @@ const enregistrer = async () => {
           />
         </svg>
       </button>
+    </div>
 
-      <!-- <button
+    <div class="flex-1 flex flex-col items-center justify-center text-center" v-if="!notifStatus">
+      <p>
+        Appuyer sur le bouton ci-dessus pour
+        <a class="text-blue-main">activer</a>
+      </p>
+      <p>ou <a class="text-blue-main">modifier</a> vos notifications</p>
+    </div>
+    <div class="flex-1 flex flex-col items-center justify-center text-center" v-else>
+      <p>
+       Vos notifications sont
+        <a class="text-blue-main">activées</a>
+      </p>
+      
+    </div>
+    <!-- <button
         class="p-2 bg-blue-main rounded-xl w-16 h-16 shadow-lg"
+
         onclick="historique_modal.showModal()"
+
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -97,7 +134,6 @@ const enregistrer = async () => {
           />
         </svg>
       </button> -->
-    </div>
 
     <dialog id="config_notif_modal" class="modal mt-10">
       <div
@@ -107,13 +143,13 @@ const enregistrer = async () => {
           <button
             class="px-4 py-2 rounded-xl border m-2"
             v-for="Days in [
-              'Lundi',
-              'Mardi',
-              'Mercredi',
-              'Jeudi',
-              'Vendredi',
-              'Samedi',
-              'Dimanche',
+              'monday',
+              'tuesday',
+              'wednesday',
+              'thursday',
+              'friday',
+              'saturday',
+              'sunday',
             ]"
             :key="Days"
             @click="toggleDaysSelection(Days)"
@@ -125,11 +161,10 @@ const enregistrer = async () => {
             {{ Days }}
           </button>
         </div>
-        <button class="btn btn-primary mt-4"
-        @click="enregistrer"
-        >Enregistrer</button>
+        <button class="btn btn-primary mt-4" @click="enregistrer">
+          Enregistrer
+        </button>
       </div>
-
 
       <form method="dialog" class="modal-backdrop">
         <button>close</button>
@@ -139,7 +174,6 @@ const enregistrer = async () => {
     <dialog id="historique_modal" class="modal">
       <div class="modal-box flex flex-col gap-4">
         <h1>Historique</h1>
-    
       </div>
 
       <form method="dialog" class="modal-backdrop">

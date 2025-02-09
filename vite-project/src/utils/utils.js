@@ -64,7 +64,12 @@ const utils = {
     getUserId(){
         const decoded = this.decodeToken();
         return decoded ? decoded.userId : null;
+    },
+    getEmail(){
+        const decoded = this.decodeToken();
+        return decoded ? decoded.email : null;
     }
+
     
 }
 

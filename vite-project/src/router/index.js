@@ -104,10 +104,17 @@ const router = createRouter({
     {
       path: "/:pathMatch(.*)*",
       name: "erreur404",
-      beforeEnter: (to, from, next) => {
-        next({ name: "landingpage" }); // Redirect to the 'landingpage' route
-      },
+      component: Erreur404,
     },
+    // {
+    //   path: "/:pathMatch(.*)*",
+
+    //   name: "erreur404",
+    //   beforeEnter: (to, from, next) => {
+    //     next()
+    //    // next({ name: "erreur404" }); // Redirect to the 'landingpage' route
+    //   },
+    // },
   ],
 });
 

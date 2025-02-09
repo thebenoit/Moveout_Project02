@@ -13,12 +13,18 @@ import rabbitmq from "./config/rabbitmq.js";
 
 import notification from "./routes/api/notification/notifications.js";
 // stripe
-import stripeWebhookRouter from './routes/api/stripe/route.js'
+import stripeWebhookRouter from "./routes/api/stripe/route.js";
 
 const app = express();
 // Obtenir __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+app.use(
+  "/api/stripe/",
+  //express.raw({type: "application/json"}),
+  stripeWebhookRouter
+);
 
 // Ajouter ces middlewares avant vos routes
 app.use(express.json());
@@ -49,7 +55,7 @@ app.use(
 // }));
 
 // stripe
-app.use("/api/stripe", stripeWebhookRouter);
+// app.use("/api/stripe", stripeWebhookRouter);
 app.use("/api/", notification);
 
 app.get("/", (req, res) => {
@@ -59,8 +65,6 @@ app.get("/", (req, res) => {
 app.listen(process.env.PORT, () => {
   console.log(`notification server is running on port ${process.env.PORT}`);
 });
-
-
 
 //Démarrer le worker dans le même processus
 startWorker().catch((error) => {

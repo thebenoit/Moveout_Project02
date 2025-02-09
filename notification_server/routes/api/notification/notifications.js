@@ -12,7 +12,17 @@ import {
 import httpStatus from "../../../httpStatus.mjs";
 import dotenv from "dotenv";
 
+app.get("/notification/:id", async (req, res) => {
+  const id = req.params.id;
+  const notification = await Notification.findOne({userId: id});
+  res.status(200).json({
+    message: "Notification récupérée avec succès",
+    data: notification,
+  });
+});
+
 // informations  envoyer un sms
+
 app.post("/notification/send", async (req, res) => {
   try {
     const event = req.body.event;
@@ -27,11 +37,10 @@ app.post("/notification/send", async (req, res) => {
     //modifier la notification
     if (notifVerif) {
       console.log("modifier notification");
-      await notifVerif.findByIdAndUpdate(notifVerif._id, {
+      await Notification.findByIdAndUpdate(notifVerif._id, {
         notificationDays: notificationDays,
+        notificationTimes: notificationTimes,
       });
-
-      notifVerif.save();
 
       //retourner un message de succès
 
