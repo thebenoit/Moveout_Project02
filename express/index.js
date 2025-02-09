@@ -37,28 +37,16 @@ app.use(bodyParser.json()); //apcepting as json data to read it
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "/")));
 
-const corsOptions = {
-  origin: "*",
-  credentials: true,
-  optionSuccessStatus: 200,
-};
-// Configuration détaillée de CORS
-app.use(
-  cors({
-    origin: "*", // ou spécifiez les domaines autorisés, ex: ['http://localhost:3000', 'https://votreapp.com']
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: [
-      "Origin",
-      "X-Requested-With",
-      "Content-Type",
-      "Accept",
-      "Authorization",
-    ],
-    credentials: true, // si vous avez besoin de supporter les cookies/auth
-  })
-);
+app.use(cors({
+  origin: ["https://www.moveout.ai", "http://localhost:5173","https://notificationserver.online"], // Add your frontend domain
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  credentials: true
+}));
 
-// app.use(cors(corsOptions));
+app.options("*", cors());
+
+//app.use(cors(corsOptions));
 
 //app.options('*', cors(corsOptions));
 

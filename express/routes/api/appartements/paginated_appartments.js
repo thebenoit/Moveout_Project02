@@ -13,7 +13,7 @@ app.get("/page/totalAppart", async (req, res) => {
   return totalPage;
 });
 app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
-  console.log("Dans le post");
+  console.log("Dans le post", req.query);
   try {
     // Récupérer les paramètres de la query
     const { numberBedrooms, minPrice, maxPrice } = req.query;
@@ -21,10 +21,7 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
     const pageNumber = req.body.pageNumber;
     const pageSize = req.body.pageSize;
 
-    
-   let appartData = await appartement.getAllAppartments(10000);
-    
-
+    let appartData = await appartement.getAllAppartments(10000);
 
     // Initialiser un tableau pour stocker les valeurs des chambres
     let bedroomsArray = [];
