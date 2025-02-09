@@ -20,17 +20,6 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(
-  "/api/stripe/",
-  //express.raw({type: "application/json"}),
-  stripeWebhookRouter
-);
-
-// Ajouter ces middlewares avant vos routes
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname + "/")));
-
 // Configuration détaillée de CORS
 app.use(
   cors({
@@ -46,6 +35,19 @@ app.use(
     credentials: true, // si vous avez besoin de supporter les cookies/auth
   })
 );
+
+app.use(
+  "/api/stripe/",
+  //express.raw({type: "application/json"}),
+  stripeWebhookRouter
+);
+
+// Ajouter ces middlewares avant vos routes
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname + "/")));
+
+
 
 // ✅ Solution recommandée(en production met ca)
 // app.use(cors({

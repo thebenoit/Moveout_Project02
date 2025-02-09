@@ -28,8 +28,6 @@ import client_lead from "./routes/api/client/leads.js";
 import client_logout from "./routes/api/client/logout.js";
 import client_preference from "./routes/api/client/preference.js";
 
-
-
 // Obtenir __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -44,15 +42,29 @@ const corsOptions = {
   credentials: true,
   optionSuccessStatus: 200,
 };
+// Configuration détaillée de CORS
+app.use(
+  cors({
+    origin: "*", // ou spécifiez les domaines autorisés, ex: ['http://localhost:3000', 'https://votreapp.com']
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: [
+      "Origin",
+      "X-Requested-With",
+      "Content-Type",
+      "Accept",
+      "Authorization",
+    ],
+    credentials: true, // si vous avez besoin de supporter les cookies/auth
+  })
+);
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 //app.options('*', cors(corsOptions));
 
 app.use("/api", appartments);
 
 // api
-
 
 // client
 app.use("/api/client", client_singup);
