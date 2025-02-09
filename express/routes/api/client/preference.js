@@ -23,7 +23,7 @@ app.get("/preference/:id", async (req, res) => {
 });
 app.post("/preference", async (req, res) => {
   try {
-    response = await createPreference(
+    let response = await client.createPreference(
       req.body.preferencesId,
       req.body.numberOfBedrooms,
       req.body.maxValue,

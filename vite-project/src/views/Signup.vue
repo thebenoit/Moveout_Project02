@@ -186,6 +186,7 @@ const router = useRouter();
 
 async function nextSlide() {
   hiddenFirst.value = true;
+  
 }
 async function previousSlide() {
   hiddenFirst.value = false;
@@ -379,7 +380,7 @@ async function preferenceCreation() {
       </div>
     </section>
 
-    <section v-if="hiddenFirst" class="max-w-xl lg:max-w-3xl mx-auto p-4">
+    <section v-else class="max-w-xl lg:max-w-3xl mx-auto p-4">
       <div class="w-full flex jusitfy-start">
         <svg
           xmlns="http://www.w3.org/2000/svg"

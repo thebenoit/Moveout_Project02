@@ -106,11 +106,12 @@ const isStrongPassword = (password) => {
     return {
       message: responses.success.accountCreated,
       user_id: savedUser._id.toString(),
+      userPhone: savedUser.phone,
       preferenceId: savedUser.preferencesId.toString(),
       accessToken: savedUser.accessToken,
     };
   } catch (error) {
-    console.error(error);
+    console.error('Erreur lors de la création du compte: ',error);
     return { error: responses.errors.client.accountCreationError };
   }
 };
