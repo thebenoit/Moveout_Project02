@@ -33,18 +33,27 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express(); //calling express to use server
+
+app.use(
+  cors({
+    origin: [
+      "https://www.moveout.ai",
+      "http://localhost:5173",
+      "https://notificationserver.online",
+    ], // Add your frontend domain
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    credentials: true,
+  })
+);
+
+//app.options("*", cors());
+
 app.use(bodyParser.json()); //apcepting as json data to read it
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "/")));
 
-app.use(cors({
-  origin: ["https://www.moveout.ai", "http://localhost:5173","https://notificationserver.online"], // Add your frontend domain
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-  credentials: true
-}));
 
-app.options("*", cors());
 
 //app.use(cors(corsOptions));
 
@@ -64,6 +73,8 @@ app.use("/api/client", client_preference);
 app.use("/api/appartements", paginated_appartments);
 // apparts personalisé
 app.use("/api/appartements", paginated_forYouPage);
+
+
 
 // app.use("/api/client/", client_logout);
 // app.use("/client/", client_appartements);

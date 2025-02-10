@@ -65,7 +65,7 @@ const queryString = ref("");
 //load 10 card par page
 const pageSize = ref(30);
 //permetra de load toute la liste sur la map
-const pageSizeMap = ref(3000);
+const pageSizeMap = ref(300);
 const prixButtonEvent = "click sur prix button";
 const timerOn = ref(false);
 
@@ -141,8 +141,6 @@ const fetchData = async () => {
       noData.value = false;
     }
 
-    console.log("appart length: ", response.length);
-    console.log("appartMap length: ", responseMap.length);
     apparts.value = response;
     appartsMap.value = responseMap;
 
