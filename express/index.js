@@ -42,10 +42,18 @@ app.use(
       "https://notificationserver.online",
     ], // Add your frontend domain
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept",
+      "Origin"
+    ],
+    exposedHeaders: ["Authorization"],
     credentials: true,
+    preflightContinue: true,
+    optionsSuccessStatus: 204,
   })
 );
+
+
+
 
 //app.options("*", cors());
 

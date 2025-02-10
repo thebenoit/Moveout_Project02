@@ -65,7 +65,7 @@ const queryString = ref("");
 //load 10 card par page
 const pageSize = ref(30);
 //permetra de load toute la liste sur la map
-const pageSizeMap = ref(300);
+const pageSizeMap = ref(30);
 const prixButtonEvent = "click sur prix button";
 const timerOn = ref(false);
 

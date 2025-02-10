@@ -38,10 +38,9 @@ async function fetchPage(pageNumber, pageSize) {
 }
 async function fetchPage2(pageSize, pageNumber, appartData) {
   try {
-    console.log(`pageSize: `, pageSize);
-    console.log(`pageNumber: `, pageNumber);
+
     const skipAmount = (pageNumber - 1) * pageSize;
-    console.log("skipAmountCustom: ", skipAmount);
+    
 
     const pageLimit = skipAmount + pageSize;
     // console.log("pageLimitCustom: ", pageLimit);
@@ -85,14 +84,47 @@ async function fetchPageForYou(
     throw err; // Re-throw the error after logging it
   }
 }
+async function getSpecificAppartment(limitAppart,filters = {}, skip = 0,pageSize = 10){
+  try {
+   console.time('fetch optimization in appartments');
 
+    const query = facebook.find(filters)
+    .select({
+      'for_sale_item.location': 1,
+      'for_sale_item.custom_title': 1,
+      'for_sale_item.custom_sub_titles_with_rendering_flags': 1,
+      'for_sale_item.formatted_price.text': 1,
+      'for_sale_item.listing_photos': 1,
+      'for_sale_item.id': 1
+    })
+    .skip(skip)
+    .limit(pageSize)
+    .lean();  
+
+    //Executer la requete avec timeout
+    const appartData = await Promise.race([
+      query.exec(),
+      new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Database Timeout')), 60000)
+    )
+  ]);
+  console.timeEnd('fetch optimization in appartments');
+  return appartData;
+      
+
+    } catch (error) {
+      console.error(`Erreur dans getAllAppartments: ${error}`);
+      throw error;
+  
+      }  }
 async function getAllAppartments(limitAppart) {
   try {
-    const docCount = await facebook.countDocuments({});
+
 
     let appartData;
 
-    //appartData = await facebook.find({}).lean().limit(100);
+
+    
 
     //si limite est plus grand ou égale à zero on ne met pas de limite
     if (limitAppart <= 0) {
@@ -100,9 +132,12 @@ async function getAllAppartments(limitAppart) {
       appartData = await facebook.find({}).lean(); //.limit(4000).exec();
       console.log("appart: ", appartData);
     } else {
+      console.time("fetch data dans getAllAppartments")
       //data est égale à tout ce qu'il trouve dans la collection
       appartData = await facebook.find({}).lean().limit(limitAppart); 
+      console.timeEnd("fetch data dans getAllAppartments")
     }
+
 
     return appartData;
   } catch (error) {
@@ -132,4 +167,5 @@ export default {
   fetchPageForYou,
   nbOfAppart,
   fetchPage2,
+  getSpecificAppartment,
 };

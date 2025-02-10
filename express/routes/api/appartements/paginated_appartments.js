@@ -1,6 +1,7 @@
 import express from "express";
 const app = express();
 import appartement from "../../../mongo/interface/appartement.js";
+import facebook from "../../../mongo/schemas/facebook.js";
 
 let total = 0;
 const SIZEPAGE = 30;
@@ -13,7 +14,7 @@ app.get("/page/totalAppart", async (req, res) => {
   return totalPage;
 });
 app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
-  console.log("Dans le post", req.query);
+  console.time("API Execution TIme");
   try {
     // Récupérer les paramètres de la query
     const { numberBedrooms, minPrice, maxPrice } = req.query;
@@ -21,95 +22,52 @@ app.post("/page/:numberBedrooms?/:minPrice?/:maxPrice?", async (req, res) => {
     const pageNumber = req.body.pageNumber;
     const pageSize = req.body.pageSize;
 
-    let appartData = await appartement.getAllAppartments(10000);
-
-    // Initialiser un tableau pour stocker les valeurs des chambres
-    let bedroomsArray = [];
-
-    // Si `numberBedrooms` est défini, on le convertit en tableau de nombres
-    if (numberBedrooms) {
-      // Si `numberBedrooms` contient une virgule, c'est une liste
-      if (numberBedrooms.includes(",")) {
-        bedroomsArray = numberBedrooms.split(",").map(Number);
-      } else {
-        // Sinon, c'est un seul nombre, on le convertit en tableau avec un seul élément
-        bedroomsArray = [Number(numberBedrooms)];
-      }
+    const filters = {};
+    if(minPrice || maxPrice){
+      filters['for_sale_item.formatted_price.text'] = {};
+      if (minPrice) filters['for_sale_item.formatted_price.text'].$gte = minPrice;
+      if (maxPrice) filters['for_sale_item.formatted_price.text'].$lte = maxPrice;
+    }
+    if (numberBedrooms){
+      filters['for_sale_item.custom_title'] = new RegExp(`^${numberBedrooms}\\s`);
     }
 
-    try {
-      appartData = appartData
-        .map((appart) => {
-          try {
-            // Extraire et convertir le prix
-            const priceText = appart.for_sale_item.formatted_price.text;
-            const price = parseFloat(
-              priceText.replace(/[^0-9.,]/g, "").replace(",", ".")
-            );
+    const skip = (pageNumber - 1) * pageSize;
 
-            // Extraire le premier caractère qui représente le nombre de chambres et le convertir en float
-            let bedrooms = parseFloat(
-              appart.for_sale_item.custom_title.split("·")[0].trim()[0]
-            );
-            // Si ce n'est pas un nombre (comme "S" dans studio), on met 1
-            if (isNaN(bedrooms)) {
-              bedrooms = 1;
-            }
+    console.time("Data Fetching Time");
+     // 3. Récupération parallèle du count et des données
+     const [total, appartData] = await Promise.all([
+      facebook.countDocuments(filters),
+      appartement.getSpecificAppartment(null, filters, skip, pageSize)
+    ]);
+    console.timeEnd("Data Fetching Time");
+    console.time('data_processing');
 
-            return {
-              total: total,
-              id: appart.for_sale_item.id,
-              location: [
-                appart.for_sale_item.location.latitude,
-                appart.for_sale_item.location.longitude,
-              ],
-              customTitle: appart.for_sale_item.custom_title,
-              fullAddress:
-                appart.for_sale_item.custom_sub_titles_with_rendering_flags[0]
-                  .subtitle,
-              price,
-              bedrooms: bedrooms.toString(),
-              img: appart.for_sale_item.listing_photos[0]?.image?.uri ?? "",
-            };
-          } catch (error) {
-            //console.log(appart.for_sale_item.id);
-            return null; // Or handle the error as needed
-          }
-        })
-        .filter((appart) => appart !== null) // Filtrer les valeurs nulles
-        .filter(
-          (appart) =>
-            (!minPrice || appart.price >= parseFloat(minPrice)) &&
-            (!maxPrice || appart.price <= parseFloat(maxPrice))
-        )
-        .filter(
-          (appart) =>
-            bedroomsArray.length === 0 ||
-            bedroomsArray.includes(parseInt(appart.bedrooms))
-        );
-    } catch (error) {
-      console.log(error);
-    }
+    const processedData = appartData.map(appart => ({
+      total: Math.ceil(total / pageSize),
+      id: appart.for_sale_item.id,
+      location: [
+        appart.for_sale_item.location.latitude,
+        appart.for_sale_item.location.longitude
+      ],
+      customTitle: appart.for_sale_item.custom_title,
+      fullAddress: appart.for_sale_item.custom_sub_titles_with_rendering_flags[0].subtitle,
+      price: parseFloat(
+        appart.for_sale_item.formatted_price.text
+          .replace(/[^0-9.,]/g, '')
+          .replace(',', '.')
+      ),
+      bedrooms: appart.for_sale_item.custom_title.split('·')[0].trim()[0],
+      img: appart.for_sale_item.listing_photos[0]?.image?.uri ?? ''
+    }));
+    console.timeEnd('data_processing');
+    console.timeEnd("API Execution TIme");
 
-    if (appartData.length === 0) {
-      return res.status(404).send("Aucune donnée trouvée");
-    }
-    total = appartData.length;
+  res.json(processedData);
 
-    const appartCustom = await appartement.fetchPage2(
-      //SIZEPAGE,
-      // total,
-      pageSize,
-      pageNumber,
-      appartData
-    );
-
-    const totalPage = Math.ceil(total / SIZEPAGE);
-
-    //extremely guettho to pass the number of page data to the listings page
-    appartCustom[0].total = totalPage;
-    res.send(appartCustom);
+ 
   } catch (error) {
+    console.error("Erreur lors de la récupération des données:", error);
     res.status(500).send("Erreur lors de la récupération des données");
   }
 });
