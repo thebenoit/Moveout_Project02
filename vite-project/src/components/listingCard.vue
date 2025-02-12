@@ -98,6 +98,7 @@ const clickMap = (location) => {
 <template>
   <div
     class="rounded overflow-hidden shadow-lg p-2 bg-white transition-all max-w-96 w-11/12"
+    @click="openLink"
   >
     <!-- min-[1262px]:hidden -->
     <!-- <img class="object-cover rounded-2xl rounded-b-none" src="@/assets/images/house-1477041_1920.jpg"> -->

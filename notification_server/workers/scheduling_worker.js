@@ -37,7 +37,7 @@ async function checkAndPlanifyNotifications() {
 
   //get the notifications that are to be sent today at the current hour
   const notifications = await Notification.find({
-    status: "test",
+    status: "recurring",
     notificationDays: currentDay,
     notificationTimes: currentHour,
   });
