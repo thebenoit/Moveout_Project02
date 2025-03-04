@@ -42,10 +42,46 @@ onMounted(() => {
 });
 </script>
 
+<style>
+  @keyframes slideInLeft {
+    0% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  .animate-slideInLeft {
+    animation: slideInLeft 0.5s ease-out forwards;
+  }
+
+  @keyframes slideInRight {
+    0% {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  .animate-slideInRight {
+    animation: slideInRight 0.5s ease-out forwards;
+  }
+</style>
+
+
 <template>
+
   <div class="flex flex-col justify-center items-center h-screen">
+    <p class="animate-slideInLeft mb-2 text-center text-gray-700">Already have an account?</p>
+    <a href="/login" class="w-80 bg-blue-main text-white py-3 px-6 rounded-full text-center text-lg md:text-xl font-semibold hover:bg-blue-400 transition-colors shadow-lg hover:shadow-xl">
+      Proceed to Login
+    </a>
     <!-- source: https://chatgpt.com/c/6733d1cb-7d6c-8012-8978-dbeae9b43ac6 -->
-    <div class="flex flex-col items-center mb-10 md:mb-0 max-w-xs">
+    <div class="flex flex-col items-center mb-10 md:mb-0 max-w-xs m-3">
       <transition name="slide-fade" mode="out-in">
         <img
           :key="currentSlideIndex"
@@ -69,12 +105,12 @@ onMounted(() => {
       </transition> -->
     </div>
 
-    <button
-      @click="handleSubmitButton"
-      class="bg-blue-main text-white py-3 px-6 rounded-full text-lg md:text-xl font-semibold hover:bg-blue-400 transition-colors shadow-lg hover:shadow-xl"
-    >
-      Trouve ton appartement!
+    <button @click="handleSubmitButton" class="w-80 bg-blue-main text-white py-3 px-6 rounded-full text-lg md:text-xl font-semibold hover:bg-blue-400 transition-colors shadow-lg hover:shadow-xl">
+      Find an Appartement
     </button>
+    <p class="animate-slideInRight mb-2 text-center text-gray-700 p-2">Just want to browse our catalogue of apartments?</p>
+    <br>
+    <p class="animate-slideInLeft mb-2 text-center text-gray-700 p-2">Want to create an account? <a href="/signup" class="underline text-blue-main">Click here!</a></p>
   </div>
 </template>
 

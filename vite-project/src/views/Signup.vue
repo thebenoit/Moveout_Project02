@@ -361,6 +361,15 @@ async function preferenceCreation() {
                   v-model="password"
                 />
               </div>
+              <div class="grid mt-1">
+                <Input
+                  class="btn text-left"
+                  id="repassword"
+                  type="password"
+                  placeholder="Re-Enter Password"
+                  v-model="repassword"
+                />
+              </div>
               <p>
                 Vous avez déjà un compte?
                 <a @click="versConnection" class="underline text-blue-main"
