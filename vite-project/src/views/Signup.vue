@@ -378,10 +378,10 @@ async function preferenceCreation() {
               </p>
               <Button
                 type="submit"
-                class="btn btn-lg w-full text-base bg-blue-main hover: overflow-hidden"
+                class="bg-blue-main text-white py-3 px-6 rounded-full text-lg md:text-lg font-semibold hover:bg-blue-400 transition-colors shadow-lg hover:shadow-xl"
                 @click="signup"
               >
-                Rejoignez Moveout gratuitement
+                Rejoignez Moveout
               </Button>
             </div>
           </CardContent>

@@ -79,7 +79,7 @@ function estConnecter() {
       <div class="flex-none">
         <div class="flex-none">
           <div class="dropdown dropdown-end">
-            <div
+            <!-- <div
               tabindex="0"
               role="button"
               class="btn btn-square bg-white border-none"
@@ -99,9 +99,25 @@ function estConnecter() {
                   ></path>
                 </svg>
               </div>
-            </div>
+            </div> -->
             <!-- Si l'utilisateur n'est pas connecté, affiche "login" -->
-            <ul
+            
+            <button
+              v-if="!utils.getToken()"
+              @click="login"
+              class="bg-white text-gray-500 py-3 px-6 rounded-[10px] text-md md:text-md font-semibold hover:bg-gray-300 transition-colors"
+            >
+              Log In
+            </button>
+
+            <button
+              v-else
+              @click="logout"
+              class="bg-white text-gray-500 py-3 px-6 rounded-[10px] text-md md:text-md font-semibold hover:bg-gray-300 transition-colors"
+            >
+              Logout
+            </button>
+            <!-- <ul
               v-if="!utils.getToken()"
               tabindex="0"
               class="dropdown-content menu menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
@@ -109,9 +125,9 @@ function estConnecter() {
               <li>
                 <RouterLink to="/login" class=""> Log in </RouterLink>
               </li>
-            </ul>
+            </ul> -->
             <!-- Sinon, affiche "signup" -->
-            <ul
+            <!-- <ul
               v-else
               tabindex="0"
               class="dropdown-content menu menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
@@ -120,7 +136,7 @@ function estConnecter() {
               <li>
                 <a :href="customerPortalUrl" target="_blank">Billing</a>
               </li>
-            </ul>
+            </ul> -->
           </div>
         </div>
       </div>
@@ -174,7 +190,7 @@ function estConnecter() {
            
             <li><a href="/listings">Listings</a></li>
             <li >
-              <RouterLink to="/login" class=""> Log in </RouterLink>
+              <RouterLink to="/login" class=""> Log In </RouterLink>
             </li>
           </ul>
           <ul 

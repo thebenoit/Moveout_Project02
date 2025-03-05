@@ -61,10 +61,10 @@ async function login(){
         <CardHeader>
           <p class="text-red-500 m-2 ">{{messageErreur}}</p>
           <CardTitle class="text-xl">
-            Login
+            Log In
           </CardTitle>
           <CardDescription>
-            remplissez ce formulaire pour vous connecter
+            Remplissez ce Formulaire pour vous Connecter
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -81,14 +81,14 @@ async function login(){
               <Input id="phone" type="phone" placeholder="Phone number" required />
             </div> -->
             <div class="grid mt-1 ">
-              <input class="rounded-md text-center" id="email" placeholder="Email ou Tel" v-model="identifier" required />
+              <input class="rounded-md text-center p-3" id="email" placeholder="Email ou Tel" v-model="identifier" required />
             </div>
             <div class="grid mt-1">
-              <input class="rounded-md text-center" id="password" type="password" placeholder="mot de passe" v-model="password" required />
+              <input class="rounded-md text-center p-3" id="password" type="password" placeholder="mot de passe" v-model="password" required />
             </div>
-            <Button  type="submit" class="w-full bg-blue-main rounded-md" @click="login">
-              Log in
-            </Button>
+            <button  type="submit" class="bg-blue-main text-white py-3 px-6 rounded-full text-lg md:text-lg font-semibold hover:bg-blue-400 transition-colors shadow-lg hover:shadow-xl" @click="login">
+              Log In
+            </button>
           </div>
           <div class="mt-4 text-center text-sm">
             Vous n'avez pas de compte?

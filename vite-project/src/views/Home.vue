@@ -9,6 +9,11 @@ function handleSubmitButton() {
   router.push("/listings");
   console.log("Navigating to apartments...");
 }
+
+function handleProceedLogin() {
+  router.push("/login");
+  console.log("Navigating to Login Page...");
+}
 //slide pour les images
 const slides = ref([
   {
@@ -77,9 +82,9 @@ onMounted(() => {
 
   <div class="flex flex-col justify-center items-center h-screen">
     <p class="animate-slideInLeft mb-2 text-center text-gray-700">Already have an account?</p>
-    <a href="/login" class="w-80 bg-blue-main text-white py-3 px-6 rounded-full text-center text-lg md:text-xl font-semibold hover:bg-blue-400 transition-colors shadow-lg hover:shadow-xl">
+    <button @click="handleProceedLogin" class="w-80 bg-blue-main text-white py-3 px-6 rounded-full text-lg md:text-xl font-semibold hover:bg-blue-400 transition-colors shadow-lg hover:shadow-xl">
       Proceed to Login
-    </a>
+    </button>
     <!-- source: https://chatgpt.com/c/6733d1cb-7d6c-8012-8978-dbeae9b43ac6 -->
     <div class="flex flex-col items-center mb-10 md:mb-0 max-w-xs m-3">
       <transition name="slide-fade" mode="out-in">
