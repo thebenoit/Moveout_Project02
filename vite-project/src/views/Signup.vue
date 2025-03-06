@@ -364,10 +364,10 @@ async function preferenceCreation() {
               <div class="grid mt-1">
                 <Input
                   class="btn text-left"
-                  id="repassword"
+                  id="confirmPassword"
                   type="password"
                   placeholder="Re-Enter Password"
-                  v-model="repassword"
+                  v-model="password"
                 />
               </div>
               <p>
