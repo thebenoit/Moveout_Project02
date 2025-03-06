@@ -77,6 +77,17 @@ onMounted(() => {
   }
 </style>
 
+<style scoped>
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateX(120px);
+}
+</style>
 
 <template>
 
@@ -118,15 +129,3 @@ onMounted(() => {
     <p class="animate-slideInLeft mb-2 text-center text-gray-700 p-2">Want to create an account? <a href="/signup" class="underline text-blue-main">Click here!</a></p>
   </div>
 </template>
-
-<style scoped>
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  opacity: 0;
-  transform: translateX(120px);
-}
-</style>
