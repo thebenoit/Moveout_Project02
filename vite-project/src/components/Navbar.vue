@@ -203,8 +203,6 @@ function estConnecter() {
               <a :href="customerPortalUrl" target="_blank">Billing</a>
             </li>
           </ul>
-
-          
         </div>
       </div>
     </div>

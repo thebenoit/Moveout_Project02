@@ -1,13 +1,13 @@
 <template>
 
 
-  <footer class="bg-opacity text-black text-sm text-center">
+  <footer class="bg-opacity text-black text-sm text-center pt-[40px]">
 
     <div class="w-full p-4 flex flex-col items-center justify-center px-8">
       <div class="flex flex-col items-center text-center mb-4">
         <!-- <img src="../assets/images/Moveout_Logo2.svg" alt="Moveout Logo" class="h-12 w-auto" /> -->
-        <p class="ml-3 mt-2"> &copy; 2022 Moveout Ltd. All rights reserved.</p>
-        <p class="ml-6 mt-2">Helping you find a home since 2022</p>
+        <p class="ml-3 mt-2"> &copy; 2022 Moveout Ltd. Tous droits réservés.</p>
+        <p class="ml-6 mt-2">Nous vous aidons à trouver un logement depuis 2022</p>
       </div>
 
       <ul class="flex flex-row items-center justify-center mt-3 text-sm font-semibold">
