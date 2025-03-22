@@ -49,9 +49,137 @@ function estConnecter() {
   }
 }
 </script>
+
+<style>
+  /* Base Navbar Styles */
+  .navbar {
+    padding: 0.5rem 1rem; /* Consistent padding for navbar */
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: center;
+  }
+
+  .container-fluid {
+    margin: 0 15rem;
+  }
+
+  .navbar-brand img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .navbar-item-btn {
+    padding: 0.4rem 1.6rem;
+    border-radius: 10px;
+    font-size: medium;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effects */
+  }
+
+  .navbar-item-btn-colored {
+    padding: 0.4rem 1.8rem;
+    border-radius: 10px;
+    font-size: medium;
+    background-color: rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effects */
+  }
+
+  .navbar-item-btn:hover,
+  .navbar-item-btn:focus {
+    background-color: rgba(0, 0, 0, 0.3);
+    transform: scale(1.05); /* Slight scale effect on hover */
+  }
+
+  .navbar-item-btn-colored:hover,
+  .navbar-item-btn-colored:focus {
+    background-color: rgba(0, 0, 0, 0.3);
+    transform: scale(1.05); /* Slight scale effect on hover */
+  }
+
+  /* Mobile Styles */
+  /* Mobile Styles */
+  @media (max-width: 768px) {
+    .navbar {
+      padding: 0.5rem;
+    }
+
+    .container-fluid {
+      margin: 0;
+    }
+
+    .navbar-nav.ms-auto {
+      margin-left: 0 !important; /* Override Bootstrap's ms-auto */
+    }
+
+    .navbar-collapse {
+      background-color: #f8f9fa; /* Light background for mobile menu */
+      border-radius: 10px;
+      margin-top: 0.5rem;
+    }
+
+    .navbar-item-btn,
+    .navbar-item-btn-colored {
+      padding: 0.5rem 1rem;
+      width: 100%; /* Full width for better tap targets */
+      text-align: center;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      font-size: 0.9rem;
+    }
+
+    .navbar-item-btn:hover,
+    .navbar-item-btn:focus,
+    .navbar-item-btn-colored:hover,
+    .navbar-item-btn-colored:focus {
+      transform: scale(1.02);
+    }
+  }
+  @media (min-width: 800px) {
+    .container-fluid {
+      margin: 0 5rem;
+    }
+  }
+  @media (min-width: 1200px) {
+    .container-fluid {
+      margin: 0 10rem;
+    }
+  }
+  @media (min-width: 1400px) {
+    .container-fluid {
+      margin: 0 15rem;
+    }
+  }
+</style>
+
 <template>
-  <div>
-    <div class="navbar bg-white fixed top-0 z-50 font-normal py-4 px-10 hidden sm:flex">
+  <nav class="navbar navbar-expand-md bg-body-tertiary fixed-top">
+    <div class="container-fluid">
+      <!-- Brand Logo -->
+      <a class="navbar-brand mr-4" href="/">
+        <img src="../assets/images/Moveout_Logo2.svg" alt="Moveout Logo">
+      </a>
+
+      <!-- Toggler Button for Mobile -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Navbar Links -->
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item m-2">
+            <button v-if="!utils.getToken()" @click="login" class="navbar-item-btn">Log In</button>
+          </li>
+
+          <li class="nav-item m-2">
+            <button v-if="!utils.getToken()" @click="signup" class="navbar-item-btn-colored">Sign Up</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- <div>     -->
+    <!-- <div class="navbar bg-white fixed top-0 z-50 font-normal py-4 px-10 hidden sm:flex">
       <div class="flex-1">
         <a href="/" class="flex items-center space-x-1 rtl:space-x-reverse">
           <img
@@ -73,9 +201,9 @@ function estConnecter() {
       </div>
       <div class="flex-none">
         <div class="flex-none">
-          <div class="dropdown dropdown-end">
+          <div class="dropdown dropdown-end"> -->
             <!-- Si l'utilisateur n'est pas connecté, affiche "login" -->
-            <button
+            <!-- <button
               v-if="!utils.getToken()"
               @click="login"
               class="bg-white text-gray-500 py-3 px-6 rounded-[10px] text-md md:text-md font-semibold hover:bg-gray-300 transition-colors"
@@ -156,8 +284,8 @@ function estConnecter() {
           </ul>
         </div>
       </div>
-    </div>
-  </div>
+    </div>  -->
+  <!-- </div> -->
 
 
   
