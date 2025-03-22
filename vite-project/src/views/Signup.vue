@@ -291,6 +291,19 @@ async function preferenceCreation() {
   }
 }
 </script>
+
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 1s ease-in-out;
+  }
+
+</style>
+
 <template>
   <div>
     <section
@@ -298,7 +311,7 @@ async function preferenceCreation() {
       class="max-w-xl lg:max-w-3xl mx-auto p-4 overflow-hidden"
     >
       <div class="mt-0">
-        <Card class="bg-gray-200 backdrop-blur-3xl mt-16 lg:mt-0">
+        <Card class="bg-gray-200 backdrop-blur-3xl mt-16 lg:mt-0  animate-fadeIn transition-all duration-500 ease-in-out">
           <p class="text-red-500 text-sm text-center rounded-lg">
             {{ errorMessages }}
           </p>
@@ -315,7 +328,7 @@ async function preferenceCreation() {
               <div class="grid grid-cols-2 gap-4">
                 <div class="grid gap-2">
                   <Input
-                    class="btn text-left"
+                    class="btn text-left transition-transform duration-300 ease-in-out transform focus:scale-105"
                     id="first-name"
                     placeholder="First name"
                     required
@@ -324,7 +337,7 @@ async function preferenceCreation() {
                 </div>
                 <div class="grid gap-2">
                   <Input
-                    class="btn text-left"
+                    class="btn text-left transition-transform duration-300 ease-in-out transform focus:scale-105"
                     id="last-name"
                     placeholder="Last name"
                     required
@@ -334,7 +347,7 @@ async function preferenceCreation() {
               </div>
               <div class="grid mt-1">
                 <Input
-                  class="btn text-left"
+                  class="btn text-left transition-transform duration-300 ease-in-out transform focus:scale-105"
                   id="phone"
                   type="phone"
                   placeholder="Phone number"
@@ -344,7 +357,7 @@ async function preferenceCreation() {
               </div>
               <div class="grid mt-1">
                 <Input
-                  class="btn text-left"
+                  class="btn text-left transition-transform duration-300 ease-in-out transform focus:scale-105"
                   id="email"
                   type="email"
                   placeholder="Email"
@@ -354,7 +367,7 @@ async function preferenceCreation() {
               </div>
               <div class="grid mt-1">
                 <Input
-                  class="btn text-left"
+                  class="btn text-left transition-transform duration-300 ease-in-out transform focus:scale-105"
                   id="password"
                   type="password"
                   placeholder="Password"
@@ -363,11 +376,11 @@ async function preferenceCreation() {
               </div>
               <div class="grid mt-1">
                 <Input
-                  class="btn text-left"
-                  id="repassword"
+                  class="btn text-left transition-transform duration-300 ease-in-out transform focus:scale-105"
+                  id="confirmPassword"
                   type="password"
                   placeholder="Re-Enter Password"
-                  v-model="repassword"
+                  v-model="password"
                 />
               </div>
               <p>
@@ -378,10 +391,10 @@ async function preferenceCreation() {
               </p>
               <Button
                 type="submit"
-                class="btn btn-lg w-full text-base bg-blue-main hover: overflow-hidden"
+                class="bg-blue-main text-white py-3 px-6 rounded-full text-lg md:text-lg font-semibold hover:bg-blue-400 transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 duration-300"
                 @click="signup"
               >
-                Rejoignez Moveout gratuitement
+                Rejoignez Moveout
               </Button>
             </div>
           </CardContent>
