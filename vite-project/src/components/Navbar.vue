@@ -49,12 +49,9 @@ function estConnecter() {
   }
 }
 </script>
-
 <template>
   <div>
-    <div
-      class="navbar bg-white fixed top-0 z-50 font-normal py-4 px-10 hidden sm:flex"
-    >
+    <div class="navbar bg-white fixed top-0 z-50 font-normal py-4 px-10 hidden sm:flex">
       <div class="flex-1">
         <a href="/" class="flex items-center space-x-1 rtl:space-x-reverse">
           <img
@@ -62,9 +59,7 @@ function estConnecter() {
             alt="Moveout Logo"
             class="h-12 w-auto"
           />
-          <span class="self-center whitespace-nowrap dark:text-white text-2xl"
-            >Moveout</span
-          >
+          <span class="self-center whitespace-nowrap dark:text-white text-2xl">Moveout</span>
         </a>
 
         <div
@@ -79,29 +74,7 @@ function estConnecter() {
       <div class="flex-none">
         <div class="flex-none">
           <div class="dropdown dropdown-end">
-            <!-- <div
-              tabindex="0"
-              role="button"
-              class="btn btn-square bg-white border-none"
-            >
-              <div class="w-10 rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  class="inline-block h-5 w-5 stroke-current"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-                  ></path>
-                </svg>
-              </div>
-            </div> -->
             <!-- Si l'utilisateur n'est pas connecté, affiche "login" -->
-            
             <button
               v-if="!utils.getToken()"
               @click="login"
@@ -111,32 +84,9 @@ function estConnecter() {
             </button>
 
             <button
-              v-else
-              @click="logout"
-              class="bg-white text-gray-500 py-3 px-6 rounded-[10px] text-md md:text-md font-semibold hover:bg-gray-300 transition-colors"
-            >
+              v-else @click="logout" class="bg-white text-gray-500 py-3 px-6 rounded-[10px] text-md md:text-md font-semibold hover:bg-gray-300 transition-colors">
               Logout
             </button>
-            <!-- <ul
-              v-if="!utils.getToken()"
-              tabindex="0"
-              class="dropdown-content menu menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
-            >
-              <li>
-                <RouterLink to="/login" class=""> Log in </RouterLink>
-              </li>
-            </ul> -->
-            <!-- Sinon, affiche "signup" -->
-            <!-- <ul
-              v-else
-              tabindex="0"
-              class="dropdown-content menu menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
-            >
-              <li><a @click="logout">Logout</a></li>
-              <li>
-                <a :href="customerPortalUrl" target="_blank">Billing</a>
-              </li>
-            </ul> -->
           </div>
         </div>
       </div>
@@ -152,12 +102,13 @@ function estConnecter() {
             alt="Moveout Logo"
             class="h-12 w-auto"
           />
-          <!-- <span class="self-center whitespace-nowrap dark:text-white text-2xl">Moveout</span> -->
         </a>
       </div>
       <div
-        class="tooltip tooltip-bottom"
-        data-tip="Moveout.ai est en mode BETA"
+        class="tooltip-bottom"
+        data-bs-toggle="tooltip"
+        data-bs-placement="bottom"
+        title="Moveout.ai est en mode BETA"
       >
         <button>
           <BetaLogo class="ml-2 mt-2" />
@@ -207,4 +158,7 @@ function estConnecter() {
       </div>
     </div>
   </div>
+
+
+  
 </template>
