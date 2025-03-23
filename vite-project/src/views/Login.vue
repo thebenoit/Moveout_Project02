@@ -55,27 +55,216 @@ async function login(){
 </script>
 
 <style>
+  /* General Styles */
+  .login-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+  }
+
+  .login-content {
+    width: 100%;
+    max-width: 450px;
+    padding: 1rem;
+  }
+
+  .login-card {
+    background-color: #ffffff;
+    padding: 2.5rem 2rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .login-title {
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: #333333;
+    margin-bottom: 0.5rem;
+    animation: fadeIn 1s ease-out 0.2s;
+    animation-fill-mode: both;
+  }
+
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .login-description {
+    font-size: 1rem;
+    color: #666666;
+    margin-bottom: 2rem;
+    animation: fadeIn 1s ease-out 0.4s;
+    animation-fill-mode: both;
   }
 
-  @keyframes fadeInImage {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  .input-group {
+    margin-bottom: 1.5rem;
+    animation: slideInLeft 0.8s ease-out 0.6s;
+    animation-fill-mode: both;
   }
 
-  .animate-fadeIn {
-    animation: fadeIn 1s ease-in-out;
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
   }
 
-  .animate-fadeInImage {
-    animation: fadeInImage 1.5s ease-in-out;
+  .input-group input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .input-group input:focus {
+    border-color: rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    outline: none;
+  }
+
+  .login-btn {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #333333;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    animation: fadeIn 1s ease-out 0.8s;
+    animation-fill-mode: both;
+  }
+
+  .login-btn:hover, .login-btn:focus {
+    background-color: #666666;
+    transform: scale(1.02);
+  }
+
+  .login-btn:active {
+    transform: scale(0.98);
+  }
+
+  .login-small {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: #666666;
+    animation: fadeIn 1s ease-out 1s;
+    animation-fill-mode: both;
+  }
+
+  .login-link {
+    color: rgba(0, 0, 0, 0.5);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+
+  .login-link:hover {
+    color: rgba(0, 0, 0, 0.7);
+    text-decoration: underline;
+  }
+
+  .error-message {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    animation: shake 0.5s ease-out;
+  }
+
+  @keyframes shake {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-10px);
+    }
+    50% {
+      transform: translateX(10px);
+    }
+    75% {
+      transform: translateX(-10px);
+    }
   }
 </style>
 
 <template>
-  <div class="w-full min-h-screen grid lg:grid-cols-2 ">
+  <section class="login-section">
+    <div class="login-content">
+      <div class="login-card">
+        <!-- Error Message -->
+        <p class="error-message">{{ messageErreur }}</p>
+
+        <!-- Title and Description -->
+        <h1 class="login-title">Bienvenue !</h1>
+        <p class="login-description">Connectez-vous à votre compte.</p>
+
+        <!-- Email Input -->
+        <div class="input-group">
+          <input
+            id="email"
+            class="form-control"
+            type="text"
+            placeholder="Email ou Tel"
+            v-model="identifier"
+            required
+          />
+        </div>
+
+        <!-- Password Input -->
+        <div class="input-group">
+          <input
+            id="password"
+            class="form-control"
+            type="password"
+            placeholder="Password"
+            v-model="password"
+            required
+          />
+        </div>
+
+        <!-- Login Button -->
+        <button class="login-btn" type="submit" @click="login">Se connecter</button>
+
+        <!-- Signup Link -->
+        <p class="login-small">
+          Vous n'avez pas de compte ? <a href="/signup" class="login-link">Inscrivez-vous</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- <div class="w-full min-h-screen grid lg:grid-cols-2 ">
     <div class="mx-auto max-w-sm content-center w-full">
       <Card class="bg-gray-200 text-center backdrop-blur-3xl mt-16 lg:mt-0 m-5 sm:m-0 animate-fadeIn transition-all duration-500 ease-in-out">
         <CardHeader>
@@ -111,7 +300,7 @@ async function login(){
     <div class="hidden bg-muted lg:block">
       <img src="@/assets/images/house-1477041_1920.jpg" alt="Image" width="1920" height="1080" class="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale animate-fadeInImage">
     </div>
-  </div>
+  </div> -->
 </template>
 
 <!-- <div class="grid grid-cols-2 gap-4">

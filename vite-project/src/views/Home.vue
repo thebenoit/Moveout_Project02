@@ -19,27 +19,11 @@ function handleProceedLogin() {
   router.push("/login");
   console.log("Navigating to Login Page...");
 }
-//slide pour les images
-const slides = ref([
-  {
-    image: `${connect}`,
-    title: "1. Inscrivez-vous sur Moveout",
-    description:
-      "Moveout.ai recherche tout les sites web de listing sur internet.",
-  },
-  {
-    image: `${robot}`,
-    title: "2. Communiquez-nous vos préférences",
-    description:
-      "Moveout.ai analyse les meilleurs listings selon vos goûts et préférences jour et nuit.",
-  },
-  {
-    image: `${detente}`,
-    title: "3. Relaxez, on s'occupe du rest",
-    description:
-      "Dès qu'un appartement apparaît sur le web, vous serez le premier à le savoir.",
-  },
-]);
+
+function handleProceedSignUp() {
+  router.push("/signup");
+  console.log("Navigating to Sign Up Page...");
+}
 
 const currentSlideIndex = ref(0);
 
@@ -52,185 +36,260 @@ onMounted(() => {
 </script>
 
 <style>
-  @keyframes slideInLeft {
-    0% {
-      transform: translateX(-100%);
+  .hero-header-content {
+    margin: 3.5rem 10% 0rem 10%;
+    width: 80%;
+    text-align: center;
+  }
+
+  .title-txt {
+    font-size: 2.8rem;
+    text-align: center;
+    font-weight: 400;
+    animation: fadeInUp 1s ease-out;
+    animation-fill-mode: both;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .subtitle-txt {
+    font-size: 1.2rem;
+    text-align: center;
+    font-weight: 300;
+    color: gray;
+    animation: fadeInUp 1s ease-out 0.5s;
+    animation-fill-mode: both;
+  }
+
+  .title-btn {
+    margin-top: 2rem;
+    padding: 0.4rem 4rem;
+    border-radius: 50px;
+    font-size: medium;
+    color: #ffffff;
+    background-color: #333333;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    animation: fadeIn 1s ease-out 1s;
+    animation-fill-mode: both;
+  }
+
+  .title-btn:focus, .title-btn:hover {
+    background-color: #666666;
+    transform: scale(1.05);
+  }
+
+  @keyframes fadeIn {
+    from {
       opacity: 0;
     }
-    100% {
-      transform: translateX(0);
+    to {
       opacity: 1;
     }
   }
-  .animate-slideInLeft {
-    animation: slideInLeft 0.5s ease-out forwards;
+
+  .pricing-section {
+    width: 100%;
+    padding: 4rem 1rem;
+    background-color: #f8f9fa;
+    margin-top: 6rem;
   }
 
-  @keyframes slideInRight {
-    0% {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    100% {
-      transform: translateX(0);
-      opacity: 1;
-    }
+  .pricing-content {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    padding-bottom: 2rem;
   }
-  .animate-slideInRight {
-    animation: slideInRight 0.5s ease-out forwards;
-  }
-</style>
 
-<style scoped>
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  opacity: 0;
-  transform: translateX(120px);
-}
+  .pricing-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .pricing-header label {
+    font-size: 2rem;
+    font-weight: 600; 
+    color: #333333; 
+  }
+
+  .pricing-header p {
+    color: #666666;
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+  }
+
+  .pricing-card {
+    flex: 1;
+    min-width: 280px;
+    max-width: 400px;
+    padding: 2.5rem;
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .pricing-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  }
+
+  .pricing-card-header {
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #eeeeee;
+  }
+
+  .pricing-card-header p {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333333;
+    margin: 0;
+  }
+
+  .pricing-card-header span {
+    font-weight: 400;
+    color: #666666;
+    font-size: 1.2rem;
+  }
+
+  .pricing-card-btn {
+    width: 100%;
+    height: 3rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #333333;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 1.5rem;
+  }
+
+  .pricing-card-btn:hover {
+    background-color: #666666;
+    transform: scale(1.02);
+  }
+
+  .pricing-card-btn:active {
+    transform: scale(0.98);
+  }
+
+  .pricing-card-content ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 1.5rem 0 0 0;
+  }
+
+  .pricing-card-content ul li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    font-size: 1rem;
+    color: #333333;
+  }
+
+  .pricing-card-content ul li svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .pricing-content {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .pricing-card {
+      width: 100%;
+      max-width: none;
+    }
+  }
+
 </style>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const scrollElements = document.querySelectorAll("[data-scroll]");
-    
-    const elementInView = (el, percentageScroll = 100) => {
-      const elementTop = el.getBoundingClientRect().top;
-      return (
-        elementTop <= (window.innerHeight || document.documentElement.clientHeight) * (percentageScroll / 100)
-      );
-    };
-
-    const displayScrollElement = (element) => {
-      element.classList.add("animate-fadeInUp"); // Use the Tailwind animation class
-      element.classList.add("opacity-100"); // Make it visible
-    };
-
-    const hideScrollElement = (element) => {
-      element.classList.remove("animate-fadeInUp");
-      element.classList.add("opacity-0");
-    };
-
-    const handleScrollAnimation = () => {
-      scrollElements.forEach((el) => {
-        if (elementInView(el, 100)) {
-          displayScrollElement(el);
-        } else {
-          hideScrollElement(el);
-        }
-      });
-    };
-
-    window.addEventListener("scroll", () => {
-      handleScrollAnimation();
-    });
-
-    handleScrollAnimation(); // Run once on page load to catch elements already in view
-  });
+  
 </script>
 
 <template>
+  <div class="hero-header-content">
+    <label class="title-txt">Trouvez votre appartement idéal sans tracas <br> Laissez notre bot faire le travail !</label>
+    <p class="subtitle-txt">Envoyez un message à Moveout Bot par SMS ou WhatsApp. <br> Disponible en 20 langues. Votre maison de rêve est à un message de distance.</p>
+    <br>
+    <button @click="handleProceedSignUp" class="title-btn">Commencez avec Moveout</button>
+  </div>
 
-<div class="flex flex-col justify-center items-center h-screen">
-    <p class="animate-slideInLeft mb-2 text-center text-gray-700">Vous avez déjà un compte ?</p>
-    <button @click="handleProceedLogin" class="w-80 bg-blue-main text-white py-3 px-6 rounded-full text-lg md:text-xl font-semibold hover:bg-blue-400 transition-colors shadow-lg hover:shadow-xl">
-      Se connecter
-    </button>
-    
-    <div class="flex flex-col items-center mb-10 md:mb-0 max-w-xs m-3">
-      <transition name="slide-fade" mode="out-in">
-        <img
-          :key="currentSlideIndex"
-          :src="slides[currentSlideIndex].image"
-          alt="Image"
-          class="w-32 h-32 mb-4"
-        />
-      </transition>
+
+  <section class="pricing-section">
+  <div class="pricing-header">
+    <label>Choisissez votre forfait</label>
+    <p>Trouvez le forfait parfait pour vos besoins de recherche d'appartement.</p>
+  </div>
+  <div class="pricing-content">
+    <!-- Free Plan Card -->
+    <div class="pricing-card">
+      <div class="pricing-card-header">
+        <p>Gratuit : <br><span>0$/mois</span></p>
+      </div>
+      <button class="pricing-card-btn">Continuer Gratuitement</button>
+      <div class="pricing-card-content">
+        <ul>
+          <li>
+            <svg class="h-6 w-6 text-black-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg> Accès centralisé aux annonces
+          </li>
+          <li>
+            <svg class="h-6 w-6 text-black-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg> Filtrage
+          </li>
+          <li>
+            <svg class="h-6 w-6 text-black-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg> Mise a jour quotidienne
+          </li>
+        </ul>
+      </div>
     </div>
 
-    <button @click="handleSubmitButton" class="w-80 bg-blue-main text-white py-3 px-6 rounded-full text-lg md:text-xl font-semibold hover:bg-blue-400 transition-colors shadow-lg hover:shadow-xl">
-      Trouver un Appartement
-    </button>
-    
-    <p class="animate-slideInRight mb-2 text-center text-gray-700 p-2">Vous souhaitez seulement parcourir notre catalogue d'appartements ?</p>
-    <br>
-    <p class="animate-slideInLeft mb-2 text-center text-gray-700 p-2">Vous voulez créer un compte ? <a href="/signup" class="underline text-blue-main">Cliquez ici !</a></p>
-</div>
-
-<section class="text-center mt-12 w-full px-4 bg-gray-200 pt-9 pb-7">
-  <h2 class="text-3xl md:text-4xl font-bold text-blue-main mb-8">Comment ça marche ?</h2>
-  <div class="flex flex-col md:flex-row justify-around items-center">
-    
-    <!-- Step 1 -->
-    <div class="flex flex-col items-center mb-10 md:mb-0 max-w-xs step" data-scroll>
-      <img :src="connect" alt="Inscrivez-vous" class="w-32 h-32 mb-4">
-      <h3 class="text-xl font-semibold mb-2 text-blue-main">1. Inscrivez-vous sur Moveout</h3>
-      <p class="text-gray-600">Moveout.ai recherche tout les sites web de listing sur internet... vraiment tout.</p>
+    <!-- Pro Plan Card -->
+    <div class="pricing-card">
+      <div class="pricing-card-header">
+        <p>Pro : <br><span>9.99$/mois</span></p>
+      </div>
+      <button class="pricing-card-btn">Aller Pro</button>
+      <div class="pricing-card-content">
+        <ul>
+          <li>
+            <svg class="h-6 w-6 text-blue-main" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path></svg> Tout du plan Gratuit
+          </li>
+          <li>
+            <svg class="h-6 w-6 text-blue-main" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path></svg> Notifications en temps réel ultra-rapides ⚡
+          </li>
+          <li>
+            <svg class="h-6 w-6 text-blue-main" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path></svg> Recommandations personnalisées
+          </li>
+          <li>
+            <svg class="h-6 w-6 text-blue-main" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path></svg> +5 Appartements par jours 🏡
+          </li>
+          <li>
+            <svg class="h-6 w-6 text-blue-main" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path></svg> 📞 Assistance 24/7 pour ne jamais être bloqué
+          </li>
+        </ul>
+      </div>
     </div>
-
-    <!-- Step 2 -->
-    <div class="flex flex-col items-center mb-10 md:mb-0 max-w-xs step" data-scroll>
-      <img :src="robot" alt="Préférences" class="w-32 h-32 mb-4">
-      <h3 class="text-xl font-semibold mb-2 text-blue-main">2. Communiquez-nous vos préférences</h3>
-      <p class="text-gray-600">Moveout.ai analyse les meilleurs listings selon vos goûts et préférences jour et nuit.</p>
-    </div>
-
-    <!-- Step 3 -->
-    <div class="flex flex-col items-center max-w-xs step" data-scroll>
-      <img :src="detente" alt="Relaxez" class="w-32 h-32 mb-4">
-      <h3 class="text-xl font-semibold mb-2 text-blue-main">3. Relaxez, on s'occupe du reste</h3>
-      <p class="text-gray-600">Dès qu'un appartement apparaît sur le web, vous serez le premier à le savoir.</p>
-    </div>
-
   </div>
 </section>
-
-  <section class="flex flex-col md:flex-row mx-auto w-11/12 md:w-4/5 p-2 pt-6 pb-6 mt-[2rem] rounded-[10px] shadow-[0_4px_6px_rgba(0,0,0,0.1)]" data-scroll>
-  <div class="w-full md:w-[30%] p-5">
-    <img :src="sofa" alt="Sauve du temps" class="w-[90%] h-auto md:h-[90%] p-[5%] mx-auto">
-  </div>
-  <div class="w-full md:w-[70%] p-5">
-    <h3 class="text-xl font-semibold mb-2 text-blue-main">Sauve du temps</h3>
-    <p class="text-black-600"> En 3 clics, configure ta recherche d’appartement et laisse notre bot s’occuper du reste.</p>
-    <br>
-    <ul class="list-disc pl-4">
-      <li class="text-gray-500">Recherche ultra-rapide et automatisée, 24/7</li>
-      <li class="text-gray-500">Dites adieu aux visites inutiles, gagnez du temps pour ce qui compte vraiment</li>
-    </ul>
-  </div>
-</section>
-
-<section class="flex flex-col md:flex-row mx-auto w-11/12 md:w-4/5 p-2 pt-6 pb-6 mt-[2rem] rounded-[10px] shadow-[0_4px_6px_rgba(0,0,0,0.1)]" data-scroll>
-  <div class="w-full md:w-[30%] p-5">
-    <img :src="group" alt="Bye bye, arnaques" class="w-[90%] h-auto md:h-[90%] p-[5%] mx-auto">
-  </div>
-  <div class="w-full md:w-[70%] p-5">
-    <h3 class="text-xl font-semibold mb-2 text-blue-main">Bye bye, arnaques !</h3>
-    <p class="text-black-600"> Fini les annonces louches et les fausses promesses.</p>
-    <br>
-    <ul class="list-disc pl-4">
-      <li class="text-gray-500">Système de notation intelligent : chaque propriétaire est évalué sur 5</li>
-      <li class="text-gray-500">Priorisation des annonces avec les meilleures notes</li>
-    </ul>
-  </div>
-</section>
-
-<section class="flex flex-col md:flex-row mx-auto w-11/12 md:w-4/5 p-2 pt-6 pb-6 mt-[2rem] rounded-[10px] shadow-[0_4px_6px_rgba(0,0,0,0.1)]" data-scroll>
-  <div class="w-full md:w-[30%] p-5">
-    <img :src="drone" alt="Trouve la perle rare avant tout le monde" class="w-[90%] h-auto md:h-[90%] p-[5%] mx-auto">
-  </div>
-  <div class="w-full md:w-[70%] p-5">
-    <h3 class="text-xl font-semibold mb-2 text-blue-main">Trouve la perle rare avant tout le monde</h3>
-    <p class="text-black-600">Sois parmi les premiers à postuler et maximise tes chances de décrocher le logement idéal.</p>
-    <br>
-    <ul class="list-disc pl-4">
-      <li class="text-gray-500">Accès prioritaire aux nouvelles annonces</li>
-      <li class="text-gray-500">Système de classement par distance (transports, commodités)</li>
-    </ul>
-  </div>
-</section>
-
 </template>

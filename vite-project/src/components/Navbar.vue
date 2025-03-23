@@ -19,11 +19,11 @@ function logout() {
   router.push({ path: "/login" });
 }
 
-function login() {
+function gotologin() {
   router.push({ path: "/login" });
 }
 
-function signup() {
+function gotosignup() {
   router.push({ path: "/signup" });
 }
 
@@ -78,20 +78,21 @@ function estConnecter() {
   .navbar-item-btn-colored {
     padding: 0.4rem 1.8rem;
     border-radius: 10px;
+    color: #ffffff;
     font-size: medium;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: #333333;
     transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effects */
   }
 
   .navbar-item-btn:hover,
   .navbar-item-btn:focus {
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.2);
     transform: scale(1.05); /* Slight scale effect on hover */
   }
 
   .navbar-item-btn-colored:hover,
   .navbar-item-btn-colored:focus {
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: #666666;
     transform: scale(1.05); /* Slight scale effect on hover */
   }
 
@@ -121,7 +122,7 @@ function estConnecter() {
       padding: 0.5rem 1rem;
       width: 100%; /* Full width for better tap targets */
       text-align: center;
-      border: 1px solid rgba(0, 0, 0, 0.2);
+      border: 1px solid #333333;
       font-size: 0.9rem;
     }
 
@@ -154,7 +155,8 @@ function estConnecter() {
     <div class="container-fluid">
       <!-- Brand Logo -->
       <a class="navbar-brand mr-4" href="/">
-        <img src="../assets/images/Moveout_Logo2.svg" alt="Moveout Logo">
+        <!-- <img src="../assets/images/Moveout_Logo2.svg" alt="Moveout Logo"> -->
+         Moveout ai
       </a>
 
       <!-- Toggler Button for Mobile -->
@@ -166,11 +168,11 @@ function estConnecter() {
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item m-2">
-            <button v-if="!utils.getToken()" @click="login" class="navbar-item-btn">Log In</button>
+            <button v-if="!utils.getToken()" @click="gotologin" class="navbar-item-btn">Se connecter</button>
           </li>
 
           <li class="nav-item m-2">
-            <button v-if="!utils.getToken()" @click="signup" class="navbar-item-btn-colored">Sign Up</button>
+            <button v-if="!utils.getToken()" @click="gotosignup" class="navbar-item-btn-colored">Inscrire</button>
           </li>
         </ul>
       </div>
