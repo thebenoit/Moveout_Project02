@@ -4,16 +4,11 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 
-
-
-const btn_continuer_gratuitement = () =>{
+const btn_continuer_gratuitement = () => {
   router.push("/listings");
-}
+};
 //lien pour accéder au portail stripe
-const customerPortalLink = ref(
-  "https://buy.stripe.com/9AQaH56ij0ba28U6oo"
-);
-
+const customerPortalLink = ref("open ");
 </script>
 
 <template>
@@ -36,7 +31,6 @@ const customerPortalLink = ref(
           class="inline-block bg-black text-white mb-5 px-4 py-2 rounded-full w-full text-center"
         >
           Continuer gratuitement
-
         </a>
       </div>
       <div class="flex flex-1 flex-col p-2 pt-0">

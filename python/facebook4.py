@@ -86,8 +86,8 @@ class Scraper:
         #"https://www.facebook.com/marketplace/montreal/propertyrentals?locale=fr_CA"
         #configuration des proxies
         proxies = {
-            "http": "http://pc7PiGyTTw-res-any:PC_7kzkaLvMO2XGBa07q@proxy-us.proxy-cheap.com:5959",
-            "https": "http://pc7PiGyTTw-res-any:PC_7kzkaLvMO2XGBa07q@proxy-us.proxy-cheap.com:5959"
+            "http": "http://pcfyv8ibId-res-any:PC_9RAd7QXoMD4h7sUTW@proxy-us.proxy-cheap.com:5959",
+            "https": "http://pcfyv8ibId-res-any:PC_9RAd7QXoMD4h7sUTW@proxy-us.proxy-cheap.com:5959"
         }
 
         proxy_options = {
@@ -142,7 +142,64 @@ class Scraper:
                         #return the headers, body, and response body
                         return request.headers.__dict__["_headers"], request.body, resp_body
         print("No matching request found")
-        return None            
+        return None
+    
+    def clean_price(self, price):
+        try:
+            # Supprime tous les caractères non numériques sauf le point
+            cleaned = ''.join(char for char in price if char.isdigit() or char == '.')
+            return float(cleaned)
+        except:
+            return None
+    
+    def clean_bedrooms(self, custom_title):
+        """
+        Extrait le nombre de chambres à partir du titre personnalisé
+        Format typique: "X lits · Y salle de bain"
+        
+        Args:
+            custom_title (str): Titre personnalisé de l'annonce
+            
+        Returns:
+            int or None: Nombre de chambres ou None si non trouvé
+        """
+        try:
+            if not custom_title:
+                return None
+                
+            # Recherche le nombre avant "lits" ou "lit"
+            import re
+            match = re.search(r'(\d+)\s*(?:lit|lits|chambre|chambres|bed|beds)', custom_title.lower())
+            if match:
+                return int(match.group(1))
+            return None
+        except:
+            return None
+        
+    def clean_bathrooms(self, custom_title):
+        """
+        Extrait le nombre de salles de bain à partir du titre personnalisé
+        Format typique: "X lits · Y salle de bain"
+        
+        Args:
+            custom_title (str): Titre personnalisé de l'annonce
+            
+        Returns:
+            int or None: Nombre de salles de bain ou None si non trouvé
+        """
+        try:
+            if not custom_title:
+                return None
+                
+            # Recherche le nombre avant "salle de bain" ou "salles de bain"
+            import re
+            match = re.search(r'(\d+)\s*(?:salle de bain|salles de bain|bath|baths)', custom_title.lower())
+            if match:
+                return int(match.group(1))
+            return None
+        except:
+            return None    
+                
     
     def load_headers(self, headers):
         # Cette méthode charge les en-têtes HTTP dans la session
@@ -171,13 +228,45 @@ class Scraper:
                 if "for_sale_item" in node["node"] and "id" in node["node"]["for_sale_item"]:
                     listing_id = node["node"]["for_sale_item"]["id"]
                     # Utiliser listing_id comme _id dans le document
-                    data = node["node"]
-                    data["_id"] = listing_id  # Ajouter l'ID explicitement
+                    # data = node["node"]
+                    
+                    # Extraire et nettoyer le prix pour le convertir en valeur numérique
+                    price_numeric = None
+                    if "formatted_price" in node["node"]["for_sale_item"] and "text" in node["node"]["for_sale_item"]["formatted_price"]:
+                        price_text = node["node"]["for_sale_item"]["formatted_price"]["text"]
+                        # Supprimer les espaces, le symbole $ et convertir en nombre
+                        price_numeric = self.clean_price(price_text)
+                        
+                                        # Extraire le nombre de chambres et de salles de bain
+                    custom_title = node["node"]["for_sale_item"].get("custom_title", "")
+                    bedrooms = self.clean_bedrooms(custom_title)
+                    bathrooms = self.clean_bathrooms(custom_title)    
+                     
+                    # Au lieu d'ajouter tout le nœud, créez un nouvel objet avec seulement les champs désirés
+                    filtered_data = {
+                        "_id": listing_id,
+                        "scraped_at": time.time(),  # Ajoute un timestamp UNIX
+                        "budget": price_numeric,
+                        "bedrooms": bedrooms,
+                        "bathrooms": bathrooms,
+                        "for_sale_item": {
+                            "id": node["node"]["for_sale_item"]["id"],
+                            "marketplace_listing_title": node["node"]["for_sale_item"].get("marketplace_listing_title", ""),
+                            "formatted_price": node["node"]["for_sale_item"].get("formatted_price", {}),
+                            "location": node["node"]["for_sale_item"].get("location", {}),
+                            "custom_title": node["node"]["for_sale_item"].get("custom_title", ""),
+                            "custom_sub_titles_with_rendering_flags": node["node"]["for_sale_item"].get("custom_sub_titles_with_rendering_flags", []),
+                            "listing_photos": node["node"]["for_sale_item"].get("listing_photos", []),
+                            "share_uri": node["node"]["for_sale_item"].get("share_uri", "")
+                        }
+                    }
+                    # data["_id"] = listing_id  # Ajouter l'ID explicitement
                     if not self.bd.apartments.find_one({"_id": listing_id}):
                         print("Ajout de data--------->:")
                         #print(data)
-                        data["scraped_at"] = time.time()  # Ajoute un timestamp UNIX
-                        self.bd.add_data(data)
+                        
+                        
+                        self.bd.add_data(filtered_data)
         except KeyError as e:
             print(f"Erreur de structure dans le body : {e}")
 

@@ -73,7 +73,7 @@ onMounted(() => {
       @click="handleSubmitButton"
       class="bg-blue-main text-white py-3 px-6 rounded-full text-lg md:text-xl font-semibold hover:bg-blue-400 transition-colors shadow-lg hover:shadow-xl"
     >
-      Trouve ton appartement!
+      clique pour trouver ton appartement!
     </button>
   </div>
 </template>

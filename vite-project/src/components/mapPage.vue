@@ -118,16 +118,7 @@ const updateClusters = () => {
     const bounds = map.value.leafletObject.getBounds(); // Récupère les limites de la carte Leaflet
     zoom.value = map.value.zoom;
     //console.log(`GeoPoints dans update: `, geoPoints.value);
-    console.log(
-      "West:",
-      bounds.getWest(),
-      "South:",
-      bounds.getSouth(),
-      "East:",
-      bounds.getEast(),
-      "North:",
-      bounds.getNorth()
-    );
+ 
     console.log(`zoom: `, zoom.value);
 
     //créer les clusters à l'aide de supercluster

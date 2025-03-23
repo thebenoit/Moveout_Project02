@@ -19,7 +19,7 @@ let props = defineProps({
 
 onMounted(async () => {
   response.value = await utils_notif.get("api/notification/" + props.userId);
-  console.log('userId: ', props.userId);
+  console.log("userId: ", props.userId);
   console.log("response: ", response.value);
   notifStatus.value = await notifEstActif(response.value);
 });
@@ -29,15 +29,25 @@ const response = ref([]);
 const notifStatus = ref(false);
 
 // vérifier si la notification est active
-const notifEstActif = async (notif) =>{
-  if(notif.data.status === "recurring"){
+const notifEstActif = async (notif) => {
+  if (notif.data.status === "recurring") {
     return true;
-  }
-  else{
+  } else {
     return false;
   }
-}
+};
 
+onMounted(async () => {
+  try {
+    response.value = await utils_notif.get("api/notification/" + props.userId);
+
+    console.log("userId: ", props.userId);
+    console.log("response: ", response.value);
+    notifStatus.value = await notifEstActif(response.value);
+  } catch (error) {
+    console.log("erreur dans la récupération de la notification: ", error);
+  }
+});
 
 // Fonction pour gérer la sélection du nombre de chambres
 
@@ -65,7 +75,7 @@ const enregistrer = async () => {
     console.log("Enregistrer... ", response.value);
 
     // Fermer le modal
-    document.getElementById('config_notif_modal').close();
+    document.getElementById("config_notif_modal").close();
   } catch (error) {
     console.log("erreur dans l'enregistrement: ", error);
   }
@@ -76,7 +86,6 @@ const enregistrer = async () => {
   <div>
     <div
       class="flex flex-col items-center justify-center m-20 space-around gap-20"
-  
     >
       <button
         class="p-2 bg-blue-main rounded-xl w-16 h-16 shadow-lg"
@@ -99,19 +108,24 @@ const enregistrer = async () => {
       </button>
     </div>
 
-    <div class="flex-1 flex flex-col items-center justify-center text-center" v-if="!notifStatus">
+    <div
+      class="flex-1 flex flex-col items-center justify-center text-center"
+      v-if="!notifStatus"
+    >
       <p>
         Appuyer sur le bouton ci-dessus pour
         <a class="text-blue-main">activer</a>
       </p>
       <p>ou <a class="text-blue-main">modifier</a> vos notifications</p>
     </div>
-    <div class="flex-1 flex flex-col items-center justify-center text-center" v-else>
+    <div
+      class="flex-1 flex flex-col items-center justify-center text-center"
+      v-else
+    >
       <p>
-       Vos notifications sont
+        Vos notifications sont
         <a class="text-blue-main">activées</a>
       </p>
-      
     </div>
     <!-- <button
         class="p-2 bg-blue-main rounded-xl w-16 h-16 shadow-lg"
