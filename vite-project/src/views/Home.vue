@@ -43,9 +43,10 @@ onMounted(() => {
   }
 
   .title-txt {
-    font-size: 2.8rem;
-    text-align: center;
-    font-weight: 400;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #2d3436;
     animation: fadeInUp 1s ease-out;
     animation-fill-mode: both;
   }
@@ -62,10 +63,9 @@ onMounted(() => {
   }
 
   .subtitle-txt {
-    font-size: 1.2rem;
-    text-align: center;
-    font-weight: 300;
-    color: gray;
+    font-size: 1.1rem;
+    color: #6c757d;
+    margin-bottom: 3rem;
     animation: fadeInUp 1s ease-out 0.5s;
     animation-fill-mode: both;
   }
@@ -96,11 +96,21 @@ onMounted(() => {
     }
   }
 
+  @keyframes fadeInFromLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-100%); 
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+}
+
   .pricing-section {
     width: 100%;
-    padding: 4rem 1rem;
+    padding: 8rem 1rem;
     background-color: #f8f9fa;
-    margin-top: 6rem;
   }
 
   .pricing-content {
@@ -222,6 +232,71 @@ onMounted(() => {
     }
   }
 
+  /* Messaging Section */
+  .messaging-section {
+    padding: 4rem 0;
+    margin-top: 5rem;
+    background: linear-gradient(to bottom, #ffffff 0%, #f8f9fa 100%);
+  }
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 600; 
+    color: #333333; 
+    animation: fadeIn 1s ease-out 1.2s;
+    animation-fill-mode: both;
+  }
+
+  .section-subtitle {
+    color: #666666;
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+    animation: fadeIn 1s ease-out 1.2s;
+    animation-fill-mode: both;
+  }
+
+  /* Feature Cards */
+  .feature-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    animation: fadeInFromLeft 1s ease-out 1.3s;
+    animation-fill-mode: both;
+  }
+
+  .feature-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .feature-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 0.75rem;
+  }
+
+  .feature-description {
+    font-size: 1rem;
+    color: #666666;
+    line-height: 1.6;
+  }
+
+  /* Phone Mockup (Optional) */
+  .phone-mockup {
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .phone-mockup {
+      margin-top: 2rem;
+    }
+  }
+
 </style>
 
 <script>
@@ -231,11 +306,69 @@ onMounted(() => {
 <template>
   <div class="hero-header-content">
     <label class="title-txt">Trouvez votre appartement idéal sans tracas <br> Laissez notre bot faire le travail !</label>
-    <p class="subtitle-txt">Envoyez un message à Moveout Bot par SMS ou WhatsApp. <br> Disponible en 20 langues. Votre maison de rêve est à un message de distance.</p>
+    <p class="subtitle-txt">Envoyez un message à Moveout Bot par SMS ou WhatsApp. <br> Votre maison de rêve est à un message de distance.</p>
     <br>
     <button @click="handleProceedSignUp" class="title-btn">Commencez avec Moveout</button>
   </div>
 
+  <section id="sms-whatsapp" class="messaging-section">
+    <div class="container">
+
+      <!-- <div class="section-header text-center">
+        <h2 class="section-title">Trouvez des appartements par SMS ou WhatsApp</h2>
+        <p class="section-subtitle">Aucune application à télécharger. Envoyez-nous simplement un message, et nous ferons le travail pour vous !</p>
+      </div> -->
+
+      <div class="row align-items-center mt-[4rem]">
+        
+        <div class="col-md-6">
+          <div class="messaging-features">
+            <h2 class="section-title">Trouvez des appartements par SMS ou WhatsApp</h2>
+            <p class="section-subtitle">Aucune application à télécharger. Envoyez-nous simplement un message, et nous ferons le travail pour vous !</p>
+            <!-- <div class="feature-card">
+              <div class="feature-icon">🚀</div>
+              <h3 class="feature-title">Correspondances Instantanées et Personnalisées</h3>
+              <p class="feature-description">
+                Recevez des annonces adaptées à vos besoins, envoyées directement sur votre téléphone. Pas d'applications.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">⚡</div>
+              <h3 class="feature-title">Obtenez des correspondances instantanément</h3>
+              <p class="feature-description">
+                Notre bot IA scanne des milliers d'annonces et vous envoie les meilleures options en quelques secondes.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">🌍</div>
+              <h3 class="feature-title">Parlez votre langue</h3>
+              <p class="feature-description">
+                Discutez naturellement dans <strong>20 langues</strong>, dont l'anglais, l'espagnol, le mandarin et l'arabe.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">⏰</div>
+              <h3 class="feature-title">Disponible 24h/24 et 7j/7</h3>
+              <p class="feature-description">
+                Notre bot ne dort jamais. Vous cherchez un appartement en pleine nuit ? On s’occupe de tout.
+              </p>
+            </div> -->
+
+          </div>
+        </div>
+
+        <!-- Right Column: Phone Mockup (Optional) -->
+        <div class="col-md-6 text-center">
+          <div class="phone-mockup">
+            <img src="../assets/images/phone-mockup.png" alt="Chat with moveout.ai via SMS/WhatsApp" class="img-fluid">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <section class="pricing-section">
   <div class="pricing-header">

@@ -14,7 +14,7 @@ const connecter = ref(false);
 
 const router = useRouter();
 
-function logout() {
+function gotologout() {
   utils.logout();
   router.push({ path: "/login" });
 }
@@ -167,13 +167,17 @@ function estConnecter() {
       <!-- Navbar Links -->
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
+          
           <li class="nav-item m-2">
             <button v-if="!utils.getToken()" @click="gotologin" class="navbar-item-btn">Se connecter</button>
+            <button v-else @click="" class="navbar-item-btn-colored">Compte</button>
           </li>
 
           <li class="nav-item m-2">
             <button v-if="!utils.getToken()" @click="gotosignup" class="navbar-item-btn-colored">Inscrire</button>
+            <button v-else @click="gotologout" class="navbar-item-btn-colored">Déconnexion</button>
           </li>
+
         </ul>
       </div>
     </div>

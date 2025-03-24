@@ -303,7 +303,7 @@ async function preferenceCreation() {
 
   .signup-content {
     width: 100%;
-    max-width: 450px;
+    max-width: 500px;
     padding: 1rem;
   }
 
@@ -355,7 +355,7 @@ async function preferenceCreation() {
     animation-fill-mode: both;
   }
 
-  .signup-group {
+  .input-group {
     margin-bottom: 1.5rem;
     animation: slideInLeft 0.8s ease-out 0.6s;
     animation-fill-mode: both;
@@ -372,7 +372,7 @@ async function preferenceCreation() {
     }
   }
 
-  .input-group input, .input-group select {
+  .input-group input, .input-group select, .input-group div {
     width: 100%;
     padding: 0.75rem 1rem;
     border: 1px solid #dddddd;
@@ -452,6 +452,10 @@ async function preferenceCreation() {
     75% {
       transform: translateX(-10px);
     }
+  }
+
+  .sign-width {
+    width: 45%;
   }
 </style>
 
@@ -638,15 +642,15 @@ async function preferenceCreation() {
       </div>
     </section> -->
 
-    <section class="signup-section">
-      <div class="signup-card">
+    <section v-else class="signup-section">
+      <div class="signup-card sign-width">
         <h1 class="signup-title">Comprendre vos préférences...</h1><br>
         <p class="signup-description">Ces réponses nous permettront de sélectionner les appartements qui vous correspondent le mieux</p>
         <hr>
         <br>
         <div class="flex gap-4">
           <div class="input-group flex-1">
-            <label>Combien de chambre?</label>
+            <label class="form-label">Combien de chambre?</label>
             <select
               v-model="selectedBedrooms"
               @change="handleBedroomsChange"
@@ -665,7 +669,7 @@ async function preferenceCreation() {
           </div>
 
           <div class="input-group flex-1">
-            <label>Budget Minimum</label>
+            <label class="form-label">Budget Minimum</label>
             <input 
               type="number" 
               v-model="selectedBudget.minValue"
@@ -676,7 +680,7 @@ async function preferenceCreation() {
           </div>
           
           <div class="input-group flex-1">
-            <label>Budget Maximum</label>
+            <label class="form-label">Budget Maximum</label>
             <input
               type="number"
               v-model="selectedBudget.maxValue"
@@ -689,7 +693,7 @@ async function preferenceCreation() {
       
         <div class="flex gap-4">
           <div class="input-group flex-1">
-            <label>Quelle est votre âge?</label>
+            <label class="form-label">Quelle est votre âge?</label>
             <select 
               v-model="selectedAge"
               class=""
@@ -703,7 +707,7 @@ async function preferenceCreation() {
             </select>
           </div>
           <div class="input-group flex-1">
-            <label>Quelle est votre Sexe?</label>
+            <label class="form-label">Quelle est votre Sexe?</label>
             <select 
               v-model="selectedGender"
               class=""
@@ -719,7 +723,7 @@ async function preferenceCreation() {
         </div>
 
         <div class="input-group">
-          <label>Quelle est votre situation professionnelle ?</label>
+          <label class="form-label">Quelle est votre situation professionnelle ?</label>
           <select 
             v-model="selectedOccupation"
             class=""
@@ -736,31 +740,48 @@ async function preferenceCreation() {
         </div>
 
         <div class="input-group">
-          <label>Quartier de préférence</label>
-          <select 
-            v-model="selectedNeighborhoods"
-            multiple
-            class="w-full h-60 border rounded-lg overflow-y-auto"
-          >
+          <label class="form-label"> Quartier de préférence (Sélection multiple) </label>
+          <div class="border-2 rounded-lg p-2 h-60 overflow-y-auto">
             <template v-for="(neighborhoods, borough) in quartiers" :key="borough">
-              <optgroup :label="borough">
-                <option
-                  v-for="neighborhood in neighborhoods"
-                  :key="neighborhood"
-                  :value="neighborhood"
-                  class=""
-                >
-                  -> {{ neighborhood }}
-                </option>
-              </optgroup>
+              <div class="mb-2">
+                <h3 class="font-semibold text-gray-900 mb-2">{{ borough }}</h3>
+                <div class="flex flex-wrap gap-2">
+                  <label
+                    v-for="neighborhood in neighborhoods"
+                    :key="neighborhood"
+                    class="flex items-center px-4 py-2 bg-gray-100 rounded-md cursor-pointer hover:bg-gray-200 transition-colors"
+                    :class="{ 'bg-blue-100 hover:bg-blue-200': selectedNeighborhoods.includes(neighborhood) }"
+                  >
+                    <input
+                      type="checkbox"
+                      :value="neighborhood"
+                      v-model="selectedNeighborhoods"
+                      class="h-4 w-auto text-blue-600 border-gray-300 rounded focus:ring-blue-500 mr-2"
+                    >
+                    <span>{{ neighborhood }}</span>
+                  </label>
+                </div>
+              </div>
             </template>
-          </select>
+          </div>
         </div>
 
+        <div class="input-group">
+              <label class="form-label">Quel genre de services supplémentaires seriez-vous intéressé(e) ? </label>
+              <input
+                v-model="customService"
+                type="text"
+                placeholder="Précisez le service"
+                class=""
+              />
+          </div>
+
+        <p class="error-message">{{ preferenceSurveyError }}</p>
+        <button @click="preferenceCreation" class="signup-btn w-full mt-6"> Next </button>
       </div>
     </section>
 
-    <section class="max-w-xl lg:max-w-3xl mx-auto p-4">
+    <!-- <section class="max-w-xl lg:max-w-3xl mx-auto p-4">
       <div class="w-full flex jusitfy-start">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -841,7 +862,6 @@ async function preferenceCreation() {
             >
               <h2 class="text-lg text-gray-700 mb-2">{{ borough }}</h2>
 
-              <!-- Loop through neighborhoods within each borough -->
               <div class="flex flex-wrap gap-2">
                 <button
                   v-for="neighborhood in neighborhoods"
@@ -966,28 +986,28 @@ async function preferenceCreation() {
           </div>
 
           <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
-            <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
-              Quel genre de services supplémentaires seriez-vous intéressé(e) ?
-            </h1>
-            <input
-              v-model="customService"
-              type="text"
-              placeholder="Précisez le service"
-              class="input input-bordered w-full max-w-xs mt-2"
-            />
+              <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
+                Quel genre de services supplémentaires seriez-vous intéressé(e) ?
+              </h1>
+              <input
+                v-model="customService"
+                type="text"
+                placeholder="Précisez le service"
+                class="input input-bordered w-full max-w-xs mt-2"
+              />
+            </div>
+            <p class="text-red-500 text-center mt-2">
+              {{ preferenceSurveyError }}
+            </p>
+            <button
+              @click="preferenceCreation"
+              class="btn btn-accent w-full mt-6"
+            >
+              Next
+            </button>
           </div>
-          <p class="text-red-500 text-center mt-2">
-            {{ preferenceSurveyError }}
-          </p>
-          <button
-            @click="preferenceCreation"
-            class="btn btn-accent w-full mt-6"
-          >
-            Next
-          </button>
-        </div>
       </section>
-    </section>
+    </section> -->
   </div>
 </template>
 
