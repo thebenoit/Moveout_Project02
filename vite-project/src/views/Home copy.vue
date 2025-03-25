@@ -37,7 +37,7 @@ function handleSubmitButton() {
       <div class="flex flex-col md:flex-row justify-around items-center">
         <!-- Step 1 -->
         <div class="flex flex-col items-center mb-10 md:mb-0 max-w-xs">
-          <img :src="conect" alt="Inscrivez-vous" class="w-32 h-32 mb-4">
+          <img :src="connect" alt="Inscrivez-vous" class="w-32 h-32 mb-4">
           <h3 class="text-xl font-semibold mb-2 text-blue-main">1. Inscrivez-vous sur Moveout</h3>
           <p class="text-gray-600">Moveout.ai recherche tout les sites web de listing sur internet... vraiment tout.</p>
         </div>

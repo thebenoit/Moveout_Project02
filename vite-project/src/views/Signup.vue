@@ -291,14 +291,267 @@ async function preferenceCreation() {
   }
 }
 </script>
+
+<style>
+  /* General Styles */
+  .signup-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+  }
+
+  .signup-content {
+    width: 100%;
+    max-width: 500px;
+    padding: 1rem;
+  }
+
+  .signup-card {
+    background-color: #ffffff;
+    padding: 2.5rem 2rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .signup-title {
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: #333333;
+    margin-bottom: 0.5rem;
+    animation: fadeIn 1s ease-out 0.2s;
+    animation-fill-mode: both;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .signup-description {
+    font-size: 1rem;
+    color: #666666;
+    margin-bottom: 2rem;
+    animation: fadeIn 1s ease-out 0.4s;
+    animation-fill-mode: both;
+  }
+
+  .input-group {
+    margin-bottom: 1.5rem;
+    animation: slideInLeft 0.8s ease-out 0.6s;
+    animation-fill-mode: both;
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .input-group input, .input-group select, .input-group div {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .input-group input:focus, .input-group select:focus {
+    border-color: rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    outline: none;
+  }
+
+  .signup-btn {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #333333;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    animation: fadeIn 1s ease-out 0.8s;
+    animation-fill-mode: both;
+  }
+
+  .signup-btn:hover, .login-btn:focus {
+    background-color: #666666;
+    transform: scale(1.02);
+  }
+
+  .signup-btn:active {
+    transform: scale(0.98);
+  }
+
+  .signup-small {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: #666666;
+    animation: fadeIn 1s ease-out 1s;
+    animation-fill-mode: both;
+  }
+
+  .signup-link {
+    color: rgba(0, 0, 0, 0.5);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+
+  .signup-link:hover {
+    color: rgba(0, 0, 0, 0.7);
+    text-decoration: underline;
+  }
+
+  .error-message {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    animation: shake 0.5s ease-out;
+  }
+
+  @keyframes shake {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-10px);
+    }
+    50% {
+      transform: translateX(10px);
+    }
+    75% {
+      transform: translateX(-10px);
+    }
+  }
+
+  .sign-width {
+    width: 45%;
+  }
+</style>
+
 <template>
   <div>
-    <section
-      v-if="!hiddenFirst"
-      class="max-w-xl lg:max-w-3xl mx-auto p-4 overflow-hidden"
-    >
+
+    <section v-if="!hiddenFirst" class="signup-section">
+      <div class="signup-content">
+        <div class="signup-card">
+          <!-- Error Message -->
+          <p class="error-message">{{ errorMessages }}</p>
+
+          <!-- Title and Description -->
+          <h1 class="signup-title">Bienvenue !</h1>
+          <p class="signup-description">Créez votre compte Moveout</p>
+
+          <form @submit.prevent="signup">
+            <div class="input-group">
+              <input
+                id="first-name"
+                type="text"
+                placeholder="Prénom"
+                v-model="firstName"
+                required
+              >
+            </div>
+
+            <div class="input-group">
+              <input
+                id="last-name"
+                type="text"
+                placeholder="Nom de famille"
+                v-model="lastName"
+                required
+              >
+            </div>
+
+            <div class="input-group">
+              <input
+                id="phone"
+                type="tel"
+                placeholder="Numéro de téléphone"
+                v-model="phone"
+                required
+              >
+            </div>
+
+            <div class="input-group">
+              <input
+                id="email"
+                type="email"
+                placeholder="Email"
+                v-model="email"
+                required
+              >
+            </div>
+
+            <div class="input-group">
+              <input
+                id="password"
+                type="password"
+                placeholder="Mot de passe"
+                v-model="password"
+                required
+              >
+            </div>
+
+            <div class="input-group">
+              <input
+                id="confirmPassword"
+                type="password"
+                placeholder="Confirmez le mot de passe"
+                v-model="confirmPassword"
+                required
+              >
+            </div>
+
+            <button class="signup-btn" type="submit">
+              Rejoignez Moveout
+            </button>
+          </form>
+
+          <p class="signup-small">
+            Vous avez déjà un compte ? 
+            <router-link to="/login" class="signup-link">
+              Connectez-vous
+            </router-link>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- <section
+      v-if="!hiddenFirst" class="max-w-xl lg:max-w-3xl mx-auto p-4 overflow-hidden">
       <div class="mt-0">
-        <Card class="bg-gray-200 backdrop-blur-3xl mt-16 lg:mt-0">
+        <Card class="bg-gray-200 backdrop-blur-3xl mt-16 lg:mt-0  animate-fadeIn transition-all duration-500 ease-in-out">
           <p class="text-red-500 text-sm text-center rounded-lg">
             {{ errorMessages }}
           </p>
@@ -315,7 +568,7 @@ async function preferenceCreation() {
               <div class="grid grid-cols-2 gap-4">
                 <div class="grid gap-2">
                   <Input
-                    class="btn text-left"
+                    class="btn text-left transition-transform duration-300 ease-in-out transform focus:scale-105"
                     id="first-name"
                     placeholder="First name"
                     required
@@ -324,7 +577,7 @@ async function preferenceCreation() {
                 </div>
                 <div class="grid gap-2">
                   <Input
-                    class="btn text-left"
+                    class="btn text-left transition-transform duration-300 ease-in-out transform focus:scale-105"
                     id="last-name"
                     placeholder="Last name"
                     required
@@ -334,7 +587,7 @@ async function preferenceCreation() {
               </div>
               <div class="grid mt-1">
                 <Input
-                  class="btn text-left"
+                  class="btn text-left transition-transform duration-300 ease-in-out transform focus:scale-105"
                   id="phone"
                   type="phone"
                   placeholder="Phone number"
@@ -344,7 +597,7 @@ async function preferenceCreation() {
               </div>
               <div class="grid mt-1">
                 <Input
-                  class="btn text-left"
+                  class="btn text-left transition-transform duration-300 ease-in-out transform focus:scale-105"
                   id="email"
                   type="email"
                   placeholder="Email"
@@ -354,10 +607,19 @@ async function preferenceCreation() {
               </div>
               <div class="grid mt-1">
                 <Input
-                  class="btn text-left"
+                  class="btn text-left transition-transform duration-300 ease-in-out transform focus:scale-105"
                   id="password"
                   type="password"
                   placeholder="Password"
+                  v-model="password"
+                />
+              </div>
+              <div class="grid mt-1">
+                <Input
+                  class="btn text-left transition-transform duration-300 ease-in-out transform focus:scale-105"
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="Re-Enter Password"
                   v-model="password"
                 />
               </div>
@@ -369,18 +631,157 @@ async function preferenceCreation() {
               </p>
               <Button
                 type="submit"
-                class="btn btn-lg w-full text-base bg-blue-main hover: overflow-hidden"
+                class="bg-blue-main text-white py-3 px-6 rounded-full text-lg md:text-lg font-semibold hover:bg-blue-400 transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 duration-300"
                 @click="signup"
               >
-                Rejoignez Moveout gratuitement
+                Rejoignez Moveout
               </Button>
             </div>
           </CardContent>
         </Card>
       </div>
+    </section> -->
+
+    <section v-else class="signup-section">
+      <div class="signup-card sign-width">
+        <h1 class="signup-title">Comprendre vos préférences...</h1><br>
+        <p class="signup-description">Ces réponses nous permettront de sélectionner les appartements qui vous correspondent le mieux</p>
+        <hr>
+        <br>
+        <div class="flex gap-4">
+          <div class="input-group flex-1">
+            <label class="form-label">Combien de chambre?</label>
+            <select
+              v-model="selectedBedrooms"
+              @change="handleBedroomsChange"
+              class=""
+            >
+              <option value="" disabled selected>Nombre de chambres</option>
+              <option
+                v-for="bedrooms in ['1', '2', '3', '4', '5+']"
+                :key="bedrooms"
+                :value="bedrooms"
+                :selected="selectedBedrooms.includes(bedrooms)"
+              >
+                {{ bedrooms }}
+              </option>
+            </select>
+          </div>
+
+          <div class="input-group flex-1">
+            <label class="form-label">Budget Minimum</label>
+            <input 
+              type="number" 
+              v-model="selectedBudget.minValue"
+              min="0"
+              max="10000"
+              class="w-full p-2 border rounded"
+            >
+          </div>
+          
+          <div class="input-group flex-1">
+            <label class="form-label">Budget Maximum</label>
+            <input
+              type="number"
+              v-model="selectedBudget.maxValue"
+              min="0"
+              max="10000"
+              class="w-full p-2 border rounded"
+            >
+          </div>
+        </div>
+      
+        <div class="flex gap-4">
+          <div class="input-group flex-1">
+            <label class="form-label">Quelle est votre âge?</label>
+            <select 
+              v-model="selectedAge"
+              class=""
+            >
+              <option value="" disabled selected>Sélectionnez votre tranche d'âge</option>
+              <option v-for="age in ['18-25', '26-35', '36-45', '46+']" 
+                      :key="age" 
+                      :value="age">
+                {{ age }}
+              </option>
+            </select>
+          </div>
+          <div class="input-group flex-1">
+            <label class="form-label">Quelle est votre Sexe?</label>
+            <select 
+              v-model="selectedGender"
+              class=""
+            >
+              <option value="" disabled selected>Sélectionnez votre sexe</option>
+              <option v-for="gender in ['Homme', 'Femme', 'Autre']" 
+                      :key="gender" 
+                      :value="gender">
+                {{ gender }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="form-label">Quelle est votre situation professionnelle ?</label>
+          <select 
+            v-model="selectedOccupation"
+            class=""
+          >
+            <option value="" disabled selected>Sélectionnez votre situation</option>
+            <option 
+              v-for="occupation in ['Étudiant', 'Sans Emplois', 'Employé', 'Entrepreneur', 'Retraité']"
+              :key="occupation"
+              :value="occupation"
+            >
+              {{ occupation }}
+            </option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label class="form-label"> Quartier de préférence (Sélection multiple) </label>
+          <div class="border-2 rounded-lg p-2 h-60 overflow-y-auto">
+            <template v-for="(neighborhoods, borough) in quartiers" :key="borough">
+              <div class="mb-2">
+                <h3 class="font-semibold text-gray-900 mb-2">{{ borough }}</h3>
+                <div class="flex flex-wrap gap-2">
+                  <label
+                    v-for="neighborhood in neighborhoods"
+                    :key="neighborhood"
+                    class="flex items-center px-4 py-2 bg-gray-100 rounded-md cursor-pointer hover:bg-gray-200 transition-colors"
+                    :class="{ 'bg-blue-100 hover:bg-blue-200': selectedNeighborhoods.includes(neighborhood) }"
+                  >
+                    <input
+                      type="checkbox"
+                      :value="neighborhood"
+                      v-model="selectedNeighborhoods"
+                      class="h-4 w-auto text-blue-600 border-gray-300 rounded focus:ring-blue-500 mr-2"
+                    >
+                    <span>{{ neighborhood }}</span>
+                  </label>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <div class="input-group">
+              <label class="form-label">Quel genre de services supplémentaires seriez-vous intéressé(e) ? </label>
+              <input
+                v-model="customService"
+                type="text"
+                placeholder="Précisez le service"
+                class=""
+              />
+          </div>
+
+        <p class="error-message">{{ preferenceSurveyError }}</p>
+        <button @click="preferenceCreation" class="signup-btn w-full mt-6"> Next </button>
+      </div>
     </section>
 
-    <section v-else class="max-w-xl lg:max-w-3xl mx-auto p-4">
+    <!-- <section class="max-w-xl lg:max-w-3xl mx-auto p-4">
       <div class="w-full flex jusitfy-start">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -461,7 +862,6 @@ async function preferenceCreation() {
             >
               <h2 class="text-lg text-gray-700 mb-2">{{ borough }}</h2>
 
-              <!-- Loop through neighborhoods within each borough -->
               <div class="flex flex-wrap gap-2">
                 <button
                   v-for="neighborhood in neighborhoods"
@@ -556,28 +956,6 @@ async function preferenceCreation() {
             </ul>
           </div>
 
-          <!-- <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
-            <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
-              Quel est votre revenu mensuel approximatif ?
-            </h1>
-            <ul class="flex justify-center space-x-4">
-              <li>
-                <button
-                  v-for="salary in ['<1000', '1000-2000', '2000-3000', '3000-4000', '>4000']"
-                  :key="salary"
-                  @click="toggleSalarySelection(salary)"
-                  :class="{
-                    ' bg-blue-main text-white': selectedSalary === salary,
-                    ' bg-gray-200 text-gray-700': selectedSalary !== salary,
-                  }"
-                  class="px-4 py-2 rounded-md border m-2"
-                >
-                  {{ salary }}
-                </button>
-              </li>
-            </ul>
-          </div> -->
-
           <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
             <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
               Comment avez-vous entendu parler de notre site ?
@@ -608,16 +986,56 @@ async function preferenceCreation() {
           </div>
 
           <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
+              <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
+                Quel genre de services supplémentaires seriez-vous intéressé(e) ?
+              </h1>
+              <input
+                v-model="customService"
+                type="text"
+                placeholder="Précisez le service"
+                class="input input-bordered w-full max-w-xs mt-2"
+              />
+            </div>
+            <p class="text-red-500 text-center mt-2">
+              {{ preferenceSurveyError }}
+            </p>
+            <button
+              @click="preferenceCreation"
+              class="btn btn-accent w-full mt-6"
+            >
+              Next
+            </button>
+          </div>
+      </section>
+    </section> -->
+  </div>
+</template>
+
+
+<!-- <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
             <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
-              Quel genre de services supplémentaires seriez-vous intéressé(e) ?
+              Quel est votre revenu mensuel approximatif ?
             </h1>
-            <input
-              v-model="customService"
-              type="text"
-              placeholder="Précisez le service"
-              class="input input-bordered w-full max-w-xs mt-2"
-            />
-            <!-- <ul class="flex justify-center space-x-4"> -->
+            <ul class="flex justify-center space-x-4">
+              <li>
+                <button
+                  v-for="salary in ['<1000', '1000-2000', '2000-3000', '3000-4000', '>4000']"
+                  :key="salary"
+                  @click="toggleSalarySelection(salary)"
+                  :class="{
+                    ' bg-blue-main text-white': selectedSalary === salary,
+                    ' bg-gray-200 text-gray-700': selectedSalary !== salary,
+                  }"
+                  class="px-4 py-2 rounded-md border m-2"
+                >
+                  {{ salary }}
+                </button>
+              </li>
+            </ul>
+          </div> -->
+
+
+<!-- <ul class="flex justify-center space-x-4"> -->
             <!-- <li>
                 <button
                   v-for="addOnService in [
@@ -651,18 +1069,5 @@ async function preferenceCreation() {
                 
               </li> -->
             <!-- </ul> -->
-          </div>
-          <p class="text-red-500 text-center mt-2">
-            {{ preferenceSurveyError }}
-          </p>
-          <button
-            @click="preferenceCreation"
-            class="btn btn-accent w-full mt-6"
-          >
-            Next
-          </button>
-        </div>
-      </section>
-    </section>
-  </div>
-</template>
+v-if="!hiddenFirst"
+v-else
