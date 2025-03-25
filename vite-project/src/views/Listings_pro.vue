@@ -112,11 +112,12 @@ const enregistrer = async () => {
       class="flex-1 flex flex-col items-center justify-center text-center"
       v-if="!notifStatus"
     >
-      <p>
-        Félicitations ! Vous avez maintenant accès au .
+      <p class="m-2">
+         Félicitations!🎉  Vous avez maintenant accès au 
         <a class="text-blue-main">Moveout Bot </a>
       </p>
-      <p>Veuillez Communiquer au  <a class="text-blue-main">+1 (218) 595-3780</a> pour lui parler</p>
+      <br>
+      <p class="m-2">Pour démarrer une conversation, envoyez simplement un message au  <a class="text-blue-main">+1 (218) 595-3780</a> </p>
     </div>
     <div
       class="flex-1 flex flex-col items-center justify-center text-center"
