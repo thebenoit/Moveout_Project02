@@ -312,16 +312,16 @@ onMounted(() => {
   </div>
 
   <section id="sms-whatsapp" class="messaging-section">
-    <div class="container">
+    <div class="container mx-auto text-center">
 
       <!-- <div class="section-header text-center">
         <h2 class="section-title">Trouvez des appartements par SMS ou WhatsApp</h2>
         <p class="section-subtitle">Aucune application à télécharger. Envoyez-nous simplement un message, et nous ferons le travail pour vous !</p>
       </div> -->
 
-      <div class="row align-items-center mt-[4rem]">
+      <div class="row align-items-center mt-[4rem] flex flex-col md:flex-row justify-center">
         
-        <div class="col-md-6">
+        <div class="col-md-6 mx-auto max-w-2xl">
           <div class="messaging-features">
             <h2 class="section-title">Trouvez des appartements par SMS ou WhatsApp</h2>
             <!-- <p class="section-subtitle">Aucune application à télécharger. Envoyez-nous simplement un message, et nous ferons le travail pour vous !</p> -->
@@ -353,7 +353,7 @@ onMounted(() => {
               <div class="feature-icon">⏰</div>
               <h3 class="feature-title">Disponible 24h/24 et 7j/7</h3>
               <p class="feature-description">
-                Notre bot ne dort jamais. Vous cherchez un appartement en pleine nuit ? On s’occupe de tout.
+                Notre bot ne dort jamais. Vous cherchez un appartement en pleine nuit ? On s'occupe de tout.
               </p>
             </div>
 

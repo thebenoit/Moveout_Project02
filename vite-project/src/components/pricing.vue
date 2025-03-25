@@ -124,7 +124,7 @@ const customerPortalLink = ref("https://buy.stripe.com/3cseXl7mn3nmcNy28a ");
           target="_blank"
           class="inline-block bg-blue-main text-white mb-5 px-4 py-2 rounded-full w-full text-center"
         >
-        Continuer avec Moveout Bot
+          Continuer avec Moveout Bot
         </a>
       </div>
       <div class="flex flex-1 flex-col p-2 pt-0">

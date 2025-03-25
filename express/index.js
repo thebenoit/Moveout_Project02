@@ -6,6 +6,7 @@ import mongoose from "./mongo/client.js";
 import Mixpanel from "mixpanel";
 import dotenv from "dotenv/config";
 import { fileURLToPath } from "url";
+import stripeWebhookRouter from "./routes/Stripe/stripe.js";
 
 // Create an instance of the mixpanel client
 var mixpanel = Mixpanel.init("d41fbc564b7544ce2d7c92cb6d8beb63", {
@@ -42,8 +43,12 @@ app.use(
       "https://notificationserver.online",
     ], // Add your frontend domain
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept",
-      "Origin"
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept",
+      "Origin",
     ],
     exposedHeaders: ["Authorization"],
     credentials: true,
@@ -52,16 +57,13 @@ app.use(
   })
 );
 
-
-
-
 //app.options("*", cors());
 
-app.use(bodyParser.json()); //apcepting as json data to read it
+app.use("/api/stripe/webhook", express.raw({ type: "application/json" }));
+
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "/")));
-
-
 
 //app.use(cors(corsOptions));
 
@@ -82,7 +84,7 @@ app.use("/api/appartements", paginated_appartments);
 // apparts personalisé
 app.use("/api/appartements", paginated_forYouPage);
 
-
+app.use("/api/stripe", stripeWebhookRouter);
 
 // app.use("/api/client/", client_logout);
 // app.use("/client/", client_appartements);
