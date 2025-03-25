@@ -47,8 +47,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname + "/")));
 
-
-
 // ✅ Solution recommandée(en production met ca)
 // app.use(cors({
 //   origin: process.env.ALLOWED_ORIGINS.split(','),
