@@ -170,7 +170,7 @@ function estConnecter() {
           
           <li class="nav-item m-2">
             <button v-if="!utils.getToken()" @click="gotologin" class="navbar-item-btn">Se connecter</button>
-            <button v-else @click="" class="navbar-item-btn-colored">Compte</button>
+            <button v-else @click="router.push('/foryou')" class="navbar-item-btn-colored">Compte</button>
           </li>
 
           <li class="nav-item m-2">

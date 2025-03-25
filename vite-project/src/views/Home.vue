@@ -305,10 +305,10 @@ onMounted(() => {
 
 <template>
   <div class="hero-header-content">
-    <label class="title-txt">Trouvez votre appartement idéal sans tracas <br> Laissez notre bot faire le travail !</label>
+    <label class="title-txt " style="font-size: 2rem;">Trouve ton appart sans effort et avant tout le monde <br></label>
     <p class="subtitle-txt">Envoyez un message à Moveout Bot par SMS ou WhatsApp. <br> Votre maison de rêve est à un message de distance.</p>
     <br>
-    <button @click="handleProceedSignUp" class="title-btn">Commencez avec Moveout</button>
+    <button @click="handleProceedSignUp" class="title-btn" style="">Commencez avec Moveout</button>
   </div>
 
   <section id="sms-whatsapp" class="messaging-section">
@@ -324,8 +324,8 @@ onMounted(() => {
         <div class="col-md-6">
           <div class="messaging-features">
             <h2 class="section-title">Trouvez des appartements par SMS ou WhatsApp</h2>
-            <p class="section-subtitle">Aucune application à télécharger. Envoyez-nous simplement un message, et nous ferons le travail pour vous !</p>
-            <!-- <div class="feature-card">
+            <!-- <p class="section-subtitle">Aucune application à télécharger. Envoyez-nous simplement un message, et nous ferons le travail pour vous !</p> -->
+            <div class="feature-card">
               <div class="feature-icon">🚀</div>
               <h3 class="feature-title">Correspondances Instantanées et Personnalisées</h3>
               <p class="feature-description">
@@ -355,29 +355,29 @@ onMounted(() => {
               <p class="feature-description">
                 Notre bot ne dort jamais. Vous cherchez un appartement en pleine nuit ? On s’occupe de tout.
               </p>
-            </div> -->
+            </div>
 
           </div>
         </div>
 
         <!-- Right Column: Phone Mockup (Optional) -->
-        <div class="col-md-6 text-center">
+        <!-- <div class="col-md-6 text-center">
           <div class="phone-mockup">
             <img src="../assets/images/phone-mockup.png" alt="Chat with moveout.ai via SMS/WhatsApp" class="img-fluid">
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </section>
 
-  <section class="pricing-section">
-  <div class="pricing-header">
+  <!-- <section class="pricing-section"> -->
+  <!-- <div class="pricing-header">
     <label>Choisissez votre forfait</label>
     <p>Trouvez le forfait parfait pour vos besoins de recherche d'appartement.</p>
-  </div>
-  <div class="pricing-content">
+  </div> -->
+  <!-- <div class="pricing-content"> -->
     <!-- Free Plan Card -->
-    <div class="pricing-card">
+    <!-- <div class="pricing-card">
       <div class="pricing-card-header">
         <p>Gratuit : <br><span>0$/mois</span></p>
       </div>
@@ -395,10 +395,10 @@ onMounted(() => {
           </li>
         </ul>
       </div>
-    </div>
+    </div> -->
 
     <!-- Pro Plan Card -->
-    <div class="pricing-card">
+    <!-- <div class="pricing-card">
       <div class="pricing-card-header">
         <p>Pro : <br><span>9.99$/mois</span></p>
       </div>
@@ -422,7 +422,7 @@ onMounted(() => {
           </li>
         </ul>
       </div>
-    </div>
-  </div>
-</section>
+    </div> -->
+  <!-- </div>
+</section> -->
 </template>
