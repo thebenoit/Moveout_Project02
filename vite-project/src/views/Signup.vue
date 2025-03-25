@@ -186,7 +186,6 @@ const router = useRouter();
 
 async function nextSlide() {
   hiddenFirst.value = true;
-  
 }
 async function previousSlide() {
   hiddenFirst.value = false;
@@ -280,8 +279,8 @@ async function preferenceCreation() {
         utils.setToken(result.token);
       }
       if (result.success) {
-        router.push({ path: "/foryou" });
-        console.log("changement de page: ");
+        window.location.href = "https://buy.stripe.com/3cseXl7mn3nmcNy28a";
+        console.log("Redirection vers la page de paiement Stripe: ");
       }
     }
   } catch (error) {
@@ -292,228 +291,233 @@ async function preferenceCreation() {
 }
 </script>
 <style>
-  /* General Styles */
-  .signup-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 80vh;
-    padding: 1rem;
-  }
+/* General Styles */
+.signup-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 1rem;
+}
 
-  .signup-content {
-    width: 100%;
-    max-width: 500px;
-    padding: 1rem;
-  }
+.signup-content {
+  width: 100%;
+  max-width: 500px;
+  padding: 1rem;
+}
 
+.signup-card {
+  background-color: #ffffff;
+  padding: 2.5rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.signup-title {
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: #333333;
+  margin-bottom: 0.5rem;
+  animation: fadeIn 1s ease-out 0.2s;
+  animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.signup-description {
+  font-size: 1rem;
+  color: #666666;
+  margin-bottom: 2rem;
+  animation: fadeIn 1s ease-out 0.4s;
+  animation-fill-mode: both;
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+  animation: slideInLeft 0.8s ease-out 0.6s;
+  animation-fill-mode: both;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.input-group input,
+.input-group select,
+.input-group div {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #333333;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+  border-color: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  outline: none;
+}
+
+.signup-btn {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #333333;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  animation: fadeIn 1s ease-out 0.8s;
+  animation-fill-mode: both;
+}
+
+.signup-btn:hover,
+.login-btn:focus {
+  background-color: #666666;
+  transform: scale(1.02);
+}
+
+.signup-btn:active {
+  transform: scale(0.98);
+}
+
+.signup-small {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: #666666;
+  animation: fadeIn 1s ease-out 1s;
+  animation-fill-mode: both;
+}
+
+.signup-link {
+  color: rgba(0, 0, 0, 0.5);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.signup-link:hover {
+  color: rgba(0, 0, 0, 0.7);
+  text-decoration: underline;
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  animation: shake 0.5s ease-out;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+  75% {
+    transform: translateX(-10px);
+  }
+}
+
+.sign-width {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
   .signup-card {
-    background-color: #ffffff;
-    padding: 2.5rem 2rem;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    text-align: center;
-    animation: fadeInUp 0.8s ease-out;
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    padding: 3rem 2.5rem;
   }
 
   .signup-title {
-    font-weight: 700;
-    font-size: 1.8rem;
-    color: #333333;
-    margin-bottom: 0.5rem;
-    animation: fadeIn 1s ease-out 0.2s;
-    animation-fill-mode: both;
+    font-size: 2rem;
   }
 
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  
   .signup-description {
-    font-size: 1rem;
-    color: #666666;
-    margin-bottom: 2rem;
-    animation: fadeIn 1s ease-out 0.4s;
-    animation-fill-mode: both;
+    font-size: 1.2rem;
   }
 
   .input-group {
-    margin-bottom: 1.5rem;
-    animation: slideInLeft 0.8s ease-out 0.6s;
-    animation-fill-mode: both;
-  }
-
-  @keyframes slideInLeft {
-    from {
-      opacity: 0;
-      transform: translateX(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  .input-group input, .input-group select, .input-group div {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid #dddddd;
-    border-radius: 8px;
-    font-size: 1rem;
-    color: #333333;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .input-group input:focus, .input-group select:focus {
-    border-color: rgba(0, 0, 0, 0.3);
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-    outline: none;
+    margin-bottom: 2rem;
   }
 
   .signup-btn {
-    width: 100%;
-    padding: 0.75rem;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #ffffff;
-    background-color: #333333;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    animation: fadeIn 1s ease-out 0.8s;
-    animation-fill-mode: both;
-  }
-
-  .signup-btn:hover, .login-btn:focus {
-    background-color: #666666;
-    transform: scale(1.02);
-  }
-
-  .signup-btn:active {
-    transform: scale(0.98);
+    font-size: 1.2rem;
   }
 
   .signup-small {
-    margin-top: 1.5rem;
-    font-size: 0.9rem;
-    color: #666666;
-    animation: fadeIn 1s ease-out 1s;
-    animation-fill-mode: both;
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .signup-card {
+    padding: 3.5rem 3rem;
   }
 
-  .signup-link {
-    color: rgba(0, 0, 0, 0.5);
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
+  .signup-title {
+    font-size: 2.2rem;
   }
 
-  .signup-link:hover {
-    color: rgba(0, 0, 0, 0.7);
-    text-decoration: underline;
+  .signup-description {
+    font-size: 1.4rem;
   }
 
-  .error-message {
-    color: #dc3545;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-    animation: shake 0.5s ease-out;
+  .input-group {
+    margin-bottom: 2.5rem;
   }
 
-  @keyframes shake {
-    0%, 100% {
-      transform: translateX(0);
-    }
-    25% {
-      transform: translateX(-10px);
-    }
-    50% {
-      transform: translateX(10px);
-    }
-    75% {
-      transform: translateX(-10px);
-    }
+  .signup-btn {
+    font-size: 1.4rem;
   }
 
-  .sign-width {
-    width: 100%;
+  .signup-small {
+    font-size: 1.1rem;
   }
-
-  @media (min-width: 768px) {
-    .signup-card {
-      padding: 3rem 2.5rem;
-    }
-
-    .signup-title {
-      font-size: 2rem;
-    }
-
-    .signup-description {
-      font-size: 1.2rem;
-    }
-
-    .input-group {
-      margin-bottom: 2rem;
-    }
-
-    .signup-btn {
-      font-size: 1.2rem;
-    }
-
-    .signup-small {
-      font-size: 1rem;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .signup-card {
-      padding: 3.5rem 3rem;
-    }
-
-    .signup-title {
-      font-size: 2.2rem;
-    }
-
-    .signup-description {
-      font-size: 1.4rem;
-    }
-
-    .input-group {
-      margin-bottom: 2.5rem;
-    }
-
-    .signup-btn {
-      font-size: 1.4rem;
-    }
-
-    .signup-small {
-      font-size: 1.1rem;
-    }
-  }
+}
 </style>
 
 <template>
   <div>
-
+   
     <section v-if="!hiddenFirst" class="signup-section">
       <div class="signup-content">
         <div class="signup-card">
@@ -532,7 +536,7 @@ async function preferenceCreation() {
                 placeholder="Prénom"
                 v-model="firstName"
                 required
-              >
+              />
             </div>
 
             <div class="input-group">
@@ -542,7 +546,7 @@ async function preferenceCreation() {
                 placeholder="Nom de famille"
                 v-model="lastName"
                 required
-              >
+              />
             </div>
 
             <div class="input-group">
@@ -552,7 +556,7 @@ async function preferenceCreation() {
                 placeholder="Numéro de téléphone"
                 v-model="phone"
                 required
-              >
+              />
             </div>
 
             <div class="input-group">
@@ -562,7 +566,7 @@ async function preferenceCreation() {
                 placeholder="Email"
                 v-model="email"
                 required
-              >
+              />
             </div>
 
             <div class="input-group">
@@ -572,7 +576,7 @@ async function preferenceCreation() {
                 placeholder="Mot de passe"
                 v-model="password"
                 required
-              >
+              />
             </div>
 
             <div class="input-group">
@@ -582,16 +586,14 @@ async function preferenceCreation() {
                 placeholder="Confirmez le mot de passe"
                 v-model="confirmPassword"
                 required
-              >
+              />
             </div>
 
-            <button class="signup-btn" type="submit">
-              Rejoignez Moveout
-            </button>
+            <button class="signup-btn" type="submit">Rejoignez Moveout</button>
           </form>
 
           <p class="signup-small">
-            Vous avez déjà un compte ? 
+            Vous avez déjà un compte ?
             <router-link to="/login" class="signup-link">
               Connectez-vous
             </router-link>
@@ -600,12 +602,17 @@ async function preferenceCreation() {
       </div>
     </section>
 
+    
     <section v-else class="signup-section">
       <div class="signup-card sign-width">
-        <h1 class="signup-title">Comprendre vos préférences...</h1><br>
-        <p class="signup-description">Ces réponses nous permettront de sélectionner les appartements qui vous correspondent le mieux</p>
-        <hr>
-        <br>
+        <h1 class="signup-title">Comprendre vos préférences...</h1>
+        <br />
+        <p class="signup-description">
+          Ces réponses nous permettront de sélectionner les appartements qui
+          vous correspondent le mieux
+        </p>
+        <hr />
+        <br />
         <div class="flex flex-wrap gap-4">
           <div class="input-group flex-1 min-w-[200px]">
             <label class="form-label">Combien de chambre?</label>
@@ -614,29 +621,32 @@ async function preferenceCreation() {
               @change="handleBedroomsChange"
               className="select"
             >
-              <option  value="" disabled={true} selected>Nombre de chambres</option>
+              <option  value="" disabled  selected>Nombre de chambres</option>
+              
               <option
+                class="text-lg"
                 v-for="bedrooms in ['1', '2', '3', '4', '5+']"
                 :key="bedrooms"
                 :value="bedrooms"
                 :selected="selectedBedrooms.includes(bedrooms)"
               >
                 {{ bedrooms }}
-              </option>
+              </option> 
             </select>
+          
           </div>
 
           <div class="input-group flex-1 min-w-[200px]">
             <label class="form-label">Budget Minimum</label>
-            <input 
-              type="number" 
+            <input
+              type="number"
               v-model="selectedBudget.minValue"
               min="0"
               max="10000"
               class="w-full p-2 border rounded"
-            >
+            />
           </div>
-          
+
           <div class="input-group flex-1 min-w-[200px]">
             <label class="form-label">Budget Maximum</label>
             <input
@@ -645,35 +655,37 @@ async function preferenceCreation() {
               min="0"
               max="10000"
               class="w-full p-2 border rounded"
-            >
+            />
           </div>
         </div>
-      
+
         <div class="flex flex-wrap gap-4">
           <div class="input-group flex-1 min-w-[200px]">
             <label class="form-label">Quelle est votre âge?</label>
-            <select 
-              v-model="selectedAge"
-              class=""
-            >
-              <option value="" disabled selected>Sélectionnez votre tranche d'âge</option>
-              <option v-for="age in ['18-25', '26-35', '36-45', '46+']" 
-                      :key="age" 
-                      :value="age">
+            <select v-model="selectedAge" class="">
+              <option value="" disabled selected>
+                Sélectionnez votre tranche d'âge
+              </option>
+              <option
+                v-for="age in ['18-25', '26-35', '36-45', '46+']"
+                :key="age"
+                :value="age"
+              >
                 {{ age }}
               </option>
             </select>
           </div>
           <div class="input-group flex-1 min-w-[200px]">
             <label class="form-label">Quelle est votre Sexe?</label>
-            <select 
-              v-model="selectedGender"
-              class=""
-            >
-              <option value="" disabled selected>Sélectionnez votre sexe</option>
-              <option v-for="gender in ['Homme', 'Femme', 'Autre']" 
-                      :key="gender" 
-                      :value="gender">
+            <select v-model="selectedGender" class="">
+              <option value="" disabled selected>
+                Sélectionnez votre sexe
+              </option>
+              <option
+                v-for="gender in ['Homme', 'Femme', 'Autre']"
+                :key="gender"
+                :value="gender"
+              >
                 {{ gender }}
               </option>
             </select>
@@ -681,14 +693,21 @@ async function preferenceCreation() {
         </div>
 
         <div class="input-group">
-          <label class="form-label">Quelle est votre situation professionnelle ?</label>
-          <select 
-            v-model="selectedOccupation"
-            class=""
+          <label class="form-label"
+            >Quelle est votre situation professionnelle ?</label
           >
-            <option value="" disabled selected>Sélectionnez votre situation</option>
-            <option 
-              v-for="occupation in ['Étudiant', 'Sans Emplois', 'Employé', 'Entrepreneur', 'Retraité']"
+          <select v-model="selectedOccupation" class="">
+            <option value="" disabled selected>
+              Sélectionnez votre situation
+            </option>
+            <option
+              v-for="occupation in [
+                'Étudiant',
+                'Sans Emplois',
+                'Employé',
+                'Entrepreneur',
+                'Retraité',
+              ]"
               :key="occupation"
               :value="occupation"
             >
@@ -698,9 +717,14 @@ async function preferenceCreation() {
         </div>
 
         <div class="input-group">
-          <label class="form-label"> Quartier de préférence (Sélection multiple) </label>
+          <label class="form-label">
+            Quartier de préférence (Sélection multiple)
+          </label>
           <div class="border-2 rounded-lg p-2 h-60 overflow-y-auto">
-            <template v-for="(neighborhoods, borough) in quartiers" :key="borough">
+            <template
+              v-for="(neighborhoods, borough) in quartiers"
+              :key="borough"
+            >
               <div class="mb-2">
                 <h3 class="font-semibold text-gray-900 mb-2">{{ borough }}</h3>
                 <div class="flex flex-wrap gap-2">
@@ -708,14 +732,17 @@ async function preferenceCreation() {
                     v-for="neighborhood in neighborhoods"
                     :key="neighborhood"
                     class="flex items-center px-4 py-2 bg-gray-100 rounded-md cursor-pointer hover:bg-gray-200 transition-colors"
-                    :class="{ 'bg-blue-100 hover:bg-blue-200': selectedNeighborhoods.includes(neighborhood) }"
+                    :class="{
+                      'bg-blue-100 hover:bg-blue-200':
+                        selectedNeighborhoods.includes(neighborhood),
+                    }"
                   >
                     <input
                       type="checkbox"
                       :value="neighborhood"
                       v-model="selectedNeighborhoods"
                       class="h-4 w-auto text-blue-600 border-gray-300 rounded focus:ring-blue-500 mr-2"
-                    >
+                    />
                     <span>{{ neighborhood }}</span>
                   </label>
                 </div>
@@ -725,17 +752,21 @@ async function preferenceCreation() {
         </div>
 
         <div class="input-group">
-              <label class="form-label">Quel genre de services supplémentaires seriez-vous intéressé(e) ? </label>
-              <input
-                v-model="customService"
-                type="text"
-                placeholder="Précisez le service"
-                class=""
-              />
-          </div>
+          <label class="form-label"
+            >Quel genre de services supplémentaires seriez-vous intéressé(e) ?
+          </label>
+          <input
+            v-model="customService"
+            type="text"
+            placeholder="Précisez le service"
+            class=""
+          />
+        </div>
 
         <p class="error-message">{{ preferenceSurveyError }}</p>
-        <button @click="preferenceCreation" class="signup-btn w-full mt-6"> Next </button>
+        <button @click="preferenceCreation" class="signup-btn w-full mt-6">
+          Next
+        </button>
       </div>
     </section>
   </div>
@@ -763,9 +794,8 @@ async function preferenceCreation() {
             </ul>
           </div> -->
 
-
 <!-- <ul class="flex justify-center space-x-4"> -->
-            <!-- <li>
+<!-- <li>
                 <button
                   v-for="addOnService in [
                     'Déménagement',
@@ -784,7 +814,7 @@ async function preferenceCreation() {
                   {{ addOnService }}
                 </button>
               </li> -->
-            <!-- <li>
+<!-- <li>
                 <button
                   @click="autreClicked = !autreClicked"
                   :class="{
@@ -797,6 +827,5 @@ async function preferenceCreation() {
                 </button>
                 
               </li> -->
-            <!-- </ul> -->
-v-if="!hiddenFirst"
-v-else
+<!-- </ul> -->
+v-if="!hiddenFirst" v-else

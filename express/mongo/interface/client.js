@@ -142,8 +142,8 @@ const createPreference = async (
         return { error: "La case Genre est manquante." };
       case !occupation || occupation.trim() === "":
         return { error: "La case Occupation est manquante." };
-      case !reference || reference.trim() === "":
-        return { error: "La case reference est manquante." };
+      /**case !reference || reference.trim() === "":
+        return { error: "La case reference est manquante." };*/
       case !addOnService || addOnService.trim() === "":
         return { error: "La case Service supplémentaire est manquante." };
     }
