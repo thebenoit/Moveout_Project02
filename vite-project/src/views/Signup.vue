@@ -291,7 +291,6 @@ async function preferenceCreation() {
   }
 }
 </script>
-
 <style>
   /* General Styles */
   .signup-section {
@@ -299,6 +298,7 @@ async function preferenceCreation() {
     justify-content: center;
     align-items: center;
     min-height: 80vh;
+    padding: 1rem;
   }
 
   .signup-content {
@@ -455,7 +455,59 @@ async function preferenceCreation() {
   }
 
   .sign-width {
-    width: 45%;
+    width: 100%;
+  }
+
+  @media (min-width: 768px) {
+    .signup-card {
+      padding: 3rem 2.5rem;
+    }
+
+    .signup-title {
+      font-size: 2rem;
+    }
+
+    .signup-description {
+      font-size: 1.2rem;
+    }
+
+    .input-group {
+      margin-bottom: 2rem;
+    }
+
+    .signup-btn {
+      font-size: 1.2rem;
+    }
+
+    .signup-small {
+      font-size: 1rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .signup-card {
+      padding: 3.5rem 3rem;
+    }
+
+    .signup-title {
+      font-size: 2.2rem;
+    }
+
+    .signup-description {
+      font-size: 1.4rem;
+    }
+
+    .input-group {
+      margin-bottom: 2.5rem;
+    }
+
+    .signup-btn {
+      font-size: 1.4rem;
+    }
+
+    .signup-small {
+      font-size: 1.1rem;
+    }
   }
 </style>
 
@@ -548,115 +600,21 @@ async function preferenceCreation() {
       </div>
     </section>
 
-    <!-- <section
-      v-if="!hiddenFirst" class="max-w-xl lg:max-w-3xl mx-auto p-4 overflow-hidden">
-      <div class="mt-0">
-        <Card class="bg-gray-200 backdrop-blur-3xl mt-16 lg:mt-0  animate-fadeIn transition-all duration-500 ease-in-out">
-          <p class="text-red-500 text-sm text-center rounded-lg">
-            {{ errorMessages }}
-          </p>
-          <CardHeader>
-            <CardTitle class="text-xl">
-              Inscrivez-vous gratuitement!
-            </CardTitle>
-            <CardDescription class="text-lg">
-              Rejoignez Moveout aujourd'hui gratuitement
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div class="grid gap-4">
-              <div class="grid grid-cols-2 gap-4">
-                <div class="grid gap-2">
-                  <Input
-                    class="btn text-left transition-transform duration-300 ease-in-out transform focus:scale-105"
-                    id="first-name"
-                    placeholder="First name"
-                    required
-                    v-model="firstName"
-                  />
-                </div>
-                <div class="grid gap-2">
-                  <Input
-                    class="btn text-left transition-transform duration-300 ease-in-out transform focus:scale-105"
-                    id="last-name"
-                    placeholder="Last name"
-                    required
-                    v-model="lastName"
-                  />
-                </div>
-              </div>
-              <div class="grid mt-1">
-                <Input
-                  class="btn text-left transition-transform duration-300 ease-in-out transform focus:scale-105"
-                  id="phone"
-                  type="phone"
-                  placeholder="Phone number"
-                  required
-                  v-model="phone"
-                />
-              </div>
-              <div class="grid mt-1">
-                <Input
-                  class="btn text-left transition-transform duration-300 ease-in-out transform focus:scale-105"
-                  id="email"
-                  type="email"
-                  placeholder="Email"
-                  required
-                  v-model="email"
-                />
-              </div>
-              <div class="grid mt-1">
-                <Input
-                  class="btn text-left transition-transform duration-300 ease-in-out transform focus:scale-105"
-                  id="password"
-                  type="password"
-                  placeholder="Password"
-                  v-model="password"
-                />
-              </div>
-              <div class="grid mt-1">
-                <Input
-                  class="btn text-left transition-transform duration-300 ease-in-out transform focus:scale-105"
-                  id="confirmPassword"
-                  type="password"
-                  placeholder="Re-Enter Password"
-                  v-model="password"
-                />
-              </div>
-              <p>
-                Vous avez déjà un compte?
-                <a @click="versConnection" class="underline text-blue-main"
-                  >Connectez-vous</a
-                >
-              </p>
-              <Button
-                type="submit"
-                class="bg-blue-main text-white py-3 px-6 rounded-full text-lg md:text-lg font-semibold hover:bg-blue-400 transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 duration-300"
-                @click="signup"
-              >
-                Rejoignez Moveout
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </section> -->
-
     <section v-else class="signup-section">
       <div class="signup-card sign-width">
         <h1 class="signup-title">Comprendre vos préférences...</h1><br>
         <p class="signup-description">Ces réponses nous permettront de sélectionner les appartements qui vous correspondent le mieux</p>
         <hr>
         <br>
-        <div class="flex gap-4">
-          <div class="input-group flex-1">
+        <div class="flex flex-wrap gap-4">
+          <div class="input-group flex-1 min-w-[200px]">
             <label class="form-label">Combien de chambre?</label>
             <select
               v-model="selectedBedrooms"
               @change="handleBedroomsChange"
-              class=""
+              className="select"
             >
-              <option value="" disabled selected>Nombre de chambres</option>
+              <option  value="" disabled={true} selected>Nombre de chambres</option>
               <option
                 v-for="bedrooms in ['1', '2', '3', '4', '5+']"
                 :key="bedrooms"
@@ -668,7 +626,7 @@ async function preferenceCreation() {
             </select>
           </div>
 
-          <div class="input-group flex-1">
+          <div class="input-group flex-1 min-w-[200px]">
             <label class="form-label">Budget Minimum</label>
             <input 
               type="number" 
@@ -679,7 +637,7 @@ async function preferenceCreation() {
             >
           </div>
           
-          <div class="input-group flex-1">
+          <div class="input-group flex-1 min-w-[200px]">
             <label class="form-label">Budget Maximum</label>
             <input
               type="number"
@@ -691,8 +649,8 @@ async function preferenceCreation() {
           </div>
         </div>
       
-        <div class="flex gap-4">
-          <div class="input-group flex-1">
+        <div class="flex flex-wrap gap-4">
+          <div class="input-group flex-1 min-w-[200px]">
             <label class="form-label">Quelle est votre âge?</label>
             <select 
               v-model="selectedAge"
@@ -706,7 +664,7 @@ async function preferenceCreation() {
               </option>
             </select>
           </div>
-          <div class="input-group flex-1">
+          <div class="input-group flex-1 min-w-[200px]">
             <label class="form-label">Quelle est votre Sexe?</label>
             <select 
               v-model="selectedGender"
@@ -780,237 +738,8 @@ async function preferenceCreation() {
         <button @click="preferenceCreation" class="signup-btn w-full mt-6"> Next </button>
       </div>
     </section>
-
-    <!-- <section class="max-w-xl lg:max-w-3xl mx-auto p-4">
-      <div class="w-full flex jusitfy-start">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="mt-2 ml-5 hover:text-blue-main"
-          @click="previousSlide"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth="{1.5}"
-          stroke="currentColor"
-          width="26"
-          height="26"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-          />
-        </svg>
-      </div>
-
-      <section>
-        <h1 class="text-xl text-blue-main text-center">
-          Comprendre vos préférences...
-        </h1>
-      </section>
-
-      <section class="mt-8">
-        <div class="bg-gray-200 p-6 border-2 rounded-md shadow-lg">
-          <h2 class="text-gray-500 text-center">
-            Ces réponses nous permettront de sélectionner les appartements qui
-            vous correspondent le mieux
-          </h2>
-        </div>
-        <p class="text-red-500 text-center mt-2">{{ preferenceSurveyError }}</p>
-        <div class="mt-8">
-          <div class="border-2 rounded-lg shadow-lg p-6">
-            <h1 class="text-blue-main text-center mb-5">Combien de chambre?</h1>
-            <ul class="flex justify-center space-x-4">
-              <li>
-                <button
-                  v-for="bedrooms in ['1', '2', '3', '4', '5+']"
-                  :key="bedrooms"
-                  @click="toggleBedroomsSelection(bedrooms)"
-                  :class="{
-                    ' bg-blue-main text-white':
-                      selectedBedrooms.includes(bedrooms),
-                    ' bg-gray-200 text-gray-700':
-                      !selectedBedrooms.includes(bedrooms),
-                  }"
-                  class="px-4 py-2 rounded-md border m-2"
-                >
-                  {{ bedrooms }}
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          <div class="border-2 rounded-lg shadow-lg p-6 mt-8">
-            <h1 class="text-blue-main text-center mb-5">Votre Budget</h1>
-            <MultiSlider
-              :min="0"
-              :max="100"
-              @update:minValue="handleMinValueChange"
-              @update:maxValue="handleMaxValueChange"
-            ></MultiSlider>
-          </div>
-
-          <div
-            class="border-2 rounded-lg shadow-lg p-6 mt-8 max-h-60 overflow-y-scroll"
-          >
-            <h1 class="text-blue-main text-center mb-5">
-              Quartier de préférence
-            </h1>
-            <div
-              v-for="(neighborhoods, borough) in quartiers"
-              :key="borough"
-              class="mb-4"
-            >
-              <h2 class="text-lg text-gray-700 mb-2">{{ borough }}</h2>
-
-              <div class="flex flex-wrap gap-2">
-                <button
-                  v-for="neighborhood in neighborhoods"
-                  :key="neighborhood"
-                  @click="toggleSelection(neighborhood)"
-                  :class="{
-                    'bg-blue-main text-white':
-                      selectedNeighborhoods.includes(neighborhood),
-                    'bg-gray-200 text-gray-700':
-                      !selectedNeighborhoods.includes(neighborhood),
-                  }"
-                  class="px-4 py-2 rounded-md border"
-                >
-                  {{ neighborhood }}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
-            <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
-              Quelle est votre âge?
-            </h1>
-            <ul class="flex justify-center space-x-4">
-              <li>
-                <button
-                  v-for="age in ['18-25', '26-35', '36-45', '46+']"
-                  :key="age"
-                  @click="toggleAgeSelection(age)"
-                  :class="{
-                    ' bg-blue-main text-white': selectedAge === age,
-                    ' bg-gray-200 text-gray-700': selectedAge !== age,
-                  }"
-                  class="px-4 py-2 rounded-md border m-2"
-                >
-                  {{ age }}
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
-            <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
-              Quelle est votre Sexe?
-            </h1>
-            <ul class="flex justify-center space-x-4">
-              <li>
-                <button
-                  v-for="gender in ['Homme', 'Femme']"
-                  :key="gender"
-                  @click="toggleGenderSelection(gender)"
-                  :class="{
-                    ' bg-blue-main text-white': selectedGender === gender,
-                    ' bg-gray-200 text-gray-700': selectedGender !== gender,
-                  }"
-                  class="px-4 py-2 rounded-md border m-2"
-                >
-                  {{ gender }}
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
-            <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
-              Quelle est votre situation professionnelle ?
-            </h1>
-
-            <ul class="flex justify-center space-x-4">
-              <li>
-                <button
-                  v-for="occupation in [
-                    'Étudiant',
-                    'Sans Emplois',
-                    'Employé',
-                    'Entrepreneur',
-                    'retraité',
-                  ]"
-                  :key="occupation"
-                  @click="toggleOccupationSelection(occupation)"
-                  :class="{
-                    ' bg-blue-main text-white':
-                      selectedOccupation === occupation,
-                    ' bg-gray-200 text-gray-700':
-                      selectedOccupation !== occupation,
-                  }"
-                  class="px-4 py-2 rounded-md border m-2"
-                >
-                  {{ occupation }}
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
-            <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
-              Comment avez-vous entendu parler de notre site ?
-            </h1>
-
-            <ul class="flex justify-center space-x-4">
-              <li>
-                <button
-                  v-for="reference in [
-                    'Recherche Google',
-                    `référence d'un ami  `,
-                    'réseaux sociaux',
-                    'Publicité',
-                  ]"
-                  :key="reference"
-                  @click="toggleReferenceSelection(reference)"
-                  :class="{
-                    ' bg-blue-main text-white': selectedReference === reference,
-                    ' bg-gray-200 text-gray-700':
-                      selectedReference !== reference,
-                  }"
-                  class="px-4 py-2 rounded-md border m-2"
-                >
-                  {{ reference }}
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
-              <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
-                Quel genre de services supplémentaires seriez-vous intéressé(e) ?
-              </h1>
-              <input
-                v-model="customService"
-                type="text"
-                placeholder="Précisez le service"
-                class="input input-bordered w-full max-w-xs mt-2"
-              />
-            </div>
-            <p class="text-red-500 text-center mt-2">
-              {{ preferenceSurveyError }}
-            </p>
-            <button
-              @click="preferenceCreation"
-              class="btn btn-accent w-full mt-6"
-            >
-              Next
-            </button>
-          </div>
-      </section>
-    </section> -->
   </div>
 </template>
-
 
 <!-- <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
             <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
