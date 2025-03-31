@@ -59,8 +59,8 @@ app.use(
 
 //app.options("*", cors());
 
-app.use("/api/stripe/webhook", express.raw({ type: "application/json" }));
-
+//app.use("/api/stripe/webhook", express.raw({ type: "application/json" }));
+app.use("/api/stripe", stripeWebhookRouter);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "/")));
@@ -84,7 +84,7 @@ app.use("/api/appartements", paginated_appartments);
 // apparts personalisé
 app.use("/api/appartements", paginated_forYouPage);
 
-app.use("/api/stripe", stripeWebhookRouter);
+
 
 // app.use("/api/client/", client_logout);
 // app.use("/client/", client_appartements);
