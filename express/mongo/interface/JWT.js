@@ -21,7 +21,7 @@ async function generateJwt(userId, prefId) {
 
     return token;
 
-    console.log("generateJwt; ", token);
+    console.log("generateJwt;");
   } catch (error) {
     console.log("erreur lors de la création de token: ");
     return { error: true };

@@ -20,6 +20,19 @@ const sendMessage = async () => {
   try {
     isLoading.value = true;
     error.value = null;
+
+
+   if(utils.isTokenExpired()){
+    try{
+      const newToken = await utils.refreshToken();
+      if(!newToken){
+        
+      }
+
+    }catch(error){
+
+    }
+   } 
     
     // Ajouter le message à la liste locale
     messages.value.push({
@@ -31,6 +44,7 @@ const sendMessage = async () => {
     // Appel à l'API en utilisant l'utilitaire
     const response = await utils.post('api/chat/message', {
       message: chatMessage.value
+
     });
     
     if (response.error) {

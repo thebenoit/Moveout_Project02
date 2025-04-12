@@ -8,6 +8,7 @@ import dotenv from "dotenv/config";
 import { fileURLToPath } from "url";
 import stripeWebhookRouter from "./routes/Stripe/stripe.js";
 import chat from "./routes/api/chat/chat.js";
+import jwtRouter from "./routes/api/jwt/jwt.js";
 
 // Create an instance of the mixpanel client
 var mixpanel = Mixpanel.init("d41fbc564b7544ce2d7c92cb6d8beb63", {
@@ -87,6 +88,9 @@ app.use("/api/appartements", paginated_forYouPage);
 
 // chat
 app.use("/api/chat", chat);
+
+// jwt
+app.use("/api/jwt", jwtRouter);
 
 // app.use("/api/client/", client_logout);
 // app.use("/client/", client_appartements);

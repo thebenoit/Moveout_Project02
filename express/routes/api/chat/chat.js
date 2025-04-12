@@ -24,12 +24,7 @@ router.post('/message', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Le message est requis' });
     }
     
-    // Envoi du message au webhook N8N
-    const response = await axios.post(N8N_WEBHOOK_URL, {
-      message,
-      timestamp: new Date().toISOString(),
-      source: 'chat-application'
-    });
+
 
     const messageData = {
       sessionId: message.sessionId,
@@ -42,7 +37,16 @@ router.post('/message', async (req, res) => {
     const messageTraite = await messages.traiterMessage(messageData);
     console.log("message traite: ",messageTraite);
 
-    
+    // Envoi du message au webhook N8N
+    const response = await axios.post(N8N_WEBHOOK_URL, {
+      message: messageTraite,
+      timestamp: new Date().toISOString(),
+      source: 'chat-application'
+    });
+
+
+
+
 
     
     return res.status(200).json({ 

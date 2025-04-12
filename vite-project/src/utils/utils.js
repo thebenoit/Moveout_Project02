@@ -45,9 +45,46 @@ const utils = {
     },
     setToken(token) {
         sessionStorage.setItem('auth', token);
+        // Stocker le timestamp d'expiration
+        const decoded = this.decodeToken();
+        if(decoded && decoded.exp){
+            sessionStorage.setItem(
+              'tokenExpiration',decoded.exp * 1000  
+            )
+        }
+    },
+    isTokenExpired(){
+        const expiration = sessionStorage.getItem('tokenExpiration');
+        if(!expiration) return true;
+        return Date.now() >= parseInt(expiration);
     },
     getToken() {
+        if(this.isTokenExpired()){
+            this.logout();
+            return null;
+        }
         return sessionStorage.getItem('auth');
+    },
+    refreshToken: async () => {
+        try{
+            const response = await fetch(`${import.meta.env.VITE_NODE_SERVER_URL}/refresh-token`,{
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${sessionStorage.getItem('auth')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            if(response.ok){
+                const {token} = await response.json();
+                utils.setToken(token);
+                return token;
+            }
+            return null;
+        }catch(error){
+            console.error('Erreur lors du rafraichissement du token: ', error);
+            return null;
+            
+        }
     },
     decodeToken() {
         const token = this.getToken();
