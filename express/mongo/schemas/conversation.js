@@ -8,7 +8,9 @@ const conversationSchema = new Schema({
 });
 
 const Conversation = mongoose.model(
-  "Conversation",
+  "Conversations",
   conversationSchema,
   "conversations"
 );
+
+export default Conversation;

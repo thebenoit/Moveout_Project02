@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import utils from '../utils/utils';
 
 // Référence pour le message de chat
@@ -10,6 +10,47 @@ const messages = ref([]);
 const isLoading = ref(false);
 // Gestion des erreurs
 const error = ref(null);
+
+const initSession = async () =>
+{
+  try{
+    const token = await utils.getToken();
+    if(!token){
+      console.error("Impossible d'obtenir un token");
+      return;
+    }
+
+    const decoded = utils.decodeToken();
+    sessionInfo.value.isTemp = decoded?.isTemp || false;
+
+    if(decoded){
+      await loadMessages(decoded.sessionId || decoded.userId);
+    }
+    
+
+  }catch(error)
+  {
+    console.error("Erreur lors de l'initialisation de la session:", error);
+  }
+}
+
+const loadMessages = async (id) =>
+{
+  try{
+    console.log("Chargement des messages pour l'id:", id);
+    // const response = await utils.get(`api/chat/messages/${id}`);
+    // if(response.error){
+    //   messages.value = [];
+    // }
+  }catch(error){
+    console.error("Erreur lors du chargement des messages:", error);
+  }
+}
+
+onMounted(async () => {
+  await initSession();
+});
+
 
 /**
  * Envoie un message au serveur via l'API chat
@@ -22,20 +63,21 @@ const sendMessage = async () => {
     error.value = null;
 
 
-   if(utils.isTokenExpired()){
-    try{
-      const newToken = await utils.refreshToken();
-      if(!newToken){
-        
-      }
+  //  if(utils.isTokenExpired()){
+  //   try{
+  //     const newToken = await utils.refreshToken();
+  //     if(!newToken){
 
-    }catch(error){
+  //     }
 
-    }
-   } 
+  //   }catch(error){
+
+  //   }
+  //  } 
     
     // Ajouter le message à la liste locale
     messages.value.push({
+      
       text: chatMessage.value,
       isUser: true,
       timestamp: new Date().toISOString()

@@ -9,14 +9,14 @@ import User from "../schemas/user.js";
  * @param {*} userId
  * @param {*} prefId
  */
-async function generateJwt(userId, prefId) {
+async function generateJwt(userId, prefId, isTemp = false) {
   try {
     const payload = { userId, prefId };
     //génère le token
     const token = jwt.sign(
       { userId: payload.userId, prefId: payload.prefId },
       process.env.JWT_SECRET,
-      { expiresIn: "3h" }
+      { expiresIn: isTemp? "3h" : "24h"}
     );
 
     return token;
@@ -49,9 +49,18 @@ async function validateToken(req, res) {
 
   const token = req.headers.authorization.split(" ")[1];
 
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+  if(decoded.isTemp){
+    req.decoded = decoded;
+    return req.decoded;
+  }
+
   const options = {
     expireIn: "3h",
   };
+
+
 
   try {
     let user = await User.findOne({
