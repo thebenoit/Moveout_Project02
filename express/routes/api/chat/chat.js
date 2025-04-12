@@ -3,9 +3,10 @@
 import express from 'express';
 const router = express.Router();
 import axios from 'axios';
+import messages from '../../../mongo/interface/messages.js';
 
 // Configuration du webhook N8N
-const N8N_WEBHOOK_URL = 'https://votre-instance-n8n.com/webhook/path'; // À remplacer par l'URL réelle de votre webhook N8N
+const N8N_WEBHOOK_URL = process.env.N8N_TEST_WEBHOOK_URL; // À remplacer par l'URL réelle de votre webhook N8N
 
 /**
  * Route POST pour recevoir les messages du front-end et les transférer à N8N
@@ -29,6 +30,20 @@ router.post('/message', async (req, res) => {
       timestamp: new Date().toISOString(),
       source: 'chat-application'
     });
+
+    const messageData = {
+      sessionId: message.sessionId,
+      content: message.content,
+      type: message.type,
+      status: message.status
+    }
+   
+    // Traite le message
+    const messageTraite = await messages.traiterMessage(messageData);
+    console.log("message traite: ",messageTraite);
+
+    
+
     
     return res.status(200).json({ 
       success: true, 
@@ -46,4 +61,4 @@ router.post('/message', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

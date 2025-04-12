@@ -86,8 +86,8 @@ class Scraper:
         #"https://www.facebook.com/marketplace/montreal/propertyrentals?locale=fr_CA"
         #configuration des proxies
         proxies = {
-            "http": "http://pcfyv8ibId-res-any:PC_9RAd7QXoMD4h7sUTW@proxy-us.proxy-cheap.com:5959",
-            "https": "http://pcfyv8ibId-res-any:PC_9RAd7QXoMD4h7sUTW@proxy-us.proxy-cheap.com:5959"
+            "http": os.getenv("PROXIES_URL"),
+            "https": os.getenv("PROXIES_URL")
         }
 
         proxy_options = {

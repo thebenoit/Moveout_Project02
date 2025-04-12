@@ -17,6 +17,7 @@ import Erreur404 from "@/views/Erreur404.vue";
 import Listings from "@/views/Listings.vue";
 import HomeSimple from "@/views/HomeSimple.vue";
 import Pricing_Page from "@/views/pricing_pages/pricing_page.vue";
+import ChatHome from "@/views/ChatHome.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,6 +31,11 @@ const router = createRouter({
       path: "/home2",
       name: "home2",
       component: HomeSimple,
+    },
+    {
+      path: "/chat",
+      name: "chat",
+      component: ChatHome,
     },
     // {
     //   path: '/appartements',
