@@ -314,7 +314,7 @@ onMounted(() => {
     <label class="title-txt " style="font-size: 2rem;">Trouve ton appart sans effort et avant tout le monde <br></label>
     <p class="subtitle-txt">Envoyez un message à Moveout Bot par SMS ou WhatsApp. <br> Votre maison de rêve est à un message de distance.</p>
     <br>
-    <button @click="handleProceedSignUp" class="title-btn" style="">Commencez avec Moveout</button>
+    <button @click="handleProceedSignUp" class="title-btn" style="">Clique pour trouver ton appartement</button>
     
   </div>
 

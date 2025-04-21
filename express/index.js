@@ -41,6 +41,7 @@ app.use(
       "https://www.moveout.ai",
       "http://localhost:5173",
       "https://notificationserver.online",
+      "https://moveout-85286b8b.nodetree.app",
     ], // Add your frontend domain
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: [
@@ -83,8 +84,6 @@ app.use("/api/client", client_preference);
 app.use("/api/appartements", paginated_appartments);
 // apparts personalisé
 app.use("/api/appartements", paginated_forYouPage);
-
-
 
 // app.use("/api/client/", client_logout);
 // app.use("/client/", client_appartements);
