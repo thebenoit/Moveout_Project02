@@ -21,8 +21,14 @@ function handleProceedLogin() {
 }
 
 function handleProceedSignUp() {
-  router.push("/signup");
-  console.log("Navigating to Sign Up Page...");
+  // Créer un lien SMS avec un message préformaté
+  const phoneNumber = "+12185953780";
+  const message = "Je cherche un appartement";
+  const smsLink = `sms:${phoneNumber}?body=${encodeURIComponent(message)}`;
+  
+  // Ouvrir le lien SMS
+  window.location.href = smsLink;
+  console.log("Redirection vers SMS avec message préformaté");
 }
 
 const currentSlideIndex = ref(0);
@@ -309,6 +315,7 @@ onMounted(() => {
     <p class="subtitle-txt">Envoyez un message à Moveout Bot par SMS ou WhatsApp. <br> Votre maison de rêve est à un message de distance.</p>
     <br>
     <button @click="handleProceedSignUp" class="title-btn" style="">Commencez avec Moveout</button>
+    
   </div>
 
   <section id="sms-whatsapp" class="messaging-section">
