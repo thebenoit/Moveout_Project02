@@ -230,6 +230,21 @@ class Scraper:
                     # Utiliser listing_id comme _id dans le document
                     # data = node["node"]
                     
+                    # Traitement des images
+                    listing_photos = []
+                    if "listing_photos" in node["node"]["for_sale_item"]:
+                        for photo in node["node"]["for_sale_item"]["listing_photos"]:
+                            if "image" in photo:
+                                #Modifier L"URL pour obtenir l'image en haute qualité
+                                original_url = photo["image"]["uri"]
+                                # Remplacer les paramètres de taille dans l'URL
+                                #hq_url = original_url.split('?')[0] + "?width=1080&height=1080&quality=original"
+                                
+                                listing_photos.append({
+                                "id": photo.get("id", ""),
+                                "uri": original_url,                                
+                                })
+                                
                     # Extraire et nettoyer le prix pour le convertir en valeur numérique
                     price_numeric = None
                     if "formatted_price" in node["node"]["for_sale_item"] and "text" in node["node"]["for_sale_item"]["formatted_price"]:
@@ -256,7 +271,7 @@ class Scraper:
                             "location": node["node"]["for_sale_item"].get("location", {}),
                             "custom_title": node["node"]["for_sale_item"].get("custom_title", ""),
                             "custom_sub_titles_with_rendering_flags": node["node"]["for_sale_item"].get("custom_sub_titles_with_rendering_flags", []),
-                            "listing_photos": node["node"]["for_sale_item"].get("listing_photos", []),
+                            "listing_photos": listing_photos,
                             "share_uri": node["node"]["for_sale_item"].get("share_uri", "")
                         }
                     }
@@ -344,6 +359,56 @@ class Scraper:
             time.sleep(5)
         return False    
 
+    def verify_image_quality(self, url):
+        """
+        Vérifie si l'image est accessible et retourne ses dimensions réelles
+        """
+        try:
+            response = requests.head(url)
+            if response.status_code == 200:
+                # Vérifier les en-têtes pour la taille de l'image
+                content_length = response.headers.get('content-length')
+                if content_length and int(content_length) < 10000:  # Si l'image est trop petite
+                    return False
+            return True
+        except:
+            return False
+
+    def process_image(self, image_data):
+        """
+        Traite les données d'image et retourne l'URL optimisée
+        """
+        try:
+            original_url = image_data.get("uri", "")
+            if not original_url:
+                return None
+
+            # Essayer différentes résolutions
+            resolutions = [
+                (1080, 1080),
+                (720, 720),
+                (1920, 1080)
+            ]
+
+            for width, height in resolutions:
+                hq_url = f"{original_url.split('?')[0]}?width={width}&height={height}&quality=original"
+                if self.verify_image_quality(hq_url):
+                    return {
+                        "uri": hq_url,
+                        "width": width,
+                        "height": height,
+                        "original_url": original_url
+                    }
+
+            # Si aucune résolution ne fonctionne, retourner l'URL originale
+            return {
+                "uri": original_url,
+                "width": image_data.get("width"),
+                "height": image_data.get("height")
+            }
+        except Exception as e:
+            print(f"Erreur lors du traitement de l'image : {e}")
+            return None
 
 # Importe le module math pour les calculs géographiques
 import math
