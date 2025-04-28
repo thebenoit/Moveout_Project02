@@ -36,308 +36,321 @@ onMounted(() => {
 </script>
 
 <style>
-  .hero-header-content {
-    margin: 3.5rem 10% 0rem 10%;
-    width: 80%;
-    text-align: center;
-  }
-
-  .title-txt {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: #2d3436;
-    animation: fadeInUp 1s ease-out;
-    animation-fill-mode: both;
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .subtitle-txt {
-    font-size: 1.1rem;
-    color: #6c757d;
-    margin-bottom: 3rem;
-    animation: fadeInUp 1s ease-out 0.5s;
-    animation-fill-mode: both;
-  }
-
-  .title-btn {
-    margin-top: 2rem;
-    padding: 0.4rem 4rem;
-    border-radius: 50px;
-    font-size: medium;
-    color: #ffffff;
-    background-color: #333333;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    animation: fadeIn 1s ease-out 1s;
-    animation-fill-mode: both;
-  }
-
-  .title-btn:focus, .title-btn:hover {
-    background-color: #666666;
-    transform: scale(1.05);
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes fadeInFromLeft {
-    from {
-      opacity: 0;
-      transform: translateX(-100%); 
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+.hero-header-content {
+  margin: 3.5rem 10% 0rem 10%;
+  width: 80%;
+  text-align: center;
 }
 
-  .pricing-section {
-    width: 100%;
-    padding: 8rem 1rem;
-    background-color: #f8f9fa;
-  }
+.title-txt {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #2d3436;
+  animation: fadeInUp 1s ease-out;
+  animation-fill-mode: both;
+}
 
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.subtitle-txt {
+  font-size: 1.1rem;
+  color: #6c757d;
+  margin-bottom: 3rem;
+  animation: fadeInUp 1s ease-out 0.5s;
+  animation-fill-mode: both;
+}
+
+.title-btn {
+  margin-top: 2rem;
+  padding: 0.4rem 4rem;
+  border-radius: 50px;
+  font-size: medium;
+  color: #ffffff;
+  background-color: #333333;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  animation: fadeIn 1s ease-out 1s;
+  animation-fill-mode: both;
+}
+
+.title-btn:focus,
+.title-btn:hover {
+  background-color: #666666;
+  transform: scale(1.05);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.pricing-section {
+  width: 100%;
+  padding: 8rem 1rem;
+  background-color: #f8f9fa;
+}
+
+.pricing-content {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  padding-bottom: 2rem;
+}
+
+.pricing-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.pricing-header label {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+.pricing-header p {
+  color: #666666;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+}
+
+.pricing-card {
+  flex: 1;
+  min-width: 280px;
+  max-width: 400px;
+  padding: 2.5rem;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}
+
+.pricing-card-header {
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.pricing-card-header p {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333333;
+  margin: 0;
+}
+
+.pricing-card-header span {
+  font-weight: 400;
+  color: #666666;
+  font-size: 1.2rem;
+}
+
+.pricing-card-btn {
+  width: 100%;
+  height: 3rem;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #333333;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 1.5rem;
+}
+
+.pricing-card-btn:hover {
+  background-color: #666666;
+  transform: scale(1.02);
+}
+
+.pricing-card-btn:active {
+  transform: scale(0.98);
+}
+
+.pricing-card-content ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 1.5rem 0 0 0;
+}
+
+.pricing-card-content ul li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  font-size: 1rem;
+  color: #333333;
+}
+
+.pricing-card-content ul li svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
   .pricing-content {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 2rem;
-    padding-bottom: 2rem;
-  }
-
-  .pricing-header {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
-
-  .pricing-header label {
-    font-size: 2rem;
-    font-weight: 600; 
-    color: #333333; 
-  }
-
-  .pricing-header p {
-    color: #666666;
-    font-size: 1.1rem;
-    margin-top: 0.5rem;
+    flex-direction: column;
+    gap: 1.5rem;
   }
 
   .pricing-card {
-    flex: 1;
-    min-width: 280px;
-    max-width: 400px;
-    padding: 2.5rem;
-    border-radius: 12px;
-    background-color: #ffffff;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .pricing-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
-  }
-
-  .pricing-card-header {
-    padding-bottom: 2rem;
-    border-bottom: 1px solid #eeeeee;
-  }
-
-  .pricing-card-header p {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #333333;
-    margin: 0;
-  }
-
-  .pricing-card-header span {
-    font-weight: 400;
-    color: #666666;
-    font-size: 1.2rem;
-  }
-
-  .pricing-card-btn {
     width: 100%;
-    height: 3rem;
-    border-radius: 50px;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #ffffff;
-    background-color: #333333;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-top: 1.5rem;
+    max-width: none;
   }
+}
 
-  .pricing-card-btn:hover {
-    background-color: #666666;
-    transform: scale(1.02);
-  }
+/* Messaging Section */
+.messaging-section {
+  padding: 4rem 0;
+  margin-top: 5rem;
+  background: linear-gradient(to bottom, #ffffff 0%, #f8f9fa 100%);
+}
 
-  .pricing-card-btn:active {
-    transform: scale(0.98);
-  }
+.section-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #333333;
+  animation: fadeIn 1s ease-out 1.2s;
+  animation-fill-mode: both;
+}
 
-  .pricing-card-content ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 1.5rem 0 0 0;
-  }
+.section-subtitle {
+  color: #666666;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+  animation: fadeIn 1s ease-out 1.2s;
+  animation-fill-mode: both;
+}
 
-  .pricing-card-content ul li {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 0;
-    font-size: 1rem;
-    color: #333333;
-  }
+/* Feature Cards */
+.feature-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  animation: fadeInFromLeft 1s ease-out 1.3s;
+  animation-fill-mode: both;
+}
 
-  .pricing-card-content ul li svg {
-    width: 1.5rem;
-    height: 1.5rem;
-    flex-shrink: 0;
-  }
+.feature-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
 
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .pricing-content {
-      flex-direction: column;
-      gap: 1.5rem;
-    }
+.feature-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 0.75rem;
+}
 
-    .pricing-card {
-      width: 100%;
-      max-width: none;
-    }
-  }
+.feature-description {
+  font-size: 1rem;
+  color: #666666;
+  line-height: 1.6;
+}
 
-  /* Messaging Section */
-  .messaging-section {
-    padding: 4rem 0;
-    margin-top: 5rem;
-    background: linear-gradient(to bottom, #ffffff 0%, #f8f9fa 100%);
-  }
+/* Phone Mockup (Optional) */
+.phone-mockup {
+  max-width: 300px;
+  margin: 0 auto;
+}
 
-  .section-title {
-    font-size: 2rem;
-    font-weight: 600; 
-    color: #333333; 
-    animation: fadeIn 1s ease-out 1.2s;
-    animation-fill-mode: both;
-  }
-
-  .section-subtitle {
-    color: #666666;
-    font-size: 1.1rem;
-    margin-top: 0.5rem;
-    animation: fadeIn 1s ease-out 1.2s;
-    animation-fill-mode: both;
-  }
-
-  /* Feature Cards */
-  .feature-card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    animation: fadeInFromLeft 1s ease-out 1.3s;
-    animation-fill-mode: both;
-  }
-
-  .feature-icon {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
-
-  .feature-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #333333;
-    margin-bottom: 0.75rem;
-  }
-
-  .feature-description {
-    font-size: 1rem;
-    color: #666666;
-    line-height: 1.6;
-  }
-
-  /* Phone Mockup (Optional) */
+/* Responsive Design */
+@media (max-width: 768px) {
   .phone-mockup {
-    max-width: 300px;
-    margin: 0 auto;
+    margin-top: 2rem;
   }
-
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .phone-mockup {
-      margin-top: 2rem;
-    }
-  }
-
+}
 </style>
 
-<script>
-  
-</script>
+<script></script>
 
 <template>
   <div class="hero-header-content">
-    <label class="title-txt " style="font-size: 2rem;">Trouve ton appart sans effort et avant tout le monde <br></label>
-    <p class="subtitle-txt">Envoyez un message à Moveout Bot par SMS ou WhatsApp. <br> Votre maison de rêve est à un message de distance.</p>
-    <br>
-    <button @click="handleProceedSignUp" class="title-btn" style="">Commencez avec Moveout</button>
+    <label class="title-txt" style="font-size: 2rem"
+      >Trouve ton appart sans effort et avant tout le monde <br
+    /></label>
+    <p class="subtitle-txt">
+      Envoyez un message à Moveout Bot par SMS ou WhatsApp. <br />
+      Votre maison de rêve est à un message de distance.
+    </p>
+    <br />
+    <button @click="handleProceedSignUp" class="title-btn" style="">
+      Commencez avec Moveout
+    </button>
   </div>
 
   <section id="sms-whatsapp" class="messaging-section">
     <div class="container mx-auto text-center">
-
       <!-- <div class="section-header text-center">
         <h2 class="section-title">Trouvez des appartements par SMS ou WhatsApp</h2>
         <p class="section-subtitle">Aucune application à télécharger. Envoyez-nous simplement un message, et nous ferons le travail pour vous !</p>
       </div> -->
 
-      <div class="row align-items-center mt-[4rem] flex flex-col md:flex-row justify-center">
-        
+      <div
+        class="row align-items-center mt-[4rem] flex flex-col md:flex-row justify-center"
+      >
         <div class="col-md-6 mx-auto max-w-2xl">
           <div class="messaging-features">
-            <h2 class="section-title">Trouvez des appartements par SMS ou WhatsApp</h2>
+            <h2 class="section-title">
+              Trouvez des appartements par SMS ou WhatsApp
+            </h2>
             <!-- <p class="section-subtitle">Aucune application à télécharger. Envoyez-nous simplement un message, et nous ferons le travail pour vous !</p> -->
             <div class="feature-card">
               <div class="feature-icon">🚀</div>
-              <h3 class="feature-title">Correspondances Instantanées et Personnalisées</h3>
+              <h3 class="feature-title">
+                Correspondances Instantanées et Personnalisées
+              </h3>
               <p class="feature-description">
-                Recevez des annonces adaptées à vos besoins, envoyées directement sur votre téléphone. Pas d'applications.
+                Recevez des annonces adaptées à vos besoins, envoyées
+                directement sur votre téléphone. Pas d'applications.
               </p>
             </div>
 
             <div class="feature-card">
               <div class="feature-icon">⚡</div>
-              <h3 class="feature-title">Obtenez des correspondances instantanément</h3>
+              <h3 class="feature-title">
+                Obtenez des correspondances instantanément
+              </h3>
               <p class="feature-description">
-                Notre bot IA scanne des milliers d'annonces et vous envoie les meilleures options en quelques secondes.
+                Notre bot IA scanne des milliers d'annonces et vous envoie les
+                meilleures options en quelques secondes.
               </p>
             </div>
 
@@ -345,7 +358,8 @@ onMounted(() => {
               <div class="feature-icon">🌍</div>
               <h3 class="feature-title">Parlez votre langue</h3>
               <p class="feature-description">
-                Discutez naturellement dans <strong>20 langues</strong>, dont l'anglais, l'espagnol, le mandarin et l'arabe.
+                Discutez naturellement dans <strong>20 langues</strong>, dont
+                l'anglais, l'espagnol, le mandarin et l'arabe.
               </p>
             </div>
 
@@ -353,10 +367,10 @@ onMounted(() => {
               <div class="feature-icon">⏰</div>
               <h3 class="feature-title">Disponible 24h/24 et 7j/7</h3>
               <p class="feature-description">
-                Notre bot ne dort jamais. Vous cherchez un appartement en pleine nuit ? On s'occupe de tout.
+                Notre bot ne dort jamais. Vous cherchez un appartement en pleine
+                nuit ? On s'occupe de tout.
               </p>
             </div>
-
           </div>
         </div>
 
@@ -376,8 +390,8 @@ onMounted(() => {
     <p>Trouvez le forfait parfait pour vos besoins de recherche d'appartement.</p>
   </div> -->
   <!-- <div class="pricing-content"> -->
-    <!-- Free Plan Card -->
-    <!-- <div class="pricing-card">
+  <!-- Free Plan Card -->
+  <!-- <div class="pricing-card">
       <div class="pricing-card-header">
         <p>Gratuit : <br><span>0$/mois</span></p>
       </div>
@@ -397,8 +411,8 @@ onMounted(() => {
       </div>
     </div> -->
 
-    <!-- Pro Plan Card -->
-    <!-- <div class="pricing-card">
+  <!-- Pro Plan Card -->
+  <!-- <div class="pricing-card">
       <div class="pricing-card-header">
         <p>Pro : <br><span>9.99$/mois</span></p>
       </div>
