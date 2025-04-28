@@ -21,14 +21,15 @@ function handleProceedLogin() {
 }
 
 function handleProceedSignUp() {
-  // Créer un lien SMS avec un message préformaté
-  const phoneNumber = "+12185953780";
-  const message = "Je cherche un appartement";
-  const smsLink = `sms:${phoneNumber}?body=${encodeURIComponent(message)}`;
+  router.push("/signup");
+  // // Créer un lien SMS avec un message préformaté
+  // const phoneNumber = "+12185953780";
+  // const message = "Je cherche un appartement";
+  // const smsLink = `sms:${phoneNumber}?body=${encodeURIComponent(message)}`;
   
-  // Ouvrir le lien SMS
-  window.location.href = smsLink;
-  console.log("Redirection vers SMS avec message préformaté");
+  // // Ouvrir le lien SMS
+  // window.location.href = smsLink;
+  // console.log("Redirection vers SMS avec message préformaté");
 }
 
 const currentSlideIndex = ref(0);
