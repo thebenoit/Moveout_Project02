@@ -59,6 +59,7 @@ const customerPortalLink = ref("https://buy.stripe.com/3cseXl7mn3nmcNy28a ");
       borderColor="blue-main"
       shadowColor="blue-main"
       class="w-full md:w-1/3"
+      prix_rabais="9.99$/mois"
     />
     <PricingCard
       titre="Golden"
@@ -71,6 +72,7 @@ const customerPortalLink = ref("https://buy.stripe.com/3cseXl7mn3nmcNy28a ");
       borderColor="yellow-500"
       shadowColor="yellow-500"
       class="w-full md:w-1/3"
+      prix_rabais="17.99$/mois"
     />
   </div>
   <!-- <div class="w-full flex">

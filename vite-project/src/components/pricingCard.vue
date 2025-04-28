@@ -10,6 +10,10 @@ const props = defineProps({
     type: String,
     default: "0$/mois",
   },
+  prix_rabais: {
+    type: String,
+    default: "0$/mois",
+  },
   buttonText: {
     type: String,
     default: "Continuer Gratuitement",
@@ -94,7 +98,9 @@ const handleButtonClick = () => {
         id="tier-team"
       >
         {{ prix }}
+        <p class=" text-gray-500 text-sm">au lieu de {{ prix_rabais }}</p>
       </h3>
+      
       <a
         @click="handleButtonClick"
         class="inline-block mb-5 px-4 py-2 rounded-full w-full text-center"
