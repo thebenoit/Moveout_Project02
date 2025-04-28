@@ -48,13 +48,14 @@ const customerPortalLink = ref("https://buy.stripe.com/3cseXl7mn3nmcNy28a ");
     class="mt-10 p-2 flex flex-col items-center gap-10 md:flex-row md:justify-center md:items-stretch md:gap-6 max-w-sm md:max-w-6xl mx-auto"
   >
     <PricingCard
+      
       titre="Gratuit"
       prix="0$/mois"
       description="Accès à toutes les fonctionnalités de Moveout Bot"
-      :buttonLink="btn_continuer_gratuitement"
       buttonText="Cliquez pour continuer gratuitement"
       :points="points"
       class="w-full md:w-1/3"
+      rabais="false"
 
     />
     <PricingCard

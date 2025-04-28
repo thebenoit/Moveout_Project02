@@ -1,5 +1,8 @@
 <script setup>
 import { defineProps } from "vue";
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const props = defineProps({
   titre: {
@@ -59,10 +62,15 @@ const handleButtonClick = () => {
     } else {
       // Assuming vue-router is available in the parent component
       // This will be handled by the parent component
-      this.$emit("button-click");
+    //   this.$emit("button-click");
+    goToConfirmation();
     }
   }
 };
+
+const goToConfirmation = () => {
+  router.push("/confirmation");
+}
 </script>
 
 <template>
@@ -105,8 +113,20 @@ const handleButtonClick = () => {
         <p v-if="rabais" class=" text-gray-500 text-sm">au lieu de {{ prix_rabais }}</p>
       </h3>
       
-      <a
+      <a v-if="buttonLink"
         @click="handleButtonClick"
+        class="inline-block mb-5 px-4 py-2 rounded-full w-full text-center"
+        :class="{
+          'bg-yellow-500': buttonColor === 'yellow-500',
+          'bg-blue-main': buttonColor === 'blue-main',
+          'bg-black': buttonColor === 'black',
+          'text-white': buttonTextColor === 'white',
+        }"
+      >
+        {{ buttonText }}
+      </a>
+      <a v-else
+        @click="goToConfirmation"
         class="inline-block mb-5 px-4 py-2 rounded-full w-full text-center"
         :class="{
           'bg-yellow-500': buttonColor === 'yellow-500',

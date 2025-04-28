@@ -17,6 +17,7 @@ import Erreur404 from "@/views/Erreur404.vue";
 import Listings from "@/views/Listings.vue";
 import HomeSimple from "@/views/HomeSimple.vue";
 import Pricing_Page from "@/views/pricing_pages/pricing_page.vue";
+import ConfirmationPage from "@/views/confirmationPage.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,6 +51,11 @@ const router = createRouter({
       path: "/signup",
       name: "signup",
       component: Signup,
+    },
+    {
+      path: "/confirmation",
+      name: "confirmation",
+      component: ConfirmationPage,
     },
     // {
     //   path: '/contactus',
