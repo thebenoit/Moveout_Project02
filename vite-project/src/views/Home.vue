@@ -315,9 +315,18 @@ onMounted(() => {
     <label class="title-txt " style="font-size: 2rem;">Tu cherches un appartement affordable? <br></label>
     <p class="subtitle-txt">Envoyez un message à Moveout Bot par SMS ou WhatsApp. <br> Votre maison de rêve est à un message de distance.</p>
     <br>
-    <button @click="handleProceedSignUp" class="title-btn" style="">Clique pour trouver ton appartement</button>
+    <button @click="handleProceedSignUp" class="title-btn mb-5" style="">Clique pour trouver ton appartement</button>
     
+    
+  <div class="container my-4">
+    <div class="row justify-content-center">
+      <div class="col-md-10">
+        <img src="@/assets/screenshot.png" alt="Capture d'écran de l'application" class="img-fluid rounded shadow">
+      </div>
+    </div>
   </div>
+  </div>
+
 
   <section id="sms-whatsapp" class="messaging-section">
     <div class="container mx-auto text-center">
@@ -326,6 +335,8 @@ onMounted(() => {
         <h2 class="section-title">Trouvez des appartements par SMS ou WhatsApp</h2>
         <p class="section-subtitle">Aucune application à télécharger. Envoyez-nous simplement un message, et nous ferons le travail pour vous !</p>
       </div> -->
+
+
 
       <div class="row align-items-center mt-[4rem] flex flex-col md:flex-row justify-center">
         

@@ -4,7 +4,8 @@ import { useRouter } from "vue-router";
 import PricingCard from "./pricingCard.vue";
 const router = useRouter();
 
-let paymentLinkPro = ref("https://buy.stripe.com/bIY5mL8qr7DCbJucMP");
+let paymentLinkPro = ref("https://buy.stripe.com/bIY16vfST9LKbJu8wA");
+let paymentLinkGolden = ref("https://buy.stripe.com/eVa16vgWXbTS14Q6ot");
 
 
 let points = [
@@ -31,6 +32,13 @@ let pointsGolden = [
 const btn_continuer_gratuitement = () => {
   router.push("/listings");
 };
+
+const handlePaymentLinkPro = () => {
+  window.open(paymentLinkPro.value, "_blank");
+};
+const handlePaymentLinkGolden = () => {
+  window.open(paymentLinkGolden.value, "_blank");
+};
 //lien pour accéder au portail stripe
 const customerPortalLink = ref("https://buy.stripe.com/3cseXl7mn3nmcNy28a ");
 </script>
@@ -43,16 +51,17 @@ const customerPortalLink = ref("https://buy.stripe.com/3cseXl7mn3nmcNy28a ");
       titre="Gratuit"
       prix="0$/mois"
       description="Accès à toutes les fonctionnalités de Moveout Bot"
-      buttonLink="/listings"
+      :buttonLink="btn_continuer_gratuitement"
       buttonText="Cliquez pour continuer gratuitement"
       :points="points"
       class="w-full md:w-1/3"
+
     />
     <PricingCard
       titre="Pro"
       prix="4.99$/mois"
       description="Accès à toutes les fonctionnalités de Moveout Bot"
-      buttonLink="/listings"
+      :buttonLink="paymentLinkPro"
       buttonText="Cliquez pour continuer avec le plan Pro"
       :points="pointsPro"
       buttonColor="blue-main"
@@ -60,12 +69,14 @@ const customerPortalLink = ref("https://buy.stripe.com/3cseXl7mn3nmcNy28a ");
       shadowColor="blue-main"
       class="w-full md:w-1/3"
       prix_rabais="9.99$/mois"
+      rabais="true"
+      
     />
     <PricingCard
       titre="Golden"
       prix="8.99$/mois"
       description="Accès à toutes les fonctionnalités de Moveout Bot"
-      buttonLink="/listings"
+      :buttonLink="paymentLinkGolden"
       buttonText="Cliquez pour continuer avec le plan Golden"
       :points="pointsGolden"
       buttonColor="yellow-500"
@@ -73,6 +84,8 @@ const customerPortalLink = ref("https://buy.stripe.com/3cseXl7mn3nmcNy28a ");
       shadowColor="yellow-500"
       class="w-full md:w-1/3"
       prix_rabais="17.99$/mois"
+      rabais="true"
+      
     />
   </div>
   <!-- <div class="w-full flex">

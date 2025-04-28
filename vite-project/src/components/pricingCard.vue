@@ -14,6 +14,10 @@ const props = defineProps({
     type: String,
     default: "0$/mois",
   },
+  rabais: {
+    type: Boolean,
+    default: false,
+  },
   buttonText: {
     type: String,
     default: "Continuer Gratuitement",
@@ -74,7 +78,7 @@ const handleButtonClick = () => {
     }"
   >
     <div class="p-8 pb-0 sm:p-10 sm:pb-0">
-        <div class="flex justify-center items-center text-white bg-red-500 rounded-md shadow-md font-bold w-32 text-center mx-auto mb-3">
+        <div v-if="rabais" class="flex justify-center items-center text-xl text-white bg-red-500 rounded-md shadow-md font-bold w-32 text-center mx-auto mb-3">
             <p>50% rabais</p>
         </div>
       <h3
@@ -98,7 +102,7 @@ const handleButtonClick = () => {
         id="tier-team"
       >
         {{ prix }}
-        <p class=" text-gray-500 text-sm">au lieu de {{ prix_rabais }}</p>
+        <p v-if="rabais" class=" text-gray-500 text-sm">au lieu de {{ prix_rabais }}</p>
       </h3>
       
       <a
