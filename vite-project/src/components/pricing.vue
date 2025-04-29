@@ -5,7 +5,7 @@ import PricingCard from "./pricingCard.vue";
 const router = useRouter();
 
 let paymentLinkPro = ref("https://buy.stripe.com/bIY16vfST9LKbJu8wA");
-let paymentLinkGolden = ref("https://buy.stripe.com/eVa16vgWXbTS14Q6ot");
+let paymentLinkGolden = ref("https://buy.stripe.com/fZeaH5223e2014QaEK");
 
 
 let points = [
@@ -75,7 +75,7 @@ const customerPortalLink = ref("https://buy.stripe.com/3cseXl7mn3nmcNy28a ");
     />
     <PricingCard
       titre="Golden"
-      prix="8.99$/mois"
+      prix="6.99$/mois"
       description="Accès à toutes les fonctionnalités de Moveout Bot"
       :buttonLink="paymentLinkGolden"
       buttonText="Cliquez pour continuer avec le plan Golden"
