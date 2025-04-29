@@ -279,6 +279,7 @@ async function preferenceCreation() {
         utils.setToken(result.token);
       }
       if (result.success) {
+        window.scrollTo(0, 0);
         router.push("/pricing");
         //window.location.href = "https://buy.stripe.com/3cseXl7mn3nmcNy28a";
         console.log("Redirection vers la page de paiement Stripe: ");
@@ -464,6 +465,9 @@ async function preferenceCreation() {
 }
 
 @media (min-width: 768px) {
+  .signup-section {
+    padding: 3rem 1.5rem;
+  }
   .signup-card {
     padding: 3rem 2.5rem;
   }
@@ -490,6 +494,9 @@ async function preferenceCreation() {
 }
 
 @media (min-width: 1024px) {
+  .signup-section {
+    padding: 4rem 2rem;
+  }
   .signup-card {
     padding: 3.5rem 3rem;
   }
@@ -518,7 +525,6 @@ async function preferenceCreation() {
 
 <template>
   <div>
-   
     <section v-if="!hiddenFirst" class="signup-section">
       <div class="signup-content">
         <div class="signup-card">
@@ -603,7 +609,6 @@ async function preferenceCreation() {
       </div>
     </section>
 
-    
     <section v-else class="signup-section">
       <div class="signup-card sign-width">
         <h1 class="signup-title">Comprendre vos préférences...</h1>
@@ -622,8 +627,8 @@ async function preferenceCreation() {
               @change="handleBedroomsChange"
               className="select"
             >
-              <option  value="" disabled  selected>Nombre de chambres</option>
-              
+              <option value="" disabled selected>Nombre de chambres</option>
+
               <option
                 class="text-lg"
                 v-for="bedrooms in ['1', '2', '3', '4', '5+']"
@@ -632,9 +637,8 @@ async function preferenceCreation() {
                 :selected="selectedBedrooms.includes(bedrooms)"
               >
                 {{ bedrooms }}
-              </option> 
+              </option>
             </select>
-          
           </div>
 
           <div class="input-group flex-1 min-w-[200px]">
