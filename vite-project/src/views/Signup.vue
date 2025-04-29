@@ -279,7 +279,8 @@ async function preferenceCreation() {
         utils.setToken(result.token);
       }
       if (result.success) {
-        window.location.href = "https://buy.stripe.com/3cseXl7mn3nmcNy28a";
+        router.push("/pricing");
+        //window.location.href = "https://buy.stripe.com/3cseXl7mn3nmcNy28a";
         console.log("Redirection vers la page de paiement Stripe: ");
       }
     }
