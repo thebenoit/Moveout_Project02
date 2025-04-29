@@ -21,6 +21,7 @@ function handleProceedLogin() {
 }
 
 function handleProceedSignUp() {
+  window.scrollTo(0, 0);
   router.push("/signup");
   // // Créer un lien SMS avec un message préformaté
   // const phoneNumber = "+12185953780";
