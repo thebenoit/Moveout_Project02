@@ -25,7 +25,7 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
-      component: Home,
+      component: ChatHome,
     },
     {
       path: "/home2",
