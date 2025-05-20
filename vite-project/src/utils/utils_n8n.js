@@ -82,13 +82,11 @@ const utils = {
     const authToken = sessionStorage.getItem("auth");
 
     if (authToken && !this.isTokenExpired(false)) {
-      console.log("Token valide");
       return authToken;
     }
     //sinon vérifier si le token temporaire est valide
     const tempToken = sessionStorage.getItem("temp_auth");
     if (tempToken && !this.isTokenExpired(true)) {
-      console.log("Token temporaire valide");
       return tempToken;
     }
 

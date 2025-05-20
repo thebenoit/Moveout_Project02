@@ -12,16 +12,30 @@ const isLoading = ref(false);
 // Gestion des erreurs
 const error = ref(null);
 
+const sessionInfo = ref({
+  sessionId: null,
+  isTemp: false,
+  iat: null,
+  exp: null,
+});
+
 const initSession = async () => {
   try {
     const token = await utils.getToken();
     if (!token) {
       console.error("Impossible d'obtenir un token");
       return;
+    } else {
+      console.log("Token obtenu:", token);
     }
 
     const decoded = utils.decodeToken();
     sessionInfo.value.isTemp = decoded?.isTemp || false;
+    sessionInfo.value.sessionId = decoded?.sessionId || null;
+    sessionInfo.value.iat = decoded?.iat || null;
+    sessionInfo.value.exp = decoded?.exp || null;
+
+    console.log("decoded:", decoded);
 
     if (decoded) {
       await loadMessages(decoded.sessionId || decoded.userId);
@@ -34,10 +48,6 @@ const initSession = async () => {
 const loadMessages = async (id) => {
   try {
     console.log("Chargement des messages pour l'id:", id);
-    // const response = await utils.get(`api/chat/messages/${id}`);
-    // if(response.error){
-    //   messages.value = [];
-    // }
   } catch (error) {
     console.error("Erreur lors du chargement des messages:", error);
   }
@@ -79,6 +89,7 @@ const sendMessage = async () => {
     // Appel à l'API en utilisant l'utilitaire
     const response = await utils.post("api/chat/message", {
       message: chatMessage.value,
+      sessionId: sessionInfo.value.sessionId,
     });
 
     if (response.error) {
@@ -108,12 +119,11 @@ const sendMessage = async () => {
 
 <template>
   <div class="container-fluid min-vh-100 d-flex flex-column">
-    <section class="row flex-grow-1 justify-content-center align-items-center p-4">
+    <section
+      class="row flex-grow-1 justify-content-center align-items-center p-4"
+    >
       <!-- <TitreAleatoire /> -->
-      <Searchbar />
-      
+      <Searchbar :sessionId="sessionInfo.sessionId" />
     </section>
   </div>
 </template>
-
-

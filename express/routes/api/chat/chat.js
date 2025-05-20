@@ -16,13 +16,19 @@ const N8N_WEBHOOK_URL = process.env.N8N_TEST_WEBHOOK_URL; // À remplacer par l'
  */
 router.post('/message', async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message, sessionId } = req.body;
 
     console.log("message réçu",message);
     
     if (!message) {
       return res.status(400).json({ success: false, error: 'Le message est requis' });
     }
+
+    if (!sessionId) {
+      return res.status(400).json({ success: false, error: 'La sessionId est requise' });
+    }
+
+
     
 
 

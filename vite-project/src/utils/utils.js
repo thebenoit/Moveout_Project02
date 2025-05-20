@@ -64,10 +64,10 @@ const utils = {
     const storageKey = isTemp ? "temp_auth" : "auth";
     sessionStorage.setItem(storageKey, token);
     // Stocker le timestamp d'expiration
-    const decoded = this.decodeToken();
+    /* const decoded = this.decodeToken();
     if (decoded && decoded.exp) {
       sessionStorage.setItem(`${storageKey}_expiration`, decoded.exp * 1000);
-    }
+    }*/
   },
   isTokenExpired(isTemp = false) {
     console.log("isTokenExpired");
@@ -95,13 +95,14 @@ const utils = {
   },
 
   async initTempSession() {
+    console.log("initTempSession");
     try {
+      //fetch la session temporaire
       const response = await fetch(
-        `${import.meta.env.VITE_NODE_SERVER_URL}/jwt/session/temp`,
+        `${import.meta.env.VITE_NODE_SERVER_URL}/api/jwt/session/temp`,
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${this.getToken()}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
@@ -109,10 +110,26 @@ const utils = {
           }),
         }
       );
+      //si la réponse est ok
       if (response.ok) {
         const { token } = await response.json();
-        this.setToken(token, true);
-        return token;
+        if (token) {
+          //stock le token dans le storage
+          sessionStorage.setItem("temp_auth", token);
+          // Décode ici pour stocker l'expiration
+          try {
+            const decoded = jwtDecode(token);
+            if (decoded && decoded.exp) {
+              sessionStorage.setItem(
+                "temp_auth_expiration",
+                decoded.exp * 1000
+              );
+            }
+          } catch (e) {
+            console.error("Error decoding token in initTempSession:", e);
+          }
+          return token;
+        }
       }
       return null;
     } catch (error) {
@@ -148,7 +165,11 @@ const utils = {
   },
   decodeToken() {
     const token = this.getToken();
-    if (token) {
+    
+    //si le token est une chaine de caractères et qu'il est plus long que 0
+    if (typeof token === "string" && token.length > 0) {
+      
+     
       try {
         return jwtDecode(token);
       } catch (error) {
@@ -156,6 +177,7 @@ const utils = {
         return null;
       }
     }
+    
     return null;
   },
   getUserId() {

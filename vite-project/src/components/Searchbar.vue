@@ -3,6 +3,12 @@ import { ref } from "vue";
 import utils from "../utils/utils_n8n";
 import { useRouter } from "vue-router";
 
+const props = defineProps({
+    sessionId: {
+        type: String,
+        required: false
+    }
+});
 
 const chatMessage = ref("");
 
@@ -21,7 +27,10 @@ const sendMessage = async () => {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: chatMessage.value })
+        body: JSON.stringify(
+          { message: chatMessage.value,
+            sessionId: props.sessionId
+          })
     });
 
     const data = await response;
@@ -42,7 +51,7 @@ const sendMessage = async () => {
     <div class="input-group shadow-sm rounded">
       <input
         type="text"
-        class="form-control border-start-0"
+        class="form-control border-start-0 h-16"
         placeholder="Que cherchez-vous ?"
         v-model="chatMessage"
         @keyup.enter="sendMessage"
