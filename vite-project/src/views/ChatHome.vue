@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import utils from "../utils/utils";
 import Searchbar from "../components/Searchbar.vue";
 import TitreAleatoire from "../components/TitreAleatoire.vue";
+import ChatsComponent from "../components/ChatsComponent.vue";
 // Référence pour le message de chat
 const chatMessage = ref("");
 // Référence pour stocker les messages
@@ -55,6 +56,7 @@ const loadMessages = async (id) => {
 
 onMounted(async () => {
   await initSession();
+  console.log("messages:", messages.value);
 });
 
 /**
@@ -119,11 +121,51 @@ const sendMessage = async () => {
 
 <template>
   <div class="container-fluid min-vh-100 d-flex flex-column">
-    <section
-      class="row flex-grow-1 justify-content-center align-items-center p-4"
-    >
-      <!-- <TitreAleatoire /> -->
-      <Searchbar :sessionId="sessionInfo.sessionId" />
+    <section v-if="messages.length == 0" class="centered-section" >
+            <!-- <TitreAleatoire /> -->
+            <Searchbar 
+            
+            :sessionId="sessionInfo.sessionId" 
+            :messages="messages" />
     </section>
+    <section
+      v-if="messages.length > 0"
+      class="chat-messages"
+    >
+      <ChatsComponent :messages="messages" :sessionId="sessionInfo.sessionId" />
+    </section>
+    <section v-if="messages.length > 0" class="flex-none border-t border-gray-200 bg-white p-4 sticky bottom-0 z-10">
+      <Searchbar :sessionId="sessionInfo.sessionId" :messages="messages" />
+    </section>
+
+   
+
   </div>
 </template>
+
+<style scoped>
+.centered-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* ou 100% si le parent a une hauteur fixée */
+}
+.chat-messages {
+  flex: 1 1 auto;
+  overflow-y: auto; /* Permet le scroll uniquement sur cette zone */
+  padding: 1rem;
+
+
+}
+.chat-input {
+  flex: 0 0 auto;
+  border-top: 1px solid #eee;
+  background-color: #fff;
+  padding: 1rem;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+
+}
+
+</style>
