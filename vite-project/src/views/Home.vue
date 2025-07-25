@@ -27,7 +27,7 @@ function handleProceedSignUp() {
   // const phoneNumber = "+12185953780";
   // const message = "Je cherche un appartement";
   // const smsLink = `sms:${phoneNumber}?body=${encodeURIComponent(message)}`;
-  
+
   // // Ouvrir le lien SMS
   // window.location.href = smsLink;
   // console.log("Redirection vers SMS avec message préformaté");
@@ -44,6 +44,95 @@ onMounted(() => {
 </script>
 
 <style>
+.construction-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #ffffff;
+  color: #333333;
+  text-align: center;
+  padding: 2rem;
+}
+
+.construction-content {
+  max-width: 600px;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 3rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e5e5;
+}
+
+.construction-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  animation: fadeInUp 1s ease-out;
+}
+
+.construction-subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+  animation: fadeInUp 1s ease-out 0.3s;
+  animation-fill-mode: both;
+}
+
+.construction-date {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 2rem;
+  animation: fadeInUp 1s ease-out 0.6s;
+  animation-fill-mode: both;
+}
+
+.construction-description {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  opacity: 0.8;
+  animation: fadeInUp 1s ease-out 0.9s;
+  animation-fill-mode: both;
+}
+
+.construction-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: bounce 2s infinite;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Ancien CSS conservé en commentaire */
+/*
   .hero-header-content {
     margin: 3.5rem 10% 0rem 10%;
     width: 80%;
@@ -113,7 +202,7 @@ onMounted(() => {
       opacity: 1;
       transform: translateX(0);
     }
-}
+  }
 
   .pricing-section {
     width: 100%;
@@ -227,7 +316,6 @@ onMounted(() => {
     flex-shrink: 0;
   }
 
-  /* Responsive Design */
   @media (max-width: 768px) {
     .pricing-content {
       flex-direction: column;
@@ -240,7 +328,6 @@ onMounted(() => {
     }
   }
 
-  /* Messaging Section */
   .messaging-section {
     padding: 4rem 0;
     margin-top: 5rem;
@@ -263,7 +350,6 @@ onMounted(() => {
     animation-fill-mode: both;
   }
 
-  /* Feature Cards */
   .feature-card {
     background: #fff;
     border-radius: 12px;
@@ -292,26 +378,40 @@ onMounted(() => {
     line-height: 1.6;
   }
 
-  /* Phone Mockup (Optional) */
   .phone-mockup {
     max-width: 300px;
     margin: 0 auto;
   }
 
-  /* Responsive Design */
   @media (max-width: 768px) {
     .phone-mockup {
       margin-top: 2rem;
     }
   }
-
+  */
 </style>
 
-<script>
-  
-</script>
+<script></script>
 
 <template>
+  <div class="construction-container">
+    <div class="construction-content">
+      <div class="construction-icon">🏗️</div>
+      <h1 class="construction-title">Site en Construction</h1>
+      <p class="construction-subtitle">
+        Nous travaillons dur pour vous offrir la meilleure expérience
+      </p>
+      <div class="construction-date">Disponible le 1er Août 2025</div>
+      <p class="construction-description">
+        Notre équipe développe actuellement une plateforme innovante pour vous
+        aider à trouver votre appartement idéal. Revenez bientôt pour découvrir
+        toutes nos fonctionnalités !
+      </p>
+    </div>
+  </div>
+
+  <!-- ANCIEN CODE COMMENTÉ -->
+  <!--
   <div class="hero-header-content">
     <label class="title-txt " style="font-size: 2rem;">Tu cherches un appartement affordable? <br></label>
     <p class="subtitle-txt">Envoyez un message à Moveout Bot par SMS ou WhatsApp. <br> Votre maison de rêve est à un message de distance.</p>
@@ -332,19 +432,11 @@ onMounted(() => {
   <section id="sms-whatsapp" class="messaging-section">
     <div class="container mx-auto text-center">
 
-      <!-- <div class="section-header text-center">
-        <h2 class="section-title">Trouvez des appartements par SMS ou WhatsApp</h2>
-        <p class="section-subtitle">Aucune application à télécharger. Envoyez-nous simplement un message, et nous ferons le travail pour vous !</p>
-      </div> -->
-
-
-
       <div class="row align-items-center mt-[4rem] flex flex-col md:flex-row justify-center">
         
         <div class="col-md-6 mx-auto max-w-2xl">
           <div class="messaging-features">
             <h2 class="section-title">Trouvez des appartements par SMS ou WhatsApp</h2>
-            <!-- <p class="section-subtitle">Aucune application à télécharger. Envoyez-nous simplement un message, et nous ferons le travail pour vous !</p> -->
             <div class="feature-card">
               <div class="feature-icon">🚀</div>
               <h3 class="feature-title">Correspondances Instantanées et Personnalisées</h3>
@@ -379,70 +471,8 @@ onMounted(() => {
 
           </div>
         </div>
-
-        <!-- Right Column: Phone Mockup (Optional) -->
-        <!-- <div class="col-md-6 text-center">
-          <div class="phone-mockup">
-            <img src="../assets/images/phone-mockup.png" alt="Chat with moveout.ai via SMS/WhatsApp" class="img-fluid">
-          </div>
-        </div> -->
       </div>
     </div>
   </section>
-
-  <!-- <section class="pricing-section"> -->
-  <!-- <div class="pricing-header">
-    <label>Choisissez votre forfait</label>
-    <p>Trouvez le forfait parfait pour vos besoins de recherche d'appartement.</p>
-  </div> -->
-  <!-- <div class="pricing-content"> -->
-    <!-- Free Plan Card -->
-    <!-- <div class="pricing-card">
-      <div class="pricing-card-header">
-        <p>Gratuit : <br><span>0$/mois</span></p>
-      </div>
-      <button class="pricing-card-btn">Continuer Gratuitement</button>
-      <div class="pricing-card-content">
-        <ul>
-          <li>
-            <svg class="h-6 w-6 text-black-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg> Accès centralisé aux annonces
-          </li>
-          <li>
-            <svg class="h-6 w-6 text-black-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg> Filtrage
-          </li>
-          <li>
-            <svg class="h-6 w-6 text-black-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg> Mise a jour quotidienne
-          </li>
-        </ul>
-      </div>
-    </div> -->
-
-    <!-- Pro Plan Card -->
-    <!-- <div class="pricing-card">
-      <div class="pricing-card-header">
-        <p>Pro : <br><span>9.99$/mois</span></p>
-      </div>
-      <button class="pricing-card-btn">Aller Pro</button>
-      <div class="pricing-card-content">
-        <ul>
-          <li>
-            <svg class="h-6 w-6 text-blue-main" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path></svg> Tout du plan Gratuit
-          </li>
-          <li>
-            <svg class="h-6 w-6 text-blue-main" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path></svg> Notifications en temps réel ultra-rapides ⚡
-          </li>
-          <li>
-            <svg class="h-6 w-6 text-blue-main" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path></svg> Recommandations personnalisées
-          </li>
-          <li>
-            <svg class="h-6 w-6 text-blue-main" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path></svg> +5 Appartements par jours 🏡
-          </li>
-          <li>
-            <svg class="h-6 w-6 text-blue-main" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path></svg> 📞 Assistance 24/7 pour ne jamais être bloqué
-          </li>
-        </ul>
-      </div>
-    </div> -->
-  <!-- </div>
-</section> -->
+  -->
 </template>
