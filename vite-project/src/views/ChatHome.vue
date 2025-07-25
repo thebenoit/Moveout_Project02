@@ -1,9 +1,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import utils from "../utils/utils";
-import Searchbar from "../components/Searchbar.vue";
+import Searchbar from "../components/chatComponents/Searchbar.vue";
 import TitreAleatoire from "../components/TitreAleatoire.vue";
-import ChatsComponent from "../components/ChatsComponent.vue";
+import ChatsComponent from "../components/chatComponents/ChatsComponent.vue";
 // Référence pour le message de chat
 const chatMessage = ref("");
 // Référence pour stocker les messages
@@ -121,10 +121,10 @@ const sendMessage = async () => {
 
 <template>
   <div class="container-fluid min-vh-100 d-flex flex-column">
-    <section v-if="messages.length == 0" class="centered-section" >
+    <section v-if="messages.length == 0" class="centered-section bg-blue-500" >
             <!-- <TitreAleatoire /> -->
             <Searchbar 
-            
+            class="w-96 w-16"
             :sessionId="sessionInfo.sessionId" 
             :messages="messages" />
     </section>

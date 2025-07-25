@@ -171,10 +171,10 @@ class FacebookMarketplaceScraper:
                     data["images"].append(link['href'])
        
         # # Extraction du titre
-        # title_element = soup.find('h1', class_=lambda c: c and 'x1heor9g' in c)
-        # if title_element:
-        #     data["title"] = title_element.text.strip()
-        #     print("title",data["title"],"\n")
+        title_element = soup.find('h1', class_=lambda c: c and 'x1heor9g' in c)
+        if title_element:
+            data["title"] = title_element.text.strip()
+            print("title",data["title"],"\n")
         
         
         # # Extraction du prix

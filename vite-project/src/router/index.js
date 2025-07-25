@@ -18,6 +18,7 @@ import Listings from "@/views/Listings.vue";
 import HomeSimple from "@/views/HomeSimple.vue";
 import Pricing_Page from "@/views/pricing_pages/pricing_page.vue";
 import ChatHome from "@/views/ChatHome.vue";
+import CardPage from "@/components/listingcard/cardPage.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: ChatHome,
+    },
+    {
+      path: "/card",
+      name: "card",
+      component: CardPage,
     },
     {
       path: "/home2",

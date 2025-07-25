@@ -18,10 +18,12 @@ const props = defineProps({
 </script>
 
 <template>
-    <div>
-        <div v-for="message in messages" :key="message.id">
-            <ChatUser v-if="message.isUser" :message="message" />
-            <ChatMoveout v-else :message="message" />
+    <div class="d-flex flex-column w-100">
+        <div v-for="message in messages" :key="message.id" class="d-flex flex-column">
+            <ChatUser class="align-self-end"
+            v-if="message.isUser" 
+            :message="message" />
+            <ChatMoveout v-else class="align-self-start" :message="message" />
         </div>
     </div>
     

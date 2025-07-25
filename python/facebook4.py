@@ -33,7 +33,7 @@ import urllib
 import urllib.parse
 from time import sleep
 
-##change dépendementd de l'ordi install ici: https://googlechromelabs.github.io/chrome-for-testing/#stable
+##change dépendement de l'ordi install ici: https://googlechromelabs.github.io/chrome-for-testing/#stable
 chromedriver_path = "/Users/jerrybenoit/Downloads/chromedriver-mac-arm64/chromedriver"
 class Bd:
 
