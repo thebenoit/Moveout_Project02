@@ -7,12 +7,18 @@ import MoveoutLogo from "../assets/images/Moveout_Logo2.svg";
 
 import { TruckIcon } from "@heroicons/vue/24/outline";
 import { UserIcon } from "@heroicons/vue/24/outline";
-import utils from "@/utils/utils";
+import utils from "../utils/utils/";
 import BetaLogo from "./BetaLogo.vue";
 
 const connecter = ref(false);
 
 const router = useRouter();
+
+function isUserLoggedIn() {
+  const decoded = utils.decodeToken();
+  // Un utilisateur est connecté si le token décodé existe et n'est pas temporaire
+  return decoded && !decoded.isTemp;
+}
 
 function gotologout() {
   utils.logout();
@@ -173,26 +179,26 @@ function estConnecter() {
     <!-- Navigation Buttons -->
     <div class="navbar-buttons">
       <button
-        v-if="!utils.getToken()"
+        v-if="!isUserLoggedIn()"
         @click="gotologin"
         class="navbar-btn navbar-btn-outline"
       >
         Se connecter
       </button>
-      <button
+      <!-- <button
         v-else
         @click="router.push('/foryou')"
         class="navbar-btn navbar-btn-solid"
       >
         Compte
-      </button>
+      </button> -->
 
       <button
-        v-if="!utils.getToken()"
+        v-if="!isUserLoggedIn()"
         @click="gotosignup"
         class="navbar-btn navbar-btn-solid"
       >
-        Commencer
+        S'inscrire
       </button>
       <button v-else @click="gotologout" class="navbar-btn navbar-btn-outline">
         Déconnexion

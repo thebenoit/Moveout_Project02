@@ -11,11 +11,9 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import MultiSlider from "@/components/ui/input/multirange-input/multiRangeInput.vue";
 import utils from "../utils/utils";
 import { useRouter } from "vue-router";
 import { decodeJwt } from "jose";
-//import { default as jwt_decode } from 'jwt-decode';
 
 const firstName = ref("");
 const lastName = ref("");
@@ -25,171 +23,10 @@ const confirmEmail = ref("");
 const password = ref("");
 const confirmPassword = ref("");
 
-const minValue = ref(0);
-const maxValue = ref(100);
-
-// Store selected neighborhoods
-const selectedNeighborhoods = ref([]);
-// Store selected number of bedrooms
-const selectedBedrooms = ref([]);
-const selectedBudget = ref({
-  minValue: 0,
-  maxValue: 100,
-});
-const selectedIdPreference = ref("");
-const selectedGender = ref("");
-const selectedOccupation = ref("");
-const selectedSalary = ref("");
-const selectedReference = ref("");
-const selectedAge = ref("");
-const selectedAddOnService = ref("");
-const autreClicked = ref(false);
-const customService = ref("");
-
-// const survey = {
-//   numberOfBedrooms: selectedBedrooms,
-//   Budget: selectedBudget,
-//   locationsPreferences: selectedNeighborhoods,
-//   age: selectedAge,
-//   gender: selectedGender,
-//   occupation: selectedOccupation,
-//   salary: selectedSalary,
-//   reference: selectedReference,
-//   addOnService: customService,
-// };
-
 const errorMessages = ref("");
-const preferenceSurveyError = ref("");
-const hiddenFirst = ref(false);
-
-const quartiers = {
-  "Ahuntsic-Cartierville": ["Ahuntsic", "Cartierville", "Sault-au-Récollet"],
-  Anjou: ["Anjou"],
-  "Côte-des-Neiges–Notre-Dame-de-Grâce": [
-    "Côte-des-Neiges",
-    "Notre-Dame-de-Grâce",
-  ],
-  Lachine: ["Lachine", "Saint-Pierre"],
-  LaSalle: ["LaSalle"],
-  "Le Plateau-Mont-Royal": ["Le Plateau", "Mile End", "Milton-Parc"],
-  "Le Sud-Ouest": [
-    "Griffintown",
-    "Little Burgundy",
-    "Pointe-Saint-Charles",
-    "Saint-Henri",
-    "Ville-Émard",
-    "Côte-Saint-Paul",
-  ],
-  "L'Île-Bizard–Sainte-Geneviève": ["L'Île-Bizard", "Sainte-Geneviève"],
-  "Mercier–Hochelaga-Maisonneuve": [
-    "Hochelaga-Maisonneuve",
-    "Mercier-Ouest",
-    "Mercier-Est",
-  ],
-  "Montréal-Nord": ["Montréal-Nord"],
-  Outremont: ["Outremont"],
-  "Pierrefonds-Roxboro": ["Pierrefonds", "Roxboro"],
-  "Rivière-des-Prairies–Pointe-aux-Trembles": [
-    "Pointe-aux-Trembles",
-    "Rivière-des-Prairies",
-  ],
-  "Rosemont–La Petite-Patrie": ["La Petite-Patrie", "Rosemont"],
-  "Saint-Laurent": ["Saint-Laurent"],
-  "Saint-Léonard": ["Saint-Léonard"],
-  Verdun: ["Verdun", "Île-des-Sœurs"],
-  "Ville-Marie": [
-    "Old Montréal",
-    "Chinatown",
-    "Downtown",
-    "Quartier des Spectacles",
-    "Golden Square Mile",
-    "Gay Village",
-    "Shaughnessy Village",
-  ],
-  "Villeray–Saint-Michel–Parc-Extension": [
-    "Parc-Extension",
-    "Saint-Michel",
-    "Villeray",
-  ],
-  Westmount: ["Westmount"],
-};
-
-const toggleSelection = (neighborhood) => {
-  if (selectedNeighborhoods.value.includes(neighborhood)) {
-    // Remove if already selected
-    selectedNeighborhoods.value = selectedNeighborhoods.value.filter(
-      (n) => n !== neighborhood
-    );
-  } else {
-    // Add if not selected
-    selectedNeighborhoods.value.push(neighborhood);
-  }
-};
-
-// Fonction pour gérer la sélection du nombre de chambres
-const toggleBedroomsSelection = (bedrooms) => {
-  if (selectedBedrooms.value.includes(bedrooms)) {
-    //remove if already selected
-    selectedBedrooms.value = selectedBedrooms.value.filter(
-      (n) => n !== bedrooms
-    );
-  } else {
-    console.log("push bedrooms: ", bedrooms);
-    selectedBedrooms.value.push(bedrooms);
-  }
-};
-
-const toggleAgeSelection = (age) => {
-  selectedAge.value = age;
-};
-
-const toggleGenderSelection = (gender) => {
-  selectedGender.value = gender;
-};
-
-const toggleSalarySelection = (salary) => {
-  selectedSalary.value = salary;
-};
-
-const toggleOccupationSelection = (occupation) => {
-  selectedOccupation.value = occupation;
-};
-
-const toggleReferenceSelection = (reference) => {
-  selectedReference.value = reference;
-};
-
-const handleMinValueChange = (value) => {
-  console.log("Min value changed:", value); // Vérifiez la valeur reçue
-  selectedBudget.value.minValue = value;
-};
-
-const handleMaxValueChange = (value) => {
-  console.log("Max value changed:", value); // Vérifiez la valeur reçue
-  selectedBudget.value.maxValue = value;
-};
-
-// const toggleAddOnServiceSelection = (addOnService) => {
-//   if (selectedAddOnService.value === addOnService) {
-//     selectedAddOnService.value = "";
-//   } else {
-//     selectedAddOnService.value = addOnService;
-//     autreClicked.value = false; // Désactiver le champ "Autre" s'il est sélectionné
-//   }
-// };
-
-const toggleAddOnServiceSelectionAutre = (addOnService) => {
-  selectedAddOnService(addOnService);
-};
 
 const router = useRouter();
 
-async function nextSlide() {
-  hiddenFirst.value = true;
-}
-async function previousSlide() {
-  hiddenFirst.value = false;
-}
 async function signup() {
   try {
     let result = await utils.post("api/client/signup", {
@@ -197,9 +34,7 @@ async function signup() {
       lastName: lastName.value,
       phone: phone.value,
       email: email.value,
-      //"confirmEmail": confirmEmail.value,
       password: password.value,
-      //"confirmPassword": confirmPassword.value
     });
     if (result.error) {
       console.log("result.error: ", result.error.message);
@@ -207,28 +42,11 @@ async function signup() {
       console.log("error: ", result.error);
     } else {
       console.log("result ", result);
-      //result = await result.json();
 
       if (result.token) {
         utils.setToken(result.token);
-
-        // Décoder le token JWT pour accéder à preferenceId
-        const decodedToken = decodeJwt(result.token);
-        console.log("decoded token: ", decodedToken);
-        console.log("token preferenceId: ", decodedToken.prefId);
-        if (decodedToken && decodedToken.prefId) {
-          // Stocker prefId
-          selectedIdPreference.value = decodedToken.prefId;
-
-          nextSlide();
-          console.log("changement de page: ");
-        } else {
-          console.log("erreur dans le decoded token: ", decodedToken);
-          console.log(
-            "erreur dans le decoded token préférenceID: ",
-            decodedToken.prefId
-          );
-        }
+        // Redirection vers la page d'accueil après inscription réussie
+        router.push({ path: "/" });
       }
     }
   } catch (error) {
@@ -237,86 +55,330 @@ async function signup() {
     console.log("error2: ", errorMessages);
   }
 }
+
 const versConnection = () => {
   router.push({ path: "/login" });
 };
-
-async function preferenceCreation() {
-  try {
-    console.log("bedrooms: ", selectedBedrooms.value);
-    console.log("budgetMax: ", selectedBudget.value.maxValue);
-    console.log("budgetMin: ", selectedBudget.value.minValue);
-    console.log("age: ", selectedAge.value);
-
-    console.log("addOnService: ", customService.value);
-    console.log("genre: ", selectedGender.value);
-    console.log("reference: ", selectedReference.value);
-    console.log("occupation: ", selectedOccupation.value);
-
-    let result = await utils.post("api/client/preference", {
-      preferencesId: selectedIdPreference.value,
-      numberOfBedrooms: selectedBedrooms.value,
-      age: selectedAge.value,
-      gender: selectedGender.value,
-      locationPreferences: selectedNeighborhoods.value,
-      occupation: selectedOccupation.value,
-      reference: selectedReference.value,
-      minValue: selectedBudget.value.minValue,
-      maxValue: selectedBudget.value.maxValue,
-      addOnService: customService.value,
-    });
-    console.log("Raw response: ", result);
-
-    if (result.error) {
-      console.log("result.errorPreference: ", result.error?.message);
-      //errorMessages.value = result.error?.message;
-      preferenceSurveyError.value = result.error;
-    } else {
-      console.log("resultPreference ", result);
-      //result = await result.json();
-
-      if (result.token) {
-        utils.setToken(result.token);
-      }
-      if (result.success) {
-        window.location.href = "https://buy.stripe.com/3cseXl7mn3nmcNy28a";
-        console.log("Redirection vers la page de paiement Stripe: ");
-      }
-    }
-  } catch (error) {
-    console.error("Error during signup Preference:", error);
-    //errorMessages.value = "Une erreur est survenue lors de l'inscription.";
-    console.log("error2Pref: ", errorMessages);
-  }
-}
 </script>
+
 <style>
-/* General Styles */
-.signup-section {
+/* Page Container */
+.page-container {
+  min-height: 100vh;
+  background: white;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 80vh;
-  padding: 1rem;
+  flex-direction: column;
 }
 
-.signup-content {
-  width: 100%;
-  max-width: 500px;
-  padding: 1rem;
+/* Top Navigation Bar */
+.top-navbar {
+  background: #e2e8f0;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: black;
+  text-decoration: none;
+}
+
+.logo-icon {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+}
+
+.navbar-buttons {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.navbar-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.navbar-btn-outline {
+  background-color: white;
+  color: black;
+  border: 1px solid #d1d5db;
+}
+
+.navbar-btn-outline:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.navbar-btn-solid {
+  background-color: black;
+  color: white;
+}
+
+.navbar-btn-solid:hover {
+  background-color: #374151;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
 }
 
 .signup-card {
-  background-color: #ffffff;
-  padding: 2.5rem 2rem;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  text-align: center;
-  animation: fadeInUp 0.8s ease-out;
+  background: white;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 480px;
+  position: relative;
 }
 
+/* Form Header */
+.signup-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.signup-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+}
+
+.signup-subtitle {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-row .form-group {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.625rem 1rem;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #1a1a1a;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-input::placeholder {
+  color: #9ca3af;
+}
+
+/* Button Styles */
+.signup-button {
+  width: 100%;
+  padding: 0.875rem;
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 1.5rem;
+}
+
+.signup-button:hover {
+  background: #333;
+  transform: translateY(-1px);
+}
+
+/* Separator */
+.separator {
+  position: relative;
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.separator::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #e1e5e9;
+  transform: translateY(-50%);
+}
+
+.separator span {
+  background: white;
+  padding: 0 1rem;
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 500;
+  position: relative;
+  z-index: 1;
+}
+
+/* Google Button */
+.google-button {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  background: white;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.google-button:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Error Message */
+.error-message {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .top-navbar {
+    padding: 0.75rem 1rem;
+  }
+
+  .navbar-brand {
+    font-size: 1.125rem;
+  }
+
+  .logo-icon {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  .navbar-buttons {
+    gap: 0.5rem;
+  }
+
+  .navbar-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .main-content {
+    padding: 1rem;
+  }
+
+  .signup-card {
+    padding: 2rem 1.5rem;
+    margin: 0;
+  }
+
+  .signup-title {
+    font-size: 1.75rem;
+  }
+
+  /* Garder Prénom et Nom côte à côte même sur mobile */
+  .form-row {
+    flex-direction: row;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .top-navbar {
+    padding: 0.5rem 1rem;
+  }
+
+  .navbar-brand {
+    font-size: 1rem;
+  }
+
+  .logo-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .navbar-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .signup-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .signup-title {
+    font-size: 1.5rem;
+  }
+
+  .signup-subtitle {
+    font-size: 0.9rem;
+  }
+
+  /* Réduire l'espacement entre Prénom et Nom sur très petit écran */
+  .form-row {
+    gap: 0.5rem;
+  }
+}
+
+/* Animation */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -328,504 +390,133 @@ async function preferenceCreation() {
   }
 }
 
-.signup-title {
-  font-weight: 700;
-  font-size: 1.8rem;
-  color: #333333;
-  margin-bottom: 0.5rem;
-  animation: fadeIn 1s ease-out 0.2s;
-  animation-fill-mode: both;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.signup-description {
-  font-size: 1rem;
-  color: #666666;
-  margin-bottom: 2rem;
-  animation: fadeIn 1s ease-out 0.4s;
-  animation-fill-mode: both;
-}
-
-.input-group {
-  margin-bottom: 1.5rem;
-  animation: slideInLeft 0.8s ease-out 0.6s;
-  animation-fill-mode: both;
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.input-group input,
-.input-group select,
-.input-group div {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid #dddddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  color: #333333;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.input-group input:focus,
-.input-group select:focus {
-  border-color: rgba(0, 0, 0, 0.3);
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-  outline: none;
-}
-
-.signup-btn {
-  width: 100%;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #ffffff;
-  background-color: #333333;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  animation: fadeIn 1s ease-out 0.8s;
-  animation-fill-mode: both;
-}
-
-.signup-btn:hover,
-.login-btn:focus {
-  background-color: #666666;
-  transform: scale(1.02);
-}
-
-.signup-btn:active {
-  transform: scale(0.98);
-}
-
-.signup-small {
-  margin-top: 1.5rem;
-  font-size: 0.9rem;
-  color: #666666;
-  animation: fadeIn 1s ease-out 1s;
-  animation-fill-mode: both;
-}
-
-.signup-link {
-  color: rgba(0, 0, 0, 0.5);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.signup-link:hover {
-  color: rgba(0, 0, 0, 0.7);
-  text-decoration: underline;
-}
-
-.error-message {
-  color: #dc3545;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-  animation: shake 0.5s ease-out;
-}
-
-@keyframes shake {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-10px);
-  }
-  50% {
-    transform: translateX(10px);
-  }
-  75% {
-    transform: translateX(-10px);
-  }
-}
-
-.sign-width {
-  width: 100%;
-}
-
-@media (min-width: 768px) {
-  .signup-card {
-    padding: 3rem 2.5rem;
-  }
-
-  .signup-title {
-    font-size: 2rem;
-  }
-
-  .signup-description {
-    font-size: 1.2rem;
-  }
-
-  .input-group {
-    margin-bottom: 2rem;
-  }
-
-  .signup-btn {
-    font-size: 1.2rem;
-  }
-
-  .signup-small {
-    font-size: 1rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .signup-card {
-    padding: 3.5rem 3rem;
-  }
-
-  .signup-title {
-    font-size: 2.2rem;
-  }
-
-  .signup-description {
-    font-size: 1.4rem;
-  }
-
-  .input-group {
-    margin-bottom: 2.5rem;
-  }
-
-  .signup-btn {
-    font-size: 1.4rem;
-  }
-
-  .signup-small {
-    font-size: 1.1rem;
-  }
+.signup-card {
+  animation: fadeInUp 0.6s ease-out;
 }
 </style>
 
 <template>
-  <div>
-   
-    <section v-if="!hiddenFirst" class="signup-section">
-      <div class="signup-content">
-        <div class="signup-card">
-          <!-- Error Message -->
-          <p class="error-message">{{ errorMessages }}</p>
+  <div class="page-container">
+    <!-- Top Navigation Bar -->
+    <nav class="top-navbar">
+      <a href="/" class="navbar-brand">
+        <img src="/Moveout_Logo2.svg" alt="Moveout Logo" class="logo-icon" />
+        <span>Moveout</span>
+      </a>
+      <div class="navbar-buttons">
+        <button @click="versConnection" class="navbar-btn navbar-btn-outline">
+          Se connecter
+        </button>
+        <button class="navbar-btn navbar-btn-solid">S'inscrire</button>
+      </div>
+    </nav>
 
-          <!-- Title and Description -->
-          <h1 class="signup-title">Bienvenue !</h1>
-          <p class="signup-description">Créez votre compte Moveout</p>
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="signup-card">
+        <!-- Error Message -->
+        <p v-if="errorMessages" class="error-message">{{ errorMessages }}</p>
 
-          <form @submit.prevent="signup">
-            <div class="input-group">
+        <!-- Header -->
+        <div class="signup-header">
+          <h1 class="signup-title">Créer un compte</h1>
+          <p class="signup-subtitle">
+            Rejoignez MoveoutAI pour trouver votre appartement idéal
+          </p>
+        </div>
+
+        <!-- Form -->
+        <form @submit.prevent="signup">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Prénom</label>
               <input
-                id="first-name"
                 type="text"
-                placeholder="Prénom"
+                class="form-input"
+                placeholder="Votre prénom"
                 v-model="firstName"
                 required
               />
             </div>
 
-            <div class="input-group">
+            <div class="form-group">
+              <label class="form-label">Nom</label>
               <input
-                id="last-name"
                 type="text"
-                placeholder="Nom de famille"
+                class="form-input"
+                placeholder="Votre nom"
                 v-model="lastName"
                 required
               />
             </div>
-
-            <div class="input-group">
-              <input
-                id="phone"
-                type="tel"
-                placeholder="Numéro de téléphone"
-                v-model="phone"
-                required
-              />
-            </div>
-
-            <div class="input-group">
-              <input
-                id="email"
-                type="email"
-                placeholder="Email"
-                v-model="email"
-                required
-              />
-            </div>
-
-            <div class="input-group">
-              <input
-                id="password"
-                type="password"
-                placeholder="Mot de passe"
-                v-model="password"
-                required
-              />
-            </div>
-
-            <div class="input-group">
-              <input
-                id="confirmPassword"
-                type="password"
-                placeholder="Confirmez le mot de passe"
-                v-model="confirmPassword"
-                required
-              />
-            </div>
-
-            <button class="signup-btn" type="submit">Rejoignez Moveout</button>
-          </form>
-
-          <p class="signup-small">
-            Vous avez déjà un compte ?
-            <router-link to="/login" class="signup-link">
-              Connectez-vous
-            </router-link>
-          </p>
-        </div>
-      </div>
-    </section>
-
-    
-    <section v-else class="signup-section">
-      <div class="signup-card sign-width">
-        <h1 class="signup-title">Comprendre vos préférences...</h1>
-        <br />
-        <p class="signup-description">
-          Ces réponses nous permettront de sélectionner les appartements qui
-          vous correspondent le mieux
-        </p>
-        <hr />
-        <br />
-        <div class="flex flex-wrap gap-4">
-          <div class="input-group flex-1 min-w-[200px]">
-            <label class="form-label">Combien de chambre?</label>
-            <select
-              v-model="selectedBedrooms"
-              @change="handleBedroomsChange"
-              className="select"
-            >
-              <option  value="" disabled  selected>Nombre de chambres</option>
-              
-              <option
-                class="text-lg"
-                v-for="bedrooms in ['1', '2', '3', '4', '5+']"
-                :key="bedrooms"
-                :value="bedrooms"
-                :selected="selectedBedrooms.includes(bedrooms)"
-              >
-                {{ bedrooms }}
-              </option> 
-            </select>
-          
           </div>
 
-          <div class="input-group flex-1 min-w-[200px]">
-            <label class="form-label">Budget Minimum</label>
+          <div class="form-group">
+            <label class="form-label">Email</label>
             <input
-              type="number"
-              v-model="selectedBudget.minValue"
-              min="0"
-              max="10000"
-              class="w-full p-2 border rounded"
+              type="email"
+              class="form-input"
+              placeholder="votre@email.com"
+              v-model="email"
+              required
             />
           </div>
 
-          <div class="input-group flex-1 min-w-[200px]">
-            <label class="form-label">Budget Maximum</label>
+          <div class="form-group">
+            <label class="form-label">Mot de passe</label>
             <input
-              type="number"
-              v-model="selectedBudget.maxValue"
-              min="0"
-              max="10000"
-              class="w-full p-2 border rounded"
+              type="password"
+              class="form-input"
+              placeholder="••••••••"
+              v-model="password"
+              required
             />
           </div>
-        </div>
 
-        <div class="flex flex-wrap gap-4">
-          <div class="input-group flex-1 min-w-[200px]">
-            <label class="form-label">Quelle est votre âge?</label>
-            <select v-model="selectedAge" class="">
-              <option value="" disabled selected>
-                Sélectionnez votre tranche d'âge
-              </option>
-              <option
-                v-for="age in ['18-25', '26-35', '36-45', '46+']"
-                :key="age"
-                :value="age"
-              >
-                {{ age }}
-              </option>
-            </select>
+          <div class="form-group">
+            <label class="form-label">Confirmer le mot de passe</label>
+            <input
+              type="password"
+              class="form-input"
+              placeholder="••••••••"
+              v-model="confirmPassword"
+              required
+            />
           </div>
-          <div class="input-group flex-1 min-w-[200px]">
-            <label class="form-label">Quelle est votre Sexe?</label>
-            <select v-model="selectedGender" class="">
-              <option value="" disabled selected>
-                Sélectionnez votre sexe
-              </option>
-              <option
-                v-for="gender in ['Homme', 'Femme', 'Autre']"
-                :key="gender"
-                :value="gender"
-              >
-                {{ gender }}
-              </option>
-            </select>
+
+          <button type="submit" class="signup-button">Créer mon compte</button>
+        </form>
+
+        <!-- Separator -->
+        <div class="separator">
+          <span>OU</span>
+        </div>
+
+        <!-- Google Sign-In Button -->
+        <button class="google-button">
+          <div class="google-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20">
+              <path
+                fill="#4285F4"
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+              />
+              <path
+                fill="#34A853"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              />
+              <path
+                fill="#FBBC05"
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+              />
+              <path
+                fill="#EA4335"
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+              />
+            </svg>
           </div>
-        </div>
-
-        <div class="input-group">
-          <label class="form-label"
-            >Quelle est votre situation professionnelle ?</label
-          >
-          <select v-model="selectedOccupation" class="">
-            <option value="" disabled selected>
-              Sélectionnez votre situation
-            </option>
-            <option
-              v-for="occupation in [
-                'Étudiant',
-                'Sans Emplois',
-                'Employé',
-                'Entrepreneur',
-                'Retraité',
-              ]"
-              :key="occupation"
-              :value="occupation"
-            >
-              {{ occupation }}
-            </option>
-          </select>
-        </div>
-
-        <div class="input-group">
-          <label class="form-label">
-            Quartier de préférence (Sélection multiple)
-          </label>
-          <div class="border-2 rounded-lg p-2 h-60 overflow-y-auto">
-            <template
-              v-for="(neighborhoods, borough) in quartiers"
-              :key="borough"
-            >
-              <div class="mb-2">
-                <h3 class="font-semibold text-gray-900 mb-2">{{ borough }}</h3>
-                <div class="flex flex-wrap gap-2">
-                  <label
-                    v-for="neighborhood in neighborhoods"
-                    :key="neighborhood"
-                    class="flex items-center px-4 py-2 bg-gray-100 rounded-md cursor-pointer hover:bg-gray-200 transition-colors"
-                    :class="{
-                      'bg-blue-100 hover:bg-blue-200':
-                        selectedNeighborhoods.includes(neighborhood),
-                    }"
-                  >
-                    <input
-                      type="checkbox"
-                      :value="neighborhood"
-                      v-model="selectedNeighborhoods"
-                      class="h-4 w-auto text-blue-600 border-gray-300 rounded focus:ring-blue-500 mr-2"
-                    />
-                    <span>{{ neighborhood }}</span>
-                  </label>
-                </div>
-              </div>
-            </template>
-          </div>
-        </div>
-
-        <div class="input-group">
-          <label class="form-label"
-            >Quel genre de services supplémentaires seriez-vous intéressé(e) ?
-          </label>
-          <input
-            v-model="customService"
-            type="text"
-            placeholder="Précisez le service"
-            class=""
-          />
-        </div>
-
-        <p class="error-message">{{ preferenceSurveyError }}</p>
-        <button @click="preferenceCreation" class="signup-btn w-full mt-6">
-          Next
+          Se connecter avec Google
         </button>
       </div>
-    </section>
+    </div>
   </div>
 </template>
-
-<!-- <div class="border-2 rounded-lg shadow-lg p-4 sm:p-6 mt-8">
-            <h1 class="text-blue-main text-center text-lg sm:text-xl mb-5">
-              Quel est votre revenu mensuel approximatif ?
-            </h1>
-            <ul class="flex justify-center space-x-4">
-              <li>
-                <button
-                  v-for="salary in ['<1000', '1000-2000', '2000-3000', '3000-4000', '>4000']"
-                  :key="salary"
-                  @click="toggleSalarySelection(salary)"
-                  :class="{
-                    ' bg-blue-main text-white': selectedSalary === salary,
-                    ' bg-gray-200 text-gray-700': selectedSalary !== salary,
-                  }"
-                  class="px-4 py-2 rounded-md border m-2"
-                >
-                  {{ salary }}
-                </button>
-              </li>
-            </ul>
-          </div> -->
-
-<!-- <ul class="flex justify-center space-x-4"> -->
-<!-- <li>
-                <button
-                  v-for="addOnService in [
-                    'Déménagement',
-                    `décoration de maison`,
-                  ]"
-                  :key="addOnService"
-                  @click="toggleAddOnServiceSelection(addOnService)"
-                  :class="{
-                    ' bg-blue-main text-white':
-                      selectedAddOnService === addOnService,
-                    ' bg-gray-200 text-gray-700':
-                      selectedAddOnService !== addOnService,
-                  }"
-                  class="px-4 py-2 rounded-md border m-2"
-                >
-                  {{ addOnService }}
-                </button>
-              </li> -->
-<!-- <li>
-                <button
-                  @click="autreClicked = !autreClicked"
-                  :class="{
-                    'bg-blue-main text-white': autreClicked,
-                    'bg-gray-200 text-gray-700': !autreClicked,
-                  }"
-                  class="px-4 py-2 rounded-md border m-2"
-                >
-                  Autre
-                </button>
-                
-              </li> -->
-<!-- </ul> -->
-v-if="!hiddenFirst" v-else
