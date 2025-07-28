@@ -62,7 +62,6 @@ function estConnecter() {
   left: 0;
   right: 0;
   z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-brand {
@@ -88,9 +87,9 @@ function estConnecter() {
 }
 
 .navbar-btn {
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem;
   border-radius: 8px;
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 500;
   transition: all 0.2s ease;
   cursor: pointer;
@@ -137,8 +136,8 @@ function estConnecter() {
   }
 
   .navbar-btn {
-    padding: 0.375rem 0.75rem;
-    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -157,8 +156,8 @@ function estConnecter() {
   }
 
   .navbar-btn {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8rem;
   }
 }
 </style>

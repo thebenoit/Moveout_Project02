@@ -54,50 +54,50 @@ const addFilter = (filter) => {
       <!-- Filter Buttons -->
       <div class="w-full max-w-2xl">
         <!-- First Row -->
-        <div class="flex flex-wrap gap-2 mb-3">
+        <div class="flex flex-wrap gap-3 mb-4 justify-center">
           <button
             @click="addFilter('+ 2 chambres')"
-            class="px-3 py-1 bg-gray-100 rounded-full text-sm text-black hover:bg-gray-200 transition-colors"
+            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
           >
             + 2 chambres
           </button>
           <button
             @click="addFilter('+ balcon')"
-            class="px-3 py-1 bg-gray-100 rounded-full text-sm text-black hover:bg-gray-200 transition-colors"
+            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
           >
             + balcon
           </button>
           <button
             @click="addFilter('+ proche métro')"
-            class="px-3 py-1 bg-gray-100 rounded-full text-sm text-black hover:bg-gray-200 transition-colors"
+            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
           >
             + proche métro
           </button>
         </div>
 
         <!-- Second Row -->
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap gap-3 justify-center">
           <button
             @click="addFilter('+ 800€ max')"
-            class="px-3 py-1 bg-gray-100 rounded-full text-sm text-black hover:bg-gray-200 transition-colors"
+            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
           >
             + 800€ max
           </button>
           <button
             @click="addFilter('+ 50m²')"
-            class="px-3 py-1 bg-gray-100 rounded-full text-sm text-black hover:bg-gray-200 transition-colors"
+            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
           >
             + 50m²
           </button>
           <button
             @click="addFilter('+ ascenseur')"
-            class="px-3 py-1 bg-gray-100 rounded-full text-sm text-black hover:bg-gray-200 transition-colors"
+            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
           >
             + ascenseur
           </button>
           <button
             @click="addFilter('+ parking')"
-            class="px-3 py-1 bg-gray-100 rounded-full text-sm text-black hover:bg-gray-200 transition-colors"
+            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
           >
             + parking
           </button>
@@ -121,6 +121,45 @@ const addFilter = (filter) => {
 /* Focus styles for accessibility */
 textarea:focus {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Floating animation for filter buttons */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* Apply floating animation to filter buttons */
+button[class*="px-4 py-2 bg-gray-100"] {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Stagger the animation for each button */
+button[class*="px-4 py-2 bg-gray-100"]:nth-child(1) {
+  animation-delay: 0s;
+}
+button[class*="px-4 py-2 bg-gray-100"]:nth-child(2) {
+  animation-delay: 0.5s;
+}
+button[class*="px-4 py-2 bg-gray-100"]:nth-child(3) {
+  animation-delay: 1s;
+}
+button[class*="px-4 py-2 bg-gray-100"]:nth-child(4) {
+  animation-delay: 1.5s;
+}
+button[class*="px-4 py-2 bg-gray-100"]:nth-child(5) {
+  animation-delay: 2s;
+}
+button[class*="px-4 py-2 bg-gray-100"]:nth-child(6) {
+  animation-delay: 2.5s;
+}
+button[class*="px-4 py-2 bg-gray-100"]:nth-child(7) {
+  animation-delay: 3s;
 }
 
 /* Responsive design */
@@ -155,18 +194,18 @@ textarea:focus {
     gap: 0.5rem;
   }
 
-  .px-3 {
+  .px-4 {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
   }
 
-  .py-1 {
-    padding-top: 0.25rem;
-    padding-bottom: 0.25rem;
+  .py-2 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
   }
 
-  .text-sm {
-    font-size: 0.75rem;
+  .text-base {
+    font-size: 0.875rem;
   }
 }
 
