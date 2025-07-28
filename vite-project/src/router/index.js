@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 import Home from "@/views/Home.vue";
+import HomeNew from "@/views/HomeNew.vue";
 import Appartements from "@/views/Appartements.vue";
 import Demenagement from "@/views/Demenagement.vue";
 import AboutUs from "@/views/AboutUs.vue";
@@ -26,7 +27,7 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
-      component: ChatHome,
+      component: HomeNew,
     },
     {
       path: "/card",
@@ -37,6 +38,11 @@ const router = createRouter({
       path: "/home2",
       name: "home2",
       component: HomeSimple,
+    },
+    {
+      path: "/home-old",
+      name: "home-old",
+      component: Home,
     },
     {
       path: "/chat",
