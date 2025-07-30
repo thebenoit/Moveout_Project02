@@ -55,10 +55,12 @@ const utils = {
     }
   },
   logout() {
+    console.log("logout...");
     sessionStorage.removeItem("auth");
     sessionStorage.removeItem("auth_expiration");
     sessionStorage.removeItem("temp_auth");
     sessionStorage.removeItem("temp_auth_expiration");
+
   },
   setToken(token, isTemp = false) {
     const storageKey = isTemp ? "temp_auth" : "auth";
@@ -76,6 +78,22 @@ const utils = {
     if (!expiration) return true;
     return Date.now() >= parseInt(expiration);
   },
+  onlyGetToken() {
+    const authToken = sessionStorage.getItem("auth");
+    if (authToken && !this.isTokenExpired(false)) {
+      console.log("Token valide");
+      return authToken;
+    }
+    //sinon vérifier si le token temporaire est valide
+    const tempToken = sessionStorage.getItem("temp_auth");
+    if (tempToken && !this.isTokenExpired(true)) {
+      console.log("Token temporaire valide");
+      return tempToken;
+    }
+    console.log("Aucun token valide");
+    
+    return null;
+  },
   getToken() {
     // Vérifier si le token est valide
     const authToken = sessionStorage.getItem("auth");
@@ -91,7 +109,8 @@ const utils = {
       return tempToken;
     }
 
-    return this.initTempSession();
+    const result = this.initTempSession();
+    return result;
   },
 
   async initTempSession() {
@@ -163,13 +182,19 @@ const utils = {
       return null;
     }
   },
+  decodeToken2(token) {
+    try {
+      return jwtDecode(token);
+    } catch (error) {
+      console.error("Error decoding token in decodeToken2:", error);
+      return null;
+    }
+  },
   decodeToken() {
     const token = this.getToken();
-    
+
     //si le token est une chaine de caractères et qu'il est plus long que 0
     if (typeof token === "string" && token.length > 0) {
-      
-     
       try {
         return jwtDecode(token);
       } catch (error) {
@@ -177,7 +202,7 @@ const utils = {
         return null;
       }
     }
-    
+
     return null;
   },
   getUserId() {

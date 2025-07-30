@@ -16,7 +16,7 @@ async function generateJwt(userId, prefId, isTemp = false) {
     const token = jwt.sign(
       { userId: payload.userId, prefId: payload.prefId },
       process.env.JWT_SECRET,
-      { expiresIn: isTemp? "3h" : "24h"}
+      { expiresIn: isTemp ? "3h" : "24h" }
     );
 
     return token;
@@ -25,6 +25,24 @@ async function generateJwt(userId, prefId, isTemp = false) {
   } catch (error) {
     console.log("erreur lors de la création de token: ");
     return { error: true };
+  }
+}
+
+/**
+ * Vérifie si un token JWT est expiré
+ * @param {string} token - Le token JWT à vérifier
+ * @returns {boolean} - true si le token est expiré, false sinon
+ */
+function isTokenExpired(token) {
+  try {
+    const decoded = jwt.decode(token);
+    if (!decoded || !decoded.exp) return true;
+    
+    const currentTime = Math.floor(Date.now() / 1000);
+    return decoded.exp < currentTime;
+  } catch (error) {
+    console.log("Erreur lors de la vérification de l'expiration du token:", error);
+    return true;
   }
 }
 
@@ -49,9 +67,17 @@ async function validateToken(req, res) {
 
   const token = req.headers.authorization.split(" ")[1];
 
+  if (isTokenExpired(token)) {
+    return res.status(403).json({
+      error: true,
+      message: "Token expired",
+    });
+  }
+
+  //peut verifier grace au secret key
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-  if(decoded.isTemp){
+  if (decoded.isTemp) {
     req.decoded = decoded;
     return req.decoded;
   }
@@ -59,8 +85,6 @@ async function validateToken(req, res) {
   const options = {
     expireIn: "3h",
   };
-
-
 
   try {
     let user = await User.findOne({
@@ -89,8 +113,6 @@ async function validateToken(req, res) {
 
     req.decoded = result;
 
-    console.log("re.decoded: ", req.decoded);
-
     return req.decoded;
   } catch (error) {
     console.log("erreur lors de la validation du token: ", error);
@@ -112,4 +134,5 @@ async function validateToken(req, res) {
 export default {
   generateJwt,
   validateToken,
+  isTokenExpired
 };

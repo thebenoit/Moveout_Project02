@@ -11,8 +11,6 @@ const router = useRouter();
 
 async function login() {
   try {
-    console.log("identifier: ", identifier.value);
-    console.log("password: ", password.value);
     let result = await utils.post("api/client/login", {
       identifier: identifier.value,
       password: password.value,
@@ -22,16 +20,12 @@ async function login() {
       console.log("resultError; ", result.error.message);
       messageErreur.value = result.error.message;
     }
-
-    console.log("result; ", result);
-    //result = await result.json()
-    console.log(result.token);
-
+   //si il y a un token
     if (result.token) {
-      console.log("pass ici?????");
+      //stocker le token dans le sessionStorage
       utils.setToken(result.token);
       router.push({
-        path: "/foryou",
+        path: "/",
         query: { refresh: Date.now() },
       });
     }
@@ -382,10 +376,11 @@ const versSignup = () => {
     font-size: 1.75rem;
   }
 
+  /* Garder les options côte à côte même sur mobile */
   .form-options {
-    flex-direction: column;
+    flex-direction: row;
     gap: 1rem;
-    align-items: flex-start;
+    align-items: center;
   }
 }
 
@@ -418,6 +413,11 @@ const versSignup = () => {
 
   .login-subtitle {
     font-size: 0.9rem;
+  }
+
+  /* Réduire l'espacement sur très petit écran */
+  .form-options {
+    gap: 0.5rem;
   }
 }
 

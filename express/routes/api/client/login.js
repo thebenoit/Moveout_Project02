@@ -5,6 +5,7 @@ import generateJTW from "../../../mongo/interface/JWT.js";
 import jwt from "jsonwebtoken";
 import User from "../../../mongo/schemas/user.js";
 import mixpanel from "mixpanel";
+import session from "express-session";
 
 app.post("/login", async (req, res) => {
   try {
@@ -14,17 +15,18 @@ app.post("/login", async (req, res) => {
     if (response.error) {
       return res.status(400).send(response);
     }
-    // mixpanel.identify(response.userId);
 
-    // mixpanel.people.set({
-    //   $name: user.firstName,
-    //   $email: user.email,
-    //   $phone: user.phone,
-    // });
-    console.log("user access token; ", user.accessToken);
-    console.log("user name ", user.firstName);
+    const sessionID = user.accessToken;
+
+    //set up cookie
+    res.cookie("session_id", sessionID, {
+      httpOnly: true, // Inaccessible via JavaScript
+      secure: true, // HTTPS seulement en production
+      sameSite: "strict", // Protection contre les attaques CSRF
+      maxAge: 24 * 60 * 60 * 1000, // 24 heures
+      path: "/", // Cookie disponible sur tout le site
+    });
     res.send({ token: user.accessToken });
-    
   } catch (error) {
     console.error("Erreur lors de la récupération des données:", error);
     res.status(500).send("Erreur lors de la récupération des données");
@@ -34,7 +36,6 @@ app.post("/login", async (req, res) => {
 app.get("/login/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
-
 
     if (!user) {
       return res.status(404).json({ error: "user non trouvée" });

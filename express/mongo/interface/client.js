@@ -10,6 +10,7 @@ import bcrypt from "bcryptjs";
 import validator from "validator";
 import createLog from "../interface/logs.js";
 import jwtInterface from '../interface/JWT.js';
+import session from "express-session";
 
 
 /**
@@ -96,7 +97,7 @@ const isStrongPassword = (password) => {
       accessToken: "",
       date: Date.now(),
     });
-
+    
     newUser.accessToken = await jwtInterface.generateJwt(newUser._id, newUser.preferencesId);
 
     // Save the user to the database
@@ -310,6 +311,9 @@ const createLead = async (firstName, lastName, phone, email) => {
     return { error: responses.errors.client.loginError };
   }
 };
+
+
+
 
 export default {
   createAccount,

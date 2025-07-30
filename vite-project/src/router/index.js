@@ -16,7 +16,6 @@ import LandingPageSignup from "@/views/landingPages/landingPage-signup.vue";
 import LandingPageSuccess from "@/views/landingPages/landingPage-success.vue";
 import Erreur404 from "@/views/Erreur404.vue";
 import Listings from "@/views/Listings.vue";
-import HomeSimple from "@/views/HomeSimple.vue";
 import Pricing_Page from "@/views/pricing_pages/pricing_page.vue";
 import ChatHome from "@/views/ChatHome.vue";
 import CardPage from "@/components/listingcard/cardPage.vue";
@@ -30,50 +29,15 @@ const router = createRouter({
       component: HomeNew,
     },
     {
-      path: "/card",
-      name: "card",
-      component: CardPage,
-    },
-    {
-      path: "/home2",
-      name: "home2",
-      component: HomeSimple,
-    },
-    {
-      path: "/home-old",
-      name: "home-old",
-      component: Home,
-    },
-    {
       path: "/chat",
       name: "chat",
       component: ChatHome,
     },
-    // {
-    //   path: '/appartements',
-    //   name: 'appartements',
-    //   component: Appartements
-    // },
-    // {
-    //   path: '/demenagement',
-    //   name: 'demenagement',
-    //   component: Demenagement
-    // },
-    // {
-    //   path: '/aboutus',
-    //   name: 'about-us',
-    //   component: AboutUs
-    // },
     {
       path: "/signup",
       name: "signup",
       component: Signup,
     },
-    // {
-    //   path: '/contactus',
-    //   name: 'contact-us',
-    //   component: ContactUs
-    // },
     {
       path: "/login",
       name: "login",
@@ -85,54 +49,16 @@ const router = createRouter({
       component: Foryou,
     },
     {
-      path: "/preferences",
-      name: "preferences",
-      component: Preferences,
-    },
-    // {
-    //   path: '/settings',
-    //   name: 'settings',
-    //   component: Settings
-    // },
-    {
-      path: "/listings",
-      name: "listings",
-      component: Listings,
-    },
-    {
       path: "/pricing",
       name: "pricing",
       component: Pricing_Page,
-    },
-    {
-      path: "/landingpage",
-      name: "landingpage",
-      component: LandingPage,
-    },
-    {
-      path: "/landingpage-success",
-      name: "landing-page-success",
-      component: LandingPageSuccess,
-    },
-    {
-      path: "/landingpage-signup",
-      name: "landing-page-signup",
-      component: LandingPageSignup,
     },
     {
       path: "/:pathMatch(.*)*",
       name: "erreur404",
       component: Erreur404,
     },
-    // {
-    //   path: "/:pathMatch(.*)*",
 
-    //   name: "erreur404",
-    //   beforeEnter: (to, from, next) => {
-    //     next()
-    //    // next({ name: "erreur404" }); // Redirect to the 'landingpage' route
-    //   },
-    // },
   ],
 });
 

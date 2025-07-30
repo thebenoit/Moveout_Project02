@@ -15,9 +15,27 @@ const connecter = ref(false);
 const router = useRouter();
 
 function isUserLoggedIn() {
-  const decoded = utils.decodeToken();
-  // Un utilisateur est connecté si le token décodé existe et n'est pas temporaire
-  return decoded && !decoded.isTemp;
+  const token = utils.onlyGetToken();
+
+  // Si pas de token, l'utilisateur n'est pas connecté
+  if (!token) {
+    console.log("Aucun token trouvé - utilisateur non connecté");
+    return false;
+  }
+
+  try {
+    const decoded = utils.decodeToken2(token);
+    console.log("decoded: ", decoded);
+
+    const isLoggedIn = decoded && !decoded.isTemp;
+    console.log("isLoggedIn: ", isLoggedIn);
+
+    // Retourne un booléen explicite
+    return Boolean(isLoggedIn);
+  } catch (error) {
+    console.error("Erreur lors de la vérification de connexion:", error);
+    return false;
+  }
 }
 
 function gotologout() {
@@ -178,6 +196,7 @@ function estConnecter() {
 
     <!-- Navigation Buttons -->
     <div class="navbar-buttons">
+      <!-- Boutons pour utilisateur NON connecté -->
       <button
         v-if="!isUserLoggedIn()"
         @click="gotologin"
@@ -185,13 +204,6 @@ function estConnecter() {
       >
         Se connecter
       </button>
-      <!-- <button
-        v-else
-        @click="router.push('/foryou')"
-        class="navbar-btn navbar-btn-solid"
-      >
-        Compte
-      </button> -->
 
       <button
         v-if="!isUserLoggedIn()"
@@ -200,7 +212,13 @@ function estConnecter() {
       >
         S'inscrire
       </button>
-      <button v-else @click="gotologout" class="navbar-btn navbar-btn-outline">
+
+      <!-- Bouton pour utilisateur connecté -->
+      <button
+        v-if="isUserLoggedIn()"
+        @click="gotologout"
+        class="navbar-btn navbar-btn-outline"
+      >
         Déconnexion
       </button>
     </div>
