@@ -209,6 +209,8 @@ const login = async (identifier, password) => {
       //assigne access token
       user.accessToken = token;
 
+
+
       if (!token) {
         return {
           error: `impossible de créer un accès de token veuillez réessayer plus tard ${error}`,

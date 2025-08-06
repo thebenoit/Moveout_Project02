@@ -11,12 +11,19 @@
         ]"
       >
         <div class="message-container">
-          <div class="avatar">
-            <div v-if="message.role === 'user'" class="user-avatar">U</div>
-            <div v-else class="assistant-avatar">AI</div>
+          <div v-if="message.role === 'assistant'" class="avatar">
+            <div class="assistant-avatar">AI</div>
           </div>
-          <div class="message-content">
+          <div
+            :class="[
+              'message-content',
+              message.role === 'user' ? 'user-message' : 'assistant-message',
+            ]"
+          >
             <div class="message-text">{{ message.content }}</div>
+          </div>
+          <div v-if="message.role === 'user'" class="avatar">
+            <div class="user-avatar">U</div>
           </div>
         </div>
       </div>
@@ -27,11 +34,14 @@
           <div class="avatar">
             <div class="assistant-avatar">AI</div>
           </div>
-          <div class="message-content">
-            <div class="loading-dots">
-              <div class="dot"></div>
-              <div class="dot"></div>
-              <div class="dot"></div>
+          <div class="message-content assistant-message">
+            <div class="loading-container">
+              <div class="loading-text">L'IA réfléchit...</div>
+              <div class="loading-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -48,18 +58,28 @@
         rows="1"
         ref="inputRef"
       ></textarea>
-      <button @click="sendMessage" class="send-button">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <button @click="sendMessage" class="send-button" :disabled="isLoading">
+        <svg
+          v-if="!isLoading"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
         </svg>
+        <div v-else class="button-loading">
+          <div class="spinner"></div>
+        </div>
       </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, nextTick, watch } from "vue";
+import { ref, nextTick, watch, onMounted } from "vue";
 import utils from "../utils/utils.js";
+import { processChatResponse, validateChatHistory } from "../utils/utils.js";
 
 const emit = defineEmits(["auth-error"]);
 
@@ -76,6 +96,27 @@ const scrollToBottom = async () => {
   }
 };
 
+// Fonction pour charger l'historique des messages
+const loadChatHistory = async () => {
+  try {
+    isLoading.value = true;
+    const response = await utils.get("chat", "chat");
+
+    // Utiliser la fonction utilitaire pour traiter la réponse
+    const processedMessages = processChatResponse(response);
+    const validatedMessages = validateChatHistory(processedMessages);
+
+    messages.value = validatedMessages;
+  } catch (error) {
+    console.error("Erreur lors du chargement de l'historique:", error);
+    if (error.message && error.message.includes("401")) {
+      emit("auth-error");
+    }
+  } finally {
+    isLoading.value = false;
+  }
+};
+
 const sendMessage = async () => {
   if (!inputMessage.value.trim() || isLoading.value) return;
 
@@ -88,21 +129,17 @@ const sendMessage = async () => {
   });
 
   inputMessage.value = "";
-  await scrollToBottom();
 
-  // Envoyer la requête
+  // Activer le loading IMMÉDIATEMENT
   isLoading.value = true;
+
+  await scrollToBottom();
 
   try {
     const response = await utils.post(
       "chat",
       {
-        messages: [
-          {
-            role: "user",
-            content: userMessage,
-          },
-        ],
+        messages: messages.value, // Envoyer tout l'historique
       },
       "chat"
     );
@@ -113,10 +150,20 @@ const sendMessage = async () => {
         content: `Erreur: ${response.error}`,
       });
     } else {
-      messages.value.push({
-        role: "assistant",
-        content: response.content || response.message || "Réponse reçue",
-      });
+      // Utiliser la fonction utilitaire pour traiter la réponse
+      const processedMessages = processChatResponse(response);
+
+      if (processedMessages.length > 0) {
+        // Si le serveur retourne un nouvel historique complet, le remplacer
+        const validatedMessages = validateChatHistory(processedMessages);
+        messages.value = validatedMessages;
+      } else {
+        // Sinon, ajouter juste la nouvelle réponse
+        messages.value.push({
+          role: "assistant",
+          content: response.content || response.message || "Réponse reçue",
+        });
+      }
     }
   } catch (error) {
     // Vérifier si c'est une erreur 401 (Token manquant)
@@ -133,6 +180,11 @@ const sendMessage = async () => {
     await scrollToBottom();
   }
 };
+
+// Charger l'historique au montage du composant
+onMounted(() => {
+  loadChatHistory();
+});
 
 // Scroll automatique quand de nouveaux messages arrivent
 watch(
@@ -164,7 +216,19 @@ watch(
 
 .message-wrapper {
   padding: 16px 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: none;
+  animation: messageSlideIn 0.3s ease-out;
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .user-wrapper {
@@ -172,7 +236,7 @@ watch(
 }
 
 .assistant-wrapper {
-  background: #f9f9f9;
+  background: white;
 }
 
 .message-container {
@@ -189,10 +253,11 @@ watch(
   height: 32px;
   border-radius: 50%;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   font-size: 12px;
   font-weight: 600;
+  margin-bottom: 4px;
 }
 
 .user-avatar {
@@ -210,26 +275,83 @@ watch(
   min-width: 0;
 }
 
+.user-message {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.assistant-message {
+  display: flex;
+  justify-content: flex-start;
+}
+
 .message-text {
   line-height: 1.6;
   font-size: 16px;
   color: #333;
   white-space: pre-wrap;
+  padding: 12px 0;
+  border-radius: 0;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+.user-message .message-text {
+  background-color: #f0f0f0;
+  color: #333;
+  border-radius: 18px;
+  border-bottom-right-radius: 4px;
+  padding: 12px 16px;
+  max-width: 70%;
+  box-shadow: none;
+  border: none;
+}
+
+.assistant-message .message-text {
+  background-color: transparent;
+  color: #333;
+  border-radius: 0;
+  padding: 12px 0;
+  max-width: 100%;
+  box-shadow: none;
+  border: none;
 }
 
 /* Loading animation */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 12px 0;
+  background-color: transparent;
+  color: #333;
+  border-radius: 0;
+  max-width: 100%;
+  border: none;
+  box-shadow: none;
+}
+
+.loading-text {
+  font-size: 14px;
+  color: #333;
+  font-style: italic;
+  margin-bottom: 4px;
+}
+
 .loading-dots {
   display: flex;
-  gap: 4px;
+  gap: 6px;
   align-items: center;
 }
 
 .dot {
-  width: 8px;
-  height: 8px;
-  background: #666;
+  width: 10px;
+  height: 10px;
+  background: #333;
   border-radius: 50%;
   animation: loading 1.4s infinite ease-in-out;
+  opacity: 0.7;
 }
 
 .dot:nth-child(1) {
@@ -243,11 +365,11 @@ watch(
   0%,
   80%,
   100% {
-    transform: scale(0);
+    transform: scale(0.8);
     opacity: 0.5;
   }
   40% {
-    transform: scale(1);
+    transform: scale(1.2);
     opacity: 1;
   }
 }
@@ -320,6 +442,30 @@ watch(
   border-color: #ccc;
   color: #ccc;
   cursor: not-allowed;
+}
+
+.button-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive */

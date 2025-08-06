@@ -1,18 +1,27 @@
 import { jwtDecode } from "jwt-decode";
 
 const utils = {
-  async get(endpoint) {
+  async get(endpoint, serverUrl) {
     try {
-      let result = await fetch(
-        `${import.meta.env.VITE_NODE_SERVER_URL}/${endpoint}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${this.getToken()}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      // Déterminer l'URL du serveur selon le paramètre serverUrl
+      let baseUrl;
+      if (serverUrl === "chat") {
+        // Pour les requêtes de chat, utiliser le port 8000
+        baseUrl = "http://localhost:8000";
+      } else {
+        // Pour les autres requêtes, utiliser VITE_NODE_SERVER_URL
+        baseUrl = import.meta.env.VITE_NODE_SERVER_URL;
+      }
+
+      console.log("URL de la requête GET:", `${baseUrl}/${endpoint}`);
+
+      let result = await fetch(`${baseUrl}/${endpoint}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       // Capturer le status code avant de vérifier result.ok
       const status = result.status;
@@ -25,10 +34,6 @@ const utils = {
         throw error;
       }
 
-      console.log(
-        "url: ",
-        `${import.meta.env.VITE_NODE_SERVER_URL}/${endpoint}`
-      );
       return await result.json();
     } catch (error) {
       console.log(
@@ -47,17 +52,24 @@ const utils = {
   async post(endpoint, body, serverUrl) {
     try {
       // Déterminer l'URL du serveur selon le paramètre serverUrl
-      const baseUrl =
-        serverUrl === "chat"
-          ? import.meta.env.VITE_LLM_SERVER_URL
-          : import.meta.env.VITE_NODE_SERVER_URL;
+      let baseUrl;
+      if (serverUrl === "chat") {
+        // Pour les requêtes de chat, utiliser le port 8000
+        baseUrl = "http://localhost:8000";
+      } else {
+        // Pour les autres requêtes, utiliser VITE_NODE_SERVER_URL
+        baseUrl = import.meta.env.VITE_NODE_SERVER_URL;
+      }
+
+      console.log("URL de la requête:", `${baseUrl}/${endpoint}`);
 
       let result = await fetch(`${baseUrl}/${endpoint}`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${this.getToken()}`,
+          Authorization: `Bearer ${this.getSessionCookie()}`,
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(body),
       });
 
@@ -89,6 +101,17 @@ const utils = {
         statusText: error.statusText || null,
       };
     }
+  },
+  getSessionCookie() {
+    const cookies = document.cookie.split(";");
+    for (let cookie of cookies) {
+      const [name, value] = cookie.trim().split("=");
+      if (name === "session_id") {
+        console.log("session_id trouvée dans le cookie ");
+        return value;
+      }
+    }
+    return null;
   },
   logout() {
     console.log("logout...");
@@ -248,6 +271,46 @@ const utils = {
     const decoded = this.decodeToken();
     return decoded ? decoded.email : null;
   },
+};
+
+// Fonction utilitaire pour traiter les données de chat
+export const processChatResponse = (data) => {
+  // Si la réponse contient un tableau 'response', l'utiliser
+  if (data && data.response && Array.isArray(data.response)) {
+    return data.response;
+  }
+
+  // Si c'est directement un tableau de messages
+  if (Array.isArray(data)) {
+    return data;
+  }
+
+  // Si c'est un objet avec une propriété 'messages'
+  if (data && data.messages && Array.isArray(data.messages)) {
+    return data.messages;
+  }
+
+  // Fallback : retourner un tableau vide
+  return [];
+};
+
+// Fonction pour valider la structure d'un message
+export const validateMessage = (message) => {
+  return (
+    message &&
+    typeof message.role === "string" &&
+    typeof message.content === "string" &&
+    (message.role === "user" || message.role === "assistant")
+  );
+};
+
+// Fonction pour nettoyer et valider un historique de messages
+export const validateChatHistory = (messages) => {
+  if (!Array.isArray(messages)) {
+    return [];
+  }
+
+  return messages.filter(validateMessage);
 };
 
 export default utils;

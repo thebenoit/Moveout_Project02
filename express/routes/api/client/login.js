@@ -1,7 +1,7 @@
 import express from "express";
 const app = express();
 import client from "../../../mongo/interface/client.js";
-import generateJTW from "../../../mongo/interface/JWT.js";
+import JWT from "../../../mongo/interface/JWT.js"; // ← Importer l'objet complet
 import jwt from "jsonwebtoken";
 import User from "../../../mongo/schemas/user.js";
 import mixpanel from "mixpanel";
@@ -16,17 +16,24 @@ app.post("/login", async (req, res) => {
       return res.status(400).send(response);
     }
 
-    const sessionID = user.accessToken;
+    // Utiliser JWT.generateJwt (notez le nom exact)
+    const jwtToken = await JWT.generateJwt(
+      user._id,
+      user.preferences?._id,
+      false
+    );
 
-    //set up cookie
-    res.cookie("session_id", sessionID, {
-      httpOnly: true, // Inaccessible via JavaScript
-      secure: true, // HTTPS seulement en production
-      sameSite: "strict", // Protection contre les attaques CSRF
-      maxAge: 24 * 60 * 60 * 1000, // 24 heures
-      path: "/", // Cookie disponible sur tout le site
+    console.log("Nouveau JWT généré pour user:", user._id);
+
+    res.cookie("session_id", jwtToken, {
+      httpOnly: false,
+      secure: true,
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000,
+      path: "/",
     });
-    res.send({ token: user.accessToken });
+
+    res.send({ token: jwtToken });
   } catch (error) {
     console.error("Erreur lors de la récupération des données:", error);
     res.status(500).send("Erreur lors de la récupération des données");

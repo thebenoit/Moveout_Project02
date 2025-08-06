@@ -67,6 +67,7 @@ const goToSignup = () => {
 };
 
 async function login() {
+  console.log("login frontend...");
   try {
     let result = await utils.post("api/client/login", {
       identifier: identifier.value,
@@ -78,8 +79,10 @@ async function login() {
       messageErreur.value = result.error.message;
     }
 
+    console.log("result lors du login frontend: ", result);
+
     if (result.token) {
-      utils.setToken(result.token);
+      //utils.setToken(result.token);
       showLoginModal.value = false;
       // Réessayer la requête chat après connexion
       handleSearch();

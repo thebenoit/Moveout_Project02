@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import User from "../schemas/user.js";
+import crypto from "crypto";
 
 /**
  * méthode qui génère un token avec userId & userPreference comme payload
@@ -11,19 +12,28 @@ import User from "../schemas/user.js";
  */
 async function generateJwt(userId, prefId, isTemp = false) {
   try {
-    const payload = { userId, prefId };
-    //génère le token
-    const token = jwt.sign(
-      { userId: payload.userId, prefId: payload.prefId },
-      process.env.JWT_SECRET,
-      { expiresIn: isTemp ? "3h" : "24h" }
-    );
+    // Validation des paramètres
+    if (!userId || !process.env.JWT_SECRET) {
+      throw new Error("Missing required parameters");
+    }
 
+    const payload = {
+      userId,
+      prefId,
+      iat: Math.floor(Date.now() / 1000),
+      // Pas d'exp ici - laissé à jwt.sign
+      jti: crypto.randomUUID(),
+    };
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      algorithm: "HS256",
+      expiresIn: isTemp ? "3h" : "24h", // ← JWT gère automatiquement l'expiration
+    });
+
+    console.log("Token généré avec succès");
     return token;
-
-    console.log("generateJwt;");
   } catch (error) {
-    console.log("erreur lors de la création de token: ");
+    console.log("erreur lors de la création de token: ", error);
     return { error: true };
   }
 }
@@ -37,11 +47,14 @@ function isTokenExpired(token) {
   try {
     const decoded = jwt.decode(token);
     if (!decoded || !decoded.exp) return true;
-    
+
     const currentTime = Math.floor(Date.now() / 1000);
     return decoded.exp < currentTime;
   } catch (error) {
-    console.log("Erreur lors de la vérification de l'expiration du token:", error);
+    console.log(
+      "Erreur lors de la vérification de l'expiration du token:",
+      error
+    );
     return true;
   }
 }
@@ -134,5 +147,5 @@ async function validateToken(req, res) {
 export default {
   generateJwt,
   validateToken,
-  isTokenExpired
+  isTokenExpired,
 };
