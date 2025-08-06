@@ -15,6 +15,7 @@ const usersSchema = new Schema({
   customerId: { type: Schema.Types.String, required: false },
   notifHistory: [{ type: Schema.Types.String, required: false }],
   date: { type: Schema.Types.Date },
+  threadID: { type: Schema.Types.String, required: false },
   // Google Auth fields
   googleId: { type: Schema.Types.String, required: false },
   googlePicture: { type: Schema.Types.String, required: false },

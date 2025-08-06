@@ -13,9 +13,18 @@ const utils = {
           },
         }
       );
+
+      // Capturer le status code avant de vérifier result.ok
+      const status = result.status;
+      const statusText = result.statusText;
+
       if (!result.ok) {
-        throw new Error(`HTTP error! status: ${result.status}`);
+        const error = new Error(`HTTP error! status: ${result.status}`);
+        error.status = status;
+        error.statusText = statusText;
+        throw error;
       }
+
       console.log(
         "url: ",
         `${import.meta.env.VITE_NODE_SERVER_URL}/${endpoint}`
@@ -26,32 +35,59 @@ const utils = {
         "There has been a problem with your fetch operation: ",
         error.message
       );
-      return { error: error.message }; // Retourner un objet structuré
+
+      // Retourner un objet structuré avec le status code
+      return {
+        error: error.message,
+        status: error.status || null,
+        statusText: error.statusText || null,
+      };
     }
   },
-  async post(endpoint, body) {
+  async post(endpoint, body, serverUrl) {
     try {
-      let result = await fetch(
-        `${import.meta.env.VITE_NODE_SERVER_URL}/${endpoint}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${this.getToken()}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body),
-        }
-      );
-      // if (!result.ok) { // Vérifier si la réponse est OK
-      //     throw new Error(`HTTP error! status: ${result.status}`);
-      // }
-      return await result.json(); // Assurez-vous d'attendre le JSON
+      // Déterminer l'URL du serveur selon le paramètre serverUrl
+      const baseUrl =
+        serverUrl === "chat"
+          ? import.meta.env.VITE_LLM_SERVER_URL
+          : import.meta.env.VITE_NODE_SERVER_URL;
+
+      let result = await fetch(`${baseUrl}/${endpoint}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      // Capturer le status code avant de parser le JSON
+      const status = result.status;
+      const statusText = result.statusText;
+
+      const responseData = await result.json();
+
+      // Vérifier si la réponse contient une erreur
+      if (responseData.error) {
+        const error = new Error(responseData.message || responseData.error);
+        error.status = status;
+        error.statusText = statusText;
+        throw error;
+      }
+
+      return responseData; // Retourner les données si pas d'erreur
     } catch (error) {
       console.log(
         "There has been a problem with your fetch operation: ",
         error.message
       );
-      return { error: error.message }; // Retourner un objet structuré
+
+      // Retourner un objet structuré avec le status code
+      return {
+        error: error.message,
+        status: error.status || null,
+        statusText: error.statusText || null,
+      };
     }
   },
   logout() {
@@ -60,7 +96,6 @@ const utils = {
     sessionStorage.removeItem("auth_expiration");
     sessionStorage.removeItem("temp_auth");
     sessionStorage.removeItem("temp_auth_expiration");
-
   },
   setToken(token, isTemp = false) {
     const storageKey = isTemp ? "temp_auth" : "auth";
@@ -91,7 +126,7 @@ const utils = {
       return tempToken;
     }
     console.log("Aucun token valide");
-    
+
     return null;
   },
   getToken() {
