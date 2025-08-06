@@ -16,6 +16,7 @@ import LandingPageSuccess from "@/views/landingPages/landingPage-success.vue";
 import Erreur404 from "@/views/Erreur404.vue";
 import Listings from "@/views/Listings.vue";
 import Pricing_Page from "@/views/pricing_pages/pricing_page.vue";
+import TestListingCard from "@/views/TestListingCard.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,11 +52,15 @@ const router = createRouter({
       component: Pricing_Page,
     },
     {
+      path: "/test-listing",
+      name: "testListing",
+      component: TestListingCard,
+    },
+    {
       path: "/:pathMatch(.*)*",
       name: "erreur404",
       component: Erreur404,
     },
-
   ],
 });
 

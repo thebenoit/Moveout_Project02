@@ -36,7 +36,6 @@
           </div>
           <div class="message-content assistant-message">
             <div class="loading-container">
-              <div class="loading-text">L'IA réfléchit...</div>
               <div class="loading-dots">
                 <div class="dot"></div>
                 <div class="dot"></div>
@@ -320,14 +319,15 @@ watch(
 /* Loading animation */
 .loading-container {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: flex-start;
-  padding: 12px 0;
-  background-color: transparent;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  background-color: #f0f0f0;
   color: #333;
-  border-radius: 0;
-  max-width: 100%;
+  border-radius: 18px;
+  border-bottom-left-radius: 4px;
+  max-width: 70%;
   border: none;
   box-shadow: none;
 }
@@ -336,22 +336,23 @@ watch(
   font-size: 14px;
   color: #333;
   font-style: italic;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 
 .loading-dots {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
+  justify-content: center;
 }
 
 .dot {
-  width: 10px;
-  height: 10px;
-  background: #333;
+  width: 8px;
+  height: 8px;
+  background: #666;
   border-radius: 50%;
   animation: loading 1.4s infinite ease-in-out;
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
 .dot:nth-child(1) {
