@@ -420,25 +420,26 @@ button[class*="px-4 py-2 bg-gray-100"]:nth-child(7) {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+  display: grid;
+  place-items: center;
+  z-index: 9999;
   backdrop-filter: blur(4px);
 }
 
 .modal-content {
-  max-width: 480px;
+  max-width: 420px;
   width: 90%;
-  max-height: 90vh;
+  max-height: 75vh;
   overflow-y: auto;
+  margin: auto;
+  position: relative;
 }
 
 .login-card {
   background: white;
-  padding: 2.5rem;
+  padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -448,11 +449,11 @@ button[class*="px-4 py-2 bg-gray-100"]:nth-child(7) {
 /* Form Header */
 .login-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .login-title {
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 700;
   color: #1a1a1a;
   margin-bottom: 0.5rem;
