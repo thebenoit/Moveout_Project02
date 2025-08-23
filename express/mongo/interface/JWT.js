@@ -10,7 +10,7 @@ import crypto from "crypto";
  * @param {*} userId
  * @param {*} prefId
  */
-async function generateJwt(userId, prefId, isTemp = false) {
+async function generateJwt(userId, sessionId) {
   try {
     // Validation des paramètres
     if (!userId || !process.env.JWT_SECRET) {
@@ -18,8 +18,16 @@ async function generateJwt(userId, prefId, isTemp = false) {
     }
 
     const payload = {
-      userId,
-      prefId,
+      iss: process.env.JWT_ISSUER || "moveout-auth",
+      aud: ["chat_api", "frontend"],
+      sub: userId,
+
+      userId: userId,
+      sessionId: sessionId,
+      tokenType: "access",
+      scope: "chat:read chat:write",
+      authProvider: "legacy",
+
       iat: Math.floor(Date.now() / 1000),
       // Pas d'exp ici - laissé à jwt.sign
       jti: crypto.randomUUID(),
@@ -27,7 +35,11 @@ async function generateJwt(userId, prefId, isTemp = false) {
 
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       algorithm: "HS256",
-      expiresIn: isTemp ? "3h" : "24h", // ← JWT gère automatiquement l'expiration
+      header: {
+        typ: "JWT",
+        alg: "HS256",
+        kid: "legacy-key-1",
+      },
     });
 
     console.log("Token généré avec succès");
@@ -35,6 +47,37 @@ async function generateJwt(userId, prefId, isTemp = false) {
   } catch (error) {
     console.log("erreur lors de la création de token: ", error);
     return { error: true };
+  }
+}
+
+async function generateRefreshToken(userId, sessionId) {
+  try {
+    const payload = {
+      iss: process.env.JWT_ISSUER || "moveout-auth",
+      aud: ["chat_api", "frontend"],
+      sub: userId,
+      jti: crypto.randomUUID(),
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60,
+
+      userId: userId,
+      sessionId: sessionId,
+      tokenType: "refresh",
+      scope: "auth:refresh",
+      authProvider: "legacy",
+    };
+
+    return jwt.sign(payload, process.env.JWT_SECRET, {
+      algorithm: "HS256",
+      header: {
+        typ: "JWT",
+        alg: "HS256",
+        kid: "legacy-key-1",
+      },
+    });
+  } catch (error) {
+    console.log("erreur lors de la création du refresh token: ", error);
+    return null;
   }
 }
 
@@ -148,4 +191,5 @@ export default {
   generateJwt,
   validateToken,
   isTokenExpired,
+  generateRefreshToken,
 };

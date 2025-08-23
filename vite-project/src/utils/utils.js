@@ -91,7 +91,7 @@ const utils = {
       return responseData; // Retourner les données si pas d'erreur
     } catch (error) {
       console.log(
-        "There has been a problem with your fetch operation: ",
+        "There has been a problem with your post operation: ",
         error.message
       );
 

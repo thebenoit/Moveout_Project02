@@ -198,7 +198,7 @@ function estConnecter() {
     <div class="navbar-buttons">
       <!-- Boutons pour utilisateur NON connecté -->
       <button
-        v-if="!isUserLoggedIn()"
+       
         @click="gotologin"
         class="navbar-btn navbar-btn-outline"
       >
@@ -206,7 +206,7 @@ function estConnecter() {
       </button>
 
       <button
-        v-if="!isUserLoggedIn()"
+       
         @click="gotosignup"
         class="navbar-btn navbar-btn-solid"
       >
@@ -215,7 +215,7 @@ function estConnecter() {
 
       <!-- Bouton pour utilisateur connecté -->
       <button
-        v-if="isUserLoggedIn()"
+        
         @click="gotologout"
         class="navbar-btn navbar-btn-outline"
       >

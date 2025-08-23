@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import User from "../../../mongo/schemas/user.js";
 import mixpanel from "mixpanel";
 import session from "express-session";
+import crypto from "crypto";
 
 app.post("/login", async (req, res) => {
   try {
@@ -16,24 +17,40 @@ app.post("/login", async (req, res) => {
       return res.status(400).send(response);
     }
 
+    const sessionId = crypto.randomUUID();
+
     // Utiliser JWT.generateJwt (notez le nom exact)
-    const jwtToken = await JWT.generateJwt(
+    const accessToken = await JWT.generateJwt(String(user._id), sessionId);
+
+    const refreshToken = await JWT.generateRefreshToken(
       String(user._id),
-     // String(user.preferences?._id),
-      false
+      sessionId
     );
 
     console.log("Nouveau JWT généré pour user:", user._id);
 
-    res.cookie("session_id", jwtToken, {
+    res.cookie("access_token", accessToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
     });
 
-    res.send({ token: jwtToken });
+    res.cookie("session_id", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+      path: "/",
+    });
+
+    res.send({
+      token: accessToken,
+      refreshToken: refreshToken,
+      sessionId: sessionId,
+      expiresIn: 24 * 60 * 60,
+    });
   } catch (error) {
     console.error("Erreur lors de la récupération des données:", error);
     res.status(500).send("Erreur lors de la récupération des données");

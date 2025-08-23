@@ -99,7 +99,7 @@ const scrollToBottom = async () => {
 const loadChatHistory = async () => {
   try {
     isLoading.value = true;
-    const response = await utils.get("chat", "chat");
+    const response = await utils.post("chat", { messages: [] }, "chat");
 
     // Utiliser la fonction utilitaire pour traiter la réponse
     const processedMessages = processChatResponse(response);
@@ -182,7 +182,7 @@ const sendMessage = async () => {
 
 // Charger l'historique au montage du composant
 onMounted(() => {
-  loadChatHistory();
+  //loadChatHistory();
 });
 
 // Scroll automatique quand de nouveaux messages arrivent
