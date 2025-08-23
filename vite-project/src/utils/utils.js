@@ -18,9 +18,10 @@ const utils = {
       let result = await fetch(`${baseUrl}/${endpoint}`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${this.getToken()}`,
+          // Authorization: `Bearer ${this.getToken()}`,
           "Content-Type": "application/json",
         },
+        credentials: "include",
       });
 
       // Capturer le status code avant de vérifier result.ok
@@ -66,7 +67,7 @@ const utils = {
       let result = await fetch(`${baseUrl}/${endpoint}`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${this.getSessionCookie()}`,
+          // Authorization: `Bearer ${this.getSessionCookie()}`,
           "Content-Type": "application/json",
         },
         credentials: "include",

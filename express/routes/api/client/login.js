@@ -18,15 +18,15 @@ app.post("/login", async (req, res) => {
 
     // Utiliser JWT.generateJwt (notez le nom exact)
     const jwtToken = await JWT.generateJwt(
-      user._id,
-      user.preferences?._id,
+      String(user._id),
+     // String(user.preferences?._id),
       false
     );
 
     console.log("Nouveau JWT généré pour user:", user._id);
 
     res.cookie("session_id", jwtToken, {
-      httpOnly: false,
+      httpOnly: true,
       secure: true,
       sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000,

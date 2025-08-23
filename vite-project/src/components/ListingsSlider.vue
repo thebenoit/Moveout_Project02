@@ -4,12 +4,17 @@
       <div
         class="slider-track"
         ref="sliderTrack"
-        :style="{ transform: `translateX(-${currentSlide * slideWidth}px)` }"
+        :style="{ transform: `translateX(-${currentOffset}px)` }"
       >
         <div
           v-for="(listing, index) in listings"
           :key="listing.id"
           class="listing-card"
+          role="button"
+          tabindex="0"
+          :aria-label="`Open details for ${listing.title}`"
+          @click="openListingUrl(listing)"
+          @keyup.enter="viewListing(listing)"
           :ref="
             (el) => {
               if (el) slideRefs[index] = el;
@@ -32,7 +37,7 @@
               <!-- Navigation des images -->
               <button
                 v-if="listing.images.length > 1"
-                @click="previousImage(index)"
+                @click.stop="previousImage(index)"
                 class="image-nav prev-image"
                 :class="{ disabled: (currentImageIndex[index] || 0) === 0 }"
               >
@@ -48,7 +53,7 @@
 
               <button
                 v-if="listing.images.length > 1"
-                @click="nextImage(index)"
+                @click.stop="nextImage(index)"
                 class="image-nav next-image"
                 :class="{
                   disabled:
@@ -65,6 +70,8 @@
                   <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
                 </svg>
               </button>
+              <!-- gradient overlay -->
+              <div class="image-gradient" aria-hidden="true"></div>
             </div>
 
             <!-- Indicateurs d'images -->
@@ -85,15 +92,72 @@
           </div>
 
           <!-- Contenu de la carte -->
-          <div class="card-content">
-            <div class="listing-header">
-              <h3 class="listing-title">{{ listing.title }}</h3>
-              <p class="listing-price">{{ listing.price }}</p>
+          <div class="card-content" @click.stop>
+            <p class="listing-price" :aria-label="`Price ${listing.price}`">
+              {{ listing.price }}
+            </p>
+            <p v-if="listing.location" class="listing-location">
+              {{ listing.location }}
+            </p>
+            <h3 class="listing-title">{{ listing.title }}</h3>
+
+            <!-- Facts row -->
+            <div class="listing-facts" role="list" aria-label="Key facts">
+              <div
+                class="fact"
+                v-if="
+                  listing.bedrooms !== undefined && listing.bedrooms !== null
+                "
+                role="listitem"
+                :aria-label="labels.bedsAria(listing.bedrooms)"
+              >
+                <span class="fact-emoji" aria-hidden="true">🛏️</span>
+                <span>{{ listing.bedrooms }}</span>
+              </div>
+              <div
+                class="fact"
+                v-if="
+                  listing.bathrooms !== undefined && listing.bathrooms !== null
+                "
+                role="listitem"
+                :aria-label="labels.bathsAria(listing.bathrooms)"
+              >
+                <span class="fact-emoji" aria-hidden="true">🚿</span>
+                <span>{{ listing.bathrooms }}</span>
+              </div>
+              <div v-if="listing.area" class="fact" role="listitem">
+                <span class="fact-emoji" aria-hidden="true">📐</span>
+                <span>{{ listing.area }}</span>
+              </div>
+              <div
+                v-else-if="listing.neighborhood"
+                class="fact"
+                role="listitem"
+              >
+                <span class="fact-emoji" aria-hidden="true">📍</span>
+                <span>{{ listing.neighborhood }}</span>
+              </div>
             </div>
 
             <div class="listing-actions">
-              <button class="action-btn primary" @click="viewListing(listing)">
-                Voir plus
+              <button
+                class="action-btn primary"
+                @click.stop="viewListing(listing)"
+                :aria-label="labels.ctaAria(listing.title)"
+              >
+                {{ labels.cta }}
+                <svg
+                  class="btn-arrow"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M10 6l-1.41 1.41L12.17 11H4v2h8.17l-3.58 3.59L10 18l6-6-6-6z"
+                  />
+                </svg>
               </button>
             </div>
           </div>
@@ -115,7 +179,7 @@
     <button
       @click="nextSlide"
       class="slider-nav next-slide"
-      :class="{ disabled: currentSlide >= maxSlide }"
+      :class="{ disabled: currentSlide >= maxIndex }"
     >
       <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
         <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
@@ -244,6 +308,11 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+  locale: {
+    type: String,
+    default: "fr",
+    validator: (val) => ["fr", "en"].includes(val),
+  },
 });
 
 // Refs
@@ -253,6 +322,7 @@ const slideRefs = reactive({});
 
 // État du slider
 const currentSlide = ref(0);
+const currentOffset = ref(0);
 const slideWidth = ref(320);
 const slidesPerView = ref(3);
 
@@ -261,8 +331,12 @@ const currentImageIndex = reactive({});
 
 // Computed
 const maxSlide = computed(() => {
+  // Used for page indicators
   return Math.max(0, props.listings.length - slidesPerView.value);
 });
+
+// Max index used for left/right nav disabling
+const maxIndex = computed(() => Math.max(0, props.listings.length - 1));
 
 // Méthodes pour la navigation des images
 const previousImage = (listingIndex) => {
@@ -285,20 +359,38 @@ const setImageIndex = (listingIndex, imageIndex) => {
 };
 
 // Méthodes pour la navigation du slider
+const centerOnIndex = (index) => {
+  if (!sliderContainer.value || !sliderTrack.value) return;
+  const targetEl = slideRefs[index];
+  if (!targetEl) return;
+
+  const containerWidth = sliderContainer.value.offsetWidth;
+  const targetCenter = targetEl.offsetLeft + targetEl.offsetWidth / 2;
+  const rawOffset = targetCenter - containerWidth / 2;
+  const maxPossibleOffset = Math.max(
+    0,
+    sliderTrack.value.scrollWidth - containerWidth
+  );
+  currentOffset.value = Math.min(Math.max(0, rawOffset), maxPossibleOffset);
+};
+
 const previousSlide = () => {
   if (currentSlide.value > 0) {
     currentSlide.value = Math.max(0, currentSlide.value - 1);
+    centerOnIndex(currentSlide.value);
   }
 };
 
 const nextSlide = () => {
-  if (currentSlide.value < maxSlide.value) {
-    currentSlide.value = Math.min(maxSlide.value, currentSlide.value + 1);
+  if (currentSlide.value < maxIndex.value) {
+    currentSlide.value = Math.min(maxIndex.value, currentSlide.value + 1);
+    centerOnIndex(currentSlide.value);
   }
 };
 
 const goToSlide = (slideIndex) => {
-  currentSlide.value = Math.min(maxSlide.value, slideIndex);
+  currentSlide.value = Math.min(maxIndex.value, slideIndex);
+  centerOnIndex(currentSlide.value);
 };
 
 // Méthodes utilitaires
@@ -316,6 +408,14 @@ const viewListing = (listing) => {
   selectedListing.value = listing;
   modalImageIndex.value = 0;
   showModal.value = true;
+};
+
+const openListingUrl = (listing) => {
+  if (listing?.url) {
+    window.open(listing.url, "_blank");
+  } else {
+    viewListing(listing);
+  }
 };
 
 const closeModal = () => {
@@ -348,6 +448,8 @@ const updateSliderDimensions = () => {
 
   slidesPerView.value = Math.floor((containerWidth + gap) / (cardWidth + gap));
   slideWidth.value = cardWidth + gap;
+  // Re-center current index after a resize
+  centerOnIndex(currentSlide.value);
 };
 
 // Navigation au clavier
@@ -372,11 +474,31 @@ onMounted(() => {
   props.listings.forEach((_, index) => {
     currentImageIndex[index] = 0;
   });
+
+  // Center on first card at mount
+  centerOnIndex(currentSlide.value);
 });
 
 onUnmounted(() => {
   window.removeEventListener("resize", updateSliderDimensions);
   window.removeEventListener("keydown", handleKeydown);
+});
+
+// Labels by locale
+const labels = computed(() => {
+  const fr = {
+    cta: "Voir plus",
+    ctaAria: (title) => `Voir plus de détails pour ${title}`,
+    bedsAria: (n) => `${n} chambre${n > 1 ? "s" : ""}`,
+    bathsAria: (n) => `${n} salle${n > 1 ? "s" : ""} de bain`,
+  };
+  const en = {
+    cta: "View details",
+    ctaAria: (title) => `View more details for ${title}`,
+    bedsAria: (n) => `${n} bed${n > 1 ? "s" : ""}`,
+    bathsAria: (n) => `${n} bath${n > 1 ? "s" : ""}`,
+  };
+  return props.locale === "en" ? en : fr;
 });
 </script>
 
@@ -408,11 +530,16 @@ onUnmounted(() => {
   overflow: hidden;
   transition: all 0.3s ease;
   cursor: pointer;
+  outline: none;
 }
 
 .listing-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.listing-card:focus-visible {
+  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.4), 0 12px 24px rgba(0, 0, 0, 0.15);
 }
 
 /* Images */
@@ -427,13 +554,28 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
 }
+/* Bottom gradient overlay for future overlays */
+.image-gradient {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 30%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0));
+  pointer-events: none;
+}
 
 .listing-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease,
+    transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.listing-card:hover .listing-image {
+  transform: scale(1.04);
 }
 
 .image-nav {
@@ -529,8 +671,33 @@ onUnmounted(() => {
 .listing-price {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #2563eb;
+  color: #111111;
   margin: 0;
+}
+
+.listing-location {
+  margin: 0.25rem 0 0.25rem 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.listing-facts {
+  display: flex;
+  gap: 0.75rem;
+  margin: 0.75rem 0 1rem 0;
+  color: #4b5563;
+}
+
+.fact {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.fact-emoji {
+  font-size: 1rem;
+  line-height: 1;
 }
 
 .listing-actions {
@@ -547,16 +714,23 @@ onUnmounted(() => {
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .action-btn.primary {
-  background: #2563eb;
+  background: #111111;
   color: white;
 }
 
 .action-btn.primary:hover {
-  background: #1d4ed8;
+  background: #000000;
   transform: translateY(-1px);
+}
+
+.btn-arrow {
+  margin-left: 8px;
 }
 
 /* Navigation du slider */
@@ -564,8 +738,8 @@ onUnmounted(() => {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.9);
-  color: #374151;
+  background: rgba(0, 0, 0, 0.85);
+  color: #ffffff;
   border: none;
   border-radius: 50%;
   width: 48px;
@@ -580,7 +754,7 @@ onUnmounted(() => {
 }
 
 .slider-nav:hover {
-  background: white;
+  background: #000000;
   transform: translateY(-50%) scale(1.1);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
@@ -616,7 +790,7 @@ onUnmounted(() => {
 }
 
 .slide-indicator.active {
-  background: #2563eb;
+  background: #111111;
   transform: scale(1.2);
 }
 
@@ -670,6 +844,7 @@ onUnmounted(() => {
   z-index: 10000;
   padding: 1rem;
   backdrop-filter: blur(4px);
+  animation: fadeIn 180ms ease-out;
 }
 
 .modal-content {
@@ -681,6 +856,8 @@ onUnmounted(() => {
   overflow-y: auto;
   position: relative;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  animation: scaleIn 220ms ease-out;
+  transform-origin: center;
 }
 
 .modal-close {
@@ -721,7 +898,7 @@ onUnmounted(() => {
 .modal-price {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #2563eb;
+  color: #111111;
 }
 
 .modal-images {
@@ -773,6 +950,39 @@ onUnmounted(() => {
 .modal-nav-btn:hover {
   background: rgba(0, 0, 0, 0.9);
   transform: scale(1.1);
+}
+
+/* Keyframes for subtle animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .listing-image,
+  .slider-track,
+  .slider-nav,
+  .modal-overlay,
+  .modal-content {
+    transition: none !important;
+    animation: none !important;
+  }
 }
 
 .modal-image-indicators {
@@ -855,12 +1065,12 @@ onUnmounted(() => {
 }
 
 .modal-btn.primary {
-  background: #2563eb;
+  background: #111111;
   color: white;
 }
 
 .modal-btn.primary:hover {
-  background: #1d4ed8;
+  background: #000000;
   transform: translateY(-1px);
 }
 
