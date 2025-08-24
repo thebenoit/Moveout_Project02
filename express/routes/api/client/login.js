@@ -27,7 +27,7 @@ app.post("/login", async (req, res) => {
       sessionId
     );
 
-    console.log("Nouveau JWT généré pour user:", user._id);
+    console.log("Nouveau JWT généré pour user:", user._id, "\n", "accessToken: ", accessToken, "\n", "refreshToken: ", refreshToken);
 
     res.cookie("access_token", accessToken, {
       httpOnly: true,

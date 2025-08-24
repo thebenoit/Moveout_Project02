@@ -19,7 +19,7 @@ async function generateJwt(userId, sessionId) {
 
     const payload = {
       iss: process.env.JWT_ISSUER || "moveout-auth",
-      aud: "chat_api",
+      audience: "chat_api",
       sub: userId,
 
       userId: userId,
@@ -29,7 +29,7 @@ async function generateJwt(userId, sessionId) {
       authProvider: "legacy",
 
       iat: Math.floor(Date.now() / 1000),
-      // Pas d'exp ici - laissé à jwt.sign
+      exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60,
       jti: crypto.randomUUID(),
     };
 
@@ -40,6 +40,7 @@ async function generateJwt(userId, sessionId) {
         alg: "HS256",
         kid: "legacy-key-1",
       },
+     
     });
 
     console.log("Token généré avec succès");
@@ -54,7 +55,7 @@ async function generateRefreshToken(userId, sessionId) {
   try {
     const payload = {
       iss: process.env.JWT_ISSUER || "moveout-auth",
-      aud: "chat_api",
+      audience: "chat_api",
       sub: userId,
       jti: crypto.randomUUID(),
       iat: Math.floor(Date.now() / 1000),
@@ -74,6 +75,7 @@ async function generateRefreshToken(userId, sessionId) {
         alg: "HS256",
         kid: "legacy-key-1",
       },
+     
     });
   } catch (error) {
     console.log("erreur lors de la création du refresh token: ", error);
