@@ -9,7 +9,8 @@ import { fileURLToPath } from "url";
 import stripeWebhookRouter from "./routes/Stripe/stripe.js";
 import chat from "./routes/api/chat/chat.js";
 import jwtRouter from "./routes/api/jwt/jwt.js";
-import helmet from 'helmet';
+import helmet from "helmet";
+import cookieParser from "cookie-parser";
 
 // Create an instance of the mixpanel client
 var mixpanel = Mixpanel.init("d41fbc564b7544ce2d7c92cb6d8beb63", {
@@ -55,11 +56,13 @@ app.use(
     ],
     exposedHeaders: ["Authorization"],
     credentials: true,
-    preflightContinue: true,
-    optionsSuccessStatus: 204,
+    // preflightContinue: true,
+    // optionsSuccessStatus: 204,
   })
 );
 app.use(helmet());
+
+app.use(cookieParser());
 
 //app.options("*", cors());
 
@@ -94,7 +97,7 @@ app.use("/api/chat", chat);
 // jwt
 app.use("/api/jwt", jwtRouter);
 
-// app.use("/api/client/", client_logout);
+app.use("/api/client/", client_logout);
 // app.use("/client/", client_appartements);
 
 const port = process.env.PORT || 4000; //port to run the serve on

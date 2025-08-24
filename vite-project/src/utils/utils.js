@@ -114,12 +114,60 @@ const utils = {
     }
     return null;
   },
-  logout() {
-    console.log("logout...");
-    sessionStorage.removeItem("auth");
-    sessionStorage.removeItem("auth_expiration");
-    sessionStorage.removeItem("temp_auth");
-    sessionStorage.removeItem("temp_auth_expiration");
+  async logout() {
+    try {
+      console.log("Tentative de déconnexion...");
+
+      const response = await fetch(
+        import.meta.env.VITE_NODE_SERVER_URL + "/api/client/logout",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Réponse du serveur:", response.status, response.statusText);
+
+      if (response.ok) {
+        console.log("Déconnexion réussie côté serveur");
+      } else {
+        console.log("Erreur côté serveur:", response.status);
+      }
+
+      // Nettoyer les cookies côté client de toute façon
+      document.cookie =
+        "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie =
+        "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/auth;";
+      document.cookie =
+        "session_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+      // Nettoyer le stockage local
+      sessionStorage.removeItem("auth");
+      sessionStorage.removeItem("temp_auth");
+      sessionStorage.removeItem("auth_expiration");
+      sessionStorage.removeItem("temp_auth_expiration");
+
+      console.log("Déconnexion terminée côté client");
+    } catch (error) {
+      console.log("Erreur lors du logout: ", error);
+
+      // En cas d'erreur, nettoyer quand même côté client
+      document.cookie =
+        "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie =
+        "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/auth;";
+      document.cookie =
+        "session_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+      sessionStorage.removeItem("auth");
+      sessionStorage.removeItem("temp_auth");
+      sessionStorage.removeItem("auth_expiration");
+      sessionStorage.removeItem("temp_auth_expiration");
+    }
   },
   setToken(token, isTemp = false) {
     const storageKey = isTemp ? "temp_auth" : "auth";

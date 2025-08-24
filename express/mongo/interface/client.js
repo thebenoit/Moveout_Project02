@@ -9,9 +9,8 @@ import responses from "../../responses.js";
 import bcrypt from "bcryptjs";
 import validator from "validator";
 import createLog from "../interface/logs.js";
-import jwtInterface from '../interface/JWT.js';
+import jwtInterface from "../interface/JWT.js";
 import session from "express-session";
-
 
 /**
  * function qui permet de get tout les appart de la base de données
@@ -33,13 +32,7 @@ const isStrongPassword = (password) => {
 };
 
 // async function createAccount(firstName, lastName, phone, email, confirmEmail, password, confirmPassword) {
- const createAccount = async (
-  firstName,
-  lastName,
-  phone,
-  email,
-  password
-) => {
+const createAccount = async (firstName, lastName, phone, email, password) => {
   try {
     // Run checks
 
@@ -97,8 +90,11 @@ const isStrongPassword = (password) => {
       accessToken: "",
       date: Date.now(),
     });
-    
-    newUser.accessToken = await jwtInterface.generateJwt(newUser._id, newUser.preferencesId);
+
+    newUser.accessToken = await jwtInterface.generateJwt(
+      newUser._id,
+      newUser.preferencesId
+    );
 
     // Save the user to the database
     const savedUser = await newUser.save();
@@ -112,7 +108,7 @@ const isStrongPassword = (password) => {
       accessToken: savedUser.accessToken,
     };
   } catch (error) {
-    console.error('Erreur lors de la création du compte: ',error);
+    console.error("Erreur lors de la création du compte: ", error);
     return { error: responses.errors.client.accountCreationError };
   }
 };
@@ -199,26 +195,24 @@ const login = async (identifier, password) => {
     if (!isPasswordValid) {
       return { error: responses.errors.client.invalidPassword };
     }
-    //si user.accessToken est vide créer un accesToken
-    if (!user.accessToken) {
-      console.log("accès token créer car vide");
+    // //si user.accessToken est vide créer un accesToken
+    // if (!user.accessToken) {
+    //   console.log("accès token créer car vide");
 
-      //create Access Token
-      const { error, token } = await generateJwt(user.id, user.preferencesId);
-      console.log("uerA: ", user.accessToken);
-      //assigne access token
-      user.accessToken = token;
+    //   //create Access Token
+    //   // const { error, token } = await jwtInterface.generateJwt(user._id);
+    //   // console.log("user.accessToken: ", user.accessToken);
+    //   // //assigne access token
+    //   // user.accessToken = token;
 
-
-
-      if (!token) {
-        return {
-          error: `impossible de créer un accès de token veuillez réessayer plus tard ${error}`,
-        };
-      }
-    } else {
-      console.log("accès token pas créer car pas vide");
-    }
+    //   // if (!token) {
+    //   //   return {
+    //   //     error: `impossible de créer un accès de token veuillez réessayer plus tard ${error}`,
+    //   //   };
+    //   // }
+    // } else {
+    //   console.log("accès token pas créer car pas vide");
+    // }
 
     //save dans la bd
     await user.save();
@@ -235,19 +229,61 @@ const login = async (identifier, password) => {
 
 const logout = async (req, res) => {
   try {
-    const { username } = req.decoded;
+    const accessToken = req.cookies.access_token;
+    if (accessToken) {
+      const decoded = jwt.decode(accessToken);
+      console.log("🔓 Token décodé manuellement:", decoded);
 
-    let user = await Users.findOne({ username });
+      if (decoded && decoded.userId) {
 
-    user.accessToken = "";
+        const user = await Users.findById(decoded.userId);
 
-    await user.save();
+        if (user) {
+          user.accessToken = "";
+          await user.save();
+          console.log("🔓 Token supprimé de la base de données");
+          return { message: responses.success.accountLogout };
+        } else {
+          console.log("🔓 Token non trouvé dans la base de données");
+          return { error: responses.errors.client.logoutError };
+        }
+      }
 
-    return { message: responses.success.accountLogout };
+
+    } else {
+      console.log("🔓 Token non trouvé dans les cookies");
+      return { error: responses.errors.client.logoutError };
+    }
   } catch (error) {
     console.log("erreur lors du logout: ", error);
 
-    return { error: responses.errors.client.logoutError };
+    res.clearCookie("access_token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      path: "/",
+    });
+
+    res.clearCookie("refresh_token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      path: "/auth",
+    });
+
+    res.clearCookie("session_id", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      path: "/",
+    });
+
+    console.log("✅ Cookies supprimés avec succès");
+
+    res.json({
+      success: true,
+      message: "Déconnexion réussie",
+    });
   }
 };
 
@@ -313,9 +349,6 @@ const createLead = async (firstName, lastName, phone, email) => {
     return { error: responses.errors.client.loginError };
   }
 };
-
-
-
 
 export default {
   createAccount,

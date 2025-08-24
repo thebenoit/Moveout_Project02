@@ -38,8 +38,8 @@ function isUserLoggedIn() {
   }
 }
 
-function gotologout() {
-  utils.logout();
+async function gotologout() {
+  await utils.logout();
   router.push({ path: "/login" });
 }
 
@@ -197,28 +197,16 @@ function estConnecter() {
     <!-- Navigation Buttons -->
     <div class="navbar-buttons">
       <!-- Boutons pour utilisateur NON connecté -->
-      <button
-       
-        @click="gotologin"
-        class="navbar-btn navbar-btn-outline"
-      >
+      <button @click="gotologin" class="navbar-btn navbar-btn-outline">
         Se connecter
       </button>
 
-      <button
-       
-        @click="gotosignup"
-        class="navbar-btn navbar-btn-solid"
-      >
+      <button @click="gotosignup" class="navbar-btn navbar-btn-solid">
         S'inscrire
       </button>
 
       <!-- Bouton pour utilisateur connecté -->
-      <button
-        
-        @click="gotologout"
-        class="navbar-btn navbar-btn-outline"
-      >
+      <button @click="gotologout" class="navbar-btn navbar-btn-outline">
         Déconnexion
       </button>
     </div>

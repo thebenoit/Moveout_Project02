@@ -19,7 +19,7 @@ async function generateJwt(userId, sessionId) {
 
     const payload = {
       iss: process.env.JWT_ISSUER || "moveout-auth",
-      aud: ["chat_api", "frontend"],
+      aud: "chat_api",
       sub: userId,
 
       userId: userId,
@@ -54,7 +54,7 @@ async function generateRefreshToken(userId, sessionId) {
   try {
     const payload = {
       iss: process.env.JWT_ISSUER || "moveout-auth",
-      aud: ["chat_api", "frontend"],
+      aud: "chat_api",
       sub: userId,
       jti: crypto.randomUUID(),
       iat: Math.floor(Date.now() / 1000),
@@ -80,6 +80,8 @@ async function generateRefreshToken(userId, sessionId) {
     return null;
   }
 }
+
+// function generateAccessToken(userId,
 
 /**
  * Vérifie si un token JWT est expiré
