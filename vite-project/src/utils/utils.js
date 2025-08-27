@@ -326,16 +326,19 @@ const utils = {
 export const processChatResponse = (data) => {
   // Si la réponse contient un tableau 'response', l'utiliser
   if (data && data.response && Array.isArray(data.response)) {
+    console.log("data est un objet possedant une propriété response qui est un tableau");
     return data.response;
   }
 
   // Si c'est directement un tableau de messages
   if (Array.isArray(data)) {
+    console.log("data est un tableau");
     return data;
   }
 
   // Si c'est un objet avec une propriété 'messages'
   if (data && data.messages && Array.isArray(data.messages)) {
+    console.log("messages est un tableau possedant des messages");
     return data.messages;
   }
 
@@ -356,6 +359,7 @@ export const validateMessage = (message) => {
 // Fonction pour nettoyer et valider un historique de messages
 export const validateChatHistory = (messages) => {
   if (!Array.isArray(messages)) {
+    console.log("messages n'est pas un tableau");
     return [];
   }
 

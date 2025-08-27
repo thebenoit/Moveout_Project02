@@ -12,6 +12,7 @@ const searchQuery = ref("");
 const identifier = ref("");
 const password = ref("");
 const messageErreur = ref("");
+const messages = ref([])
 
 const handleSearch = async () => {
   if (searchQuery.value.trim()) {
@@ -29,12 +30,17 @@ const handleSearch = async () => {
         "chat"
       );
 
+      
+
       console.log("Chat response:", response);
       if (response.status === 401) {
         showLoginModal.value = true;
       } else {
+        messages.value = response.response;
         showChat.value = true;
       }
+
+
     } catch (error) {
       console.error("Error sending chat request:", error);
 
@@ -131,7 +137,9 @@ async function login() {
 
       <!-- Chat Interface -->
       <div v-if="showChat" class="w-full max-w-6xl h-screen">
-        <ChatInterface @auth-error="showLoginModal = true" />
+        <ChatInterface 
+        :messages="messages"
+        @auth-error="showLoginModal = true" />
       </div>
 
       <!-- Filter Buttons -->

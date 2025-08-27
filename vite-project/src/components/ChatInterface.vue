@@ -82,17 +82,49 @@ import { processChatResponse, validateChatHistory } from "../utils/utils.js";
 
 const emit = defineEmits(["auth-error"]);
 
-const messages = ref([]);
+const props = defineProps({
+  messages: {
+    type: Array,
+    default: () => [],
+  },
+});
+
+const messages = ref(props.messages);
 const inputMessage = ref("");
 const messagesContainer = ref(null);
 const inputRef = ref(null);
 const isLoading = ref(false);
+const eventSource = ref(null);
+
+
 
 const scrollToBottom = async () => {
   await nextTick();
   if (messagesContainer.value) {
     messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
   }
+};
+
+const connectToSSE = (jobId) => {
+  if (eventSource.value) {
+    //Fermer la connexion précédente si elle existe
+    eventSource.value.close();
+  }
+
+  eventSource.value = new EventSource(`http://localhost:8000/events/jobs/${jobId}`);
+
+  eventSource.value.onopen = () => {
+    console.log("Connexion SSE ouverte");
+  };
+
+  eventSource.value.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    console.log("Données reçues:", data);
+
+    eventSource.value.onerror = (event) => {
+      console.error("Erreur SSE:", event);
+    };
+  };
 };
 
 // Fonction pour charger l'historique des messages
@@ -143,6 +175,22 @@ const sendMessage = async () => {
       "chat"
     );
 
+    if(response){
+      console.log("Réponse reçue:", response);
+    }
+
+    if(response.job_id){
+            // Déclencher l'événement SSE avec le job_id
+      console.log("🎯 Job ID reçu, démarrage SSE:", response.job_id);
+      window.dispatchEvent(
+        new CustomEvent("start-sse", {
+          detail: { jobId: response.job_id },
+        })
+      );
+    }else{
+      console.error("Aucun job_id reçu dans la réponse");
+    }
+
     if (response.error) {
       messages.value.push({
         role: "assistant",
@@ -183,15 +231,20 @@ const sendMessage = async () => {
 // Charger l'historique au montage du composant
 onMounted(() => {
   //loadChatHistory();
+  window.addEventListener("start-sse", (event) => {
+    const { jobId } = event.detail;
+    connectToSSE(jobId);
+  });
 });
 
 // Scroll automatique quand de nouveaux messages arrivent
 watch(
-  messages,
-  () => {
+  () => props.messages,
+  (newVal) => {
+    messages.value = newVal;
     scrollToBottom();
   },
-  { deep: true }
+  { deep: true, immediate: true }
 );
 </script>
 
