@@ -11,9 +11,7 @@
         ]"
       >
         <div class="message-container">
-          <div v-if="message.role === 'assistant'" class="avatar">
-            <div class="assistant-avatar">AI</div>
-          </div>
+          <!-- Avatar supprimé pour assistant -->
           <div
             :class="[
               'message-content',
@@ -22,9 +20,7 @@
           >
             <div class="message-text">{{ message.content }}</div>
           </div>
-          <div v-if="message.role === 'user'" class="avatar">
-            <div class="user-avatar">U</div>
-          </div>
+          <!-- Avatar supprimé pour user -->
         </div>
       </div>
 
@@ -83,20 +79,25 @@ import { processChatResponse, validateChatHistory } from "../utils/utils.js";
 const emit = defineEmits(["auth-error"]);
 
 const props = defineProps({
-  messages: {
-    type: Array,
-    default: () => [],
-  },
+  messages: { type: Array, default: () => [] },
+  loading: { type: Boolean, default: false },
 });
 
 const messages = ref(props.messages);
 const inputMessage = ref("");
 const messagesContainer = ref(null);
 const inputRef = ref(null);
-const isLoading = ref(false);
+const isLoading = ref(props.loading);
 const eventSource = ref(null);
 
-
+// Mettre à jour isLoading si la prop change
+watch(
+  () => props.loading,
+  (val) => {
+    isLoading.value = val;
+  },
+  { immediate: true }
+);
 
 const scrollToBottom = async () => {
   await nextTick();
@@ -111,7 +112,9 @@ const connectToSSE = (jobId) => {
     eventSource.value.close();
   }
 
-  eventSource.value = new EventSource(`http://localhost:8000/events/jobs/${jobId}`);
+  eventSource.value = new EventSource(
+    `http://localhost:8000/events/jobs/${jobId}`
+  );
 
   eventSource.value.onopen = () => {
     console.log("Connexion SSE ouverte");
@@ -175,19 +178,19 @@ const sendMessage = async () => {
       "chat"
     );
 
-    if(response){
+    if (response) {
       console.log("Réponse reçue:", response);
     }
 
-    if(response.job_id){
-            // Déclencher l'événement SSE avec le job_id
+    if (response.job_id) {
+      // Déclencher l'événement SSE avec le job_id
       console.log("🎯 Job ID reçu, démarrage SSE:", response.job_id);
       window.dispatchEvent(
         new CustomEvent("start-sse", {
           detail: { jobId: response.job_id },
         })
       );
-    }else{
+    } else {
       console.error("Aucun job_id reçu dans la réponse");
     }
 

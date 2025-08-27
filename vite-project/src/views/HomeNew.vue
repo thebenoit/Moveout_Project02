@@ -12,49 +12,34 @@ const searchQuery = ref("");
 const identifier = ref("");
 const password = ref("");
 const messageErreur = ref("");
-const messages = ref([])
+const messages = ref([]);
+const loading = ref(false);
 
 const handleSearch = async () => {
-  if (searchQuery.value.trim()) {
-    try {
-      const response = await utils.post(
-        "chat",
-        {
-          messages: [
-            {
-              role: "user",
-              content: searchQuery.value.trim(),
-            },
-          ],
-        },
-        "chat"
-      );
-
-      
-
-      console.log("Chat response:", response);
-      if (response.status === 401) {
-        showLoginModal.value = true;
-      } else {
-        messages.value = response.response;
-        showChat.value = true;
-      }
-
-
-    } catch (error) {
-      console.error("Error sending chat request:", error);
-
-      // Vérifier si c'est une erreur 401 (Token manquant ou corrompu)
-      if (
-        error.status === 401 ||
-        (error.message && error.message.includes("401"))
-      ) {
-        showLoginModal.value = true;
-        console.log("showLoginModal: ", showLoginModal.value);
-      } else {
-        showChat.value = true;
-      }
+  if (!searchQuery.value.trim()) return;
+  const userMsg = { role: "user", content: searchQuery.value.trim() };
+  showChat.value = true;
+  loading.value = true;
+  messages.value = [userMsg];
+  try {
+    const response = await utils.post("chat", { messages: [userMsg] }, "chat");
+    console.log("Chat response:", response);
+    if (response.status === 401) {
+      showLoginModal.value = true;
+    } else {
+      messages.value = response.response;
     }
+  } catch (error) {
+    console.error("Error sending chat request:", error);
+    if (
+      error.status === 401 ||
+      (error.message && error.message.includes("401"))
+    ) {
+      showLoginModal.value = true;
+      console.log("showLoginModal: ", showLoginModal.value);
+    }
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -137,9 +122,11 @@ async function login() {
 
       <!-- Chat Interface -->
       <div v-if="showChat" class="w-full max-w-6xl h-screen">
-        <ChatInterface 
-        :messages="messages"
-        @auth-error="showLoginModal = true" />
+        <ChatInterface
+          :messages="messages"
+          :loading="loading"
+          @auth-error="showLoginModal = true"
+        />
       </div>
 
       <!-- Filter Buttons -->
