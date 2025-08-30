@@ -18,7 +18,17 @@
               message.role === 'user' ? 'user-message' : 'assistant-message',
             ]"
           >
-            <div class="message-text">{{ message.content }}</div>
+            <div
+              :class="[
+                'message-text',
+                {
+                  'streaming-text':
+                    isStreaming && streamingMessageIndex === index,
+                },
+              ]"
+            >
+              {{ message.content }}
+            </div>
           </div>
           <!-- Avatar supprimé pour user -->
         </div>
@@ -47,13 +57,17 @@
     <div class="input-field-container">
       <textarea
         v-model="inputMessage"
-        @keydown.enter.prevent="sendMessage"
+        @keydown.enter.prevent="sendMessageStream"
         placeholder="Décrivez votre appartement idéal..."
         class="message-input"
         rows="1"
         ref="inputRef"
       ></textarea>
-      <button @click="sendMessage" class="send-button" :disabled="isLoading">
+      <button
+        @click="sendMessageStream"
+        class="send-button"
+        :disabled="isLoading"
+      >
         <svg
           v-if="!isLoading"
           width="20"
@@ -89,6 +103,8 @@ const messagesContainer = ref(null);
 const inputRef = ref(null);
 const isLoading = ref(props.loading);
 const eventSource = ref(null);
+const isStreaming = ref(false);
+const streamingMessageIndex = ref(-1);
 
 // Mettre à jour isLoading si la prop change
 watch(
@@ -106,15 +122,30 @@ const scrollToBottom = async () => {
   }
 };
 
-const connectToSSE = (jobId) => {
+const connectToSSE = (text) => {
   if (eventSource.value) {
     //Fermer la connexion précédente si elle existe
     eventSource.value.close();
   }
+  const url = `http://localhost:8000/chat/stream?message=${encodeURIComponent(
+    text
+  )}`;
+  eventSource.value = new EventSource(url, {
+    withCredentials: true,
+  });
 
-  eventSource.value = new EventSource(
-    `http://localhost:8000/events/jobs/${jobId}`
-  );
+  let streamText = "";
+
+  // Ajouter un message assistant vide pour le streaming
+  const assistantMessageIndex = messages.value.length;
+  messages.value.push({
+    role: "assistant",
+    content: "",
+  });
+
+  // Activer le mode streaming
+  isStreaming.value = true;
+  streamingMessageIndex.value = assistantMessageIndex;
 
   eventSource.value.onopen = () => {
     console.log("Connexion SSE ouverte");
@@ -122,11 +153,50 @@ const connectToSSE = (jobId) => {
 
   eventSource.value.onmessage = (event) => {
     const data = JSON.parse(event.data);
-    console.log("Données reçues:", data);
+    console.log("on message");
+    try {
+      if (data && data.type === "[DONE]") {
+        console.log("Fin de la conversation");
+        eventSource.value.close();
+        isLoading.value = false;
+        isStreaming.value = false;
+        streamingMessageIndex.value = -1;
+        return;
+      }
 
-    eventSource.value.onerror = (event) => {
-      console.error("Erreur SSE:", event);
-    };
+      if (data) {
+        if (data.type === "content") {
+          streamText += data.content;
+          console.log("Données reçues:", data.content);
+
+          // Mettre à jour le message assistant avec le contenu accumulé
+          if (messages.value[assistantMessageIndex]) {
+            messages.value[assistantMessageIndex].content = streamText;
+          }
+
+          scrollToBottom();
+        }
+      }
+    } catch (error) {
+      console.error("Erreur lors du parsing des données SSE:", error);
+    }
+  };
+
+  eventSource.value.onerror = (event) => {
+    console.error("Erreur SSE:", event);
+    eventSource.value.close();
+    isLoading.value = false;
+    isStreaming.value = false;
+    streamingMessageIndex.value = -1;
+
+    // Afficher un message d'erreur à l'utilisateur si aucun contenu n'a été reçu
+    if (
+      messages.value[assistantMessageIndex] &&
+      !messages.value[assistantMessageIndex].content
+    ) {
+      messages.value[assistantMessageIndex].content =
+        "Désolé, une erreur s'est produite lors de la génération de la réponse. Veuillez réessayer.";
+    }
   };
 };
 
@@ -149,6 +219,35 @@ const loadChatHistory = async () => {
   } finally {
     isLoading.value = false;
   }
+};
+
+const sendMessageStream = async () => {
+  if (!inputMessage.value.trim() || isLoading.value || isStreaming.value)
+    return;
+
+  const userMessage = inputMessage.value.trim();
+
+  // Fermer toute connexion SSE existante
+  if (eventSource.value) {
+    eventSource.value.close();
+    isStreaming.value = false;
+    streamingMessageIndex.value = -1;
+  }
+
+  // Ajouter le message utilisateur
+  messages.value.push({
+    role: "user",
+    content: userMessage,
+  });
+
+  inputMessage.value = "";
+
+  // Activer le loading IMMÉDIATEMENT
+  isLoading.value = true;
+
+  await scrollToBottom();
+
+  connectToSSE(userMessage);
 };
 
 const sendMessage = async () => {
@@ -232,13 +331,7 @@ const sendMessage = async () => {
 };
 
 // Charger l'historique au montage du composant
-onMounted(() => {
-  //loadChatHistory();
-  window.addEventListener("start-sse", (event) => {
-    const { jobId } = event.detail;
-    connectToSSE(jobId);
-  });
-});
+onMounted(() => {});
 
 // Scroll automatique quand de nouveaux messages arrivent
 watch(
@@ -370,6 +463,29 @@ watch(
   max-width: 100%;
   box-shadow: none;
   border: none;
+}
+
+/* Effet de frappe pour le streaming */
+.streaming-text {
+  position: relative;
+}
+
+.streaming-text::after {
+  content: "|";
+  animation: blink 1s infinite;
+  color: #007aff;
+  font-weight: bold;
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
 }
 
 /* Loading animation */
