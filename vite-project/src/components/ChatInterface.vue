@@ -11,7 +11,6 @@
         ]"
       >
         <div class="message-container">
-          <!-- Avatar supprimé pour assistant -->
           <div
             :class="[
               'message-content',
@@ -27,10 +26,18 @@
                 },
               ]"
             >
-              {{ message.content }}
+              <template
+                v-if="
+                  message.type === 'listings' && Array.isArray(message.listings)
+                "
+              >
+                <ListingsSlider :listings="message.listings" />
+              </template>
+              <template v-else>
+                {{ message.content }}
+              </template>
             </div>
           </div>
-          <!-- Avatar supprimé pour user -->
         </div>
       </div>
 
@@ -38,7 +45,7 @@
       <div v-if="isLoading" class="message-wrapper assistant-wrapper">
         <div class="message-container">
           <div class="avatar">
-            <div class="assistant-avatar">AI</div>
+            <!-- <div class="assistant-avatar">AI</div> -->
           </div>
           <div class="message-content assistant-message">
             <div class="loading-container">
@@ -89,6 +96,7 @@
 import { ref, nextTick, watch, onMounted } from "vue";
 import utils from "../utils/utils.js";
 import { processChatResponse, validateChatHistory } from "../utils/utils.js";
+import ListingsSlider from "@/components/ListingsSlider.vue";
 
 const emit = defineEmits(["auth-error"]);
 
@@ -103,6 +111,7 @@ const messagesContainer = ref(null);
 const inputRef = ref(null);
 const isLoading = ref(props.loading);
 const eventSource = ref(null);
+const jobEventSource = ref(null);
 const isStreaming = ref(false);
 const streamingMessageIndex = ref(-1);
 
@@ -122,14 +131,92 @@ const scrollToBottom = async () => {
   }
 };
 
+// Normalise les listings pour le composant ListingsSlider
+const normalizeListings = (items) => {
+  const arr = Array.isArray(items) ? items : [];
+  return arr.map((item, idx) => {
+    const images = Array.isArray(item.images)
+      ? item.images
+          .map((img) => {
+            if (typeof img === "string") return { src: img, alt: "" };
+            if (img && typeof img === "object") {
+              if (img.src) return { src: img.src, alt: img.alt || "" };
+              if (img.url) return { src: img.url, alt: img.alt || "" };
+            }
+            return null;
+          })
+          .filter((x) => x && x.src)
+      : [];
+
+    return {
+      id: String(item.id ?? `listing_${idx}`),
+      title: item.title ?? item.name ?? "Annonce",
+      price: item.price ?? item.price_text ?? "",
+      bedrooms: item.bedrooms ?? item.nb_bedrooms ?? null,
+      bathrooms: item.bathrooms ?? item.nb_bathrooms ?? null,
+      url: item.url ?? item.link ?? "#",
+      images,
+      location:
+        (item.location && (item.location.city || item.location)) ||
+        item.city ||
+        "",
+      neighborhood: item.neighborhood ?? item.area,
+    };
+  });
+};
+const JobSSE = (jobId) => {
+  console.log("Démarrage du Job SSE:", jobId);
+  if (jobEventSource.value) {
+    jobEventSource.value.close();
+  }
+  const url = `${
+    import.meta.env.VITE_LLM_AGENT_ENDPOINT
+  }/events/jobs/${encodeURIComponent(jobId)}`;
+  jobEventSource.value = new EventSource(url, {
+    withCredentials: true,
+  });
+
+  // message.value.push({role:"assistant",content:""})
+
+  jobEventSource.value.onmessage = (event) => {
+    try {
+      const data = JSON.parse(event.data);
+      if (!data || !data.event) return;
+
+      if (data.event === "start") {
+        console.log("Démarrage du job", data);
+      } else if (data.event === "progress") {
+        console.log("Progression du job", data);
+      } else if (data.event === "completed") {
+        console.log("Job terminé", data);
+        const raw = data?.payload?.listings || [];
+        const listings = normalizeListings(raw);
+        messages.value.push({ role: "assistant", type: "listings", listings });
+        nextTick(scrollToBottom);
+        jobEventSource.value.close();
+        jobEventSource.value = null;
+      } else if (data.event === "error") {
+        console.log("Erreur lors du job");
+      }
+    } catch (e) {
+      console.error("Erreur parsing job SSE:", e);
+    }
+  };
+
+  jobEventSource.value.onerror = () => {
+    console.error("Erreur SSE job");
+    if (jobEventSource.value) jobEventSource.value.close();
+    jobEventSource.value = null;
+  };
+};
 const connectToSSE = (text) => {
   if (eventSource.value) {
     //Fermer la connexion précédente si elle existe
     eventSource.value.close();
   }
-  const url = `http://localhost:8000/chat/stream?message=${encodeURIComponent(
-    text
-  )}`;
+  const url = `${
+    import.meta.env.VITE_LLM_AGENT_ENDPOINT
+  }/chat/stream?message=${encodeURIComponent(text)}`;
   eventSource.value = new EventSource(url, {
     withCredentials: true,
   });
@@ -153,7 +240,6 @@ const connectToSSE = (text) => {
 
   eventSource.value.onmessage = (event) => {
     const data = JSON.parse(event.data);
-    console.log("on message");
     try {
       if (data && data.type === "[DONE]") {
         console.log("Fin de la conversation");
@@ -165,9 +251,14 @@ const connectToSSE = (text) => {
       }
 
       if (data) {
+        console.log("Données reçues:", data);
         if (data.type === "content") {
+          // Dès qu'on reçoit du contenu, on arrête le loading et on passe en streaming
+          if (isLoading.value) {
+            isLoading.value = false;
+          }
+
           streamText += data.content;
-          console.log("Données reçues:", data.content);
 
           // Mettre à jour le message assistant avec le contenu accumulé
           if (messages.value[assistantMessageIndex]) {
@@ -175,6 +266,14 @@ const connectToSSE = (text) => {
           }
 
           scrollToBottom();
+        } else if (data.type === "job" && data.job_id) {
+          JobSSE(data.job_id);
+        } else if (data.type === "tool_end" && data.tool === "search_listing") {
+          const status = data.result?.status;
+          const jobId = data.result?.job_id;
+          if ((status === "queued" || status === "processing") && jobId) {
+            JobSSE(jobId);
+          }
         }
       }
     } catch (error) {
@@ -465,27 +564,9 @@ watch(
   border: none;
 }
 
-/* Effet de frappe pour le streaming */
+/* Effet de frappe pour le streaming - désactivé */
 .streaming-text {
   position: relative;
-}
-
-.streaming-text::after {
-  content: "|";
-  animation: blink 1s infinite;
-  color: #007aff;
-  font-weight: bold;
-}
-
-@keyframes blink {
-  0%,
-  50% {
-    opacity: 1;
-  }
-  51%,
-  100% {
-    opacity: 0;
-  }
 }
 
 /* Loading animation */
