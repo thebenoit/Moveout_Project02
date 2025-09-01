@@ -284,12 +284,14 @@
 
           <!-- Actions du modal -->
           <div class="modal-actions">
-            <button
+            <a
               class="modal-btn primary"
-              @click="window.open(selectedListing?.url, '_blank')"
+              :href="selectedListing?.url || '#'"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               Voir sur Facebook
-            </button>
+            </a>
             <button class="modal-btn secondary" @click="closeModal">
               Fermer
             </button>
@@ -446,7 +448,10 @@ const updateSliderDimensions = () => {
   const cardWidth = 320;
   const gap = 20;
 
-  slidesPerView.value = Math.floor((containerWidth + gap) / (cardWidth + gap));
+  slidesPerView.value = Math.max(
+    1,
+    Math.floor((containerWidth + gap) / (cardWidth + gap))
+  );
   slideWidth.value = cardWidth + gap;
   // Re-center current index after a resize
   centerOnIndex(currentSlide.value);

@@ -26,8 +26,14 @@
                 },
               ]"
             >
+              <template v-if="message.type === 'job_status'">
+                <div class="job-status-card">
+                  <div v-if="message.loading" class="job-spinner"></div>
+                  <div class="job-status-text">{{ message.text }}</div>
+                </div>
+              </template>
               <template
-                v-if="
+                v-else-if="
                   message.type === 'listings' && Array.isArray(message.listings)
                 "
               >
@@ -154,6 +160,9 @@ const normalizeListings = (items) => {
       price: item.price ?? item.price_text ?? "",
       bedrooms: item.bedrooms ?? item.nb_bedrooms ?? null,
       bathrooms: item.bathrooms ?? item.nb_bathrooms ?? null,
+      // Expose full description for modal/details view
+      description:
+        item.description ?? item.full_description ?? item.summary ?? "",
       url: item.url ?? item.link ?? "#",
       images,
       location:
@@ -185,18 +194,52 @@ const JobSSE = (jobId) => {
 
       if (data.event === "start") {
         console.log("Démarrage du job", data);
+        const text = data?.payload?.message || "Démarrage du scraping";
+        messages.value.push({
+          role: "assistant",
+          type: "job_status",
+          text,
+          loading: true,
+        });
+        nextTick(scrollToBottom);
       } else if (data.event === "progress") {
         console.log("Progression du job", data);
+        const text = data?.payload?.message || "Scraping en cours…";
+        // Met à jour le dernier message job_status si présent
+        for (let i = messages.value.length - 1; i >= 0; i--) {
+          const m = messages.value[i];
+          if (m && m.type === "job_status") {
+            m.text = text;
+            break;
+          }
+        }
       } else if (data.event === "completed") {
         console.log("Job terminé", data);
         const raw = data?.payload?.listings || [];
         const listings = normalizeListings(raw);
+        // Finalise le statut
+        for (let i = messages.value.length - 1; i >= 0; i--) {
+          const m = messages.value[i];
+          if (m && m.type === "job_status") {
+            m.loading = false;
+            m.text = "Scraping terminé";
+            break;
+          }
+        }
         messages.value.push({ role: "assistant", type: "listings", listings });
         nextTick(scrollToBottom);
         jobEventSource.value.close();
         jobEventSource.value = null;
       } else if (data.event === "error") {
         console.log("Erreur lors du job");
+        for (let i = messages.value.length - 1; i >= 0; i--) {
+          const m = messages.value[i];
+          if (m && m.type === "job_status") {
+            m.loading = false;
+            m.text = "Erreur lors du scraping";
+            break;
+          }
+        }
       }
     } catch (e) {
       console.error("Erreur parsing job SSE:", e);
@@ -349,86 +392,6 @@ const sendMessageStream = async () => {
   connectToSSE(userMessage);
 };
 
-const sendMessage = async () => {
-  if (!inputMessage.value.trim() || isLoading.value) return;
-
-  const userMessage = inputMessage.value.trim();
-
-  // Ajouter le message utilisateur
-  messages.value.push({
-    role: "user",
-    content: userMessage,
-  });
-
-  inputMessage.value = "";
-
-  // Activer le loading IMMÉDIATEMENT
-  isLoading.value = true;
-
-  await scrollToBottom();
-
-  try {
-    const response = await utils.post(
-      "chat",
-      {
-        messages: messages.value, // Envoyer tout l'historique
-      },
-      "chat"
-    );
-
-    if (response) {
-      console.log("Réponse reçue:", response);
-    }
-
-    if (response.job_id) {
-      // Déclencher l'événement SSE avec le job_id
-      console.log("🎯 Job ID reçu, démarrage SSE:", response.job_id);
-      window.dispatchEvent(
-        new CustomEvent("start-sse", {
-          detail: { jobId: response.job_id },
-        })
-      );
-    } else {
-      console.error("Aucun job_id reçu dans la réponse");
-    }
-
-    if (response.error) {
-      messages.value.push({
-        role: "assistant",
-        content: `Erreur: ${response.error}`,
-      });
-    } else {
-      // Utiliser la fonction utilitaire pour traiter la réponse
-      const processedMessages = processChatResponse(response);
-
-      if (processedMessages.length > 0) {
-        // Si le serveur retourne un nouvel historique complet, le remplacer
-        const validatedMessages = validateChatHistory(processedMessages);
-        messages.value = validatedMessages;
-      } else {
-        // Sinon, ajouter juste la nouvelle réponse
-        messages.value.push({
-          role: "assistant",
-          content: response.content || response.message || "Réponse reçue",
-        });
-      }
-    }
-  } catch (error) {
-    // Vérifier si c'est une erreur 401 (Token manquant)
-    if (error.message && error.message.includes("401")) {
-      emit("auth-error");
-    } else {
-      messages.value.push({
-        role: "assistant",
-        content: `Erreur: ${error.message}`,
-      });
-    }
-  } finally {
-    isLoading.value = false;
-    await scrollToBottom();
-  }
-};
-
 // Charger l'historique au montage du composant
 onMounted(() => {});
 
@@ -562,6 +525,32 @@ watch(
   max-width: 100%;
   box-shadow: none;
   border: none;
+}
+
+/* Job status card */
+.job-status-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  border: 1px solid #eee;
+}
+
+.job-spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid #ddd;
+  border-top-color: #1a73e8;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+.job-status-text {
+  color: #333;
+  font-size: 14px;
 }
 
 /* Effet de frappe pour le streaming - désactivé */
