@@ -401,7 +401,7 @@ onMounted(() => {
       <p class="construction-subtitle">
         Nous travaillons dur pour vous offrir la meilleure expérience
       </p>
-      <div class="construction-date">Disponible le 1er Août 2025</div>
+      <div class="construction-date">Disponible le 1er Octobre 2025</div>
       <p class="construction-description">
         Notre équipe développe actuellement une plateforme innovante pour vous
         aider à trouver votre appartement idéal. Revenez bientôt pour découvrir
