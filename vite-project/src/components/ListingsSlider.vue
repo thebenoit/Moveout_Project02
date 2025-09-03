@@ -13,7 +13,7 @@
           role="button"
           tabindex="0"
           :aria-label="`Open details for ${listing.title}`"
-          @click="openListingUrl(listing)"
+          @click="viewListing(listing)"
           @keyup.enter="viewListing(listing)"
           :ref="
             (el) => {
@@ -74,6 +74,52 @@
               <div class="image-gradient" aria-hidden="true"></div>
             </div>
 
+            <!-- Minimal overlay with price and facts -->
+            <div class="image-overlay">
+              <div class="overlay-left">
+                <span class="chip price-chip">{{ listing.price }}</span>
+                <div class="overlay-facts">
+                  <span
+                    v-if="
+                      listing.bedrooms !== undefined &&
+                      listing.bedrooms !== null
+                    "
+                    class="chip fact-chip"
+                    :aria-label="labels.bedsAria(listing.bedrooms)"
+                  >
+                    <span aria-hidden="true">🛏️</span>
+                    <span>{{ listing.bedrooms }}</span>
+                  </span>
+                  <span
+                    v-if="
+                      listing.bathrooms !== undefined &&
+                      listing.bathrooms !== null
+                    "
+                    class="chip fact-chip"
+                    :aria-label="labels.bathsAria(listing.bathrooms)"
+                  >
+                    <span aria-hidden="true">🚿</span>
+                    <span>{{ listing.bathrooms }}</span>
+                  </span>
+                </div>
+              </div>
+              <button
+                class="overlay-plus"
+                @click.stop="viewListing(listing)"
+                :aria-label="labels.ctaAria(listing.title)"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path d="M19 11H13V5h-2v6H5v2h6v6h2v-6h6z" />
+                </svg>
+              </button>
+            </div>
+
             <!-- Indicateurs d'images -->
             <div v-if="listing.images.length > 1" class="image-indicators">
               <div
@@ -90,83 +136,13 @@
               </span>
             </div>
           </div>
-
-          <!-- Contenu de la carte -->
-          <div class="card-content" @click.stop>
-            <p class="listing-price" :aria-label="`Price ${listing.price}`">
-              {{ listing.price }}
-            </p>
-            <p v-if="listing.location" class="listing-location">
-              {{ listing.location }}
-            </p>
-            <h3 class="listing-title">{{ listing.title }}</h3>
-
-            <!-- Facts row -->
-            <div class="listing-facts" role="list" aria-label="Key facts">
-              <div
-                class="fact"
-                v-if="
-                  listing.bedrooms !== undefined && listing.bedrooms !== null
-                "
-                role="listitem"
-                :aria-label="labels.bedsAria(listing.bedrooms)"
-              >
-                <span class="fact-emoji" aria-hidden="true">🛏️</span>
-                <span>{{ listing.bedrooms }}</span>
-              </div>
-              <div
-                class="fact"
-                v-if="
-                  listing.bathrooms !== undefined && listing.bathrooms !== null
-                "
-                role="listitem"
-                :aria-label="labels.bathsAria(listing.bathrooms)"
-              >
-                <span class="fact-emoji" aria-hidden="true">🚿</span>
-                <span>{{ listing.bathrooms }}</span>
-              </div>
-              <div v-if="listing.area" class="fact" role="listitem">
-                <span class="fact-emoji" aria-hidden="true">📐</span>
-                <span>{{ listing.area }}</span>
-              </div>
-              <div
-                v-else-if="listing.neighborhood"
-                class="fact"
-                role="listitem"
-              >
-                <span class="fact-emoji" aria-hidden="true">📍</span>
-                <span>{{ listing.neighborhood }}</span>
-              </div>
-            </div>
-
-            <div class="listing-actions">
-              <button
-                class="action-btn primary"
-                @click.stop="viewListing(listing)"
-                :aria-label="labels.ctaAria(listing.title)"
-              >
-                {{ labels.cta }}
-                <svg
-                  class="btn-arrow"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M10 6l-1.41 1.41L12.17 11H4v2h8.17l-3.58 3.59L10 18l6-6-6-6z"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
 
     <!-- Navigation du slider -->
     <button
+      v-if="hasMultiple"
       @click="previousSlide"
       class="slider-nav prev-slide"
       :class="{ disabled: currentSlide === 0 }"
@@ -177,6 +153,7 @@
     </button>
 
     <button
+      v-if="hasMultiple"
       @click="nextSlide"
       class="slider-nav next-slide"
       :class="{ disabled: currentSlide >= maxIndex }"
@@ -339,6 +316,9 @@ const maxSlide = computed(() => {
 
 // Max index used for left/right nav disabling
 const maxIndex = computed(() => Math.max(0, props.listings.length - 1));
+
+// Hide arrows when there's only one listing
+const hasMultiple = computed(() => props.listings.length > 1);
 
 // Méthodes pour la navigation des images
 const previousImage = (listingIndex) => {
@@ -550,7 +530,7 @@ const labels = computed(() => {
 /* Images */
 .image-container {
   position: relative;
-  height: 240px;
+  height: 260px;
   overflow: hidden;
 }
 
@@ -568,6 +548,80 @@ const labels = computed(() => {
   height: 30%;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0));
   pointer-events: none;
+}
+
+/* Minimal overlay on image */
+.image-overlay {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.overlay-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #111111;
+}
+
+.overlay-facts {
+  display: flex;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.overlay-fact {
+  /* kept for backward compatibility if used elsewhere */
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Chips */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  color: #111111;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+  font-size: 0.95rem;
+}
+
+.price-chip {
+  font-weight: 800;
+}
+
+.fact-chip {
+  font-weight: 600;
+}
+
+.overlay-plus {
+  pointer-events: auto;
+  background: rgba(17, 17, 17, 0.9);
+  color: #ffffff;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.overlay-plus:hover {
+  background: #000000;
+  transform: scale(1.06);
 }
 
 .listing-image {
