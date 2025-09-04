@@ -15,32 +15,14 @@ const messageErreur = ref("");
 const messages = ref([]);
 const loading = ref(false);
 
+
+
 const handleSearch = async () => {
   if (!searchQuery.value.trim()) return;
   const userMsg = { role: "user", content: searchQuery.value.trim() };
-  showChat.value = true;
   loading.value = true;
   messages.value = [userMsg];
-  try {
-    const response = await utils.post("chat", { messages: [userMsg] }, "chat");
-    console.log("Chat response:", response);
-    if (response.status === 401) {
-      showLoginModal.value = true;
-    } else {
-      messages.value = response.response;
-    }
-  } catch (error) {
-    console.error("Error sending chat request:", error);
-    if (
-      error.status === 401 ||
-      (error.message && error.message.includes("401"))
-    ) {
-      showLoginModal.value = true;
-      console.log("showLoginModal: ", showLoginModal.value);
-    }
-  } finally {
-    loading.value = false;
-  }
+  showChat.value = true;
 };
 
 const addFilter = (filter) => {
@@ -58,6 +40,7 @@ const goToSignup = () => {
 };
 
 async function login() {
+  showChat.value = false;
   console.log("login frontend...");
   try {
     let result = await utils.post("api/client/login", {
@@ -115,7 +98,15 @@ async function login() {
             class="w-full h-32 p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-md"
           ></textarea>
           <div class="absolute bottom-3 right-3">
-            <div class="w-4 h-4 bg-gray-400 transform rotate-45"></div>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="text-gray-400"
+            >
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+            </svg>
           </div>
         </div>
       </div>

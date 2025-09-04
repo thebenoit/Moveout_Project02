@@ -268,6 +268,7 @@ const connectToSSE = (text) => {
 
   // Ajouter un message assistant vide pour le streaming
   const assistantMessageIndex = messages.value.length;
+
   messages.value.push({
     role: "assistant",
     content: "",
@@ -279,6 +280,41 @@ const connectToSSE = (text) => {
 
   eventSource.value.onopen = () => {
     console.log("Connexion SSE ouverte");
+
+  };
+  eventSource.value.onerror = (event) => {
+    console.error("Erreur SSE:", event);
+    eventSource.value.close();
+    isLoading.value = false;
+    isStreaming.value = false;
+    streamingMessageIndex.value = -1;
+
+    if(event.target && event.target.readyState === EventSource.CLOSED){
+
+      // Vérifier si c'est une erreur d'authentification
+      fetch(event.target.url, {method: 'HEAD'})
+      .then(response => {
+        if(response.status === 401){
+          emit("auth-error");
+          messages.value = []
+        }
+      })
+      .catch(error => {
+        emit("auth-error");
+        console.error("Erreur lors de la vérification de l'authentification:", error);
+      });
+
+      
+    }
+
+    // Afficher un message d'erreur à l'utilisateur si aucun contenu n'a été reçu
+    if (
+      messages.value[assistantMessageIndex] &&
+      !messages.value[assistantMessageIndex].content
+    ) {
+      messages.value[assistantMessageIndex].content =
+        "Désolé, une erreur s'est produite lors de la génération de la réponse. Veuillez réessayer.";
+    }
   };
 
   eventSource.value.onmessage = (event) => {
@@ -321,46 +357,11 @@ const connectToSSE = (text) => {
       }
     } catch (error) {
       console.error("Erreur lors du parsing des données SSE:", error);
+
     }
   };
 
-  eventSource.value.onerror = (event) => {
-    console.error("Erreur SSE:", event);
-    eventSource.value.close();
-    isLoading.value = false;
-    isStreaming.value = false;
-    streamingMessageIndex.value = -1;
 
-    // Afficher un message d'erreur à l'utilisateur si aucun contenu n'a été reçu
-    if (
-      messages.value[assistantMessageIndex] &&
-      !messages.value[assistantMessageIndex].content
-    ) {
-      messages.value[assistantMessageIndex].content =
-        "Désolé, une erreur s'est produite lors de la génération de la réponse. Veuillez réessayer.";
-    }
-  };
-};
-
-// Fonction pour charger l'historique des messages
-const loadChatHistory = async () => {
-  try {
-    isLoading.value = true;
-    const response = await utils.post("chat", { messages: [] }, "chat");
-
-    // Utiliser la fonction utilitaire pour traiter la réponse
-    const processedMessages = processChatResponse(response);
-    const validatedMessages = validateChatHistory(processedMessages);
-
-    messages.value = validatedMessages;
-  } catch (error) {
-    console.error("Erreur lors du chargement de l'historique:", error);
-    if (error.message && error.message.includes("401")) {
-      emit("auth-error");
-    }
-  } finally {
-    isLoading.value = false;
-  }
 };
 
 const sendMessageStream = async () => {
@@ -375,6 +376,7 @@ const sendMessageStream = async () => {
     isStreaming.value = false;
     streamingMessageIndex.value = -1;
   }
+  
 
   // Ajouter le message utilisateur
   messages.value.push({
@@ -390,10 +392,14 @@ const sendMessageStream = async () => {
   await scrollToBottom();
 
   connectToSSE(userMessage);
+
+ 
 };
 
 // Charger l'historique au montage du composant
-onMounted(() => {});
+onMounted(() => {
+  connectToSSE(messages.value[messages.value.length - 1].content);
+});
 
 // Scroll automatique quand de nouveaux messages arrivent
 watch(
