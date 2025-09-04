@@ -1,6 +1,6 @@
 <template>
-  <div class="listings-slider">
-    <div class="slider-container" ref="sliderContainer">
+  <div class="listings-slider" :class="{ 'grid-mode': isGrid }">
+    <div v-if="isSlider" class="slider-container" ref="sliderContainer">
       <div
         class="slider-track"
         ref="sliderTrack"
@@ -140,9 +140,136 @@
       </div>
     </div>
 
+    <!-- GRID MODE -->
+    <div v-else class="grid-container">
+      <div class="grid-list">
+        <div
+          v-for="(listing, index) in listings"
+          :key="listing.id"
+          class="listing-card"
+          role="button"
+          tabindex="0"
+          :aria-label="`Open details for ${listing.title}`"
+          @click="viewListing(listing)"
+          @keyup.enter="viewListing(listing)"
+        >
+          <div class="image-container">
+            <div class="image-carousel">
+              <img
+                :src="listing.images[currentImageIndex[index] || 0]?.src"
+                :alt="
+                  listing.images[currentImageIndex[index] || 0]?.alt ||
+                  listing.title
+                "
+                class="listing-image"
+                @error="handleImageError"
+              />
+
+              <button
+                v-if="listing.images.length > 1"
+                @click.stop="previousImage(index)"
+                class="image-nav prev-image"
+                :class="{ disabled: (currentImageIndex[index] || 0) === 0 }"
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+                </svg>
+              </button>
+
+              <button
+                v-if="listing.images.length > 1"
+                @click.stop="nextImage(index)"
+                class="image-nav next-image"
+                :class="{
+                  disabled:
+                    (currentImageIndex[index] || 0) ===
+                    listing.images.length - 1,
+                }"
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+                </svg>
+              </button>
+              <div class="image-gradient" aria-hidden="true"></div>
+            </div>
+
+            <div class="image-overlay">
+              <div class="overlay-left">
+                <span class="chip price-chip">{{ listing.price }}</span>
+                <div class="overlay-facts">
+                  <span
+                    v-if="
+                      listing.bedrooms !== undefined &&
+                      listing.bedrooms !== null
+                    "
+                    class="chip fact-chip"
+                    :aria-label="labels.bedsAria(listing.bedrooms)"
+                  >
+                    <span aria-hidden="true">🛏️</span>
+                    <span>{{ listing.bedrooms }}</span>
+                  </span>
+                  <span
+                    v-if="
+                      listing.bathrooms !== undefined &&
+                      listing.bathrooms !== null
+                    "
+                    class="chip fact-chip"
+                    :aria-label="labels.bathsAria(listing.bathrooms)"
+                  >
+                    <span aria-hidden="true">🚿</span>
+                    <span>{{ listing.bathrooms }}</span>
+                  </span>
+                </div>
+              </div>
+              <button
+                class="overlay-plus"
+                @click.stop="viewListing(listing)"
+                :aria-label="labels.ctaAria(listing.title)"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path d="M19 11H13V5h-2v6H5v2h6v6h2v-6h6z" />
+                </svg>
+              </button>
+            </div>
+
+            <div v-if="listing.images.length > 1" class="image-indicators">
+              <div
+                v-for="(_, imgIndex) in listing.images.slice(0, 5)"
+                :key="imgIndex"
+                class="indicator"
+                :class="{
+                  active: (currentImageIndex[index] || 0) === imgIndex,
+                }"
+                @click="setImageIndex(index, imgIndex)"
+              ></div>
+              <span v-if="listing.images.length > 5" class="more-images">
+                +{{ listing.images.length - 5 }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Navigation du slider -->
     <button
-      v-if="hasMultiple"
+      v-if="isSlider && hasMultiple"
       @click="previousSlide"
       class="slider-nav prev-slide"
       :class="{ disabled: currentSlide === 0 }"
@@ -153,7 +280,7 @@
     </button>
 
     <button
-      v-if="hasMultiple"
+      v-if="isSlider && hasMultiple"
       @click="nextSlide"
       class="slider-nav next-slide"
       :class="{ disabled: currentSlide >= maxIndex }"
@@ -164,7 +291,7 @@
     </button>
 
     <!-- Indicateurs de slide -->
-    <div class="slide-indicators">
+    <div v-if="isSlider" class="slide-indicators">
       <div
         v-for="(_, index) in Math.ceil(listings.length / slidesPerView)"
         :key="index"
@@ -292,6 +419,11 @@ const props = defineProps({
     default: "fr",
     validator: (val) => ["fr", "en"].includes(val),
   },
+  layout: {
+    type: String,
+    default: "slider",
+    validator: (val) => ["slider", "grid"].includes(val),
+  },
 });
 
 // Refs
@@ -319,6 +451,10 @@ const maxIndex = computed(() => Math.max(0, props.listings.length - 1));
 
 // Hide arrows when there's only one listing
 const hasMultiple = computed(() => props.listings.length > 1);
+
+// Layout mode
+const isGrid = computed(() => props.layout === "grid");
+const isSlider = computed(() => !isGrid.value);
 
 // Méthodes pour la navigation des images
 const previousImage = (listingIndex) => {
@@ -451,22 +587,28 @@ const handleKeydown = (event) => {
 
 // Lifecycle
 onMounted(() => {
-  updateSliderDimensions();
-  window.addEventListener("resize", updateSliderDimensions);
-  window.addEventListener("keydown", handleKeydown);
+  if (isSlider.value) {
+    updateSliderDimensions();
+    window.addEventListener("resize", updateSliderDimensions);
+    window.addEventListener("keydown", handleKeydown);
+  }
 
   // Initialiser les index d'images
   props.listings.forEach((_, index) => {
     currentImageIndex[index] = 0;
   });
 
-  // Center on first card at mount
-  centerOnIndex(currentSlide.value);
+  if (isSlider.value) {
+    // Center on first card at mount
+    centerOnIndex(currentSlide.value);
+  }
 });
 
 onUnmounted(() => {
-  window.removeEventListener("resize", updateSliderDimensions);
-  window.removeEventListener("keydown", handleKeydown);
+  if (isSlider.value) {
+    window.removeEventListener("resize", updateSliderDimensions);
+    window.removeEventListener("keydown", handleKeydown);
+  }
 });
 
 // Labels by locale
@@ -516,6 +658,7 @@ const labels = computed(() => {
   transition: all 0.3s ease;
   cursor: pointer;
   outline: none;
+  animation: float 4s ease-in-out infinite;
 }
 
 .listing-card:hover {
@@ -527,11 +670,34 @@ const labels = computed(() => {
   box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.4), 0 12px 24px rgba(0, 0, 0, 0.15);
 }
 
+/* GRID MODE */
+.grid-container {
+  width: 100%;
+  padding: 0 20px;
+}
+
+.grid-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.grid-mode .listing-card {
+  flex: 0 0 auto;
+  width: 100%;
+}
+
 /* Images */
 .image-container {
   position: relative;
   height: 260px;
   overflow: hidden;
+}
+
+/* Make cards look more horizontal in grid mode */
+.grid-mode .image-container {
+  height: auto;
+  aspect-ratio: 16 / 10;
 }
 
 .image-carousel {
@@ -877,6 +1043,9 @@ const labels = computed(() => {
   .card-content {
     padding: 1rem;
   }
+  .grid-list {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1172,6 +1341,15 @@ const labels = computed(() => {
 
   .modal-image-container {
     height: 250px;
+  }
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
   }
 }
 </style>

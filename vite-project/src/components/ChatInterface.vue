@@ -37,7 +37,7 @@
                   message.type === 'listings' && Array.isArray(message.listings)
                 "
               >
-                <ListingsSlider :listings="message.listings" />
+                <ListingsSlider :listings="message.listings" layout="grid" />
               </template>
               <template v-else>
                 {{ message.content }}
@@ -280,7 +280,6 @@ const connectToSSE = (text) => {
 
   eventSource.value.onopen = () => {
     console.log("Connexion SSE ouverte");
-
   };
   eventSource.value.onerror = (event) => {
     console.error("Erreur SSE:", event);
@@ -289,22 +288,22 @@ const connectToSSE = (text) => {
     isStreaming.value = false;
     streamingMessageIndex.value = -1;
 
-    if(event.target && event.target.readyState === EventSource.CLOSED){
-
+    if (event.target && event.target.readyState === EventSource.CLOSED) {
       // Vérifier si c'est une erreur d'authentification
-      fetch(event.target.url, {method: 'HEAD'})
-      .then(response => {
-        if(response.status === 401){
+      fetch(event.target.url, { method: "HEAD" })
+        .then((response) => {
+          if (response.status === 401) {
+            emit("auth-error");
+            messages.value = [];
+          }
+        })
+        .catch((error) => {
           emit("auth-error");
-          messages.value = []
-        }
-      })
-      .catch(error => {
-        emit("auth-error");
-        console.error("Erreur lors de la vérification de l'authentification:", error);
-      });
-
-      
+          console.error(
+            "Erreur lors de la vérification de l'authentification:",
+            error
+          );
+        });
     }
 
     // Afficher un message d'erreur à l'utilisateur si aucun contenu n'a été reçu
@@ -357,11 +356,8 @@ const connectToSSE = (text) => {
       }
     } catch (error) {
       console.error("Erreur lors du parsing des données SSE:", error);
-
     }
   };
-
-
 };
 
 const sendMessageStream = async () => {
@@ -376,7 +372,6 @@ const sendMessageStream = async () => {
     isStreaming.value = false;
     streamingMessageIndex.value = -1;
   }
-  
 
   // Ajouter le message utilisateur
   messages.value.push({
@@ -392,8 +387,6 @@ const sendMessageStream = async () => {
   await scrollToBottom();
 
   connectToSSE(userMessage);
-
- 
 };
 
 // Charger l'historique au montage du composant
@@ -456,7 +449,7 @@ watch(
 }
 
 .message-container {
-  max-width: 768px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 0 20px;
   display: flex;
