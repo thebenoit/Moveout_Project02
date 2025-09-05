@@ -1,60 +1,7 @@
 <script setup>
-import * as jwtDecode from "jwt-decode";
-import { onMounted, ref } from "vue";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import utils from "../utils/utils";
 import { useRouter } from "vue-router";
-import { decodeJwt } from "jose";
-
-const firstName = ref("");
-const lastName = ref("");
-const phone = ref("");
-const email = ref("");
-const confirmEmail = ref("");
-const password = ref("");
-const confirmPassword = ref("");
-
-const errorMessages = ref("");
 
 const router = useRouter();
-
-async function signup() {
-  try {
-    let result = await utils.post("api/client/signup", {
-      firstName: firstName.value,
-      lastName: lastName.value,
-      phone: phone.value,
-      email: email.value,
-      password: password.value,
-    });
-    if (result.error) {
-      console.log("result.error: ", result.error.message);
-      errorMessages.value = result.error?.message;
-      console.log("error: ", result.error);
-    } else {
-      console.log("result ", result);
-
-      if (result.token) {
-        utils.setToken(result.token);
-        // Redirection vers la page d'accueil après inscription réussie
-        router.push({ path: "/" });
-      }
-    }
-  } catch (error) {
-    console.error("Error during signup:", error);
-    errorMessages.value = "Une erreur est survenue lors de l'inscription.";
-    console.log("error2: ", errorMessages);
-  }
-}
 
 const versConnection = () => {
   router.push({ path: "/login" });
@@ -65,7 +12,7 @@ const versConnection = () => {
 /* Page Container */
 .page-container {
   min-height: 100vh;
-  background: white;
+  background: #2d3748;
   display: flex;
   flex-direction: column;
 }
@@ -75,7 +22,6 @@ const versConnection = () => {
   background: #e2e8f0;
   padding: 1rem 2rem;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -96,42 +42,6 @@ const versConnection = () => {
   object-fit: contain;
 }
 
-.navbar-buttons {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-}
-
-.navbar-btn {
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  border: none;
-}
-
-.navbar-btn-outline {
-  background-color: white;
-  color: black;
-  border: 1px solid #d1d5db;
-}
-
-.navbar-btn-outline:hover {
-  background-color: #f9fafb;
-  border-color: #9ca3af;
-}
-
-.navbar-btn-solid {
-  background-color: black;
-  color: white;
-}
-
-.navbar-btn-solid:hover {
-  background-color: #374151;
-}
-
 /* Main Content */
 .main-content {
   flex: 1;
@@ -147,6 +57,7 @@ const versConnection = () => {
   width: 100%;
   max-width: 480px;
   position: relative;
+  animation: fadeInUp 0.6s ease-out;
 }
 
 /* Form Header */
@@ -166,99 +77,6 @@ const versConnection = () => {
   font-size: 1rem;
   color: #666;
   line-height: 1.5;
-}
-
-/* Form Styles */
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-row {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.form-row .form-group {
-  flex: 1;
-  margin-bottom: 0;
-}
-
-.form-label {
-  display: block;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.form-input {
-  width: 100%;
-  padding: 0.625rem 1rem;
-  border: 1px solid #e1e5e9;
-  border-radius: 8px;
-  font-size: 1rem;
-  color: #1a1a1a;
-  background: white;
-  transition: all 0.2s ease;
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.form-input::placeholder {
-  color: #9ca3af;
-}
-
-/* Button Styles */
-.signup-button {
-  width: 100%;
-  padding: 0.875rem;
-  background: #1a1a1a;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-bottom: 1.5rem;
-}
-
-.signup-button:hover {
-  background: #333;
-  transform: translateY(-1px);
-}
-
-/* Separator */
-.separator {
-  position: relative;
-  text-align: center;
-  margin: 1.5rem 0;
-}
-
-.separator::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: #e1e5e9;
-  transform: translateY(-50%);
-}
-
-.separator span {
-  background: white;
-  padding: 0 1rem;
-  color: #666;
-  font-size: 0.9rem;
-  font-weight: 500;
-  position: relative;
-  z-index: 1;
 }
 
 /* Google Button */
@@ -282,6 +100,7 @@ const versConnection = () => {
 .google-button:hover {
   background: #f9fafb;
   border-color: #d1d5db;
+  transform: translateY(-1px);
 }
 
 .google-icon {
@@ -289,12 +108,16 @@ const versConnection = () => {
   height: 20px;
 }
 
-/* Error Message */
-.error-message {
-  color: #dc2626;
-  font-size: 0.875rem;
-  margin-bottom: 1rem;
-  text-align: center;
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Responsive */
@@ -312,32 +135,16 @@ const versConnection = () => {
     height: 1.75rem;
   }
 
-  .navbar-buttons {
-    gap: 0.5rem;
-  }
-
-  .navbar-btn {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-  }
-
   .main-content {
     padding: 1rem;
   }
 
   .signup-card {
     padding: 2rem 1.5rem;
-    margin: 0;
   }
 
   .signup-title {
     font-size: 1.75rem;
-  }
-
-  /* Garder Prénom et Nom côte à côte même sur mobile */
-  .form-row {
-    flex-direction: row;
-    gap: 1rem;
   }
 }
 
@@ -355,11 +162,6 @@ const versConnection = () => {
     height: 1.5rem;
   }
 
-  .navbar-btn {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.8rem;
-  }
-
   .signup-card {
     padding: 1.5rem 1rem;
   }
@@ -371,27 +173,6 @@ const versConnection = () => {
   .signup-subtitle {
     font-size: 0.9rem;
   }
-
-  /* Réduire l'espacement entre Prénom et Nom sur très petit écran */
-  .form-row {
-    gap: 0.5rem;
-  }
-}
-
-/* Animation */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.signup-card {
-  animation: fadeInUp 0.6s ease-out;
 }
 </style>
 
@@ -403,93 +184,17 @@ const versConnection = () => {
         <img src="/Moveout_Logo2.svg" alt="Moveout Logo" class="logo-icon" />
         <span>Moveout</span>
       </a>
-      <div class="navbar-buttons">
-        <button @click="versConnection" class="navbar-btn navbar-btn-outline">
-          Se connecter
-        </button>
-        <button class="navbar-btn navbar-btn-solid">S'inscrire</button>
-      </div>
     </nav>
 
     <!-- Main Content -->
     <div class="main-content">
       <div class="signup-card">
-        <!-- Error Message -->
-        <p v-if="errorMessages" class="error-message">{{ errorMessages }}</p>
-
         <!-- Header -->
         <div class="signup-header">
           <h1 class="signup-title">Créer un compte</h1>
           <p class="signup-subtitle">
-            Rejoignez MoveoutAI pour trouver votre appartement idéal
+            Rejoignez MoveoutAI simplement avec Google
           </p>
-        </div>
-
-        <!-- Form -->
-        <form @submit.prevent="signup">
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Prénom</label>
-              <input
-                type="text"
-                class="form-input"
-                placeholder="Votre prénom"
-                v-model="firstName"
-                required
-              />
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Nom</label>
-              <input
-                type="text"
-                class="form-input"
-                placeholder="Votre nom"
-                v-model="lastName"
-                required
-              />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Email</label>
-            <input
-              type="email"
-              class="form-input"
-              placeholder="votre@email.com"
-              v-model="email"
-              required
-            />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Mot de passe</label>
-            <input
-              type="password"
-              class="form-input"
-              placeholder="••••••••"
-              v-model="password"
-              required
-            />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Confirmer le mot de passe</label>
-            <input
-              type="password"
-              class="form-input"
-              placeholder="••••••••"
-              v-model="confirmPassword"
-              required
-            />
-          </div>
-
-          <button type="submit" class="signup-button">Créer mon compte</button>
-        </form>
-
-        <!-- Separator -->
-        <div class="separator">
-          <span>OU</span>
         </div>
 
         <!-- Google Sign-In Button -->
@@ -514,7 +219,7 @@ const versConnection = () => {
               />
             </svg>
           </div>
-          Se connecter avec Google
+          S'inscrire avec Google
         </button>
       </div>
     </div>

@@ -43,7 +43,7 @@ app.post("/logout", async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-      path: "/auth",
+      path: "/",
     });
 
     res.clearCookie("session_id", {
