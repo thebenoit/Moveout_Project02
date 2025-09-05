@@ -75,19 +75,13 @@ router.get(
       res.cookie("access_token", accessToken, cookieOpts);
       res.cookie("session_id", sessionId, cookieOpts);
 
-      res.json({
-        user: req.user,
-        msg: "Authentication successful",
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-        sessionId: sessionId,
-        expiresIn: 24 * 60 * 60,
-      });
+      const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+      return res.redirect(FRONTEND_URL);
+
+      
     } catch (error) {
       console.error("Erreur lors de l'authentification Google: ", error);
-      res
-        .status(500)
-        .json({ error: "Erreur lors de l'authentification Google" });
+      return res.status(500).json({ error: "Erreur lors de l'authentification Google" });
     }
   }
 );

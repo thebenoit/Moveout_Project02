@@ -169,164 +169,20 @@ const utils = {
       sessionStorage.removeItem("temp_auth_expiration");
     }
   },
-  setToken(token, isTemp = false) {
-    const storageKey = isTemp ? "temp_auth" : "auth";
-    sessionStorage.setItem(storageKey, token);
-    // Stocker le timestamp d'expiration
-    /* const decoded = this.decodeToken();
-    if (decoded && decoded.exp) {
-      sessionStorage.setItem(`${storageKey}_expiration`, decoded.exp * 1000);
-    }*/
-  },
-  isTokenExpired(isTemp = false) {
-    console.log("isTokenExpired");
-    const storageKey = isTemp ? "temp_auth" : "auth";
-    const expiration = sessionStorage.getItem(`${storageKey}_expiration`);
-    if (!expiration) return true;
-    return Date.now() >= parseInt(expiration);
-  },
-  onlyGetToken() {
-    const authToken = sessionStorage.getItem("auth");
-    if (authToken && !this.isTokenExpired(false)) {
-      console.log("Token valide");
-      return authToken;
-    }
-    //sinon vérifier si le token temporaire est valide
-    const tempToken = sessionStorage.getItem("temp_auth");
-    if (tempToken && !this.isTokenExpired(true)) {
-      console.log("Token temporaire valide");
-      return tempToken;
-    }
-    console.log("Aucun token valide");
-
-    return null;
-  },
-  getToken() {
-    // Vérifier si le token est valide
-    const authToken = sessionStorage.getItem("auth");
-
-    if (authToken && !this.isTokenExpired(false)) {
-      console.log("Token valide");
-      return authToken;
-    }
-    //sinon vérifier si le token temporaire est valide
-    const tempToken = sessionStorage.getItem("temp_auth");
-    if (tempToken && !this.isTokenExpired(true)) {
-      console.log("Token temporaire valide");
-      return tempToken;
-    }
-
-    const result = this.initTempSession();
-    return result;
-  },
-
-  async initTempSession() {
-    console.log("initTempSession");
-    try {
-      //fetch la session temporaire
-      const response = await fetch(
-        `${import.meta.env.VITE_NODE_SERVER_URL}/api/jwt/session/temp`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            sessionId: "temp_" + Math.random().toString(36).substring(2, 15),
-          }),
-        }
-      );
-      //si la réponse est ok
-      if (response.ok) {
-        const { token } = await response.json();
-        if (token) {
-          //stock le token dans le storage
-          sessionStorage.setItem("temp_auth", token);
-          // Décode ici pour stocker l'expiration
-          try {
-            const decoded = jwtDecode(token);
-            if (decoded && decoded.exp) {
-              sessionStorage.setItem(
-                "temp_auth_expiration",
-                decoded.exp * 1000
-              );
-            }
-          } catch (e) {
-            console.error("Error decoding token in initTempSession:", e);
-          }
-          return token;
-        }
-      }
-      return null;
-    } catch (error) {
-      console.error(
-        "Erreur lors de l'initialisation de la session temporaire: ",
-        error
-      );
-      return null;
-    }
-  },
-  refreshToken: async () => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_NODE_SERVER_URL}/jwt/refresh-token`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("auth")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.ok) {
-        const { token } = await response.json();
-        utils.setToken(token);
-        return token;
-      }
-      return null;
-    } catch (error) {
-      console.error("Erreur lors du rafraichissement du token: ", error);
-      return null;
-    }
-  },
-  decodeToken2(token) {
-    try {
-      return jwtDecode(token);
-    } catch (error) {
-      console.error("Error decoding token in decodeToken2:", error);
-      return null;
-    }
-  },
-  decodeToken() {
-    const token = this.getToken();
-
-    //si le token est une chaine de caractères et qu'il est plus long que 0
-    if (typeof token === "string" && token.length > 0) {
-      try {
-        return jwtDecode(token);
-      } catch (error) {
-        console.error("Error decoding token:", error);
-        return null;
-      }
-    }
-
-    return null;
-  },
-  getUserId() {
-    const decoded = this.decodeToken();
-    return decoded ? decoded.userId : null;
-  },
-  getEmail() {
-    const decoded = this.decodeToken();
-    return decoded ? decoded.email : null;
-  },
+  loginWithGoogle() 
+  {
+    const baseUrl = import.meta.env.VITE_NODE_SERVER_URL;
+    window.location.href = `${baseUrl}/api/client/auth/google`;
+  }
 };
 
 // Fonction utilitaire pour traiter les données de chat
 export const processChatResponse = (data) => {
   // Si la réponse contient un tableau 'response', l'utiliser
   if (data && data.response && Array.isArray(data.response)) {
-    console.log("data est un objet possedant une propriété response qui est un tableau");
+    console.log(
+      "data est un objet possedant une propriété response qui est un tableau"
+    );
     return data.response;
   }
 

@@ -6,24 +6,27 @@ const router = useRouter();
 const versConnection = () => {
   router.push({ path: "/login" });
 };
+
+const signupWithGoogle = () => {
+  utils.loginWithGoogle();
+};
 </script>
 
 <style>
 /* Page Container */
 .page-container {
   min-height: 100vh;
-  background: #2d3748;
+  background: white;
   display: flex;
   flex-direction: column;
 }
 
 /* Top Navigation Bar */
 .top-navbar {
-  background: #e2e8f0;
   padding: 1rem 2rem;
   display: flex;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #eee;
 }
 
 .navbar-brand {
@@ -52,12 +55,13 @@ const versConnection = () => {
 }
 
 .signup-card {
-  background: white;
   padding: 2.5rem;
   width: 100%;
-  max-width: 480px;
+  max-width: 400px;
   position: relative;
   animation: fadeInUp 0.6s ease-out;
+  border: 1px solid #eee;
+  border-radius: 12px;
 }
 
 /* Form Header */
@@ -85,7 +89,7 @@ const versConnection = () => {
   padding: 0.875rem 1rem;
   background: white;
   border: 1px solid #e1e5e9;
-  border-radius: 8px;
+  border-radius: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -98,9 +102,9 @@ const versConnection = () => {
 }
 
 .google-button:hover {
-  background: #f9fafb;
+  background: #fafafa;
   border-color: #d1d5db;
-  transform: translateY(-1px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .google-icon {
@@ -198,7 +202,7 @@ const versConnection = () => {
         </div>
 
         <!-- Google Sign-In Button -->
-        <button class="google-button">
+        <button class="google-button" @click="signupWithGoogle">
           <div class="google-icon">
             <svg viewBox="0 0 24 24" width="20" height="20">
               <path

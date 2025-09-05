@@ -14,32 +14,11 @@ const connecter = ref(false);
 
 const router = useRouter();
 
-function isUserLoggedIn() {
-  const token = utils.onlyGetToken();
-
-  // Si pas de token, l'utilisateur n'est pas connecté
-  if (!token) {
-    console.log("Aucun token trouvé - utilisateur non connecté");
-    return false;
-  }
-
-  try {
-    const decoded = utils.decodeToken2(token);
-    console.log("decoded: ", decoded);
-
-    const isLoggedIn = decoded && !decoded.isTemp;
-    console.log("isLoggedIn: ", isLoggedIn);
-
-    // Retourne un booléen explicite
-    return Boolean(isLoggedIn);
-  } catch (error) {
-    console.error("Erreur lors de la vérification de connexion:", error);
-    return false;
-  }
-}
+function isUserLoggedIn() {}
 
 async function gotologout() {
   await utils.logout();
+  
   router.push({ path: "/login" });
 }
 
@@ -61,15 +40,7 @@ function billing() {
   });
 }
 
-function estConnecter() {
-  if (utils.getToken()) {
-    console.log("est connecté");
-    connecter.value = true;
-  } else {
-    console.log(`n'est pas  connecté`);
-    connecter.value = false;
-  }
-}
+function estConnecter() {}
 </script>
 
 <style>

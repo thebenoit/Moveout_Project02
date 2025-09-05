@@ -9,13 +9,8 @@ const showChat = ref(false);
 const showLoginModal = ref(false);
 
 const searchQuery = ref("");
-const identifier = ref("");
-const password = ref("");
-const messageErreur = ref("");
 const messages = ref([]);
 const loading = ref(false);
-
-
 
 const handleSearch = async () => {
   if (!searchQuery.value.trim()) return;
@@ -39,33 +34,15 @@ const goToSignup = () => {
   router.push({ path: "/signup" });
 };
 
-async function login() {
-  showChat.value = false;
-  console.log("login frontend...");
+const loginWithGoogle = async () => {
   try {
-    let result = await utils.post("api/client/login", {
-      identifier: identifier.value,
-      password: password.value,
-    });
-
-    if (result.error) {
-      console.log("resultError; ", result.error.message);
-      messageErreur.value = result.error.message;
-    }
-
-    console.log("result lors du login frontend: ", result);
-
-    if (result.token) {
-      //utils.setToken(result.token);
-      showLoginModal.value = false;
-      // Réessayer la requête chat après connexion
-      handleSearch();
-    }
+    await utils.loginWithGoogle();
+    showLoginModal.value = false;
+    handleSearch();
   } catch (error) {
-    console.log("erreur lors du login: ", error);
-    messageErreur.value = "Erreur de connexion. Veuillez réessayer.";
+    console.error("Erreur lors de la connexion Google:", error);
   }
-}
+};
 </script>
 
 <template>
@@ -178,9 +155,6 @@ async function login() {
     <div v-if="showLoginModal" class="modal-overlay" @click="closeLoginModal">
       <div class="modal-content" @click.stop>
         <div class="login-card">
-          <!-- Error Message -->
-          <p v-if="messageErreur" class="error-message">{{ messageErreur }}</p>
-
           <!-- Header -->
           <div class="login-header">
             <h1 class="login-title">Connexion requise</h1>
@@ -189,48 +163,8 @@ async function login() {
             </p>
           </div>
 
-          <!-- Form -->
-          <form @submit.prevent="login">
-            <div class="form-group">
-              <label class="form-label">Email</label>
-              <input
-                type="email"
-                class="form-input"
-                placeholder="votre@email.com"
-                v-model="identifier"
-                required
-              />
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Mot de passe</label>
-              <input
-                type="password"
-                class="form-input"
-                placeholder="••••••••"
-                v-model="password"
-                required
-              />
-            </div>
-
-            <div class="form-options">
-              <label class="remember-me">
-                <input type="checkbox" />
-                <span>Se souvenir de moi</span>
-              </label>
-              <a href="#" class="forgot-password">Mot de passe oublié ?</a>
-            </div>
-
-            <button type="submit" class="login-button">Se connecter</button>
-          </form>
-
-          <!-- Separator -->
-          <div class="separator">
-            <span>OU</span>
-          </div>
-
           <!-- Google Sign-In Button -->
-          <button class="google-button">
+          <button class="google-button" @click="loginWithGoogle">
             <div class="google-icon">
               <svg viewBox="0 0 24 24" width="20" height="20">
                 <path
@@ -253,12 +187,6 @@ async function login() {
             </div>
             Se connecter avec Google
           </button>
-
-          <!-- Signup Prompt -->
-          <p class="signup-prompt">
-            Pas encore de compte ?
-            <a @click="goToSignup" class="signup-link">Créer un compte</a>
-          </p>
 
           <!-- Close Button -->
           <button @click="closeLoginModal" class="close-button">
@@ -451,128 +379,13 @@ button[class*="px-4 py-2 bg-gray-100"]:nth-child(7) {
   line-height: 1.5;
 }
 
-/* Form Styles */
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-label {
-  display: block;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.form-input {
-  width: 100%;
-  padding: 0.625rem 1rem;
-  border: 1px solid #e1e5e9;
-  border-radius: 8px;
-  font-size: 1rem;
-  color: #1a1a1a;
-  background: white;
-  transition: all 0.2s ease;
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.form-input::placeholder {
-  color: #9ca3af;
-}
-
-/* Remember Me and Forgot Password */
-.form-options {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.remember-me {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.remember-me input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  accent-color: #1a1a1a;
-}
-
-.forgot-password {
-  font-size: 0.9rem;
-  color: #1a1a1a;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.forgot-password:hover {
-  text-decoration: underline;
-}
-
-/* Button Styles */
-.login-button {
-  width: 100%;
-  padding: 0.875rem;
-  background: #1a1a1a;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-bottom: 1.5rem;
-}
-
-.login-button:hover {
-  background: #333;
-  transform: translateY(-1px);
-}
-
-/* Separator */
-.separator {
-  position: relative;
-  text-align: center;
-  margin: 1.5rem 0;
-}
-
-.separator::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: #e1e5e9;
-  transform: translateY(-50%);
-}
-
-.separator span {
-  background: white;
-  padding: 0 1rem;
-  color: #666;
-  font-size: 0.9rem;
-  font-weight: 500;
-  position: relative;
-  z-index: 1;
-}
-
 /* Google Button */
 .google-button {
   width: 100%;
   padding: 0.875rem 1rem;
   background: white;
   border: 1px solid #e1e5e9;
-  border-radius: 8px;
+  border-radius: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -585,8 +398,9 @@ button[class*="px-4 py-2 bg-gray-100"]:nth-child(7) {
 }
 
 .google-button:hover {
-  background: #f9fafb;
+  background: #fafafa;
   border-color: #d1d5db;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .google-icon {
