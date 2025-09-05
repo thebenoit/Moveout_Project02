@@ -11,6 +11,10 @@ import chat from "./routes/api/chat/chat.js";
 import jwtRouter from "./routes/api/jwt/jwt.js";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
+import passport from "passport";
+import googleAuth from "./routes/api/client/googleAuth.js";
+
+
 
 // Create an instance of the mixpanel client
 var mixpanel = Mixpanel.init("d41fbc564b7544ce2d7c92cb6d8beb63", {
@@ -63,7 +67,8 @@ app.use(
 app.use(helmet());
 
 app.use(cookieParser());
-
+app.use(passport.initialize());
+app.use("/api/client", googleAuth);
 //app.options("*", cors());
 
 //app.use("/api/stripe/webhook", express.raw({ type: "application/json" }));

@@ -1,162 +1,80 @@
 import express from "express";
-import { OAuth2Client } from "google-auth-library";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
+import passport from "passport";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import User from "../../../mongo/schemas/user.js";
-import Preference from "../../../mongo/schemas/preference.js";
 
 const router = express.Router();
 
-/**
- * Google Authentication Controller
- * Gère l'authentification Google avec les bonnes pratiques OOP
- */
-class GoogleAuthController {
-  constructor() {
-    this.googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-  }
+passport.use(
+    new GoogleStrategy({
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: "/api/client/google-auth/callback",
+    
+    },
+    async (accessToken, refreshToken, profile, done) => {
+        try {
+            let user = await User.findOne({googleId: profile.id})
+            if(!user){
+                user = await User.create({
+                    googleId: profile.id,
+                    email: profile.emails[0].value,
+                    firstName: profile.name.givenName,
+                    lastName: profile.name.familyName,
+                    date: Date.now(),
+                    googlePicture: profile.photos[0].value,
+                    isGoogleUser: true,
+                    isVerified: true,
+                })
+            }
+            return done(null,user)
 
-  /**
-   * Vérifie le token Google
-   */
-  async verifyGoogleToken(token) {
-    try {
-      const ticket = await this.googleClient.verifyIdToken({
-        idToken: token,
-        audience: process.env.GOOGLE_CLIENT_ID,
-      });
-      return ticket.getPayload();
-    } catch (error) {
-      console.error("Erreur lors de la vérification du token Google:", error);
-      throw new Error("Token Google invalide");
-    }
-  }
-
-  /**
-   * Trouve ou crée un utilisateur basé sur les données Google
-   */
-  async findOrCreateUser(googleData) {
-    try {
-      // Chercher l'utilisateur par email Google
-      let user = await User.findOne({ email: googleData.email });
-
-      if (!user) {
-        // Créer un nouvel utilisateur
-        user = new User({
-          email: googleData.email,
-          firstName:
-            googleData.given_name || googleData.name?.split(" ")[0] || "",
-          lastName:
-            googleData.family_name ||
-            googleData.name?.split(" ").slice(1).join(" ") ||
-            "",
-          phone: "", // L'utilisateur devra ajouter son numéro plus tard
-          googleId: googleData.sub,
-          googlePicture: googleData.picture,
-          isGoogleUser: true,
-          isVerified: true, // Les utilisateurs Google sont automatiquement vérifiés
-        });
-
-        await user.save();
-        console.log("Nouvel utilisateur Google créé:", user.email);
-      } else {
-        // Mettre à jour les informations Google si nécessaire
-        if (!user.googleId) {
-          user.googleId = googleData.sub;
-          user.googlePicture = googleData.picture;
-          user.isGoogleUser = true;
-          await user.save();
+        }catch(err){
+            return done(err,null)
         }
-      }
-
-      return user;
-    } catch (error) {
-      console.error(
-        "Erreur lors de la création/recherche de l'utilisateur:",
-        error
-      );
-      throw new Error("Erreur lors de la gestion de l'utilisateur");
     }
-  }
+        
+))
 
-  /**
-   * Crée un token JWT pour l'utilisateur
-   */
-  createJWTToken(user) {
-    const payload = {
-      userId: user._id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      isGoogleUser: user.isGoogleUser,
-      isTemp: false,
-    };
-
-    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "7d" });
-  }
-
-  /**
-   * Gère l'authentification Google
-   */
-  async handleGoogleAuth(req, res) {
-    try {
-      const { email, name, given_name, family_name, picture, sub } = req.body;
-
-      if (!email || !sub) {
-        return res.status(400).json({
-          success: false,
-          error: "Données Google manquantes",
-        });
-      }
-
-      // Créer l'objet de données Google
-      const googleData = {
-        email,
-        name,
-        given_name,
-        family_name,
-        picture,
-        sub,
-      };
-
-      // Trouver ou créer l'utilisateur
-      const user = await this.findOrCreateUser(googleData);
-
-      // Créer un token JWT
-      const token = this.createJWTToken(user);
-
-      // Vérifier si l'utilisateur a des préférences
-      const hasPreferences = await Preference.findOne({ userId: user._id });
-
-      res.json({
-        success: true,
-        token,
-        user: {
-          id: user._id,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          isGoogleUser: user.isGoogleUser,
-          hasPreferences: !!hasPreferences,
-        },
-        redirectUrl: hasPreferences ? "/foryou" : "/signup",
-      });
-    } catch (error) {
-      console.error("Erreur lors de l'authentification Google:", error);
-      res.status(500).json({
-        success: false,
-        error: "Erreur lors de l'authentification Google",
-      });
-    }
-  }
-}
-
-// Instance du contrôleur
-const googleAuthController = new GoogleAuthController();
 
 // Route pour l'authentification Google
-router.post("/google-auth", async (req, res) => {
-  await googleAuthController.handleGoogleAuth(req, res);
-});
+router.get("auth/google/callback", passport.authenticate("google", {session: false}),
+ async (req, res) => {
+    try {
+        const user = req.user;
+        sessionId = crypto.randomUUID();
+        const accessToken = await JWT.generateJwt(String(user._id), sessionId);
+        const refreshToken = await JWT.generateRefreshToken(String(user._id), sessionId);
+
+        const cookieOpts = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+            maxAge: 24 * 60 * 60 * 1000,
+            path: "/",
+        }
+
+        res.cookie("access_token", accessToken, cookieOpts);
+        res.cookie("session_id", sessionId, cookieOpts);
+
+
+        res.json({
+            user: req.user, 
+            msg: "Authentication successful", 
+            accessToken: accessToken, 
+            refreshToken: refreshToken, 
+            sessionId: sessionId, 
+            expiresIn: 24 * 60 * 60})
+
+    } catch (error) {
+        console.error("Erreur lors de l'authentification Google: ", error);
+        res.status(500).json({error: "Erreur lors de l'authentification Google"})
+    }
+    
+ }
+ 
+);
+
+
 
 export default router;
