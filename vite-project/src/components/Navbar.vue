@@ -10,16 +10,33 @@ import { UserIcon } from "@heroicons/vue/24/outline";
 import utils from "../utils/utils/";
 import BetaLogo from "./BetaLogo.vue";
 
-const connecter = ref(false);
+const connecter = ref(true);
 
 const router = useRouter();
 
-function isUserLoggedIn() {}
+async function isUserLoggedIn() {
+  try {
+    const user = await utils.get("api/client/me", "node");
+    // Si l'API retourne un objet avec une propriété 'name', l'utilisateur est connecté
+    if (user && user.name) {
+      connecter.value = true;
+    } else {
+      connecter.value = false;
+    }
+  } catch (error) {
+    // En cas d'erreur (401, 403, etc.), l'utilisateur n'est pas connecté
+    connecter.value = false;
+  }
+}
+
+onMounted(async () => {
+  await isUserLoggedIn();
+});
 
 async function gotologout() {
+  connecter.value = false;
   await utils.logout();
-  
-  router.push({ path: "/login" });
+  router.go(0);
 }
 
 function gotologin() {
@@ -168,16 +185,28 @@ function estConnecter() {}
     <!-- Navigation Buttons -->
     <div class="navbar-buttons">
       <!-- Boutons pour utilisateur NON connecté -->
-      <button @click="gotologin" class="navbar-btn navbar-btn-outline">
+      <button
+        v-if="!connecter"
+        @click="gotologin"
+        class="navbar-btn navbar-btn-outline"
+      >
         Se connecter
       </button>
 
-      <button @click="gotosignup" class="navbar-btn navbar-btn-solid">
+      <button
+        v-if="!connecter"
+        @click="gotosignup"
+        class="navbar-btn navbar-btn-solid"
+      >
         S'inscrire
       </button>
 
       <!-- Bouton pour utilisateur connecté -->
-      <button @click="gotologout" class="navbar-btn navbar-btn-outline">
+      <button
+        v-if="connecter"
+        @click="gotologout"
+        class="navbar-btn navbar-btn-outline"
+      >
         Déconnexion
       </button>
     </div>

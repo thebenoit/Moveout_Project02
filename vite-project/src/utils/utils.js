@@ -7,7 +7,7 @@ const utils = {
       let baseUrl;
       if (serverUrl === "chat") {
         // Pour les requêtes de chat, utiliser le port 8000
-        baseUrl = "http://localhost:8000";
+        baseUrl = import.meta.env.VITE_LLM_AGENT_ENDPOINT;
       } else {
         // Pour les autres requêtes, utiliser VITE_NODE_SERVER_URL
         baseUrl = import.meta.env.VITE_NODE_SERVER_URL;
@@ -56,7 +56,7 @@ const utils = {
       let baseUrl;
       if (serverUrl === "chat") {
         // Pour les requêtes de chat, utiliser le port 8000
-        baseUrl = "http://localhost:8000";
+        baseUrl = import.meta.env.VITE_LLM_AGENT_ENDPOINT;
       } else {
         // Pour les autres requêtes, utiliser VITE_NODE_SERVER_URL
         baseUrl = import.meta.env.VITE_NODE_SERVER_URL;

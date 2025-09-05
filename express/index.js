@@ -13,6 +13,7 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import googleAuth from "./routes/api/client/google-auth.js";
+import client_me from "./routes/api/client/me.js";
 
 
 
@@ -90,6 +91,7 @@ app.use("/api/client", client_singup);
 app.use("/api/client", client_login);
 app.use("/api/client", client_lead);
 app.use("/api/client", client_preference);
+app.use("/api/client", client_me);
 
 // apparts
 app.use("/api/appartements", paginated_appartments);
