@@ -12,7 +12,7 @@ import jwtRouter from "./routes/api/jwt/jwt.js";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import passport from "passport";
-import googleAuth from "./routes/api/client/googleAuth.js";
+import googleAuth from "./routes/api/client/google-auth.js";
 
 
 
