@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, watch } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 import Logo from "./Logo.vue";
 
@@ -9,25 +9,29 @@ import { TruckIcon } from "@heroicons/vue/24/outline";
 import { UserIcon } from "@heroicons/vue/24/outline";
 import utils from "../utils/utils/";
 import BetaLogo from "./BetaLogo.vue";
+import { WalletIcon } from "@heroicons/vue/24/outline"; // ajouter l'icône Wallet
 
-const connecter = ref(true);
+const connecter = ref(false); // initialiser à false
 
 const router = useRouter();
 
 async function isUserLoggedIn() {
   try {
-    const user = await utils.get("api/client/me", "node");
-    // Si l'API retourne un objet avec une propriété 'name', l'utilisateur est connecté
-    if (user && user.name) {
-      connecter.value = true;
-    } else {
-      connecter.value = false;
-    }
+    const { isAuthenticated } = await utils.isLoggedInViaChat();
+    connecter.value = isAuthenticated;
   } catch (error) {
-    // En cas d'erreur (401, 403, etc.), l'utilisateur n'est pas connecté
+    console.error("isUserLoggedIn error:", error);
     connecter.value = false;
   }
 }
+
+watch(
+  () => router.path,
+  async () => {
+    await isUserLoggedIn();
+  },
+  { immediate: true }
+);
 
 onMounted(async () => {
   await isUserLoggedIn();
@@ -68,7 +72,7 @@ function estConnecter() {}
   justify-content: space-between;
   align-items: center;
   background-color: white;
-  border-bottom: 1px solid #f0f0f0;
+
   position: fixed;
   top: 0;
   left: 0;
@@ -128,7 +132,44 @@ function estConnecter() {}
   background-color: #374151;
 }
 
-/* Mobile Styles */
+/* Styles spécifiques pour les éléments */
+.brand-text {
+  white-space: nowrap;
+}
+
+.btn-text {
+  white-space: nowrap;
+}
+
+.folder-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+}
+
+.folder-btn svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Gestion des débordements sur très petits écrans */
+@media (max-width: 320px) {
+  .brand-text {
+    display: none;
+  }
+
+  .btn-text {
+    font-size: 0.7rem;
+  }
+
+  .navbar-btn {
+    padding: 0.25rem 0.375rem;
+    min-height: 28px;
+  }
+}
+
+/* Tablet Styles */
 @media (max-width: 768px) {
   .navbar {
     padding: 0.75rem 1rem;
@@ -153,13 +194,16 @@ function estConnecter() {}
   }
 }
 
-@media (max-width: 480px) {
+/* Mobile Styles */
+@media (max-width: 640px) {
   .navbar {
-    padding: 0.5rem 0.75rem;
+    padding: 0.75rem 1rem;
+    min-height: 60px;
   }
 
   .navbar-brand {
     font-size: 1rem;
+    gap: 0.375rem;
   }
 
   .logo-icon {
@@ -167,9 +211,75 @@ function estConnecter() {}
     height: 1.5rem;
   }
 
+  .navbar-buttons {
+    gap: 0.375rem;
+  }
+
   .navbar-btn {
-    padding: 0.375rem 0.75rem;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.875rem;
+    min-height: 40px;
+  }
+
+  /* Icône de dossier plus petite */
+  .navbar-btn svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+/* Small Mobile Styles */
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0.5rem 0.75rem;
+    min-height: 56px;
+  }
+
+  .navbar-brand {
+    font-size: 0.9rem;
+    gap: 0.25rem;
+  }
+
+  .logo-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .navbar-buttons {
+    gap: 0.25rem;
+  }
+
+  .navbar-btn {
+    padding: 0.375rem 0.625rem;
     font-size: 0.8rem;
+    min-height: 36px;
+  }
+
+  /* Icône de dossier encore plus petite */
+  .navbar-btn svg {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+/* Extra Small Mobile Styles */
+@media (max-width: 360px) {
+  .navbar {
+    padding: 0.5rem 0.5rem;
+  }
+
+  .navbar-brand {
+    font-size: 0.85rem;
+  }
+
+  .navbar-btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    min-height: 32px;
+  }
+
+  .navbar-buttons {
+    gap: 0.125rem;
   }
 }
 </style>
@@ -179,35 +289,40 @@ function estConnecter() {}
     <!-- Brand Logo -->
     <a href="/" class="navbar-brand">
       <img src="/Moveout_Logo2.svg" alt="Moveout Logo" class="logo-icon" />
-      <span>Moveout</span>
+      <span class="brand-text">Moveout</span>
     </a>
 
     <!-- Navigation Buttons -->
     <div class="navbar-buttons">
-      <!-- Boutons pour utilisateur NON connecté -->
       <button
         v-if="!connecter"
         @click="gotologin"
-        class="navbar-btn navbar-btn-outline"
+        class="navbar-btn navbar-btn-outline login-btn"
       >
-        Se connecter
+        <span class="btn-text">Se connecter</span>
       </button>
-
       <button
         v-if="!connecter"
         @click="gotosignup"
-        class="navbar-btn navbar-btn-solid"
+        class="navbar-btn navbar-btn-solid signup-btn"
       >
-        S'inscrire
+        <span class="btn-text">S'inscrire</span>
       </button>
 
-      <!-- Bouton pour utilisateur connecté -->
+      <router-link
+        v-if="connecter"
+        to="/pricing"
+        class="navbar-btn navbar-btn-outline folder-btn"
+        aria-label="Accès Premium"
+      >
+        <WalletIcon class="w-6 h-6" />
+      </router-link>
       <button
         v-if="connecter"
         @click="gotologout"
-        class="navbar-btn navbar-btn-outline"
+        class="navbar-btn navbar-btn-outline logout-btn"
       >
-        Déconnexion
+        <span class="btn-text">Déconnexion</span>
       </button>
     </div>
   </nav>

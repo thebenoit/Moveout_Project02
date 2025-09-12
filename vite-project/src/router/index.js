@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-
 import HomeNew from "@/views/HomeNew.vue";
 
 import Login from "@/views/Login.vue";
@@ -9,6 +8,7 @@ import Signup from "@/views/Signup.vue";
 import Erreur404 from "@/views/Erreur404.vue";
 
 import Pricing_Page from "@/views/pricing_pages/pricing_page.vue";
+import PremiumSuccess from "@/views/pricing_pages/PremiumSuccess.vue";
 import TestListingCard from "@/views/TestListingCard.vue";
 
 const router = createRouter({
@@ -45,6 +45,11 @@ const router = createRouter({
       component: Pricing_Page,
     },
     {
+      path: "/pricing/success",
+      name: "pricingSuccess",
+      component: PremiumSuccess,
+    },
+    {
       path: "/test-listing",
       name: "testListing",
       component: TestListingCard,
@@ -55,6 +60,12 @@ const router = createRouter({
       component: Erreur404,
     },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    }
+    return { top: 0 };
+  },
 });
 
 export default router;

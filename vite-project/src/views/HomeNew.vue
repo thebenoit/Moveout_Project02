@@ -1,10 +1,21 @@
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import ChatInterface from "../components/ChatInterface.vue";
 import utils from "../utils/utils.js";
 
 const router = useRouter();
+const route = useRoute();
+const showPremiumModal = ref(false);
+const closePremiumModal = () => {
+  showPremiumModal.value = false;
+};
+onMounted(() => {
+  if (route.query.premiumSuccess) {
+    showPremiumModal.value = true;
+    router.replace({ path: route.path, query: {} });
+  }
+});
 const showChat = ref(false);
 const showLoginModal = ref(false);
 
@@ -196,6 +207,40 @@ const loginWithGoogle = async () => {
               />
             </svg>
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Premium Success Modal -->
+    <div
+      v-if="showPremiumModal"
+      class="modal-overlay"
+      @click="closePremiumModal"
+    >
+      <div class="modal-content" @click.stop>
+        <div class="login-card premium-card">
+          <div class="premium-icon">
+            <svg width="52" height="52" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="12" fill="#111" />
+              <path
+                d="M16.5 9l-5.5 5.5L7.5 11"
+                stroke="#fff"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+          <h2 class="premium-title">Félicitations !</h2>
+          <p class="premium-subtitle">
+            Vous avez accès à la version <strong>Premium</strong> de Moveout.
+            Profitez-en pour lancer vos recherches avancées.
+          </p>
+          <div class="premium-actions">
+            <button @click="closePremiumModal" class="primary-button">
+              Commencer
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -496,5 +541,52 @@ button[class*="px-4 py-2 bg-gray-100"]:nth-child(7) {
 
 .modal-content {
   animation: fadeInUp 0.3s ease-out;
+}
+
+.premium-card {
+  text-align: center;
+}
+
+.premium-icon {
+  display: grid;
+  place-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.premium-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0.25rem 0 0.5rem 0;
+}
+
+.premium-subtitle {
+  color: #444;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.premium-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.primary-button {
+  padding: 0.75rem 1.25rem;
+  background: #111;
+  color: #fff;
+  border: 1px solid #111;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.primary-button:hover {
+  background: #1a1a1a;
+}
+
+.primary-button:active {
+  transform: translateY(1px);
 }
 </style>

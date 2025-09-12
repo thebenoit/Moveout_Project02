@@ -169,11 +169,19 @@ const utils = {
       sessionStorage.removeItem("temp_auth_expiration");
     }
   },
-  loginWithGoogle() 
-  {
+  loginWithGoogle() {
     const baseUrl = import.meta.env.VITE_NODE_SERVER_URL;
     window.location.href = `${baseUrl}/api/client/auth/google`;
-  }
+  },
+  async isLoggedInViaChat() {
+    try {
+      const result = await this.get("user/info", "chat");
+      return { isAuthenticated: result && !result.error };
+    } catch (error) {
+      console.error("isLoggedInViaChat error:", error);
+      return { isAuthenticated: false, error };
+    }
+  },
 };
 
 // Fonction utilitaire pour traiter les données de chat

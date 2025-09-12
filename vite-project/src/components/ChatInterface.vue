@@ -95,11 +95,40 @@
         </div>
       </button>
     </div>
+
+    <!-- Modal: Limite quotidienne atteinte -->
+    <div
+      v-if="showLimitModal"
+      class="modal-overlay"
+      @click="showLimitModal = false"
+    >
+      <div class="limit-modal" @click.stop>
+        <div class="limit-icon">
+          <div class="limit-icon-circle">!</div>
+        </div>
+        <h3 class="limit-title">Limite quotidienne atteinte</h3>
+        <p class="limit-subtitle">
+          Vous avez atteint vos 3 recherches gratuites.
+        </p>
+        <p class="limit-text">
+          Réessayez demain ou passez en Premium pour un accès illimité.
+        </p>
+        <div class="limit-actions">
+          <button class="btn muted" @click="showLimitModal = false">
+            Plus tard
+          </button>
+          <button class="btn contrast" @click="goToPricing">
+            Voir Premium
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, nextTick, watch, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import utils from "../utils/utils.js";
 import { processChatResponse, validateChatHistory } from "../utils/utils.js";
 import ListingsSlider from "@/components/ListingsSlider.vue";
@@ -120,6 +149,13 @@ const eventSource = ref(null);
 const jobEventSource = ref(null);
 const isStreaming = ref(false);
 const streamingMessageIndex = ref(-1);
+const lastAttemptedMessage = ref("");
+const showLimitModal = ref(false);
+const router = useRouter();
+
+const goToPricing = () => {
+  router.push({ name: "pricing" });
+};
 
 // Mettre à jour isLoading si la prop change
 watch(
@@ -257,6 +293,7 @@ const connectToSSE = (text) => {
     //Fermer la connexion précédente si elle existe
     eventSource.value.close();
   }
+  lastAttemptedMessage.value = text;
   const url = `${
     import.meta.env.VITE_LLM_AGENT_ENDPOINT
   }/chat/stream?message=${encodeURIComponent(text)}`;
@@ -288,25 +325,52 @@ const connectToSSE = (text) => {
     isStreaming.value = false;
     streamingMessageIndex.value = -1;
 
-    if (event.target && event.target.readyState === EventSource.CLOSED) {
-      // Vérifier si c'est une erreur d'authentification
-      fetch(event.target.url, { method: "HEAD" })
-        .then((response) => {
-          if (response.status === 401) {
-            emit("auth-error");
-            messages.value = [];
-          }
-        })
-        .catch((error) => {
+    fetch(`${import.meta.env.VITE_LLM_AGENT_ENDPOINT}/user/info`, {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((response) => {
+        if (response.status === 401) {
           emit("auth-error");
-          console.error(
-            "Erreur lors de la vérification de l'authentification:",
-            error
+          messages.value = [];
+          return { handled: true };
+        }
+        return { handled: false };
+      })
+      .catch((error) => {
+        console.error(
+          "Erreur lors de la vérification de l'authentification:",
+          error
+        );
+      })
+      .then(async (res) => {
+        if (res && res.handled) return;
+        // Diagnostic rapide pour détecter 402 (limite atteinte)
+        try {
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 1500);
+          const probe = await fetch(
+            `${
+              import.meta.env.VITE_LLM_AGENT_ENDPOINT
+            }/chat/stream?message=${encodeURIComponent(
+              lastAttemptedMessage.value || "test"
+            )}`,
+            {
+              method: "GET",
+              credentials: "include",
+              headers: { Accept: "text/event-stream" },
+              signal: controller.signal,
+            }
           );
-        });
-    }
+          clearTimeout(timer);
+          if (probe.status === 402) {
+            showLimitModal.value = true;
+          }
+        } catch (e) {
+          // ignorer timeout/abort
+        }
+      });
 
-    // Afficher un message d'erreur à l'utilisateur si aucun contenu n'a été reçu
     if (
       messages.value[assistantMessageIndex] &&
       !messages.value[assistantMessageIndex].content
@@ -708,6 +772,86 @@ watch(
   100% {
     transform: rotate(360deg);
   }
+}
+
+/* Modal limite atteinte */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: grid;
+  place-items: center;
+  z-index: 9999;
+}
+.limit-modal {
+  background: #fff;
+  color: #111;
+  width: 90%;
+  max-width: 420px;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  text-align: center;
+}
+.limit-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+.limit-icon-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 59, 48, 0.1);
+  color: #ff3b30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+.limit-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.limit-subtitle {
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin-bottom: 0.35rem;
+}
+.limit-text {
+  color: #444;
+  line-height: 1.6;
+}
+.limit-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+.btn {
+  width: auto;
+  border-radius: 10px;
+  padding: 0.6rem 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #111;
+  background: #fff;
+  color: #111;
+}
+.btn.muted {
+  background: #f5f5f5;
+  color: #333;
+  border-color: #e5e5e5;
+}
+.btn.contrast {
+  background: #111;
+  color: #fff;
 }
 
 /* Responsive */

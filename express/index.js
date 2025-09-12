@@ -14,8 +14,7 @@ import cookieParser from "cookie-parser";
 import passport from "passport";
 import googleAuth from "./routes/api/client/google-auth.js";
 import client_me from "./routes/api/client/me.js";
-
-
+import checkoutRouter from "./routes/Stripe/checkout.js";
 
 // Create an instance of the mixpanel client
 var mixpanel = Mixpanel.init("d41fbc564b7544ce2d7c92cb6d8beb63", {
@@ -74,6 +73,7 @@ app.use("/api/client", googleAuth);
 
 //app.use("/api/stripe/webhook", express.raw({ type: "application/json" }));
 app.use("/api/stripe", stripeWebhookRouter);
+app.use("/api/stripe", checkoutRouter);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "/")));

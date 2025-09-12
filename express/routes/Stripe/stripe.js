@@ -6,12 +6,14 @@ import mongoose from "../../mongo/client.js";
 
 dotenv.config();
 const router = express.Router();
+// Note: express.raw doit précéder tout parser de cookie/json
+// Le router de webhook ne passe PAS par cookieParser
+// app.js monte stripeWebhookRouter *avant* cookieParser()
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_TEST);
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 router.get("/webhook/test", (req, res) => {
-    
   res.send("Hello World");
 });
 
@@ -22,17 +24,13 @@ router.post(
     const sig = req.headers["stripe-signature"];
     console.log("🔑 Signature reçue:", sig);
     console.log("🔒 Webhook Secret:", webhookSecret ? "Présent" : "Manquant");
- 
+
     let event;
     console.log("🔴 Webhook reçu:");
 
     try {
       console.log("🔴dans le try");
-      event = stripe.webhooks.constructEvent(
-        req.body,
-        sig,
-        webhookSecret
-      );
+      event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
       console.log("✅ Webhook vérifié:", event.type);
     } catch (err) {
       return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -52,44 +50,37 @@ router.post(
           const customer = await stripe.customers.retrieve(customerId);
           const priceId = session?.line_items?.data[0]?.price.id;
 
-          let user;
+          const userId = session.metadata.userId;
 
-          if (customer.email) {
-            console.log("🔴 Customer trouvé:", customer.email);
-            //update l'utilisateur
-            user = await User.findOneAndUpdate(
-              { email: customer.email },
-              {
-                customerId: customerId,
-                priceId: priceId,
-                hasAccess: true,
-              },
-              { new: true }
+          if (!userId) {
+            console.error(
+              "❌ Pas de metadata.userId dans session:",
+              session.id
             );
-            //si user n'existe pas peut pas payer
-            if (!user) {
-              console.error(
-                `Tentative de paiement d'un utilisateur non inscrit: ${customer.email}`
-              );
-              throw new Error(
-                `Utilisateur non Inscrit. Inscription requise avant le paiement`
-              );
-            }
-            //notification existe?
-            // let notification = await Notification.findOne({userId: user._id});
-            // //si notification existe, on la met à jour
-            // if(notification){
-            //   notification.status = 'recurring';
-            //   await notification.save();
-            // }
-
-            // Si on arrive ici, on est sûr que l'utilisateur existe et a été mis à jour
-            console.log(`Utilisateur ${customer.email} mis à jour avec succès`);
-
-            //Envoi d'un email de confirmation
-
-            break;
+            return res.status(400).end();
           }
+
+          console.log("🔴 Customer trouvé:", customer.email);
+          //update l'utilisateur
+          // On met à jour directement par ID
+          const user = await User.findByIdAndUpdate(
+            userId,
+            {
+              customerId,
+              stripeEmail: session.customer_email,
+              priceId,
+              hasAccess: true,
+            },
+            { new: true }
+          );
+
+          if (!user) {
+            console.error(`Utilisateur introuvable pour ID=${userId}`);
+            return res.status(404).end();
+          }
+          console.log(`✅ ${user.email} passé en premium`);
+          break;
+
         case "customer.subscription.deleted": {
           const subscription = await stripe.subscriptions.retrieve(
             event.data.object.id

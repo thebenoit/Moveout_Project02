@@ -4,12 +4,19 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import User from "../../../mongo/schemas/user.js";
 import JWT from "../../../mongo/interface/JWT.js";
 import crypto from "crypto";
+import { createClient } from "redis";
 
 const router = express.Router();
 
 const BASE_URL = process.env.API_BASE_URL || "http://localhost:4000";
 const CALLBACK_URL = `${BASE_URL}/api/client/auth/google/callback`;
 console.log("CALLBACK_URL: ", CALLBACK_URL);
+
+const redisClient = createClient({
+  url: process.env.REDIS_URL,
+});
+redisClient.on("error", (err) => console.error("Redis client Error", err));
+redisClient.connect().catch(console.error);
 
 passport.use(
   new GoogleStrategy(
@@ -67,7 +74,7 @@ router.get(
       const cookieOpts = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+        sameSite: "lax",
         maxAge: 24 * 60 * 60 * 1000,
         path: "/",
       };
@@ -75,13 +82,22 @@ router.get(
       res.cookie("access_token", accessToken, cookieOpts);
       res.cookie("session_id", sessionId, cookieOpts);
 
+      // axios
+      //   .post(`${process.env.VITE_LLM_AGENT_ENDPOINT}/fb-session/enqueue/${user._id}`)
+      //   .catch(console.error);
+
+      // redisClient
+      //   .publish("user_logged_in",String(user._id))
+      //   .then(() => console.log(`Publié user_logged_in pour ${user._id}`))
+      //   .catch(console.error);
+
       const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
       return res.redirect(FRONTEND_URL);
-
-      
     } catch (error) {
       console.error("Erreur lors de l'authentification Google: ", error);
-      return res.status(500).json({ error: "Erreur lors de l'authentification Google" });
+      return res
+        .status(500)
+        .json({ error: "Erreur lors de l'authentification Google" });
     }
   }
 );

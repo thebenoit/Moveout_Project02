@@ -6,6 +6,7 @@ const usersSchema = new Schema({
   lastName: { type: Schema.Types.String },
   phone: { type: Schema.Types.String },
   email: { type: Schema.Types.String },
+  stripeEmail: { type: Schema.Types.String, required: false },
   priceId: { type: Schema.Types.String, required: false },
   //has access to premium plan
   hasAccess: { type: Schema.Types.Boolean, default: false },
