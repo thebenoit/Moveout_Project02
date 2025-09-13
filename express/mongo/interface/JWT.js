@@ -3,28 +3,106 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import User from "../schemas/user.js";
+import crypto from "crypto";
 
 /**
  * méthode qui génère un token avec userId & userPreference comme payload
  * @param {*} userId
  * @param {*} prefId
  */
-async function generateJwt(userId, prefId) {
+async function generateJwt(userId, sessionId) {
   try {
-    const payload = { userId, prefId };
-    //génère le token
-    const token = jwt.sign(
-      { userId: payload.userId, prefId: payload.prefId },
-      process.env.JWT_SECRET,
-      { expiresIn: "3h" }
-    );
+    // Validation des paramètres
+    if (!userId || !process.env.JWT_SECRET) {
+      throw new Error("Missing required parameters");
+    }
 
+    const payload = {
+      iss: process.env.JWT_ISSUER || "moveout-auth",
+      audience: "chat_api",
+      sub: userId,
+
+      userId: userId,
+      sessionId: sessionId,
+      tokenType: "access",
+      scope: "chat:read chat:write",
+      authProvider: "legacy",
+
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60,
+      jti: crypto.randomUUID(),
+    };
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      algorithm: "HS256",
+      header: {
+        typ: "JWT",
+        alg: "HS256",
+        kid: "legacy-key-1",
+      },
+     
+    });
+
+    console.log("Token généré avec succès");
     return token;
-
-    console.log("generateJwt; ", token);
   } catch (error) {
-    console.log("erreur lors de la création de token: ");
+    console.log("erreur lors de la création de token: ", error);
     return { error: true };
+  }
+}
+
+async function generateRefreshToken(userId, sessionId) {
+  try {
+    const payload = {
+      iss: process.env.JWT_ISSUER || "moveout-auth",
+      audience: "chat_api",
+      sub: userId,
+      jti: crypto.randomUUID(),
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60,
+
+      userId: userId,
+      sessionId: sessionId,
+      tokenType: "refresh",
+      scope: "auth:refresh",
+      authProvider: "legacy",
+    };
+
+    return jwt.sign(payload, process.env.JWT_SECRET, {
+      algorithm: "HS256",
+      header: {
+        typ: "JWT",
+        alg: "HS256",
+        kid: "legacy-key-1",
+      },
+     
+    });
+  } catch (error) {
+    console.log("erreur lors de la création du refresh token: ", error);
+    return null;
+  }
+}
+
+// function generateAccessToken(userId,
+
+/**
+ * Vérifie si un token JWT est expiré
+ * @param {string} token - Le token JWT à vérifier
+ * @returns {boolean} - true si le token est expiré, false sinon
+ */
+function isTokenExpired(token) {
+  try {
+    const decoded = jwt.decode(token);
+    if (!decoded || !decoded.exp) return true;
+
+    const currentTime = Math.floor(Date.now() / 1000);
+    return decoded.exp < currentTime;
+  } catch (error) {
+    console.log(
+      "Erreur lors de la vérification de l'expiration du token:",
+      error
+    );
+    return true;
   }
 }
 
@@ -48,6 +126,21 @@ async function validateToken(req, res) {
   }
 
   const token = req.headers.authorization.split(" ")[1];
+
+  if (isTokenExpired(token)) {
+    return res.status(403).json({
+      error: true,
+      message: "Token expired",
+    });
+  }
+
+  //peut verifier grace au secret key
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+  if (decoded.isTemp) {
+    req.decoded = decoded;
+    return req.decoded;
+  }
 
   const options = {
     expireIn: "3h",
@@ -80,8 +173,6 @@ async function validateToken(req, res) {
 
     req.decoded = result;
 
-    console.log("re.decoded: ", req.decoded);
-
     return req.decoded;
   } catch (error) {
     console.log("erreur lors de la validation du token: ", error);
@@ -103,4 +194,6 @@ async function validateToken(req, res) {
 export default {
   generateJwt,
   validateToken,
+  isTokenExpired,
+  generateRefreshToken,
 };

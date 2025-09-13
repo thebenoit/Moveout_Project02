@@ -96,130 +96,54 @@ const clickMap = (location) => {
 </script>
 
 <template>
-  <div
-    class="rounded overflow-hidden shadow-lg p-2 bg-white transition-all max-w-96 w-11/12"
-    @click="openLink"
-  >
-    <!-- min-[1262px]:hidden -->
-    <!-- <img class="object-cover rounded-2xl rounded-b-none" src="@/assets/images/house-1477041_1920.jpg"> -->
-
-    <figure>
-      <!-- <img v-if="isValidImage" class="object-cover media" :src="props.img" :alt="props.label" @error="handleImageError" />
-				<div v-else class="flex items-center justify-center media bg-gray-200">
-					<PhotoIcon class="w-8 h-8" />
-				</div> -->
-      <img
-        v-if="isValidImage"
-        class="w-full object-cover rounded-2xl rounded-b-none"
-        :src="props.img"
-        :alt="props.label"
-        @error="handleImageError"
-      />
-      <div
-        v-else
-        class="flex items-center rounded-b-none h-full rounded-2xl justify-center media bg-gray-200"
-      >
-        <PhotoIcon class="w-1/2" />
+  <div>
+    <div
+      class="carousel carousel-center  rounded-box w-[700px] h-[500px] space-x-4 p-4"
+    >
+      <div class="carousel-item">
+        <img
+          src="https://scontent.fymq3-1.fna.fbcdn.net/v/t45.5328-4/490108505_1107119767885189_851805347809457323_n.jpg?stp=c0.40.320.159a_dst-jpg_p240x240_tt6&_nc_cat=101&ccb=1-7&_nc_sid=247b10&_nc_ohc=eQ9tg3LKqWYQ7kNvwFPKnCi&_nc_oc=AdlARR0VV5WujusonTTQe5o4SQ_mibvi61qN41NjgKuE45tzBos-aA12g4YHTepiNLWNRLpuDOj9to5qO-FOH6CB&_nc_zt=23&_nc_ht=scontent.fymq3-1.fna&_nc_gid=K15gfnDHA8jRs7S58R2rXw&oh=00_AfPaXGyu4JqHWLYKh6e3ybrAdZ3jf61tcX4vKDQU-Psh7A&oe=68478B54"
+          class="rounded-box w-[560px] h-[400px] object-cover object-center"
+        />
       </div>
-    </figure>
-
-    <div class="p-2">
-      <div class="flex w-full">
-        <div class="w-2/3">
-          <div class="flex">
-            <MapPinIcon class="size-6" />
-            <div class="text-base truncate my-auto mb-0 font-medium">
-              {{ city }}
-            </div>
-          </div>
-          <p class="text-gray-700 text-base truncate">
-            {{ address }}
-          </p>
-        </div>
-        <div class="justify-around w-1/2 flex">
-          <!-- <button
-            id="mapButton"
-            @click="clickMap(props.location)"
-            class="btn btn-ghost px-3"
-          >
-            <MapIcon class="size-8 my-auto stroke-blue-main" />
-          </button> -->
-          <button id="arrowLink" class="btn btn-ghost px-0">
-            <ArrowRightCircleIcon
-              class="size-8 my-auto stroke-blue-main"
-              @click="openLink"
-            />
-          </button>
-          <!-- Bookmark -->
-          <!-- <button class="btn btn-ghost px-3">
-                        <BookmarkIcon class="size-8 my-auto stroke-blue-main" />
-                    </button> -->
-        </div>
+      <div class="carousel-item">
+        <img
+          src="https://img.daisyui.com/images/stock/photo-1565098772267-60af42b81ef2.webp"
+          class="rounded-box"
+        />
       </div>
-      <div class="flex w-full justify-between mt-3">
-        <div class="flex h-full">
-          <!-- Rating -->
-          <!-- <div class="my-auto text-xl font-semibold mr-2">{{ rating }}</div>
-                    <div class="flex my-auto">
-                        <StarIcon v-for="(star, index) in 5" :key="index" :class="{
-                            'h-5 stroke-none': true,
-                            'fill-blue-main': index < rating,
-                            'fill-gray-300': index >= rating
-                        }" />
-                    </div> -->
-        </div>
-
-        <div class="flex font-medium text-xl">
-          <div>{{ bedrooms }}</div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="#686868"
-            viewBox="0 0 15 12"
-            class="my-auto h-3.5 ml-1"
-          >
-            <g clip-path="url(#a)">
-              <path
-                fill="#686868"
-                d="M14.27 4.696h-.013c-.402 0-.73.32-.73.71 0 .04-.034.072-.074.072H1.547a.073.073 0 0 1-.074-.071.722.722 0 0 0-.73-.711H.73c-.402 0-.73.32-.73.71v5.883c0 .392.328.711.73.711h.013c.402 0 .73-.32.73-.71v-.203c0-.072.06-.13.134-.13h11.786c.073 0 .134.058.134.13v.202c0 .392.328.711.73.711h.013c.402 0 .73-.32.73-.71V5.406a.722.722 0 0 0-.73-.711Z"
-              />
-              <path
-                fill="#686868"
-                d="M1.741 4.891h.753a.133.133 0 0 0 .134-.13v-.424a.53.53 0 0 1 .536-.522H6.43a.53.53 0 0 1 .535.522v.424c0 .072.06.13.134.13h.804a.133.133 0 0 0 .134-.13v-.424a.53.53 0 0 1 .535-.522h3.265a.53.53 0 0 1 .536.522v.424c0 .072.06.13.134.13h.753a.265.265 0 0 0 .268-.26V1.564c0-.574-.482-1.043-1.072-1.043h-9.91c-.59 0-1.072.47-1.072 1.043V4.63c0 .144.12.261.268.261Z"
-              />
-            </g>
-            <defs>
-              <clipPath id="a">
-                <path fill="#fff" d="M0 0h15v12H0z" />
-              </clipPath>
-            </defs>
-          </svg>
-          <div class="ml-4 font-medium">{{ bathrooms }}</div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="#686868"
-            viewBox="0 0 13 13"
-            class="my-auto h-4 ml-1"
-          >
-            <g clip-path="url(#a)">
-              <path
-                fill="#686868"
-                d="M.813 9.75a2.423 2.423 0 0 0 .812 1.805v1.039a.406.406 0 0 0 .406.406h.813a.406.406 0 0 0 .406-.406v-.407h6.5v.407a.406.406 0 0 0 .406.406h.813a.406.406 0 0 0 .406-.406v-1.04a2.421 2.421 0 0 0 .813-1.804V8.53H.812v1.22Zm11.78-3.25H2.032V1.758a.54.54 0 0 1 .921-.38l.49.488c-.334.759-.194 1.501.219 2.025l-.005.004a.406.406 0 0 0 0 .574l.287.287a.406.406 0 0 0 .575 0L7.193 2.08a.406.406 0 0 0 0-.574l-.287-.287a.406.406 0 0 0-.574 0l-.004.004C5.804.811 5.062.671 4.303 1.004l-.489-.49A1.758 1.758 0 0 0 .812 1.759V6.5H.406A.406.406 0 0 0 0 6.906v.406a.406.406 0 0 0 .406.407h12.188A.406.406 0 0 0 13 7.312v-.406a.406.406 0 0 0-.406-.406Z"
-              />
-            </g>
-            <defs>
-              <clipPath id="a">
-                <path fill="#fff" d="M0 0h13v13H0z" />
-              </clipPath>
-            </defs>
-          </svg>
-        </div>
-        <div class="flex">
-          <div class="font-medium text-xl">{{ price }}/mois</div>
-        </div>
+      <div class="carousel-item">
+        <img
+          src="https://img.daisyui.com/images/stock/photo-1572635148818-ef6fd45eb394.webp"
+          class="rounded-box"
+        />
+      </div>
+      <div class="carousel-item">
+        <img
+          src="https://img.daisyui.com/images/stock/photo-1494253109108-2e30c049369b.webp"
+          class="rounded-box"
+        />
+      </div>
+      <div class="carousel-item">
+        <img
+          src="https://img.daisyui.com/images/stock/photo-1550258987-190a2d41a8ba.webp"
+          class="rounded-box"
+        />
+      </div>
+      <div class="carousel-item">
+        <img
+          src="https://img.daisyui.com/images/stock/photo-1559181567-c3190ca9959b.webp"
+          class="rounded-box"
+        />
+      </div>
+      <div class="carousel-item">
+        <img
+          src="https://img.daisyui.com/images/stock/photo-1601004890684-d8cbf643f5f2.webp"
+          class="rounded-box"
+        />
       </div>
     </div>
   </div>
-
   <!-- maybe to use later on -->
 
   <!-- <div :href="`https://facebook.com/marketplace/item/${props.id}/?ref=browse_tab&referral_code=marketplace_top_picks&referral_story_type=top_picks&locale=fr_CA`" class="h-64 w-full rounded-2xl p-2 shadow-sm border-gray-100 min-[1262px]:flex hidden transition-all">

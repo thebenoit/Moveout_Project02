@@ -7,6 +7,14 @@ import Mixpanel from "mixpanel";
 import dotenv from "dotenv/config";
 import { fileURLToPath } from "url";
 import stripeWebhookRouter from "./routes/Stripe/stripe.js";
+import chat from "./routes/api/chat/chat.js";
+import jwtRouter from "./routes/api/jwt/jwt.js";
+import helmet from "helmet";
+import cookieParser from "cookie-parser";
+import passport from "passport";
+import googleAuth from "./routes/api/client/google-auth.js";
+import client_me from "./routes/api/client/me.js";
+import checkoutRouter from "./routes/Stripe/checkout.js";
 
 // Create an instance of the mixpanel client
 var mixpanel = Mixpanel.init("d41fbc564b7544ce2d7c92cb6d8beb63", {
@@ -41,7 +49,6 @@ app.use(
       "https://www.moveout.ai",
       "http://localhost:5173",
       "https://notificationserver.online",
-      "https://moveout-85286b8b.nodetree.app",
     ], // Add your frontend domain
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: [
@@ -53,15 +60,20 @@ app.use(
     ],
     exposedHeaders: ["Authorization"],
     credentials: true,
-    preflightContinue: true,
-    optionsSuccessStatus: 204,
+    // preflightContinue: true,
+    // optionsSuccessStatus: 204,
   })
 );
+app.use(helmet());
 
+app.use(cookieParser());
+app.use(passport.initialize());
+app.use("/api/client", googleAuth);
 //app.options("*", cors());
 
 //app.use("/api/stripe/webhook", express.raw({ type: "application/json" }));
 app.use("/api/stripe", stripeWebhookRouter);
+app.use("/api/stripe", checkoutRouter);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "/")));
@@ -79,13 +91,20 @@ app.use("/api/client", client_singup);
 app.use("/api/client", client_login);
 app.use("/api/client", client_lead);
 app.use("/api/client", client_preference);
+app.use("/api/client", client_me);
 
 // apparts
 app.use("/api/appartements", paginated_appartments);
 // apparts personalisé
 app.use("/api/appartements", paginated_forYouPage);
 
-// app.use("/api/client/", client_logout);
+// chat
+app.use("/api/chat", chat);
+
+// jwt
+app.use("/api/jwt", jwtRouter);
+
+app.use("/api/client/", client_logout);
 // app.use("/client/", client_appartements);
 
 const port = process.env.PORT || 4000; //port to run the serve on

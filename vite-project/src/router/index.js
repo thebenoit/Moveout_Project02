@@ -1,23 +1,15 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import Home from "@/views/Home.vue";
-import Appartements from "@/views/Appartements.vue";
-import Demenagement from "@/views/Demenagement.vue";
-import AboutUs from "@/views/AboutUs.vue";
-import ContactUs from "@/views/ContactUs.vue";
+import HomeNew from "@/views/HomeNew.vue";
+
 import Login from "@/views/Login.vue";
 import Signup from "@/views/Signup.vue";
-import Foryou from "@/views/foryou.vue";
-import Preferences from "@/views/PreferenceSurvey/Preferences.vue";
-import Settings from "@/views/Settings.vue";
-import LandingPage from "@/views/landingPages/landingPage.vue";
-import LandingPageSignup from "@/views/landingPages/landingPage-signup.vue";
-import LandingPageSuccess from "@/views/landingPages/landingPage-success.vue";
+
 import Erreur404 from "@/views/Erreur404.vue";
-import Listings from "@/views/Listings.vue";
-import HomeSimple from "@/views/HomeSimple.vue";
+
 import Pricing_Page from "@/views/pricing_pages/pricing_page.vue";
-import ConfirmationPage from "@/views/confirmationPage.vue";
+import PremiumSuccess from "@/views/pricing_pages/PremiumSuccess.vue";
+import TestListingCard from "@/views/TestListingCard.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,27 +17,12 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
-      component: Home,
-    },
-    {
-      path: "/home2",
-      name: "home2",
-      component: HomeSimple,
+      component: HomeNew,
     },
     // {
-    //   path: '/appartements',
-    //   name: 'appartements',
-    //   component: Appartements
-    // },
-    // {
-    //   path: '/demenagement',
-    //   name: 'demenagement',
-    //   component: Demenagement
-    // },
-    // {
-    //   path: '/aboutus',
-    //   name: 'about-us',
-    //   component: AboutUs
+    //   path: "/chat",
+    //   name: "chat",
+    //   component: ChatHome,
     // },
     {
       path: "/signup",
@@ -53,75 +30,42 @@ const router = createRouter({
       component: Signup,
     },
     {
-      path: "/confirmation",
-      name: "confirmation",
-      component: ConfirmationPage,
-    },
-    // {
-    //   path: '/contactus',
-    //   name: 'contact-us',
-    //   component: ContactUs
-    // },
-    {
       path: "/login",
       name: "login",
       component: Login,
     },
-    {
-      path: "/foryou",
-      name: "foryou",
-      component: Foryou,
-    },
-    {
-      path: "/preferences",
-      name: "preferences",
-      component: Preferences,
-    },
     // {
-    //   path: '/settings',
-    //   name: 'settings',
-    //   component: Settings
+    //   path: "/foryou",
+    //   name: "foryou",
+    //   component: Foryou,
     // },
-    {
-      path: "/listings",
-      name: "listings",
-      component: Listings,
-    },
     {
       path: "/pricing",
       name: "pricing",
       component: Pricing_Page,
     },
     {
-      path: "/landingpage",
-      name: "landingpage",
-      component: LandingPage,
+      path: "/pricing/success",
+      name: "pricingSuccess",
+      component: PremiumSuccess,
     },
     {
-      path: "/landingpage-success",
-      name: "landing-page-success",
-      component: LandingPageSuccess,
-    },
-    {
-      path: "/landingpage-signup",
-      name: "landing-page-signup",
-      component: LandingPageSignup,
+      path: "/test-listing",
+      name: "testListing",
+      component: TestListingCard,
     },
     {
       path: "/:pathMatch(.*)*",
       name: "erreur404",
       component: Erreur404,
     },
-    // {
-    //   path: "/:pathMatch(.*)*",
-
-    //   name: "erreur404",
-    //   beforeEnter: (to, from, next) => {
-    //     next()
-    //    // next({ name: "erreur404" }); // Redirect to the 'landingpage' route
-    //   },
-    // },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    }
+    return { top: 0 };
+  },
 });
 
 export default router;

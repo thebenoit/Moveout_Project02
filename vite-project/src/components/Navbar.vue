@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, watch } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 import Logo from "./Logo.vue";
 
@@ -7,16 +7,40 @@ import MoveoutLogo from "../assets/images/Moveout_Logo2.svg";
 
 import { TruckIcon } from "@heroicons/vue/24/outline";
 import { UserIcon } from "@heroicons/vue/24/outline";
-import utils from "@/utils/utils";
+import utils from "../utils/utils/";
 import BetaLogo from "./BetaLogo.vue";
+import { WalletIcon } from "@heroicons/vue/24/outline"; // ajouter l'icône Wallet
 
-const connecter = ref(false);
+const connecter = ref(false); // initialiser à false
 
 const router = useRouter();
 
-function gotologout() {
-  utils.logout();
-  router.push({ path: "/login" });
+async function isUserLoggedIn() {
+  try {
+    const { isAuthenticated } = await utils.isLoggedInViaChat();
+    connecter.value = isAuthenticated;
+  } catch (error) {
+    console.error("isUserLoggedIn error:", error);
+    connecter.value = false;
+  }
+}
+
+watch(
+  () => router.path,
+  async () => {
+    await isUserLoggedIn();
+  },
+  { immediate: true }
+);
+
+onMounted(async () => {
+  await isUserLoggedIn();
+});
+
+async function gotologout() {
+  connecter.value = false;
+  await utils.logout();
+  router.go(0);
 }
 
 function gotologin() {
@@ -37,282 +61,269 @@ function billing() {
   });
 }
 
-function estConnecter() {
-  if (utils.getToken()) {
-    console.log("est connecté");
-    connecter.value = true;
-  } else {
-    console.log(`n'est pas  connecté`);
-    connecter.value = false;
-  }
-}
+function estConnecter() {}
 </script>
 
 <style>
 /* Base Navbar Styles */
 .navbar {
-  padding: 0.5rem 1rem; /* Consistent padding for navbar */
+  padding: 1rem 1.5rem;
   display: flex;
-  justify-content: center; /* Center content horizontally */
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: black;
+  text-decoration: none;
+}
+
+.logo-icon {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+}
+
+.navbar-buttons {
+  display: flex;
+  gap: 0.75rem;
   align-items: center;
 }
 
-.container-fluid {
-  margin: 0 15rem;
+.navbar-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
 }
 
-.navbar-brand img {
-  width: 50px;
-  height: 50px;
+.navbar-btn-outline {
+  background-color: white;
+  color: black;
+  border: 1px solid #d1d5db;
 }
 
-.navbar-item-btn {
-  padding: 0.4rem 1.6rem;
-  border-radius: 10px;
-  font-size: medium;
-  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effects */
+.navbar-btn-outline:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
 }
 
-.navbar-item-btn-colored {
-  padding: 0.4rem 1.8rem;
-  border-radius: 10px;
-  color: #ffffff;
-  font-size: medium;
-  background-color: #333333;
-  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effects */
+.navbar-btn-solid {
+  background-color: black;
+  color: white;
 }
 
-.navbar-item-btn:hover,
-.navbar-item-btn:focus {
-  background-color: rgba(0, 0, 0, 0.2);
-  transform: scale(1.05); /* Slight scale effect on hover */
+.navbar-btn-solid:hover {
+  background-color: #374151;
 }
 
-.navbar-item-btn-colored:hover,
-.navbar-item-btn-colored:focus {
-  background-color: #666666;
-  transform: scale(1.05); /* Slight scale effect on hover */
+/* Styles spécifiques pour les éléments */
+.brand-text {
+  white-space: nowrap;
 }
 
-/* Mobile Styles */
-/* Mobile Styles */
+.btn-text {
+  white-space: nowrap;
+}
+
+.folder-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+}
+
+.folder-btn svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Gestion des débordements sur très petits écrans */
+@media (max-width: 320px) {
+  .brand-text {
+    display: none;
+  }
+
+  .btn-text {
+    font-size: 0.7rem;
+  }
+
+  .navbar-btn {
+    padding: 0.25rem 0.375rem;
+    min-height: 28px;
+  }
+}
+
+/* Tablet Styles */
 @media (max-width: 768px) {
   .navbar {
-    padding: 0.5rem;
+    padding: 0.75rem 1rem;
   }
 
-  .container-fluid {
-    margin: 0;
+  .navbar-brand {
+    font-size: 1.125rem;
   }
 
-  .navbar-nav.ms-auto {
-    margin-left: 0 !important; /* Override Bootstrap's ms-auto */
+  .logo-icon {
+    width: 1.75rem;
+    height: 1.75rem;
   }
 
-  .navbar-collapse {
-    background-color: #f8f9fa; /* Light background for mobile menu */
-    border-radius: 10px;
-    margin-top: 0.5rem;
+  .navbar-buttons {
+    gap: 0.5rem;
   }
 
-  .navbar-item-btn,
-  .navbar-item-btn-colored {
+  .navbar-btn {
     padding: 0.5rem 1rem;
-    width: 100%; /* Full width for better tap targets */
-    text-align: center;
-    border: 1px solid #333333;
     font-size: 0.9rem;
   }
+}
 
-  .navbar-item-btn:hover,
-  .navbar-item-btn:focus,
-  .navbar-item-btn-colored:hover,
-  .navbar-item-btn-colored:focus {
-    transform: scale(1.02);
+/* Mobile Styles */
+@media (max-width: 640px) {
+  .navbar {
+    padding: 0.75rem 1rem;
+    min-height: 60px;
+  }
+
+  .navbar-brand {
+    font-size: 1rem;
+    gap: 0.375rem;
+  }
+
+  .logo-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .navbar-buttons {
+    gap: 0.375rem;
+  }
+
+  .navbar-btn {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.875rem;
+    min-height: 40px;
+  }
+
+  /* Icône de dossier plus petite */
+  .navbar-btn svg {
+    width: 1.25rem;
+    height: 1.25rem;
   }
 }
-@media (min-width: 800px) {
-  .container-fluid {
-    margin: 0 5rem;
+
+/* Small Mobile Styles */
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0.5rem 0.75rem;
+    min-height: 56px;
+  }
+
+  .navbar-brand {
+    font-size: 0.9rem;
+    gap: 0.25rem;
+  }
+
+  .logo-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .navbar-buttons {
+    gap: 0.25rem;
+  }
+
+  .navbar-btn {
+    padding: 0.375rem 0.625rem;
+    font-size: 0.8rem;
+    min-height: 36px;
+  }
+
+  /* Icône de dossier encore plus petite */
+  .navbar-btn svg {
+    width: 1rem;
+    height: 1rem;
   }
 }
-@media (min-width: 1200px) {
-  .container-fluid {
-    margin: 0 10rem;
+
+/* Extra Small Mobile Styles */
+@media (max-width: 360px) {
+  .navbar {
+    padding: 0.5rem 0.5rem;
   }
-}
-@media (min-width: 1400px) {
-  .container-fluid {
-    margin: 0 15rem;
+
+  .navbar-brand {
+    font-size: 0.85rem;
+  }
+
+  .navbar-btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    min-height: 32px;
+  }
+
+  .navbar-buttons {
+    gap: 0.125rem;
   }
 }
 </style>
 
 <template>
-  <nav class="navbar navbar-expand-md bg-body-tertiary fixed-top">
-    <div class="container-fluid">
-      <!-- Brand Logo -->
-      <a class="navbar-brand mr-4" href="/">
-        <!-- <img src="../assets/images/Moveout_Logo2.svg" alt="Moveout Logo"> -->
-        Moveout ai
-      </a>
+  <nav class="navbar fixed-top">
+    <!-- Brand Logo -->
+    <a href="/" class="navbar-brand">
+      <img src="/Moveout_Logo2.svg" alt="Moveout Logo" class="logo-icon" />
+      <span class="brand-text">Moveout</span>
+    </a>
 
-      <!-- Toggler Button for Mobile -->
+    <!-- Navigation Buttons -->
+    <div class="navbar-buttons">
       <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
+        v-if="!connecter"
+        @click="gotologin"
+        class="navbar-btn navbar-btn-outline login-btn"
       >
-        <span class="navbar-toggler-icon"></span>
+        <span class="btn-text">Se connecter</span>
+      </button>
+      <button
+        v-if="!connecter"
+        @click="gotosignup"
+        class="navbar-btn navbar-btn-solid signup-btn"
+      >
+        <span class="btn-text">S'inscrire</span>
       </button>
 
-      <!-- Navbar Links -->
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item m-2">
-            <button
-              v-if="!utils.getToken()"
-              @click="gotologin"
-              class="navbar-item-btn"
-            >
-              Se connecter
-            </button>
-            <button
-              v-else
-              @click="router.push('/foryou')"
-              class="navbar-item-btn-colored"
-            >
-              Compte
-            </button>
-          </li>
-
-          <li class="nav-item m-2">
-            <button
-              v-if="!utils.getToken()"
-              @click="gotosignup"
-              class="navbar-item-btn-colored"
-            >
-              Inscrire
-            </button>
-            <button v-else @click="gotologout" class="navbar-item-btn-colored">
-              Déconnexion
-            </button>
-          </li>
-        </ul>
-      </div>
+      <router-link
+        v-if="connecter"
+        to="/pricing"
+        class="navbar-btn navbar-btn-outline folder-btn"
+        aria-label="Accès Premium"
+      >
+        <WalletIcon class="w-6 h-6" />
+      </router-link>
+      <button
+        v-if="connecter"
+        @click="gotologout"
+        class="navbar-btn navbar-btn-outline logout-btn"
+      >
+        <span class="btn-text">Déconnexion</span>
+      </button>
     </div>
   </nav>
-
-  <!-- <div>     -->
-  <!-- <div class="navbar bg-white fixed top-0 z-50 font-normal py-4 px-10 hidden sm:flex">
-      <div class="flex-1">
-        <a href="/" class="flex items-center space-x-1 rtl:space-x-reverse">
-          <img
-            src="../assets/images/Moveout_Logo2.svg"
-            alt="Moveout Logo"
-            class="h-12 w-auto"
-          />
-          <span class="self-center whitespace-nowrap dark:text-white text-2xl">Moveout</span>
-        </a>
-
-        <div
-          class="tooltip tooltip-bottom"
-          data-tip="Moveout.ai est en mode BETA"
-        >
-          <button>
-            <BetaLogo class="ml-2 mt-2" />
-          </button>
-        </div>
-      </div>
-      <div class="flex-none">
-        <div class="flex-none">
-          <div class="dropdown dropdown-end"> -->
-  <!-- Si l'utilisateur n'est pas connecté, affiche "login" -->
-  <!-- <button
-              v-if="!utils.getToken()"
-              @click="login"
-              class="bg-white text-gray-500 py-3 px-6 rounded-[10px] text-md md:text-md font-semibold hover:bg-gray-300 transition-colors"
-            >
-              Log In
-            </button>
-
-            <button
-              v-else @click="logout" class="bg-white text-gray-500 py-3 px-6 rounded-[10px] text-md md:text-md font-semibold hover:bg-gray-300 transition-colors">
-              Logout
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div
-      class="navbar bg-base-100 fixed top-0 z-50 font-normal p-4 sm:hidden flex justify-between"
-    >
-      <div>
-        <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
-          <img
-            src="../assets/images/Moveout_Logo2.svg"
-            alt="Moveout Logo"
-            class="h-12 w-auto"
-          />
-        </a>
-      </div>
-      <div
-        class="tooltip-bottom"
-        data-bs-toggle="tooltip"
-        data-bs-placement="bottom"
-        title="Moveout.ai est en mode BETA"
-      >
-        <button>
-          <BetaLogo class="ml-2 mt-2" />
-        </button>
-      </div>
-      <div class="flex-none">
-        <div class="dropdown dropdown-end">
-          <div tabindex="0" role="button" class="btn btn-square btn-ghost">
-            <div class="w-10 rounded-full">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                class="inline-block h-5 w-5 stroke-current"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-                ></path>
-              </svg>
-            </div>
-          </div>
-          <ul
-            v-if="!utils.getToken()"
-            tabindex="0"
-            class="dropdown-content menu menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
-          >
-           
-            <li><a href="/listings">Listings</a></li>
-            <li >
-              <RouterLink to="/login" class=""> Log In </RouterLink>
-            </li>
-          </ul>
-          <ul 
-          v-else
-          tabindex="0"
-          class="dropdown-content menu menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
-          >
-            <li ><a @click="logout">Logout</a></li>
-            <li >
-              <a :href="customerPortalUrl" target="_blank">Billing</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>  -->
-  <!-- </div> -->
 </template>

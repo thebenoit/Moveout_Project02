@@ -1,10 +1,12 @@
 import express from "express";
 const app = express();
 import client from "../../../mongo/interface/client.js";
-import generateJTW from "../../../mongo/interface/JWT.js";
+import JWT from "../../../mongo/interface/JWT.js"; // ← Importer l'objet complet
 import jwt from "jsonwebtoken";
 import User from "../../../mongo/schemas/user.js";
 import mixpanel from "mixpanel";
+import session from "express-session";
+import crypto from "crypto";
 
 app.post("/login", async (req, res) => {
   try {
@@ -14,17 +16,41 @@ app.post("/login", async (req, res) => {
     if (response.error) {
       return res.status(400).send(response);
     }
-    // mixpanel.identify(response.userId);
 
-    // mixpanel.people.set({
-    //   $name: user.firstName,
-    //   $email: user.email,
-    //   $phone: user.phone,
-    // });
-    console.log("user access token; ", user.accessToken);
-    console.log("user name ", user.firstName);
-    res.send({ token: user.accessToken });
-    
+    const sessionId = crypto.randomUUID();
+
+    // Utiliser JWT.generateJwt (notez le nom exact)
+    const accessToken = await JWT.generateJwt(String(user._id), sessionId);
+
+    const refreshToken = await JWT.generateRefreshToken(
+      String(user._id),
+      sessionId
+    );
+
+    console.log("Nouveau JWT généré pour user:", user._id, "\n", "accessToken: ", accessToken, "\n", "refreshToken: ", refreshToken);
+
+    res.cookie("access_token", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+      path: "/",
+    });
+
+    res.cookie("session_id", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+      path: "/",
+    });
+
+    res.send({
+      token: accessToken,
+      refreshToken: refreshToken,
+      sessionId: sessionId,
+      expiresIn: 24 * 60 * 60,
+    });
   } catch (error) {
     console.error("Erreur lors de la récupération des données:", error);
     res.status(500).send("Erreur lors de la récupération des données");
@@ -34,7 +60,6 @@ app.post("/login", async (req, res) => {
 app.get("/login/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
-
 
     if (!user) {
       return res.status(404).json({ error: "user non trouvée" });
