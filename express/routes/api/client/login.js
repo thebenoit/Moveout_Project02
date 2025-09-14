@@ -29,18 +29,30 @@ app.post("/login", async (req, res) => {
 
     console.log("Nouveau JWT généré pour user:", user._id, "\n", "accessToken: ", accessToken, "\n", "refreshToken: ", refreshToken);
 
+    // En production, on doit s'assurer que les cookies sont sécurisés et bien séparés.
+    // On place access_token (JWT) et refresh_token dans des cookies HttpOnly, Secure, SameSite strict.
+    // session_id est aussi stocké pour la gestion de session côté serveur.
+
     res.cookie("access_token", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-      maxAge: 24 * 60 * 60 * 1000,
+      secure: true, // Toujours true en prod
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000, // 1 jour
       path: "/",
     });
 
-    res.cookie("session_id", accessToken, {
+    res.cookie("refresh_token", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      secure: true,
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours pour le refresh token
+      path: "/",
+    });
+
+    res.cookie("session_id", sessionId, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
     });
