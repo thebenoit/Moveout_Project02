@@ -58,7 +58,7 @@ app.use(
       "X-Requested-With",
       "Accept",
       "Origin",
-      
+
     ],
     exposedHeaders: ["Authorization"],
     credentials: true,
