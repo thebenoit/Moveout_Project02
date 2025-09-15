@@ -36,7 +36,7 @@ app.post("/login", async (req, res) => {
     res.cookie("access_token", accessToken, {
       httpOnly: true,
       secure: true, // Toujours true en prod
-      sameSite: "strict",
+      sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000, // 1 jour
       path: "/",
     });
@@ -44,7 +44,7 @@ app.post("/login", async (req, res) => {
     res.cookie("refresh_token", refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours pour le refresh token
       path: "/",
     });
@@ -52,7 +52,7 @@ app.post("/login", async (req, res) => {
     res.cookie("session_id", sessionId, {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
     });
