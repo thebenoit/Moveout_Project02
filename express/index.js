@@ -47,6 +47,7 @@ app.use(
   cors({
     origin: [
       "https://www.moveout.ai",
+      "https://api.moveout.ai",
       "http://localhost:5173",
       "https://notificationserver.online",
     ], // Add your frontend domain
@@ -57,6 +58,7 @@ app.use(
       "X-Requested-With",
       "Accept",
       "Origin",
+      
     ],
     exposedHeaders: ["Authorization"],
     credentials: true,
