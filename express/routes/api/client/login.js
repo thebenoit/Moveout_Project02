@@ -27,7 +27,16 @@ app.post("/login", async (req, res) => {
       sessionId
     );
 
-    console.log("Nouveau JWT généré pour user:", user._id, "\n", "accessToken: ", accessToken, "\n", "refreshToken: ", refreshToken);
+    console.log(
+      "Nouveau JWT généré pour user:",
+      user._id,
+      "\n",
+      "accessToken: ",
+      accessToken,
+      "\n",
+      "refreshToken: ",
+      refreshToken
+    );
 
     // En production, on doit s'assurer que les cookies sont sécurisés et bien séparés.
     // On place access_token (JWT) et refresh_token dans des cookies HttpOnly, Secure, SameSite strict.
@@ -39,7 +48,7 @@ app.post("/login", async (req, res) => {
       sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000, // 1 jour
       path: "/",
-      domain: "./moveout.ai"
+      domain: ".moveout.ai",
     });
 
     res.cookie("refresh_token", refreshToken, {
@@ -48,7 +57,7 @@ app.post("/login", async (req, res) => {
       sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours pour le refresh token
       path: "/",
-      domain: "./moveout.ai"
+      domain: ".moveout.ai",
     });
 
     res.cookie("session_id", sessionId, {
@@ -57,7 +66,7 @@ app.post("/login", async (req, res) => {
       sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
-      domain: "./moveout.ai"
+      domain: ".moveout.ai",
     });
 
     res.send({
