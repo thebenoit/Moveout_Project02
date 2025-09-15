@@ -91,7 +91,7 @@ router.get(
       //   .then(() => console.log(`Publié user_logged_in pour ${user._id}`))
       //   .catch(console.error);
 
-      const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+      const FRONTEND_URL = "https://www.moveout.ai";
       return res.redirect(FRONTEND_URL);
     } catch (error) {
       console.error("Erreur lors de l'authentification Google: ", error);
