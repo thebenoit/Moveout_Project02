@@ -473,7 +473,7 @@ watch(
 .chat-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   background: white;
   color: #333;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;

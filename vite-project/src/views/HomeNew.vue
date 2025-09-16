@@ -1,8 +1,22 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import ChatInterface from "../components/ChatInterface.vue";
 import utils from "../utils/utils.js";
+
+const setVh = () => {
+  document.documentElement.style.setProperty(
+    "--vh",
+    `${window.innerHeight * 0.01}px`
+  );
+};
+onMounted(() => {
+  setVh();
+  window.addEventListener("resize", setVh);
+});
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", setVh);
+});
 
 const router = useRouter();
 const route = useRoute();
@@ -100,7 +114,11 @@ const loginWithGoogle = async () => {
       </div>
 
       <!-- Chat Interface -->
-      <div v-if="showChat" class="w-full max-w-6xl h-screen">
+      <div
+        v-if="showChat"
+        class="w-full max-w-6xl"
+        style="height: calc(var(--vh, 1vh) * 100)"
+      >
         <ChatInterface
           :messages="messages"
           :loading="loading"
