@@ -172,6 +172,7 @@ const utils = {
   loginWithGoogle() {
     const baseUrl = import.meta.env.VITE_NODE_SERVER_URL;
     window.location.href = `${baseUrl}/api/client/auth/google`;
+    
   },
   async isLoggedInViaChat() {
     try {
