@@ -62,6 +62,7 @@ router.get(
   "/auth/google/callback",
   passport.authenticate("google", { session: false }),
   async (req, res) => {
+    console.log("Essaie de s'identifier!")
     try {
       const user = req.user;
       const sessionId = crypto.randomUUID();
@@ -73,10 +74,11 @@ router.get(
 
       const cookieOpts = {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        secure: true,//process.env.NODE_ENV === "production",
+        sameSite: "none",
         maxAge: 24 * 60 * 60 * 1000,
         path: "/",
+        domain: ".moveout.ai"
       };
 
       res.cookie("access_token", accessToken, cookieOpts);
@@ -92,6 +94,7 @@ router.get(
       //   .catch(console.error);
 
       const FRONTEND_URL = "https://www.moveout.ai";
+      console.log("authentification complete!")
       return res.redirect(FRONTEND_URL);
     } catch (error) {
       console.error("Erreur lors de l'authentification Google: ", error);
