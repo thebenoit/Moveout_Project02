@@ -113,16 +113,6 @@ router.post(
             });
           }
 
-          //   const notification = await Notification.updateOne(
-          //     { userId: user._id },
-          //     { $set: { status: "disabled" } }
-          //   );
-
-          // if (notification) {
-          //   notification.status = "disabled";
-          //   await notification.save();
-          // }
-
           user.hasAccess = false;
           await user.save();
 

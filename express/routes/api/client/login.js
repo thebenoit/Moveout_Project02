@@ -48,7 +48,7 @@ app.post("/login", async (req, res) => {
       sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000, // 1 jour
       path: "/",
-      domain: ".moveout.ai",
+      // domain: ".moveout.ai",
     });
 
     res.cookie("refresh_token", refreshToken, {
@@ -57,7 +57,7 @@ app.post("/login", async (req, res) => {
       sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours pour le refresh token
       path: "/",
-      domain: ".moveout.ai",
+      // domain: ".moveout.ai",
     });
 
     res.cookie("session_id", sessionId, {
@@ -66,7 +66,7 @@ app.post("/login", async (req, res) => {
       sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
-      domain: ".moveout.ai",
+      // domain: ".moveout.ai",
     });
 
     res.send({
