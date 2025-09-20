@@ -365,36 +365,46 @@ const JobSSE = (jobId) => {
         }, 500);
       } else if (data.event === "progress") {
         console.log("Progression du job", data);
-        console.log("DEBUG loadingSkeletonItems:", loadingSkeletonItems.value);
         const text = data?.payload?.message || "Scraping en cours…";
 
-        // Met à jour le dernier message job_status si présent
+        // 1) S'assurer qu'un message job_status existe
+        let hasJobStatus = false;
         for (let i = messages.value.length - 1; i >= 0; i--) {
           const m = messages.value[i];
-          if (m && m.type === "job_status") {
-            m.text = text;
-            break;
+          if (m && m.type === "job_status") { hasJobStatus = true; break; }
+        }
+        if (!hasJobStatus) {
+          messages.value.push({
+            role: "assistant",
+            type: "job_status",
+            text,
+            loading: true,
+          });
+          // Démarre la barre si pas encore lancée
+          if (!progressTimer) {
+            progressPercent.value = Math.max(progressPercent.value || 5, 5);
+            progressTimer = setInterval(() => {
+              if (progressPercent.value < 90) {
+                progressPercent.value += Math.max(0.5, (90 - progressPercent.value) * 0.03);
+              }
+            }, 500);
           }
+          nextTick(() => scrollToLastMessage());
         }
 
-        // Build up loading skeleton items gradually when receiving listing_loading
+        // 2) Mettre à jour le texte du dernier job_status
+        for (let i = messages.value.length - 1; i >= 0; i--) {
+          const m = messages.value[i];
+          if (m && m.type === "job_status") { m.text = text; break; }
+        }
+
+        // 3) Skeletons + progression
         if (data?.payload?.status === "listing_loading") {
           const titre = data?.payload?.title || "Annonce";
           const sr = data?.payload?.image || "";
           const url = data?.payload?.url || undefined;
-          console.log("Avant loadingskeleton");
-          loadingSkeletonItems.value = [
-            ...loadingSkeletonItems.value,
-            { titre, sr, url },
-          ];
-          console.log(
-            "DEBUG loadingSkeletonItems:",
-            loadingSkeletonItems.value
-          );
-          console.warn("DEBUG progressPercent:", progressPercent.value);
-          // bump progress slightly on each listing
+          loadingSkeletonItems.value = [...loadingSkeletonItems.value, { titre, sr, url }];
           progressPercent.value = Math.min(90, progressPercent.value + 2);
-          // Assure le rendu et scroll vers le bas pour afficher le skeleton et la barre
           nextTick(() => scrollToLastMessage(true));
         }
       } else if (data.event === "completed") {
@@ -619,7 +629,7 @@ const sendMessageStream = async () => {
   // Activer le loading IMMÉDIATEMENT
   isLoading.value = true;
 
-  await scrollToLastMessage(true);
+  await scrollToLastMessage();
 
   connectToSSE(userMessage);
 };
