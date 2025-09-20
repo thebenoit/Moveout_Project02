@@ -371,7 +371,10 @@ const JobSSE = (jobId) => {
         let hasJobStatus = false;
         for (let i = messages.value.length - 1; i >= 0; i--) {
           const m = messages.value[i];
-          if (m && m.type === "job_status") { hasJobStatus = true; break; }
+          if (m && m.type === "job_status") {
+            hasJobStatus = true;
+            break;
+          }
         }
         if (!hasJobStatus) {
           messages.value.push({
@@ -385,7 +388,10 @@ const JobSSE = (jobId) => {
             progressPercent.value = Math.max(progressPercent.value || 5, 5);
             progressTimer = setInterval(() => {
               if (progressPercent.value < 90) {
-                progressPercent.value += Math.max(0.5, (90 - progressPercent.value) * 0.03);
+                progressPercent.value += Math.max(
+                  0.5,
+                  (90 - progressPercent.value) * 0.03
+                );
               }
             }, 500);
           }
@@ -395,7 +401,10 @@ const JobSSE = (jobId) => {
         // 2) Mettre à jour le texte du dernier job_status
         for (let i = messages.value.length - 1; i >= 0; i--) {
           const m = messages.value[i];
-          if (m && m.type === "job_status") { m.text = text; break; }
+          if (m && m.type === "job_status") {
+            m.text = text;
+            break;
+          }
         }
 
         // 3) Skeletons + progression
@@ -403,7 +412,10 @@ const JobSSE = (jobId) => {
           const titre = data?.payload?.title || "Annonce";
           const sr = data?.payload?.image || "";
           const url = data?.payload?.url || undefined;
-          loadingSkeletonItems.value = [...loadingSkeletonItems.value, { titre, sr, url }];
+          loadingSkeletonItems.value = [
+            ...loadingSkeletonItems.value,
+            { titre, sr, url },
+          ];
           progressPercent.value = Math.min(90, progressPercent.value + 2);
           nextTick(() => scrollToLastMessage(true));
         }
