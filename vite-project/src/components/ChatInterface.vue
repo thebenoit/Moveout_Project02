@@ -381,6 +381,7 @@ const JobSSE = (jobId) => {
           const titre = data?.payload?.title || "Annonce";
           const sr = data?.payload?.image || "";
           const url = data?.payload?.url || undefined;
+          console.log("Avant loadingskeleton")
           loadingSkeletonItems.value = [
             ...loadingSkeletonItems.value,
             { titre, sr, url },
@@ -389,7 +390,7 @@ const JobSSE = (jobId) => {
             "DEBUG loadingSkeletonItems:",
             loadingSkeletonItems.value
           );
-          console.log("DEBUG progressPercent:", progressPercent.value);
+          console.warn("DEBUG progressPercent:", progressPercent.value);
           // bump progress slightly on each listing
           progressPercent.value = Math.min(90, progressPercent.value + 2);
         }
