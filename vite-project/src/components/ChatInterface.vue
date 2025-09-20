@@ -385,6 +385,11 @@ const JobSSE = (jobId) => {
             ...loadingSkeletonItems.value,
             { titre, sr, url },
           ];
+          console.log(
+            "DEBUG loadingSkeletonItems:",
+            loadingSkeletonItems.value
+          );
+          console.log("DEBUG progressPercent:", progressPercent.value);
           // bump progress slightly on each listing
           progressPercent.value = Math.min(90, progressPercent.value + 2);
         }
