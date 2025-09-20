@@ -365,6 +365,7 @@ const JobSSE = (jobId) => {
         }, 500);
       } else if (data.event === "progress") {
         console.log("Progression du job", data);
+        console.log("DEBUG loadingSkeletonItems:", loadingSkeletonItems.value);
         const text = data?.payload?.message || "Scraping en cours…";
 
         // Met à jour le dernier message job_status si présent
@@ -381,7 +382,7 @@ const JobSSE = (jobId) => {
           const titre = data?.payload?.title || "Annonce";
           const sr = data?.payload?.image || "";
           const url = data?.payload?.url || undefined;
-          console.log("Avant loadingskeleton")
+          console.log("Avant loadingskeleton");
           loadingSkeletonItems.value = [
             ...loadingSkeletonItems.value,
             { titre, sr, url },
@@ -393,6 +394,8 @@ const JobSSE = (jobId) => {
           console.warn("DEBUG progressPercent:", progressPercent.value);
           // bump progress slightly on each listing
           progressPercent.value = Math.min(90, progressPercent.value + 2);
+          // Assure le rendu et scroll vers le bas pour afficher le skeleton et la barre
+          nextTick(() => scrollToLastMessage(true));
         }
       } else if (data.event === "completed") {
         console.log("Job terminé", data);
@@ -616,7 +619,7 @@ const sendMessageStream = async () => {
   // Activer le loading IMMÉDIATEMENT
   isLoading.value = true;
 
-  await scrollToLastMessage();
+  await scrollToLastMessage(true);
 
   connectToSSE(userMessage);
 };
