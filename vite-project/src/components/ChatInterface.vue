@@ -27,9 +27,30 @@
               ]"
             >
               <template v-if="message.type === 'job_status'">
-                <div class="job-status-card">
+                <div
+                  v-if="!loadingSkeletonItems.length"
+                  class="job-status-card"
+                >
                   <div v-if="message.loading" class="job-spinner"></div>
                   <div class="job-status-text">{{ message.text }}</div>
+                </div>
+                <div v-else style="margin-top: 12px">
+                  <!-- Progress bar -->
+                  <div class="progress-wrap">
+                    <div class="progress-track">
+                      <div
+                        class="progress-bar"
+                        :style="{ width: progressPercent + '%' }"
+                      ></div>
+                    </div>
+                  </div>
+                  <LoadingListings
+                    :items="loadingSkeletonItems"
+                    :showText="true"
+                    :gap="isMobile ? 12 : 16"
+                    :size="isMobile ? 72 : 96"
+                    :shineDuration="isMobile ? 1.2 : 1.8"
+                  />
                 </div>
               </template>
               <template
@@ -66,11 +87,76 @@
       </div>
     </div>
 
+    <!-- Hero (title, subtitle, floating filters) shown until first user message -->
+    <div v-if="showHero" class="hero-wrap">
+      <h1 class="text-4xl font-bold text-black text-center mb-4">
+        Trouvez enfin un appart sans galère.
+      </h1>
+      <p
+        class="text-gray-600 text-center mb-8 max-w-2xl"
+        style="margin: 0 auto"
+      >
+        Moveout votre assistant cherche sur internet à votre place pour trouver
+        les annonces qui vous correspondent.
+      </p>
+      <div class="w-full max-w-2xl" style="margin: 0 auto">
+        <!-- First Row -->
+        <div class="flex flex-wrap gap-3 mb-4 justify-center">
+          <button
+            @click="addFilter('+ 2 chambres')"
+            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
+          >
+            + 2 chambres
+          </button>
+          <button
+            @click="addFilter('+ balcon')"
+            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
+          >
+            + balcon
+          </button>
+          <button
+            @click="addFilter('+ proche métro')"
+            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
+          >
+            + proche métro
+          </button>
+        </div>
+        <!-- Second Row -->
+        <div class="flex flex-wrap gap-3 justify-center">
+          <button
+            @click="addFilter('+ 800€ max')"
+            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
+          >
+            + 800€ max
+          </button>
+          <button
+            @click="addFilter('+ 50m²')"
+            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
+          >
+            + à cotée de l'Udem
+          </button>
+          <button
+            @click="addFilter('+ ascenseur')"
+            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
+          >
+            + pas trop cher
+          </button>
+          <button
+            @click="addFilter('+ parking')"
+            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
+          >
+            + à Madrid
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Input -->
     <div class="input-field-container">
       <textarea
         v-model="inputMessage"
         @keydown.enter.prevent="sendMessageStream"
+        @focus="scrollToLastMessage(true)"
         placeholder="Décrivez votre appartement idéal..."
         class="message-input"
         rows="1"
@@ -127,11 +213,12 @@
 </template>
 
 <script setup>
-import { ref, nextTick, watch, onMounted } from "vue";
+import { ref, nextTick, watch, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import utils from "../utils/utils.js";
 import { processChatResponse, validateChatHistory } from "../utils/utils.js";
 import ListingsSlider from "@/components/ListingsSlider.vue";
+import LoadingListings from "@/components/loading_listings.vue";
 
 const emit = defineEmits(["auth-error"]);
 
@@ -145,6 +232,10 @@ const inputMessage = ref("");
 const messagesContainer = ref(null);
 const inputRef = ref(null);
 const isLoading = ref(props.loading);
+const loadingSkeletonItems = ref([]);
+const isMobile = ref(false);
+const progressPercent = ref(0);
+let progressTimer = null;
 const eventSource = ref(null);
 const jobEventSource = ref(null);
 const isStreaming = ref(false);
@@ -152,6 +243,20 @@ const streamingMessageIndex = ref(-1);
 const lastAttemptedMessage = ref("");
 const showLimitModal = ref(false);
 const router = useRouter();
+
+const showHero = computed(
+  () => !messages.value.some((m) => m && m.role === "user")
+);
+
+const addFilter = (filter) => {
+  if (!inputMessage.value.includes(filter)) {
+    inputMessage.value =
+      (inputMessage.value ? inputMessage.value + " " : "") + filter;
+    nextTick(() => {
+      if (inputRef.value) inputRef.value.focus();
+    });
+  }
+};
 
 const goToPricing = () => {
   router.push({ name: "pricing" });
@@ -166,10 +271,18 @@ watch(
   { immediate: true }
 );
 
-const scrollToBottom = async () => {
+const scrollToLastMessage = async (smooth = false) => {
   await nextTick();
-  if (messagesContainer.value) {
-    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+  const container = messagesContainer.value;
+  if (!container) return;
+  const lastChild = container.lastElementChild;
+  if (lastChild && typeof lastChild.scrollIntoView === "function") {
+    lastChild.scrollIntoView({
+      behavior: smooth ? "smooth" : "auto",
+      block: "end",
+    });
+  } else {
+    container.scrollTop = container.scrollHeight;
   }
 };
 
@@ -237,10 +350,23 @@ const JobSSE = (jobId) => {
           text,
           loading: true,
         });
-        nextTick(scrollToBottom);
+        nextTick(() => scrollToLastMessage());
+        // reset progress and start gentle auto-increment
+        progressPercent.value = 5;
+        if (progressTimer) clearInterval(progressTimer);
+        progressTimer = setInterval(() => {
+          // Ease towards 90% max during loading
+          if (progressPercent.value < 90) {
+            progressPercent.value += Math.max(
+              0.5,
+              (90 - progressPercent.value) * 0.03
+            );
+          }
+        }, 500);
       } else if (data.event === "progress") {
         console.log("Progression du job", data);
         const text = data?.payload?.message || "Scraping en cours…";
+
         // Met à jour le dernier message job_status si présent
         for (let i = messages.value.length - 1; i >= 0; i--) {
           const m = messages.value[i];
@@ -248,6 +374,19 @@ const JobSSE = (jobId) => {
             m.text = text;
             break;
           }
+        }
+
+        // Build up loading skeleton items gradually when receiving listing_loading
+        if (data?.payload?.status === "listing_loading") {
+          const titre = data?.payload?.title || "Annonce";
+          const sr = data?.payload?.image || "";
+          const url = data?.payload?.url || undefined;
+          loadingSkeletonItems.value = [
+            ...loadingSkeletonItems.value,
+            { titre, sr, url },
+          ];
+          // bump progress slightly on each listing
+          progressPercent.value = Math.min(90, progressPercent.value + 2);
         }
       } else if (data.event === "completed") {
         console.log("Job terminé", data);
@@ -263,7 +402,18 @@ const JobSSE = (jobId) => {
           }
         }
         messages.value.push({ role: "assistant", type: "listings", listings });
-        nextTick(scrollToBottom);
+        // Clear skeletons when real listings arrive
+        loadingSkeletonItems.value = [];
+        // complete the progress bar
+        progressPercent.value = 100;
+        setTimeout(() => {
+          progressPercent.value = 0;
+          if (progressTimer) {
+            clearInterval(progressTimer);
+            progressTimer = null;
+          }
+        }, 600);
+        nextTick(() => scrollToLastMessage());
         jobEventSource.value.close();
         jobEventSource.value = null;
       } else if (data.event === "error") {
@@ -275,6 +425,12 @@ const JobSSE = (jobId) => {
             m.text = "Erreur lors du scraping";
             break;
           }
+        }
+        loadingSkeletonItems.value = [];
+        progressPercent.value = 0;
+        if (progressTimer) {
+          clearInterval(progressTimer);
+          progressTimer = null;
         }
       }
     } catch (e) {
@@ -317,6 +473,11 @@ const connectToSSE = (text) => {
 
   eventSource.value.onopen = () => {
     console.log("Connexion SSE ouverte");
+  };
+  eventSource.value.onmessage = (event) => {
+    if (event.on_chat_model_stream) {
+      console.log("Event: ", event);
+    }
   };
   eventSource.value.onerror = (event) => {
     console.error("Erreur SSE:", event);
@@ -393,7 +554,6 @@ const connectToSSE = (text) => {
       }
 
       if (data) {
-        console.log("Données reçues:", data);
         if (data.type === "content") {
           // Dès qu'on reçoit du contenu, on arrête le loading et on passe en streaming
           if (isLoading.value) {
@@ -407,7 +567,7 @@ const connectToSSE = (text) => {
             messages.value[assistantMessageIndex].content = streamText;
           }
 
-          scrollToBottom();
+          scrollToLastMessage();
         } else if (data.type === "job" && data.job_id) {
           JobSSE(data.job_id);
         } else if (data.type === "tool_end" && data.tool === "search_listing") {
@@ -415,6 +575,8 @@ const connectToSSE = (text) => {
           const jobId = data.result?.job_id;
           if ((status === "queued" || status === "processing") && jobId) {
             JobSSE(jobId);
+          } else {
+            console.log("Job id non trouvée");
           }
         }
       }
@@ -448,14 +610,37 @@ const sendMessageStream = async () => {
   // Activer le loading IMMÉDIATEMENT
   isLoading.value = true;
 
-  await scrollToBottom();
+  await scrollToLastMessage();
 
   connectToSSE(userMessage);
 };
 
 // Charger l'historique au montage du composant
 onMounted(() => {
-  connectToSSE(messages.value[messages.value.length - 1].content);
+  const updateIsMobile = () => {
+    isMobile.value = window.innerWidth <= 768;
+    scrollToLastMessage();
+  };
+  updateIsMobile();
+  window.addEventListener("resize", updateIsMobile);
+  if (messages.value && messages.value.length > 0) {
+    const last = messages.value[messages.value.length - 1];
+    if (last && typeof last.content === "string" && last.content.trim()) {
+      connectToSSE(last.content);
+    }
+  }
+  // Cleanup resize listener on unmount
+});
+
+// Ensure cleanup
+import { onBeforeUnmount } from "vue";
+onBeforeUnmount(() => {
+  const updateIsMobile = () => {};
+  window.removeEventListener("resize", updateIsMobile);
+  if (progressTimer) {
+    clearInterval(progressTimer);
+    progressTimer = null;
+  }
 });
 
 // Scroll automatique quand de nouveaux messages arrivent
@@ -463,13 +648,30 @@ watch(
   () => props.messages,
   (newVal) => {
     messages.value = newVal;
-    scrollToBottom();
+    scrollToLastMessage();
   },
   { deep: true, immediate: true }
 );
 </script>
 
 <style scoped>
+.progress-wrap {
+  padding: 0 6px 10px 6px;
+}
+.progress-track {
+  width: 100%;
+  height: 6px;
+  background: #f1f5f9;
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #60a5fa, #2563eb);
+  width: 0%;
+  transition: width 300ms ease;
+}
 .chat-container {
   display: flex;
   flex-direction: column;
@@ -680,6 +882,39 @@ watch(
   }
 }
 
+/* Hero centered and spaced */
+.hero-wrap {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0 1rem;
+  width: 100%;
+  max-width: 1000px;
+  z-index: 5;
+}
+.hero-wrap h1 {
+  margin: 0;
+}
+.hero-wrap p {
+  margin: 0;
+  max-width: 600px;
+  text-align: center;
+}
+/* Adjust filter rows spacing */
+.hero-wrap .flex.wrap {
+  gap: 1rem;
+  margin: 0;
+}
+/* Input-row separation when hero disappears */
+.input-field-container {
+  margin-top: 0.5rem;
+}
+
 /* Input */
 .input-field-container {
   position: fixed;
@@ -852,6 +1087,41 @@ watch(
 .btn.contrast {
   background: #111;
   color: #fff;
+}
+
+/* Floating animation for filter buttons */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+button[class*="px-4 py-2 bg-gray-100"] {
+  animation: float 3s ease-in-out infinite;
+}
+button[class*="px-4 py-2 bg-gray-100"]:nth-child(1) {
+  animation-delay: 0s;
+}
+button[class*="px-4 py-2 bg-gray-100"]:nth-child(2) {
+  animation-delay: 0.5s;
+}
+button[class*="px-4 py-2 bg-gray-100"]:nth-child(3) {
+  animation-delay: 1s;
+}
+button[class*="px-4 py-2 bg-gray-100"]:nth-child(4) {
+  animation-delay: 1.5s;
+}
+button[class*="px-4 py-2 bg-gray-100"]:nth-child(5) {
+  animation-delay: 2s;
+}
+button[class*="px-4 py-2 bg-gray-100"]:nth-child(6) {
+  animation-delay: 2.5s;
+}
+button[class*="px-4 py-2 bg-gray-100"]:nth-child(7) {
+  animation-delay: 3s;
 }
 
 /* Responsive */

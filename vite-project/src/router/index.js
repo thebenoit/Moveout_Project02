@@ -10,6 +10,8 @@ import Erreur404 from "@/views/Erreur404.vue";
 import Pricing_Page from "@/views/pricing_pages/pricing_page.vue";
 import PremiumSuccess from "@/views/pricing_pages/PremiumSuccess.vue";
 import TestListingCard from "@/views/TestListingCard.vue";
+import LoadingListings from "@/components/loading_listings.vue";
+import LoadingListingsTest from "@/components/LoadingListingsTest.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,6 +25,16 @@ const router = createRouter({
     //   path: "/chat",
     //   name: "chat",
     //   component: ChatHome,
+    // },
+    // {
+    //   path: "/loading",
+    //   name: "loading",
+    //   component: LoadingListings,
+    // },
+    // {
+    //   path: "/loading-test",
+    //   name: "loadingTest",
+    //   component: LoadingListingsTest,
     // },
     {
       path: "/signup",
@@ -49,11 +61,11 @@ const router = createRouter({
       name: "pricingSuccess",
       component: PremiumSuccess,
     },
-    {
-      path: "/test-listing",
-      name: "testListing",
-      component: TestListingCard,
-    },
+    // {
+    //   path: "/test-listing",
+    //   name: "testListing",
+    //   component: TestListingCard,
+    // },
     {
       path: "/:pathMatch(.*)*",
       name: "erreur404",

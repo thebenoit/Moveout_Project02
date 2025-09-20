@@ -82,7 +82,7 @@ onMounted(fetchStatus);
           <ul class="features">
             <li>
               <span class="icon" aria-hidden="true">✓</span>
-              3 recherches / jour
+              10 recherches / jour
             </li>
             <li>
               <span class="icon" aria-hidden="true">✓</span>

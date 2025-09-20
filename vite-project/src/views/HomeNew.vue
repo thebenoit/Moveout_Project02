@@ -30,26 +30,7 @@ onMounted(() => {
     router.replace({ path: route.path, query: {} });
   }
 });
-const showChat = ref(false);
 const showLoginModal = ref(false);
-
-const searchQuery = ref("");
-const messages = ref([]);
-const loading = ref(false);
-
-const handleSearch = async () => {
-  if (!searchQuery.value.trim()) return;
-  const userMsg = { role: "user", content: searchQuery.value.trim() };
-  loading.value = true;
-  messages.value = [userMsg];
-  showChat.value = true;
-};
-
-const addFilter = (filter) => {
-  if (!searchQuery.value.includes(filter)) {
-    searchQuery.value += (searchQuery.value ? " " : "") + filter;
-  }
-};
 
 const closeLoginModal = () => {
   showLoginModal.value = false;
@@ -63,7 +44,6 @@ const loginWithGoogle = async () => {
   try {
     await utils.loginWithGoogle();
     showLoginModal.value = false;
-    handleSearch();
   } catch (error) {
     console.error("Erreur lors de la connexion Google:", error);
   }
@@ -76,107 +56,9 @@ const loginWithGoogle = async () => {
     <main
       class="flex flex-col items-center justify-center min-h-screen px-6 pt-24"
     >
-      <!-- Main Heading -->
-      <h1
-        v-if="!showChat"
-        class="text-4xl font-bold text-black text-center mb-4"
-      >
-        Que recherchez-vous ?
-      </h1>
-
-      <!-- Subtitle -->
-      <p v-if="!showChat" class="text-gray-600 text-center mb-8 max-w-2xl">
-        Décrivez votre appartement idéal et laissez l'IA vous aider à le
-        trouver.
-      </p>
-
-      <!-- Search Input -->
-      <div v-if="!showChat" class="w-full max-w-2xl mb-8">
-        <div class="relative">
-          <textarea
-            v-model="searchQuery"
-            @keydown.enter.prevent="handleSearch"
-            placeholder="Décrivez votre appartement idéal..."
-            class="w-full h-32 p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-md"
-          ></textarea>
-          <div class="absolute bottom-3 right-3">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              class="text-gray-400"
-            >
-              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      <!-- Chat Interface -->
-      <div
-        v-if="showChat"
-        class="w-full max-w-6xl"
-        style="height: calc(var(--vh, 1vh) * 100)"
-      >
-        <ChatInterface
-          :messages="messages"
-          :loading="loading"
-          @auth-error="showLoginModal = true"
-        />
-      </div>
-
-      <!-- Filter Buttons -->
-      <div v-if="!showChat" class="w-full max-w-2xl">
-        <!-- First Row -->
-        <div class="flex flex-wrap gap-3 mb-4 justify-center">
-          <button
-            @click="addFilter('+ 2 chambres')"
-            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
-          >
-            + 2 chambres
-          </button>
-          <button
-            @click="addFilter('+ balcon')"
-            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
-          >
-            + balcon
-          </button>
-          <button
-            @click="addFilter('+ proche métro')"
-            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
-          >
-            + proche métro
-          </button>
-        </div>
-
-        <!-- Second Row -->
-        <div class="flex flex-wrap gap-3 justify-center">
-          <button
-            @click="addFilter('+ 800€ max')"
-            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
-          >
-            + 800€ max
-          </button>
-          <button
-            @click="addFilter('+ 50m²')"
-            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
-          >
-            + 50m²
-          </button>
-          <button
-            @click="addFilter('+ ascenseur')"
-            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
-          >
-            + ascenseur
-          </button>
-          <button
-            @click="addFilter('+ parking')"
-            class="px-4 py-2 bg-gray-100 rounded-full text-base text-black hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-1"
-          >
-            + parking
-          </button>
-        </div>
+      <!-- Chat Interface (always shown) -->
+      <div class="w-full max-w-6xl" style="height: calc(var(--vh, 1vh) * 100)">
+        <ChatInterface @auth-error="showLoginModal = true" />
       </div>
     </main>
 
