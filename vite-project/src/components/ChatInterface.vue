@@ -194,7 +194,7 @@
         </div>
         <h3 class="limit-title">Limite quotidienne atteinte</h3>
         <p class="limit-subtitle">
-          Vous avez atteint vos 3 recherches gratuites.
+          Vous avez atteint vos {{ FREE_LIMIT }} recherches gratuites.
         </p>
         <p class="limit-text">
           Réessayez demain ou passez en Premium pour un accès illimité.
@@ -243,6 +243,7 @@ const streamingMessageIndex = ref(-1);
 const lastAttemptedMessage = ref("");
 const showLimitModal = ref(false);
 const router = useRouter();
+const FREE_LIMIT = 10;
 
 const showHero = computed(
   () => !messages.value.some((m) => m && m.role === "user")
