@@ -34,8 +34,7 @@
                   <div v-if="message.loading" class="job-spinner"></div>
                   <div class="job-status-text">{{ message.text }}</div>
                 </div>
-                <div v-else style="margin-top: 12px">
-                  <!-- Progress bar -->
+                <div style="margin-top: 12px">
                   <div class="progress-wrap">
                     <div class="progress-track">
                       <div
@@ -44,7 +43,20 @@
                       ></div>
                     </div>
                   </div>
+                  <div v-if="stageHistory.length" class="progress-stages">
+                    <transition-group name="stage-fade" tag="div">
+                      <div
+                        v-for="item in stageHistory"
+                        :key="item.id"
+                        class="progress-stage"
+                      >
+                        <span class="stage-dot"></span>
+                        <span class="stage-text">{{ item.text }}</span>
+                      </div>
+                    </transition-group>
+                  </div>
                   <LoadingListings
+                    v-if="loadingSkeletonItems.length"
                     :items="loadingSkeletonItems"
                     :showText="true"
                     :gap="isMobile ? 12 : 16"
@@ -59,6 +71,20 @@
                 "
               >
                 <ListingsSlider :listings="message.listings" layout="grid" />
+              </template>
+              <template
+                v-else-if="message.type === 'job_error' && showErrorMessage"
+              >
+                <div class="job-error-card">
+                  <div class="job-error-icon">⚠️</div>
+                  <div class="job-error-text">{{ message.text }}</div>
+                </div>
+              </template>
+              <template v-else-if="message.type === 'job_info'">
+                <div class="job-info-card">
+                  <div class="job-info-dot"></div>
+                  <div class="job-info-text">{{ message.text }}</div>
+                </div>
               </template>
               <template v-else>
                 {{ message.content }}
@@ -244,6 +270,9 @@ const lastAttemptedMessage = ref("");
 const showLimitModal = ref(false);
 const router = useRouter();
 const FREE_LIMIT = 10;
+const showErrorMessage = ref(false);
+const stageHistory = ref([]);
+const emptyStageShown = ref(false);
 
 const showHero = computed(
   () => !messages.value.some((m) => m && m.role === "user")
@@ -343,6 +372,9 @@ const JobSSE = (jobId) => {
       if (!data || !data.event) return;
 
       if (data.event === "start") {
+        showErrorMessage.value = false;
+        stageHistory.value = [];
+        emptyStageShown.value = false;
         console.log("Démarrage du job", data);
         const text = data?.payload?.message || "Démarrage du scraping";
         messages.value.push({
@@ -351,6 +383,13 @@ const JobSSE = (jobId) => {
           text,
           loading: true,
         });
+        stageHistory.value = [
+          {
+            stage: "start",
+            text,
+            id: `start-${Date.now()}`,
+          },
+        ];
         nextTick(() => scrollToLastMessage());
         // reset progress and start gentle auto-increment
         progressPercent.value = 5;
@@ -365,6 +404,7 @@ const JobSSE = (jobId) => {
           }
         }, 500);
       } else if (data.event === "progress") {
+        if (showErrorMessage.value) return;
         console.log("Progression du job", data);
         const text = data?.payload?.message || "Scraping en cours…";
 
@@ -420,10 +460,69 @@ const JobSSE = (jobId) => {
           progressPercent.value = Math.min(90, progressPercent.value + 2);
           nextTick(() => scrollToLastMessage(true));
         }
+
+        const stage = data?.payload?.stage;
+        const stageMsg = data?.payload?.message;
+        if (stage && stageMsg) {
+          const existingIndex = stageHistory.value.findIndex(
+            (s) => s.stage === stage
+          );
+          const entry = {
+            stage,
+            text: stageMsg,
+            id: `${stage}-${Date.now()}`,
+          };
+          if (existingIndex !== -1) {
+            const updated = [...stageHistory.value];
+            updated[existingIndex] = entry;
+            stageHistory.value = updated;
+          } else {
+            const updated = [...stageHistory.value, entry];
+            if (updated.length > 5) {
+              updated.shift();
+            }
+            stageHistory.value = updated;
+          }
+
+          if (stage === "empty" && !emptyStageShown.value) {
+            emptyStageShown.value = true;
+            messages.value.push({
+              role: "assistant",
+              type: "job_info",
+              text: stageMsg,
+            });
+            nextTick(() => scrollToLastMessage(true));
+          }
+        }
       } else if (data.event === "completed") {
-        console.log("Job terminé", data);
+        showErrorMessage.value = false;
         const raw = data?.payload?.listings || [];
         const listings = normalizeListings(raw);
+        if (!emptyStageShown.value && (!listings || listings.length === 0)) {
+          emptyStageShown.value = true;
+          const emptyMsg = "Aucune annonce trouvée pour l'instant";
+          stageHistory.value = [
+            {
+              stage: "empty",
+              text: emptyMsg,
+              id: `empty-${Date.now()}`,
+            },
+          ];
+          messages.value.push({
+            role: "assistant",
+            type: "job_info",
+            text: emptyMsg,
+          });
+        } else if (!emptyStageShown.value) {
+          stageHistory.value = [
+            {
+              stage: "completed",
+              text: "Résultats prêts",
+              id: `completed-${Date.now()}`,
+            },
+          ];
+        }
+        console.log("Job terminé", data);
         // Finalise le statut
         for (let i = messages.value.length - 1; i >= 0; i--) {
           const m = messages.value[i];
@@ -449,7 +548,8 @@ const JobSSE = (jobId) => {
         jobEventSource.value.close();
         jobEventSource.value = null;
       } else if (data.event === "error") {
-        console.log("Erreur lors du job");
+        console.log("Erreur lors du job: ", data.event);
+        showErrorMessage.value = true;
         for (let i = messages.value.length - 1; i >= 0; i--) {
           const m = messages.value[i];
           if (m && m.type === "job_status") {
@@ -464,6 +564,18 @@ const JobSSE = (jobId) => {
           clearInterval(progressTimer);
           progressTimer = null;
         }
+        const errorText =
+          data?.payload?.message ||
+          data?.payload?.status ||
+          "Une erreur est survenue pendant la recherche.";
+        messages.value.push({
+          role: "assistant",
+          type: "job_error",
+          text: errorText,
+        });
+        stageHistory.value = [];
+        emptyStageShown.value = false;
+        nextTick(() => scrollToLastMessage(true));
       }
     } catch (e) {
       console.error("Erreur parsing job SSE:", e);
@@ -1182,6 +1294,120 @@ button[class*="px-4 py-2 bg-gray-100"]:nth-child(7) {
 
   .input-container {
     padding: 12px;
+  }
+}
+
+.job-error-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #fff7f5;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 86, 48, 0.2);
+  box-shadow: none;
+}
+
+.job-error-icon {
+  font-size: 18px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 86, 48, 0.12);
+  color: #d6412a;
+}
+
+.job-error-text {
+  color: #b22915;
+  font-size: 15px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.job-info-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.job-info-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #60a5fa, #2563eb);
+}
+
+.job-info-text {
+  font-size: 14px;
+  color: #334155;
+}
+
+.progress-stages {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.progress-stage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #475569;
+}
+
+.stage-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #60a5fa, #2563eb);
+  opacity: 0.75;
+  animation: stagePulse 2s ease-in-out infinite;
+}
+
+.stage-text {
+  line-height: 1.3;
+}
+
+.stage-fade-enter-active,
+.stage-fade-leave-active {
+  transition: all 200ms ease;
+}
+.stage-fade-enter-from,
+.stage-fade-leave-to {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+@keyframes stagePulse {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes jobErrorPulse {
+  0% {
+    transform: translateY(0);
+    box-shadow: 0 8px 20px rgba(255, 86, 48, 0.06);
+  }
+  50% {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px rgba(255, 86, 48, 0.1);
+  }
+  100% {
+    transform: translateY(0);
+    box-shadow: 0 8px 20px rgba(255, 86, 48, 0.06);
   }
 }
 </style>
