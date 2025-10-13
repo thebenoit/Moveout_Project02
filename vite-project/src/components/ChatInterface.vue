@@ -235,6 +235,11 @@
         </div>
       </div>
     </div>
+    <PhoneModal 
+    :show="showPhoneModal"
+    @close="closePhoneModal"
+    @phone-added="handlePhoneAdded"
+  />
   </div>
 </template>
 
@@ -245,6 +250,7 @@ import utils from "../utils/utils.js";
 import { processChatResponse, validateChatHistory } from "../utils/utils.js";
 import ListingsSlider from "@/components/ListingsSlider.vue";
 import LoadingListings from "@/components/loading_listings.vue";
+import PhoneModal from "@/components/PhoneModal.vue";
 
 const emit = defineEmits(["auth-error"]);
 
@@ -273,6 +279,10 @@ const FREE_LIMIT = 10;
 const showErrorMessage = ref(false);
 const stageHistory = ref([]);
 const emptyStageShown = ref(false);
+const clearedDraft = ref(false);
+const showPhoneModal = ref(false); 
+const userHasPhone = ref(false); 
+const firstSearchCompleted = ref(false); 
 
 const showHero = computed(
   () => !messages.value.some((m) => m && m.role === "user")
@@ -288,8 +298,32 @@ const addFilter = (filter) => {
   }
 };
 
+const checkAndShowPhoneModal = () => {
+  // Vérifier les conditions
+  const alreadyShown = localStorage.getItem('phone_modal_shown') === 'true';
+  
+  if (!userHasPhone.value && !alreadyShown && firstSearchCompleted.value) {
+    showPhoneModal.value = true;
+    // Marquer comme affiché pour ne plus redemander
+    localStorage.setItem('phone_modal_shown', 'true');
+  }
+};
+
 const goToPricing = () => {
   router.push({ name: "pricing" });
+};
+
+const handlePhoneAdded = async (data) => {
+  console.log("Téléphone ajouté avec succès:", data);
+  userHasPhone.value = true;
+  showPhoneModal.value = false;
+  // Optionnel : afficher une notification de succès
+  alert("🎉 " + data.bonus);
+};
+
+const closePhoneModal = () => {
+  showPhoneModal.value = false;
+  // L'utilisateur a cliqué "Plus tard", localStorage déjà enregistré
 };
 
 // Mettre à jour isLoading si la prop change
@@ -352,6 +386,17 @@ const normalizeListings = (items) => {
     };
   });
 };
+const clearDraftIfNeeded = () => {
+  if (!clearedDraft.value) {
+    // clear UI input and remove draft only once after first server signal
+    inputMessage.value = "";
+    try {
+      sessionStorage.removeItem("mo_chat_draft");
+    } catch {}
+    clearedDraft.value = true;
+  }
+};
+
 const JobSSE = (jobId) => {
   console.log("Démarrage du Job SSE:", jobId);
   if (jobEventSource.value) {
@@ -377,12 +422,23 @@ const JobSSE = (jobId) => {
         emptyStageShown.value = false;
         console.log("Démarrage du job", data);
         const text = data?.payload?.message || "Démarrage du scraping";
-        messages.value.push({
+        // Toujours garder seulement 2 messages: user + assistant
+        const assistantMsg = {
           role: "assistant",
           type: "job_status",
           text,
           loading: true,
-        });
+        };
+        if (messages.value.length === 0) {
+          messages.value = [
+            { role: "user", content: lastAttemptedMessage.value || "" },
+            assistantMsg,
+          ];
+        } else if (messages.value.length === 1) {
+          messages.value = [messages.value[0], assistantMsg];
+        } else {
+          messages.value[1] = assistantMsg;
+        }
         stageHistory.value = [
           {
             stage: "start",
@@ -391,6 +447,7 @@ const JobSSE = (jobId) => {
           },
         ];
         nextTick(() => scrollToLastMessage());
+        clearDraftIfNeeded();
         // reset progress and start gentle auto-increment
         progressPercent.value = 5;
         if (progressTimer) clearInterval(progressTimer);
@@ -404,49 +461,42 @@ const JobSSE = (jobId) => {
           }
         }, 500);
       } else if (data.event === "progress") {
+        console.log("data: ", data);
         if (showErrorMessage.value) return;
         console.log("Progression du job", data);
         const text = data?.payload?.message || "Scraping en cours…";
 
-        // 1) S'assurer qu'un message job_status existe
-        let hasJobStatus = false;
-        for (let i = messages.value.length - 1; i >= 0; i--) {
-          const m = messages.value[i];
-          if (m && m.type === "job_status") {
-            hasJobStatus = true;
-            break;
-          }
+        // S'assurer qu'on a exactement 2 messages, le 2e est le job_status
+        const assistantMsg = {
+          role: "assistant",
+          type: "job_status",
+          text,
+          loading: true,
+        };
+        if (messages.value.length === 0) {
+          messages.value = [
+            { role: "user", content: lastAttemptedMessage.value || "" },
+            assistantMsg,
+          ];
+        } else if (messages.value.length === 1) {
+          messages.value = [messages.value[0], assistantMsg];
+        } else {
+          messages.value[1] = { ...(messages.value[1] || {}), ...assistantMsg };
         }
-        if (!hasJobStatus) {
-          messages.value.push({
-            role: "assistant",
-            type: "job_status",
-            text,
-            loading: true,
-          });
-          // Démarre la barre si pas encore lancée
-          if (!progressTimer) {
-            progressPercent.value = Math.max(progressPercent.value || 5, 5);
-            progressTimer = setInterval(() => {
-              if (progressPercent.value < 90) {
-                progressPercent.value += Math.max(
-                  0.5,
-                  (90 - progressPercent.value) * 0.03
-                );
-              }
-            }, 500);
-          }
-          nextTick(() => scrollToLastMessage());
+        // Démarre la barre si pas encore lancée
+        if (!progressTimer) {
+          progressPercent.value = Math.max(progressPercent.value || 5, 5);
+          progressTimer = setInterval(() => {
+            if (progressPercent.value < 90) {
+              progressPercent.value += Math.max(
+                0.5,
+                (90 - progressPercent.value) * 0.03
+              );
+            }
+          }, 500);
         }
-
-        // 2) Mettre à jour le texte du dernier job_status
-        for (let i = messages.value.length - 1; i >= 0; i--) {
-          const m = messages.value[i];
-          if (m && m.type === "job_status") {
-            m.text = text;
-            break;
-          }
-        }
+        nextTick(() => scrollToLastMessage());
+        clearDraftIfNeeded();
 
         // 3) Skeletons + progression
         if (data?.payload?.status === "listing_loading") {
@@ -459,6 +509,12 @@ const JobSSE = (jobId) => {
           ];
           progressPercent.value = Math.min(90, progressPercent.value + 2);
           nextTick(() => scrollToLastMessage(true));
+        }
+
+        // Affichage propre pour tentatives échouées
+        if (data?.payload?.status === "attempt_failed") {
+          // on garde le même job_status card et on met juste à jour le texte
+          // la barre reste active
         }
 
         const stage = data?.payload?.stage;
@@ -498,6 +554,15 @@ const JobSSE = (jobId) => {
         showErrorMessage.value = false;
         const raw = data?.payload?.listings || [];
         const listings = normalizeListings(raw);
+
+
+        // Marquer première recherche comme complétée
+        if (!firstSearchCompleted.value) {
+          firstSearchCompleted.value = true;
+          // Vérifier si on doit montrer le modal téléphone
+          checkAndShowPhoneModal();
+        }
+
         if (!emptyStageShown.value && (!listings || listings.length === 0)) {
           emptyStageShown.value = true;
           const emptyMsg = "Aucune annonce trouvée pour l'instant";
@@ -508,11 +573,17 @@ const JobSSE = (jobId) => {
               id: `empty-${Date.now()}`,
             },
           ];
-          messages.value.push({
+          // Remplacer le 2e message par un info card
+          const infoMsg = {
             role: "assistant",
             type: "job_info",
             text: emptyMsg,
-          });
+          };
+          if (messages.value.length === 1) {
+            messages.value = [messages.value[0], infoMsg];
+          } else {
+            messages.value[1] = infoMsg;
+          }
         } else if (!emptyStageShown.value) {
           stageHistory.value = [
             {
@@ -524,15 +595,20 @@ const JobSSE = (jobId) => {
         }
         console.log("Job terminé", data);
         // Finalise le statut
-        for (let i = messages.value.length - 1; i >= 0; i--) {
-          const m = messages.value[i];
-          if (m && m.type === "job_status") {
-            m.loading = false;
-            m.text = "Scraping terminé";
-            break;
-          }
+        if (
+          messages.value.length >= 2 &&
+          messages.value[1]?.type === "job_status"
+        ) {
+          messages.value[1].loading = false;
+          messages.value[1].text = "Scraping terminé";
         }
-        messages.value.push({ role: "assistant", type: "listings", listings });
+        // Remplacer par les listings
+        const listingsMsg = { role: "assistant", type: "listings", listings };
+        if (messages.value.length === 1) {
+          messages.value = [messages.value[0], listingsMsg];
+        } else {
+          messages.value[1] = listingsMsg;
+        }
         // Clear skeletons when real listings arrive
         loadingSkeletonItems.value = [];
         // complete the progress bar
@@ -549,14 +625,64 @@ const JobSSE = (jobId) => {
         jobEventSource.value = null;
       } else if (data.event === "error") {
         console.log("Erreur lors du job: ", data.event);
-        showErrorMessage.value = true;
-        for (let i = messages.value.length - 1; i >= 0; i--) {
-          const m = messages.value[i];
-          if (m && m.type === "job_status") {
-            m.loading = false;
-            m.text = "Erreur lors du scraping";
-            break;
+        const errorText =
+          data?.payload?.message ||
+          data?.payload?.status ||
+          "Une erreur est survenue pendant la recherche.";
+
+        // Si c'est un message de tentative, on le garde dans la carte statut avec la barre
+        const looksLikeRetry =
+          data?.payload?.status === "attempt_failed" ||
+          /tentative|retry|réessayer/i.test(errorText || "");
+        if (looksLikeRetry) {
+          showErrorMessage.value = false;
+          const assistantMsg = {
+            role: "assistant",
+            type: "job_status",
+            text: errorText,
+            loading: true,
+          };
+          if (messages.value.length === 0) {
+            messages.value = [
+              { role: "user", content: lastAttemptedMessage.value || "" },
+              assistantMsg,
+            ];
+          } else if (messages.value.length === 1) {
+            messages.value = [messages.value[0], assistantMsg];
+          } else {
+            messages.value[1] = assistantMsg;
           }
+          if (!progressTimer) {
+            progressPercent.value = Math.max(progressPercent.value || 5, 5);
+            progressTimer = setInterval(() => {
+              if (progressPercent.value < 90) {
+                progressPercent.value += Math.max(
+                  0.5,
+                  (90 - progressPercent.value) * 0.03
+                );
+              }
+            }, 500);
+          }
+          const entry = {
+            stage: "retry",
+            text: errorText,
+            id: `retry-${Date.now()}`,
+          };
+          const updated = [...stageHistory.value, entry];
+          if (updated.length > 5) updated.shift();
+          stageHistory.value = updated;
+          nextTick(() => scrollToLastMessage(true));
+          return;
+        }
+
+        // Erreur finale: afficher carte rouge avec message clair
+        showErrorMessage.value = true;
+        if (
+          messages.value.length >= 2 &&
+          messages.value[1]?.type === "job_status"
+        ) {
+          messages.value[1].loading = false;
+          messages.value[1].text = "Erreur lors du scraping";
         }
         loadingSkeletonItems.value = [];
         progressPercent.value = 0;
@@ -564,15 +690,18 @@ const JobSSE = (jobId) => {
           clearInterval(progressTimer);
           progressTimer = null;
         }
-        const errorText =
-          data?.payload?.message ||
-          data?.payload?.status ||
-          "Une erreur est survenue pendant la recherche.";
-        messages.value.push({
+        const errMsg = {
           role: "assistant",
           type: "job_error",
-          text: errorText,
-        });
+          text:
+            errorText ||
+            "La recherche n'a pas abouti. Veuillez réessayer dans quelques minutes.",
+        };
+        if (messages.value.length === 1) {
+          messages.value = [messages.value[0], errMsg];
+        } else {
+          messages.value[1] = errMsg;
+        }
         stageHistory.value = [];
         emptyStageShown.value = false;
         nextTick(() => scrollToLastMessage(true));
@@ -604,12 +733,18 @@ const connectToSSE = (text) => {
   let streamText = "";
 
   // Ajouter un message assistant vide pour le streaming
-  const assistantMessageIndex = messages.value.length;
-
-  messages.value.push({
-    role: "assistant",
-    content: "",
-  });
+  const assistantMessageIndex = 1;
+  // Toujours conserver (user, assistant)
+  if (messages.value.length === 0) {
+    messages.value = [
+      { role: "user", content: lastAttemptedMessage.value || text },
+      { role: "assistant", content: "" },
+    ];
+  } else if (messages.value.length === 1) {
+    messages.value = [messages.value[0], { role: "assistant", content: "" }];
+  } else {
+    messages.value[1] = { role: "assistant", content: "" };
+  }
 
   // Activer le mode streaming
   isStreaming.value = true;
@@ -637,7 +772,11 @@ const connectToSSE = (text) => {
       .then((response) => {
         if (response.status === 401) {
           emit("auth-error");
-          messages.value = [];
+          // Ne pas vider les messages; restaurer le brouillon si besoin
+          try {
+            const draft = sessionStorage.getItem("mo_chat_draft");
+            if (draft && !inputMessage.value) inputMessage.value = draft;
+          } catch {}
           return { handled: true };
         }
         return { handled: false };
@@ -711,6 +850,8 @@ const connectToSSE = (text) => {
             messages.value[assistantMessageIndex].content = streamText;
           }
 
+          clearDraftIfNeeded();
+
           scrollToLastMessage();
         } else if (data.type === "job" && data.job_id) {
           JobSSE(data.job_id);
@@ -744,12 +885,15 @@ const sendMessageStream = async () => {
   }
 
   // Ajouter le message utilisateur
-  messages.value.push({
-    role: "user",
-    content: userMessage,
-  });
+  messages.value = [{ role: "user", content: userMessage }];
 
-  inputMessage.value = "";
+  // Sauvegarder le brouillon pour le cas d'une auth requise
+  try {
+    sessionStorage.setItem("mo_chat_draft", userMessage);
+  } catch {}
+
+  // Ne pas vider l'input tout de suite; on le videra au premier retour serveur
+  clearedDraft.value = false;
 
   // Activer le loading IMMÉDIATEMENT
   isLoading.value = true;
@@ -760,13 +904,30 @@ const sendMessageStream = async () => {
 };
 
 // Charger l'historique au montage du composant
-onMounted(() => {
+onMounted(async() => {
   const updateIsMobile = () => {
     isMobile.value = window.innerWidth <= 768;
     scrollToLastMessage();
   };
   updateIsMobile();
   window.addEventListener("resize", updateIsMobile);
+
+
+  // Vérifier si l'utilisateur a déjà un téléphone
+  try {
+    const response = await fetch(`${import.meta.env.VITE_LLM_AGENT_ENDPOINT}/user/info`, {
+      method: "GET",
+      credentials: "include",
+    });
+    if (response.ok) {
+      const data = await response.json();
+      userHasPhone.value = !!(data.user?.phone && data.user.phone.trim());
+    }
+  } catch (error) {
+    console.error("Erreur lors de la récupération des infos utilisateur:", error);
+  }
+
+
   if (messages.value && messages.value.length > 0) {
     const last = messages.value[messages.value.length - 1];
     if (last && typeof last.content === "string" && last.content.trim()) {
