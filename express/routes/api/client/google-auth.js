@@ -67,11 +67,11 @@ router.get(
 
       const cookieOpts = {
         httpOnly: true,
-        secure: false, //process.env.NODE_ENV === "production",
-        sameSite: "lax", //"none",
+        secure: true, //process.env.NODE_ENV === "production",
+        sameSite:"none",
         maxAge: 24 * 60 * 60 * 1000,
         path: "/",
-        //domain: ".moveout.ai"
+        domain: ".moveout.ai"
       };
 
       res.cookie("access_token", accessToken, cookieOpts);
