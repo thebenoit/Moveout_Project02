@@ -14,6 +14,7 @@ import cookieParser from "cookie-parser";
 import passport from "passport";
 import googleAuth from "./routes/api/client/google-auth.js";
 import client_me from "./routes/api/client/me.js";
+import client_phone from "./routes/api/client/phone.js"; 
 import checkoutRouter from "./routes/Stripe/checkout.js";
 
 // Create an instance of the mixpanel client
@@ -93,6 +94,7 @@ app.use("/api/client", client_singup);
 app.use("/api/client", client_login);
 app.use("/api/client", client_lead);
 app.use("/api/client", client_preference);
+app.use("/api/client", client_phone);
 app.use("/api/client", client_me);
 
 // apparts

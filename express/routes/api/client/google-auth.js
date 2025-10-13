@@ -5,14 +5,11 @@ import User from "../../../mongo/schemas/user.js";
 import JWT from "../../../mongo/interface/JWT.js";
 import crypto from "crypto";
 
-
 const router = express.Router();
 
 const BASE_URL = process.env.API_BASE_URL || "http://localhost:4000";
 const CALLBACK_URL = `${BASE_URL}/api/client/auth/google/callback`;
 console.log("CALLBACK_URL: ", CALLBACK_URL);
-
-
 
 passport.use(
   new GoogleStrategy(
@@ -58,7 +55,7 @@ router.get(
   "/auth/google/callback",
   passport.authenticate("google", { session: false }),
   async (req, res) => {
-    console.log("Essaie de s'identifier!")
+    console.log("Essaie de s'identifier!");
     try {
       const user = req.user;
       const sessionId = crypto.randomUUID();
@@ -70,19 +67,18 @@ router.get(
 
       const cookieOpts = {
         httpOnly: true,
-        secure: true,//process.env.NODE_ENV === "production",
-        sameSite: "none",
+        secure: false, //process.env.NODE_ENV === "production",
+        sameSite: "lax", //"none",
         maxAge: 24 * 60 * 60 * 1000,
         path: "/",
-        domain: ".moveout.ai"
+        //domain: ".moveout.ai"
       };
 
       res.cookie("access_token", accessToken, cookieOpts);
       res.cookie("session_id", sessionId, cookieOpts);
 
-
-      const FRONTEND_URL = "https://www.moveout.ai";
-      console.log("authentification complete!")
+      const FRONTEND_URL = process.env.FRONTEND_URL;
+      console.log("authentification complete!");
       return res.redirect(FRONTEND_URL);
     } catch (error) {
       console.error("Erreur lors de l'authentification Google: ", error);
