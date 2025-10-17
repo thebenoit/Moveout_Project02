@@ -627,7 +627,7 @@ const JobSSE = (jobId) => {
         const errorText =
           data?.payload?.message ||
           data?.payload?.status ||
-          "Une erreur est survenue pendant la recherche.";
+          "Une erreur est survenue pendant la recherche. Veuillez réessayer.";
 
         // Si c'est un message de tentative, on le garde dans la carte statut avec la barre
         const looksLikeRetry =
@@ -694,7 +694,7 @@ const JobSSE = (jobId) => {
           type: "job_error",
           text:
             errorText ||
-            "La recherche n'a pas abouti. Veuillez réessayer dans quelques minutes.",
+            "⚠️ La recherche n'a pas abouti. Veuillez réessayer votre recherche.",
         };
         if (messages.value.length === 1) {
           messages.value = [messages.value[0], errMsg];
@@ -712,6 +712,31 @@ const JobSSE = (jobId) => {
 
   jobEventSource.value.onerror = () => {
     console.error("Erreur SSE job");
+
+    // ✅ NOUVEAU : Afficher un message d'erreur à l'utilisateur au lieu de rester silencieux
+    showErrorMessage.value = true;
+    loadingSkeletonItems.value = [];
+    progressPercent.value = 0;
+    if (progressTimer) {
+      clearInterval(progressTimer);
+      progressTimer = null;
+    }
+
+    // Afficher un message d'erreur clair
+    const errMsg = {
+      role: "assistant",
+      type: "job_error",
+      text: "⚠️ La connexion avec le serveur a été interrompue. Veuillez réessayer votre recherche.",
+    };
+
+    if (messages.value.length === 1) {
+      messages.value = [messages.value[0], errMsg];
+    } else if (messages.value.length >= 2) {
+      messages.value[1] = errMsg;
+    }
+
+    nextTick(() => scrollToLastMessage(true));
+
     if (jobEventSource.value) jobEventSource.value.close();
     jobEventSource.value = null;
   };
