@@ -65,13 +65,16 @@ router.get(
         sessionId
       );
 
+      const isProd = process.env.NODE_ENV === "prod";
+      const cookieDomain = isProd ? ".moveout.ai" : undefined;
+
       const cookieOpts = {
         httpOnly: true,
-        secure: true, //process.env.NODE_ENV === "production",
-        sameSite:"none",
+        secure: isProd,                 // false en local (HTTP)
+        sameSite: isProd ? "none" : "lax",
         maxAge: 24 * 60 * 60 * 1000,
         path: "/",
-        domain: ".moveout.ai"
+        ...(cookieDomain ? { domain: cookieDomain } : {}), // pas de domain en local
       };
 
       res.cookie("access_token", accessToken, cookieOpts);

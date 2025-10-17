@@ -235,11 +235,11 @@
         </div>
       </div>
     </div>
-    <PhoneModal 
-    :show="showPhoneModal"
-    @close="closePhoneModal"
-    @phone-added="handlePhoneAdded"
-  />
+    <PhoneModal
+      :show="showPhoneModal"
+      @close="closePhoneModal"
+      @phone-added="handlePhoneAdded"
+    />
   </div>
 </template>
 
@@ -280,9 +280,9 @@ const showErrorMessage = ref(false);
 const stageHistory = ref([]);
 const emptyStageShown = ref(false);
 const clearedDraft = ref(false);
-const showPhoneModal = ref(false); 
-const userHasPhone = ref(false); 
-const firstSearchCompleted = ref(false); 
+const showPhoneModal = ref(false);
+const userHasPhone = ref(false);
+const firstSearchCompleted = ref(false);
 
 const showHero = computed(
   () => !messages.value.some((m) => m && m.role === "user")
@@ -300,12 +300,12 @@ const addFilter = (filter) => {
 
 const checkAndShowPhoneModal = () => {
   // Vérifier les conditions
-  const alreadyShown = localStorage.getItem('phone_modal_shown') === 'true';
-  
+  const alreadyShown = localStorage.getItem("phone_modal_shown") === "true";
+
   if (!userHasPhone.value && !alreadyShown && firstSearchCompleted.value) {
     showPhoneModal.value = true;
     // Marquer comme affiché pour ne plus redemander
-    localStorage.setItem('phone_modal_shown', 'true');
+    localStorage.setItem("phone_modal_shown", "true");
   }
 };
 
@@ -555,7 +555,6 @@ const JobSSE = (jobId) => {
         const raw = data?.payload?.listings || [];
         const listings = normalizeListings(raw);
 
-
         // Marquer première recherche comme complétée
         if (!firstSearchCompleted.value) {
           firstSearchCompleted.value = true;
@@ -765,6 +764,15 @@ const connectToSSE = (text) => {
     isStreaming.value = false;
     streamingMessageIndex.value = -1;
 
+    // ✅ AMÉLIORÉ : Afficher un message d'erreur plus explicite immédiatement
+    if (
+      messages.value[assistantMessageIndex] &&
+      !messages.value[assistantMessageIndex].content
+    ) {
+      messages.value[assistantMessageIndex].content =
+        "⚠️ Connexion interrompue. Vérification en cours...";
+    }
+
     fetch(`${import.meta.env.VITE_LLM_AGENT_ENDPOINT}/user/info`, {
       method: "GET",
       credentials: "include",
@@ -786,6 +794,11 @@ const connectToSSE = (text) => {
           "Erreur lors de la vérification de l'authentification:",
           error
         );
+        // ✅ NOUVEAU : Afficher l'erreur réseau à l'utilisateur
+        if (messages.value[assistantMessageIndex]) {
+          messages.value[assistantMessageIndex].content =
+            "⚠️ Impossible de contacter le serveur. Vérifiez votre connexion Internet.";
+        }
       })
       .then(async (res) => {
         if (res && res.handled) return;
@@ -809,19 +822,25 @@ const connectToSSE = (text) => {
           clearTimeout(timer);
           if (probe.status === 402) {
             showLimitModal.value = true;
+            if (messages.value[assistantMessageIndex]) {
+              messages.value[assistantMessageIndex].content =
+                "⚠️ Limite de recherches gratuite atteinte.";
+            }
+          } else if (!res || !res.handled) {
+            // ✅ NOUVEAU : Message générique si aucune cause spécifique détectée
+            if (
+              messages.value[assistantMessageIndex] &&
+              messages.value[assistantMessageIndex].content ===
+                "⚠️ Connexion interrompue. Vérification en cours..."
+            ) {
+              messages.value[assistantMessageIndex].content =
+                "⚠️ Une erreur s'est produite. Veuillez réessayer dans quelques instants.";
+            }
           }
         } catch (e) {
           // ignorer timeout/abort
         }
       });
-
-    if (
-      messages.value[assistantMessageIndex] &&
-      !messages.value[assistantMessageIndex].content
-    ) {
-      messages.value[assistantMessageIndex].content =
-        "Désolé, une erreur s'est produite lors de la génération de la réponse. Veuillez réessayer.";
-    }
   };
 
   eventSource.value.onmessage = (event) => {
@@ -833,6 +852,25 @@ const connectToSSE = (text) => {
         isLoading.value = false;
         isStreaming.value = false;
         streamingMessageIndex.value = -1;
+        return;
+      }
+
+      // ✅ NOUVEAU : Gérer les erreurs du stream principal
+      if (data && data.type === "stream_error") {
+        console.error("Erreur stream reçue:", data.details);
+        isLoading.value = false;
+        isStreaming.value = false;
+        streamingMessageIndex.value = -1;
+
+        // Afficher l'erreur à l'utilisateur dans le chat
+        if (messages.value[assistantMessageIndex]) {
+          messages.value[assistantMessageIndex].content =
+            "⚠️ " + data.message + "\n\nVeuillez réessayer votre requête.";
+        }
+
+        eventSource.value.close();
+        clearDraftIfNeeded();
+        scrollToLastMessage();
         return;
       }
 
@@ -904,7 +942,7 @@ const sendMessageStream = async () => {
 };
 
 // Charger l'historique au montage du composant
-onMounted(async() => {
+onMounted(async () => {
   const updateIsMobile = () => {
     isMobile.value = window.innerWidth <= 768;
     scrollToLastMessage();
@@ -912,21 +950,25 @@ onMounted(async() => {
   updateIsMobile();
   window.addEventListener("resize", updateIsMobile);
 
-
   // Vérifier si l'utilisateur a déjà un téléphone
   try {
-    const response = await fetch(`${import.meta.env.VITE_LLM_AGENT_ENDPOINT}/user/info`, {
-      method: "GET",
-      credentials: "include",
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_LLM_AGENT_ENDPOINT}/user/info`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
     if (response.ok) {
       const data = await response.json();
       userHasPhone.value = !!(data.user?.phone && data.user.phone.trim());
     }
   } catch (error) {
-    console.error("Erreur lors de la récupération des infos utilisateur:", error);
+    console.error(
+      "Erreur lors de la récupération des infos utilisateur:",
+      error
+    );
   }
-
 
   if (messages.value && messages.value.length > 0) {
     const last = messages.value[messages.value.length - 1];
