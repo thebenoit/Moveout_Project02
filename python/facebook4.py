@@ -34,7 +34,8 @@ import urllib.parse
 from time import sleep
 
 ##change dépendement de l'ordi install ici: https://googlechromelabs.github.io/chrome-for-testing/#stable
-chromedriver_path = "/Users/jerrybenoit/Downloads/chromedriver-mac-arm64/chromedriver"
+chromedriver_path = "/Users/jerrybenoit/dev/chromedriver"
+##"/Users/jerrybenoit/Downloads/chromedriver-mac-arm64/chromedriver"
 class Bd:
 
     def __init__(self, uri, database_name, apartments_collection,progress_collection):

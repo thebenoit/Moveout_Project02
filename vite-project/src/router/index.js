@@ -9,6 +9,7 @@ import Erreur404 from "@/views/Erreur404.vue";
 
 import Pricing_Page from "@/views/pricing_pages/pricing_page.vue";
 import PremiumSuccess from "@/views/pricing_pages/PremiumSuccess.vue";
+import EarlyAccess from "@/views/EarlyAccess.vue";
 import TestListingCard from "@/views/TestListingCard.vue";
 import LoadingListings from "@/components/loading_listings.vue";
 import LoadingListingsTest from "@/components/LoadingListingsTest.vue";
@@ -60,6 +61,16 @@ const router = createRouter({
       path: "/pricing/success",
       name: "pricingSuccess",
       component: PremiumSuccess,
+    },
+    {
+      path: "/early-access",
+      name: "earlyAccess",
+      component: EarlyAccess,
+    },
+    {
+      path: "/early-access/success",
+      name: "earlyAccessSuccess",
+      component: EarlyAccess, // TODO: Créer une page de succès dédiée
     },
     // {
     //   path: "/test-listing",

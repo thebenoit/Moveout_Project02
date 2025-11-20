@@ -101,25 +101,41 @@ class FacebookMarketplaceScraper:
         self.max_retries = 3
         self.retry_delay = 10
         
+    # Cette méthode récupère les IDs Facebook Marketplace depuis MongoDB,
+    # mais uniquement pour les documents dont le prix est entre 300 et 1500 inclus
+    # ET qui possèdent au moins 3 photos dans le champ 'for_sale_item.listing_photos'.
     def get_marketplace_ids(self):
-        """Récupère les IDs Facebook Marketplace à partir de la collection MongoDB"""
+        """
+        Récupère les IDs Facebook Marketplace à partir de la collection MongoDB,
+        mais seulement pour les documents dont le prix est entre 300 et 1500 inclus
+        ET qui possèdent au moins 3 photos.
+        """
         try:
-                        # Vérifier le contenu de la collection
-            count = self.bd.marketplace_ids.count_documents({})
-            print(f"Nombre de documents dans la collection : {count}")
-            
-            # Afficher quelques documents pour vérifier leur structure
-            print("Exemple de documents :")
-            for doc in self.bd.marketplace_ids.find().limit(3):
+            # Définir le filtre de prix et de nombre de photos
+            price_and_photos_filter = {
+                "budget": {
+                    "$gte": 300,
+                    "$lte": 1500
+                },
+                "for_sale_item.listing_photos.2": {"$exists": True}  # Au moins 3 photos (index 0,1,2)
+            }
+
+            # Compter les documents qui respectent le filtre
+            count = self.bd.marketplace_ids.count_documents(price_and_photos_filter)
+            print(f"Nombre de documents dans la collection (prix entre 300 et 1500 et au moins 3 photos) : {count}")
+
+            # Afficher quelques exemples pour vérifier la structure
+            print("Exemple de documents filtrés :")
+            for doc in self.bd.marketplace_ids.find(price_and_photos_filter).limit(3):
                 print(doc)
-            # Récupère tous les documents dans la collection
-            documents = self.bd.marketplace_ids.find()
+
+            # Récupérer tous les documents filtrés
+            documents = self.bd.marketplace_ids.find(price_and_photos_filter)
             marketplace_ids = []
             for doc in documents:
                 marketplace_ids.append(doc['_id'])
-                print("Ajout des IDs Facebook Marketplace",doc["_id"])
-            
-            
+                print("Ajout des IDs Facebook Marketplace", doc["_id"])
+
             return marketplace_ids
         except Exception as e:
             print(f"Erreur lors de la récupération des IDs Facebook Marketplace: {e}")

@@ -14,7 +14,7 @@ import cookieParser from "cookie-parser";
 import passport from "passport";
 import googleAuth from "./routes/api/client/google-auth.js";
 import client_me from "./routes/api/client/me.js";
-import client_phone from "./routes/api/client/phone.js"; 
+import client_phone from "./routes/api/client/phone.js";
 import checkoutRouter from "./routes/Stripe/checkout.js";
 
 // Create an instance of the mixpanel client
@@ -38,6 +38,12 @@ import client_lead from "./routes/api/client/leads.js";
 import client_logout from "./routes/api/client/logout.js";
 import client_preference from "./routes/api/client/preference.js";
 
+// early access
+import earlyAccessRouter from "./routes/api/early-access/earlyAccess.js";
+
+// feedback
+import feedbackRouter from "./routes/api/feedback/feedback.js";
+
 // Obtenir __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -59,7 +65,6 @@ app.use(
       "X-Requested-With",
       "Accept",
       "Origin",
-
     ],
     exposedHeaders: ["Authorization"],
     credentials: true,
@@ -107,6 +112,12 @@ app.use("/api/chat", chat);
 
 // jwt
 app.use("/api/jwt", jwtRouter);
+
+// early access
+app.use("/api/early-access", earlyAccessRouter);
+
+// feedback
+app.use("/api/feedback", feedbackRouter);
 
 app.use("/api/client/", client_logout);
 // app.use("/client/", client_appartements);
