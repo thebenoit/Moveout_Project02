@@ -11,6 +11,7 @@ import EA2 from "@/views/EA2.vue";
 import Pricing_Page from "@/views/pricing_pages/pricing_page.vue";
 import PremiumSuccess from "@/views/pricing_pages/PremiumSuccess.vue";
 import EarlyAccess from "@/views/EarlyAccess.vue";
+import EarlyAccessSuccess from "@/views/EarlyAccessSuccess.vue";
 import Dashboard from "@/views/Dashboard.vue";
 import TestListingCard from "@/views/TestListingCard.vue";
 import LoadingListings from "@/components/loading_listings.vue";
@@ -22,7 +23,7 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
-      component: HomeNew,
+      component: EarlyAccess,
     },
     // {
     //   path: "/chat",
@@ -39,31 +40,31 @@ const router = createRouter({
     //   name: "loadingTest",
     //   component: LoadingListingsTest,
     // },
-    {
-      path: "/signup",
-      name: "signup",
-      component: Signup,
-    },
-    {
-      path: "/login",
-      name: "login",
-      component: Login,
-    },
+    // {
+    //   path: "/signup",
+    //   name: "signup",
+    //   component: Signup,
+    // },
+    // {
+    //   path: "/login",
+    //   name: "login",
+    //   component: Login,
+    // },
     // {
     //   path: "/foryou",
     //   name: "foryou",
     //   component: Foryou,
     // },
-    {
-      path: "/pricing",
-      name: "pricing",
-      component: Pricing_Page,
-    },
-    {
-      path: "/pricing/success",
-      name: "pricingSuccess",
-      component: PremiumSuccess,
-    },
+    // {
+    //   path: "/pricing",
+    //   name: "pricing",
+    //   component: Pricing_Page,
+    // },
+    // {
+    //   path: "/pricing/success",
+    //   name: "pricingSuccess",
+    //   component: PremiumSuccess,
+    // },
     {
       path: "/early-access",
       name: "earlyAccess",
@@ -77,13 +78,13 @@ const router = createRouter({
     {
       path: "/early-access/success",
       name: "earlyAccessSuccess",
-      component: EarlyAccess, // TODO: Créer une page de succès dédiée
+      component: EarlyAccessSuccess,
     },
-    {
-      path: "/dashboard",
-      name: "dashboard",
-      component: Dashboard,
-    },
+    // {
+    //   path: "/dashboard",
+    //   name: "dashboard",
+    //   component: Dashboard,
+    // },
     // {
     //   path: "/test-listing",
     //   name: "testListing",

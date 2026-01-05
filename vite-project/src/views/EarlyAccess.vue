@@ -68,7 +68,7 @@ async function handleSignup() {
     !formData.value.email ||
     !formData.value.phone
   ) {
-    formError.value = "Tous les champs sont requis";
+    formError.value = "All fields are required";
     return;
   }
 
@@ -88,7 +88,7 @@ async function handleSignup() {
     const data = await response.json();
 
     if (data.error) {
-      formError.value = data.error.message || "Erreur lors de l'inscription";
+      formError.value = data.error.message || "Error during signup";
       return;
     }
 
@@ -96,7 +96,7 @@ async function handleSignup() {
     await createCheckoutSession();
   } catch (error) {
     console.error("Erreur inscription:", error);
-    formError.value = "Erreur lors de l'inscription. Veuillez réessayer.";
+    formError.value = "Error during signup. Please try again.";
   } finally {
     submitting.value = false;
   }
@@ -145,6 +145,14 @@ function closeSignupForm() {
   formError.value = null;
 }
 
+// Scroller vers la section des benefits
+function scrollToBenefits() {
+  const benefitsSection = document.getElementById('benefits-section');
+  if (benefitsSection) {
+    benefitsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
 // Polling pour mettre à jour les stats toutes les 30 secondes
 let statsInterval = null;
 
@@ -177,6 +185,9 @@ onUnmounted(() => {
               Delegate your search. Our 24/7 AI delivers only the top 1% of
               matches that fit your exact criteria.
             </p>
+            <p class="release-date">
+              Launching January 20, 2026
+            </p>
             <div class="cta-buttons">
           <button
             @click="openSignupForm"
@@ -187,7 +198,7 @@ onUnmounted(() => {
                 <span v-else>Show My Eligible Apartments</span>
               </button>
               <button
-                @click="openSignupForm"
+                @click="scrollToBenefits"
                 :disabled="stats.spotsRemaining <= 0"
                 class="cta-button-secondary"
               >
@@ -214,7 +225,7 @@ onUnmounted(() => {
     </section>
 
     <!-- Benefits Section -->
-    <section class="benefits-section">
+    <section id="benefits-section" class="benefits-section">
       <div class="container">
         <h2 class="benefits-title">The Rental Market is Rigged Against You</h2>
         <p class="benefits-subtitle">
@@ -422,39 +433,15 @@ onUnmounted(() => {
       </div>
     </section>
 
-    <!-- Stats & CTA Section -->
-    <section class="stats-section">
-      <div class="container">
-        <div class="stats-content">
-          <!-- Compteur de spots -->
-          <div class="spots-counter">
-            <div v-if="loadingStats" class="loading-spots">Chargement...</div>
-            <div v-else-if="errorStats" class="error-spots">
-              {{ errorStats }}
-            </div>
-            <div v-else class="spots-info">
-              <span class="spots-number">{{ stats.spotsRemaining }}</span>
-              <span class="spots-text"
-                >/ {{ stats.maxSpots }} spots restants</span
-              >
-            </div>
-          </div>
-
-          <!-- Note -->
-          <p class="note">30 jours garantie remboursée</p>
-        </div>
-      </div>
-    </section>
-
     <!-- Modal Formulaire d'inscription -->
     <div v-if="showSignupForm" class="modal-overlay" @click="closeSignupForm">
       <div class="modal-content" @click.stop>
         <div class="signup-form-card">
           <!-- Header -->
           <div class="form-header">
-            <h2 class="form-title">Réserver votre spot Early Access</h2>
+            <h2 class="form-title">Reserve Your Early Access Spot</h2>
             <p class="form-subtitle">
-              Complétez vos informations pour accéder au paiement
+              Complete your information to proceed to payment
             </p>
             <button @click="closeSignupForm" class="close-button">
               <svg
@@ -480,24 +467,24 @@ onUnmounted(() => {
             <!-- Champs -->
             <div class="form-row">
               <div class="form-group">
-                <label for="firstName">Prénom *</label>
+                <label for="firstName">First Name *</label>
                 <input
                   id="firstName"
                   v-model="formData.firstName"
                   type="text"
                   required
-                  placeholder="Jean"
+                  placeholder="John"
                   class="form-input"
                 />
               </div>
               <div class="form-group">
-                <label for="lastName">Nom *</label>
+                <label for="lastName">Last Name *</label>
                 <input
                   id="lastName"
                   v-model="formData.lastName"
                   type="text"
                   required
-                  placeholder="Dupont"
+                  placeholder="Doe"
                   class="form-input"
                 />
               </div>
@@ -510,13 +497,13 @@ onUnmounted(() => {
                 v-model="formData.email"
                 type="email"
                 required
-                placeholder="jean.dupont@example.com"
+                placeholder="john.doe@example.com"
                 class="form-input"
               />
             </div>
 
             <div class="form-group">
-              <label for="phone">Téléphone *</label>
+              <label for="phone">Phone *</label>
               <input
                 id="phone"
                 v-model="formData.phone"
@@ -529,14 +516,13 @@ onUnmounted(() => {
 
             <!-- Bouton Submit -->
             <button type="submit" :disabled="submitting" class="submit-button">
-              <span v-if="submitting">Traitement...</span>
-              <span v-else>Continuer vers le paiement ($19)</span>
+              <span v-if="submitting">Processing...</span>
+              <span v-else>Continue to Payment ($99)</span>
             </button>
 
             <!-- Note -->
             <p class="form-note">
-              En continuant, vous serez redirigé vers Stripe pour le paiement
-              sécurisé.
+              By continuing, you will be redirected to Stripe for secure payment.
             </p>
           </form>
         </div>
@@ -628,6 +614,18 @@ onUnmounted(() => {
   font-weight: 300;
   opacity: 0;
   animation: fadeInUp 0.8s ease-out 0.15s forwards;
+}
+
+.release-date {
+  font-size: 0.9rem;
+  color: #999999;
+  text-align: center;
+  margin: 0.5rem 0 0 0;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out 0.3s forwards;
 }
 
 .header-visual {
@@ -1459,49 +1457,6 @@ onUnmounted(() => {
   }
 }
 
-/* Stats Section */
-.stats-section {
-  padding: 6rem 0;
-  background: #fafafa;
-}
-
-.stats-content {
-  max-width: 600px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.spots-counter {
-  margin-bottom: 2.5rem;
-}
-
-.loading-spots,
-.error-spots {
-  color: #999999;
-  font-size: 0.9rem;
-  font-weight: 300;
-}
-
-.spots-info {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 0.75rem;
-}
-
-.spots-number {
-  font-size: 3rem;
-  font-weight: 600;
-  color: #000000;
-  letter-spacing: -0.02em;
-}
-
-.spots-text {
-  font-size: 1.1rem;
-  color: #666666;
-  font-weight: 300;
-}
-
 .cta-buttons {
   display: flex;
   gap: 1.25rem;
@@ -1584,14 +1539,6 @@ onUnmounted(() => {
   cursor: not-allowed;
 }
 
-.note {
-  font-size: 0.85rem;
-  color: #999999;
-  margin-top: 0.5rem;
-  font-weight: 300;
-  letter-spacing: 0.01em;
-}
-
 /* Modal */
 .modal-overlay {
   position: fixed;
@@ -1599,21 +1546,29 @@ onUnmounted(() => {
   left: 0;
   width: 100%;
   height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile */
   background: rgba(0, 0, 0, 0.6);
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 9999;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  padding: 1rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .modal-content {
   max-width: 520px;
-  width: 90%;
+  width: 100%;
   max-height: 90vh;
+  max-height: 90dvh; /* Dynamic viewport height for mobile */
   overflow-y: auto;
   margin: auto;
   position: relative;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
 }
 
 .signup-form-card {
@@ -1622,6 +1577,8 @@ onUnmounted(() => {
   border-radius: 0;
   border: 1px solid #000000;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .form-header {
@@ -1707,6 +1664,10 @@ onUnmounted(() => {
   transition: all 0.3s ease;
   background: #ffffff;
   font-weight: 300;
+  width: 100%;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .form-input:focus {
@@ -1818,6 +1779,19 @@ onUnmounted(() => {
     max-width: 50%;
     margin: 0 auto;
   }
+
+  /* Modal Form - Tablets */
+  .modal-content {
+    width: 85%;
+    max-width: 500px;
+    padding: 0;
+  }
+
+  .signup-form-card {
+    padding: 2.5rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1840,6 +1814,10 @@ onUnmounted(() => {
 
   .subtitle {
     font-size: 1rem;
+  }
+
+  .release-date {
+    font-size: 0.85rem;
   }
 
   .illustration-grid {
@@ -2035,12 +2013,93 @@ onUnmounted(() => {
     font-size: 2.5rem;
   }
 
-  .form-row {
-    grid-template-columns: 1fr;
+  /* Modal Form Responsive */
+  .modal-overlay {
+    padding: 1rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-content {
+    width: calc(100% - 2rem);
+    max-width: 420px;
+    max-height: 90vh;
+    max-height: 90dvh;
+    padding: 0;
+    margin: auto;
+    border-radius: 0;
   }
 
   .signup-form-card {
-    padding: 1.5rem;
+    padding: 2rem 1.5rem;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .form-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.4rem;
+    padding-right: 2.5rem;
+  }
+
+  .form-subtitle {
+    font-size: 0.875rem;
+  }
+
+  .close-button {
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.5rem;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .close-button svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+
+  .form-group label {
+    font-size: 0.75rem;
+  }
+
+  .form-input {
+    padding: 0.875rem;
+    font-size: 0.9rem;
+    width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .submit-button {
+    padding: 1rem 1.25rem;
+    font-size: 0.9rem;
+  }
+
+  .form-note {
+    font-size: 0.7rem;
+  }
+
+  .error-message {
+    font-size: 0.8rem;
+    padding: 0.75rem;
   }
 }
 
@@ -2064,6 +2123,10 @@ onUnmounted(() => {
 
   .subtitle {
     font-size: 0.95rem;
+  }
+
+  .release-date {
+    font-size: 0.8rem;
   }
 
   .illustration-grid {
@@ -2293,16 +2356,105 @@ onUnmounted(() => {
     font-size: 0.85rem;
   }
 
-  .stats-section {
-    padding: 3rem 0;
+  /* Modal Form - Extra Small Screens */
+  .modal-overlay {
+    padding: 0.75rem;
+    align-items: center;
+    justify-content: center;
   }
 
-  .spots-number {
-    font-size: 1.75rem;
+  .modal-content {
+    width: calc(100% - 1.5rem);
+    max-width: 380px;
+    max-height: 90dvh;
+    margin: auto;
+    padding: 0;
   }
 
-  .spots-text {
+  .signup-form-card {
+    padding: 1.5rem 1.25rem;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #000000;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-height: 90dvh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .form-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-title {
+    font-size: 1.4rem;
+    line-height: 1.3;
+    padding-right: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-subtitle {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  .close-button {
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.5rem;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+
+  .close-button svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .form-row {
+    gap: 0.75rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+
+  .form-group label {
+    font-size: 0.75rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .form-input {
+    padding: 0.85rem;
     font-size: 0.9rem;
+    width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
   }
+
+  .submit-button {
+    padding: 1rem 1.25rem;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+
+  .form-note {
+    font-size: 0.7rem;
+    margin-top: 0.75rem;
+    line-height: 1.4;
+  }
+
+  .error-message {
+    font-size: 0.8rem;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+  }
+
 }
 </style>
