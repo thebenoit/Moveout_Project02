@@ -6,10 +6,12 @@ import Login from "@/views/Login.vue";
 import Signup from "@/views/Signup.vue";
 
 import Erreur404 from "@/views/Erreur404.vue";
+import EA2 from "@/views/EA2.vue";
 
 import Pricing_Page from "@/views/pricing_pages/pricing_page.vue";
 import PremiumSuccess from "@/views/pricing_pages/PremiumSuccess.vue";
 import EarlyAccess from "@/views/EarlyAccess.vue";
+import Dashboard from "@/views/Dashboard.vue";
 import TestListingCard from "@/views/TestListingCard.vue";
 import LoadingListings from "@/components/loading_listings.vue";
 import LoadingListingsTest from "@/components/LoadingListingsTest.vue";
@@ -68,9 +70,19 @@ const router = createRouter({
       component: EarlyAccess,
     },
     {
+      path: "/early-access-canada",
+      name: "earlyAccessCanada",
+      component: EA2,
+    },
+    {
       path: "/early-access/success",
       name: "earlyAccessSuccess",
       component: EarlyAccess, // TODO: Créer une page de succès dédiée
+    },
+    {
+      path: "/dashboard",
+      name: "dashboard",
+      component: Dashboard,
     },
     // {
     //   path: "/test-listing",
