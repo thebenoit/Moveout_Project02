@@ -9,7 +9,12 @@ dotenv.config();
 const router = express.Router();
 router.use(cookieParser());
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// Use test key in development, live key in production
+const stripeKey = process.env.NODE_ENV === 'production'
+  ? process.env.STRIPE_SECRET_KEY
+  : process.env.STRIPE_SECRET_KEY_TEST;
+
+const stripe = new Stripe(stripeKey);
 
 // Assurer un URL valide avec schéma explicite
 const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";

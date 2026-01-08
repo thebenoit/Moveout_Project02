@@ -6,7 +6,13 @@ import earlyAccessInterface from "../../../mongo/interface/earlyAccess.js";
 dotenv.config();
 const router = express.Router();
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// Use test key in development, live key in production
+const stripeKey = process.env.NODE_ENV === 'production'
+  ? process.env.STRIPE_SECRET_KEY
+  : process.env.STRIPE_SECRET_KEY_TEST;
+
+const stripe = new Stripe(stripeKey);
+console.log(`🔑 Using Stripe key: ${stripeKey?.substring(0, 20)}...`);
 
 // Assurer un URL valide avec schéma explicite
 const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
@@ -79,12 +85,12 @@ router.get("/stats", async (req, res) => {
 
 /**
  * POST /api/early-access/checkout
- * Créer une session Stripe Checkout pour le paiement Early Access ($19)
- * Body: { email }
+ * Créer une session Stripe Checkout pour le paiement Early Access
+ * Body: { email, plan } - plan can be 'standard' ($69) or 'pro' ($99)
  */
 router.post("/checkout", async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email, plan = 'pro' } = req.body;
 
     if (!email) {
       return res.status(400).json({
@@ -125,19 +131,34 @@ router.post("/checkout", async (req, res) => {
       });
     }
 
-    // Vérifier la configuration Stripe Price ID pour Early Access
-    const earlyAccessPriceId = process.env.STRIPE_EARLY_ACCESS_PRICE_ID;
-    if (!earlyAccessPriceId) {
-      console.error("⚠️ STRIPE_EARLY_ACCESS_PRICE_ID non défini dans .env");
-      return res.status(500).json({
-        error: {
-          message: "Configuration Stripe manquante (EARLY_ACCESS_PRICE_ID)",
-          code: 27,
-        },
-      });
+    // Sélectionner le bon Price ID selon le plan choisi
+    let earlyAccessPriceId;
+    if (plan === 'standard') {
+      earlyAccessPriceId = process.env.STRIPE_EARLY_ACCESS_STANDARD_PRICE_ID;
+      if (!earlyAccessPriceId) {
+        console.error("⚠️ STRIPE_EARLY_ACCESS_STANDARD_PRICE_ID non défini dans .env");
+        return res.status(500).json({
+          error: {
+            message: "Configuration Stripe manquante (STANDARD_PRICE_ID)",
+            code: 27,
+          },
+        });
+      }
+    } else {
+      // Plan 'pro' par défaut
+      earlyAccessPriceId = process.env.STRIPE_EARLY_ACCESS_PRO_PRICE_ID;
+      if (!earlyAccessPriceId) {
+        console.error("⚠️ STRIPE_EARLY_ACCESS_PRO_PRICE_ID non défini dans .env");
+        return res.status(500).json({
+          error: {
+            message: "Configuration Stripe manquante (PRO_PRICE_ID)",
+            code: 27,
+          },
+        });
+      }
     }
 
-    // Créer la session Checkout Stripe pour paiement unique ($19)
+    // Créer la session Checkout Stripe pour paiement unique
     const session = await stripe.checkout.sessions.create({
       mode: "payment", // Paiement unique (pas d'abonnement)
       payment_method_types: ["card"],
@@ -152,6 +173,7 @@ router.post("/checkout", async (req, res) => {
         earlyAccessId: earlyAccess._id.toString(),
         email: email,
         type: "early_access",
+        plan: plan, // Include plan type in metadata
       },
       success_url: `${frontendBase}/early-access/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${frontendBase}/early-access?canceled=true`,

@@ -110,7 +110,10 @@ async function createCheckoutSession() {
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: formData.value.email }),
+        body: JSON.stringify({
+          email: formData.value.email,
+          plan: selectedPlan.value || 'pro' // Send the selected plan, default to 'pro'
+        }),
       }
     );
 
@@ -517,7 +520,7 @@ onUnmounted(() => {
             <!-- Bouton Submit -->
             <button type="submit" :disabled="submitting" class="submit-button">
               <span v-if="submitting">Processing...</span>
-              <span v-else>Continue to Payment ($99)</span>
+              <span v-else>Continue to Payment (${{ selectedPlan === 'standard' ? '69' : '99' }})</span>
             </button>
 
             <!-- Note -->
