@@ -41,7 +41,7 @@ async function fetchStats() {
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
 
     if (!response.ok) {
@@ -82,7 +82,7 @@ async function handleSignup() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData.value),
-      }
+      },
     );
 
     const data = await response.json();
@@ -112,9 +112,9 @@ async function createCheckoutSession() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: formData.value.email,
-          plan: selectedPlan.value || 'pro' // Send the selected plan, default to 'pro'
+          plan: selectedPlan.value || "pro", // Send the selected plan, default to 'pro'
         }),
-      }
+      },
     );
 
     const data = await response.json();
@@ -150,9 +150,9 @@ function closeSignupForm() {
 
 // Scroller vers la section des benefits
 function scrollToBenefits() {
-  const benefitsSection = document.getElementById('benefits-section');
+  const benefitsSection = document.getElementById("benefits-section");
   if (benefitsSection) {
-    benefitsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    benefitsSection.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 }
 
@@ -181,23 +181,21 @@ onUnmounted(() => {
           <!-- Text Content -->
           <div class="header-text">
             <h1 class="headline">
-              Stop searching. Start living. Find your apartment in 3 days, not
-              3 months.
+              Stop searching. Start living. Find your apartment in 3 days, not 3
+              months.
             </h1>
             <p class="subtitle">
               Delegate your search. Our 24/7 AI delivers only the top 1% of
               matches that fit your exact criteria.
             </p>
-            <p class="release-date">
-              Launching January 20, 2026
-            </p>
+            <p class="release-date">Launching January 31, 2026</p>
             <div class="cta-buttons">
-          <button
-            @click="openSignupForm"
-            :disabled="stats.spotsRemaining <= 0"
-            class="cta-button-main"
-          >
-            <span v-if="stats.spotsRemaining <= 0">Full</span>
+              <button
+                @click="openSignupForm"
+                :disabled="stats.spotsRemaining <= 0"
+                class="cta-button-main"
+              >
+                <span v-if="stats.spotsRemaining <= 0">Full</span>
                 <span v-else>Show My Eligible Apartments</span>
               </button>
               <button
@@ -207,9 +205,9 @@ onUnmounted(() => {
               >
                 <span v-if="stats.spotsRemaining <= 0">Full</span>
                 <span v-else>Learn More</span>
-          </button>
-        </div>
-      </div>
+              </button>
+            </div>
+          </div>
           <!-- Demo Video -->
           <div class="header-visual">
             <video
@@ -232,9 +230,11 @@ onUnmounted(() => {
       <div class="container">
         <h2 class="benefits-title">The Rental Market is Rigged Against You</h2>
         <p class="benefits-subtitle">
-          Listings hide flaws. Photos are staged. Our Deep Research AI digs into tax records, noise complaints, and legal history to reveal what the landlord won't tell you.
+          Listings hide flaws. Photos are staged. Our Deep Research AI digs into
+          tax records, noise complaints, and legal history to reveal what the
+          landlord won't tell you.
         </p>
-        
+
         <!-- Compare Images Section -->
         <div class="compare-section">
           <div class="challenge-comparison">
@@ -247,13 +247,13 @@ onUnmounted(() => {
                   alt="Real estate listing"
                   class="compare-image compare-image-trap"
                 />
-                <div class="warning-badge" style="top: 15%; left: 10%;">
+                <div class="warning-badge" style="top: 15%; left: 10%">
                   ⚠️ Owner Identity Mismatch
                 </div>
-                <div class="warning-badge" style="top: 60%; left: 75%;">
+                <div class="warning-badge" style="top: 60%; left: 75%">
                   ⚠️ High Noise Level (85db)
                 </div>
-                <div class="warning-badge" style="top: 85%; left: 20%;">
+                <div class="warning-badge" style="top: 85%; left: 20%">
                   ⚠️ 3 Recent Evictions
                 </div>
               </div>
@@ -267,13 +267,13 @@ onUnmounted(() => {
                   alt="Real estate listing verified"
                   class="compare-image compare-image-truth"
                 />
-                <div class="success-badge" style="top: 20%; left: 70%;">
+                <div class="success-badge" style="top: 20%; left: 70%">
                   ✅ Landlord ID Verified (Tax Records)
                 </div>
-                <div class="success-badge" style="top: 55%; left: 15%;">
+                <div class="success-badge" style="top: 55%; left: 15%">
                   ✅ Safe Neighborhood Score
                 </div>
-                <div class="success-badge" style="top: 80%; left: 65%;">
+                <div class="success-badge" style="top: 80%; left: 65%">
                   ✅ Lease Audit Passed
                 </div>
               </div>
@@ -301,7 +301,9 @@ onUnmounted(() => {
                 />
               </div>
               <div class="illustration-content">
-                <p class="illustration-caption">Stop waking up at 3 AM to call agents who ignore you.</p>
+                <p class="illustration-caption">
+                  Stop waking up at 3 AM to call agents who ignore you.
+                </p>
               </div>
             </div>
 
@@ -316,7 +318,9 @@ onUnmounted(() => {
                 />
               </div>
               <div class="illustration-content">
-                <p class="illustration-caption illustration-caption-highlight">Our AI hunts while you sleep. Wake up to a shortlist.</p>
+                <p class="illustration-caption illustration-caption-highlight">
+                  Our AI hunts while you sleep. Wake up to a shortlist.
+                </p>
               </div>
             </div>
           </div>
@@ -345,8 +349,8 @@ onUnmounted(() => {
             <div class="process-number">2</div>
             <h3 class="process-headline">AI Finds Perfect Matches</h3>
             <p class="process-description">
-              Our AI scans thousands of listings 24/7 and filters them based
-              on your criteria. You only see the top 1% of matches that fit
+              Our AI scans thousands of listings 24/7 and filters them based on
+              your criteria. You only see the top 1% of matches that fit
               perfectly.
             </p>
           </div>
@@ -392,7 +396,7 @@ onUnmounted(() => {
                 <span class="feature-text">No Money-Back Guarantee</span>
               </li>
             </ul>
-            <button 
+            <button
               class="pricing-button pricing-button-decoy"
               @click="openSignupForm('standard')"
             >
@@ -413,19 +417,29 @@ onUnmounted(() => {
             </div>
             <ul class="pricing-features">
               <li class="pricing-feature pricing-feature-checked">
-                <span class="feature-text"><strong>90 Days Access</strong> (Cover your entire move)</span>
+                <span class="feature-text"
+                  ><strong>90 Days Access</strong> (Cover your entire
+                  move)</span
+                >
               </li>
               <li class="pricing-feature pricing-feature-checked">
-                <span class="feature-text"><strong>Unlimited Deep Research</strong> (Scam & Noise Checks)</span>
+                <span class="feature-text"
+                  ><strong>Unlimited Deep Research</strong> (Scam & Noise
+                  Checks)</span
+                >
               </li>
               <li class="pricing-feature pricing-feature-checked">
-                <span class="feature-text"><strong>Landlord Identity Verification</strong></span>
+                <span class="feature-text"
+                  ><strong>Landlord Identity Verification</strong></span
+                >
               </li>
               <li class="pricing-feature pricing-feature-checked">
-                <span class="feature-text"><strong>100% Money-Back Guarantee</strong></span>
+                <span class="feature-text"
+                  ><strong>100% Money-Back Guarantee</strong></span
+                >
               </li>
             </ul>
-            <button 
+            <button
               class="pricing-button pricing-button-hero"
               @click="openSignupForm('pro')"
             >
@@ -520,12 +534,17 @@ onUnmounted(() => {
             <!-- Bouton Submit -->
             <button type="submit" :disabled="submitting" class="submit-button">
               <span v-if="submitting">Processing...</span>
-              <span v-else>Continue to Payment (${{ selectedPlan === 'standard' ? '69' : '99' }})</span>
+              <span v-else
+                >Continue to Payment (${{
+                  selectedPlan === "standard" ? "69" : "99"
+                }})</span
+              >
             </button>
 
             <!-- Note -->
             <p class="form-note">
-              By continuing, you will be redirected to Stripe for secure payment.
+              By continuing, you will be redirected to Stripe for secure
+              payment.
             </p>
           </form>
         </div>
@@ -536,7 +555,8 @@ onUnmounted(() => {
 
 <style scoped>
 .early-access-page {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", sans-serif;
   background: #ffffff;
 }
 
@@ -563,8 +583,12 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 30% 50%, rgba(0, 0, 0, 0.01) 0%, transparent 50%),
-              radial-gradient(circle at 70% 50%, rgba(0, 0, 0, 0.01) 0%, transparent 50%);
+  background: radial-gradient(
+      circle at 30% 50%,
+      rgba(0, 0, 0, 0.01) 0%,
+      transparent 50%
+    ),
+    radial-gradient(circle at 70% 50%, rgba(0, 0, 0, 0.01) 0%, transparent 50%);
 }
 
 .header-content {
@@ -761,7 +785,8 @@ onUnmounted(() => {
   text-align: center;
   width: fit-content;
   opacity: 0.4;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Helvetica Neue", sans-serif;
 }
 
 .truth-badge {
@@ -776,7 +801,8 @@ onUnmounted(() => {
   text-align: center;
   width: fit-content;
   opacity: 0.9;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Helvetica Neue", sans-serif;
 }
 
 .compare-image-wrapper {
@@ -875,7 +901,6 @@ onUnmounted(() => {
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
 }
 
-
 /* Illustration Grid */
 .illustration-grid {
   display: grid;
@@ -898,7 +923,7 @@ onUnmounted(() => {
 }
 
 .illustration-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -910,7 +935,7 @@ onUnmounted(() => {
 }
 
 .illustration-card::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 40px;
   height: 40px;
@@ -965,7 +990,7 @@ onUnmounted(() => {
   font-weight: 300;
   color: #f5f5f5;
   line-height: 1;
-  font-family: 'Georgia', serif;
+  font-family: "Georgia", serif;
   pointer-events: none;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -987,7 +1012,7 @@ onUnmounted(() => {
 }
 
 .illustration-frame::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   border: 1px solid #e8e8e8;
@@ -1017,7 +1042,7 @@ onUnmounted(() => {
 }
 
 .illustration-content::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -1132,7 +1157,6 @@ onUnmounted(() => {
   color: #111;
   font-weight: 600;
 }
-
 
 /* Process Section */
 .process-section {
@@ -1353,7 +1377,7 @@ onUnmounted(() => {
 }
 
 .pricing-feature::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   top: 0.4em;
@@ -1364,7 +1388,7 @@ onUnmounted(() => {
 }
 
 .pricing-feature-checked::before {
-  content: '✓';
+  content: "✓";
   width: 20px;
   height: 20px;
   background: #000000;
@@ -1389,7 +1413,7 @@ onUnmounted(() => {
 }
 
 .pricing-feature-disabled::before {
-  content: '✗';
+  content: "✗";
   background: #d1d5db;
   color: #9ca3af;
   border-radius: 50%;
@@ -1452,7 +1476,8 @@ onUnmounted(() => {
 }
 
 @keyframes pulse-button {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
   }
   50% {
@@ -2458,6 +2483,5 @@ onUnmounted(() => {
     margin-bottom: 1rem;
     line-height: 1.4;
   }
-
 }
 </style>
