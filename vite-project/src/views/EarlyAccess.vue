@@ -188,7 +188,7 @@ onUnmounted(() => {
               Delegate your search. Our 24/7 AI delivers only the top 1% of
               matches that fit your exact criteria.
             </p>
-            <p class="release-date">Launching 14 February, 2026</p>
+            <p class="release-date">Launching February 14, 2026</p>
             <div class="cta-buttons">
               <button
                 @click="openSignupForm"
@@ -369,11 +369,21 @@ onUnmounted(() => {
     <!-- Pricing Section -->
     <section class="pricing-section">
       <div class="container">
+        <!-- Professional Intro -->
+        <div class="pricing-intro">
+          <h2 class="pricing-section-title">Secure Your Early Access</h2>
+          <p class="pricing-section-description">
+            Reserve your spot today and lock in our founding member pricing.
+            Limited availability for our February 14 launch.
+          </p>
+        </div>
         <div class="pricing-grid">
           <!-- Card 1: The Decoy (Standard) -->
           <div class="pricing-card pricing-card-decoy">
+            <div class="pre-order-badge">Pre-Order</div>
             <div class="pricing-card-header">
               <h3 class="pricing-card-title">Standard Access</h3>
+              <p class="pricing-launch-date">Launching February 14, 2026</p>
               <div class="pricing-card-price">
                 <span class="price-amount">$69</span>
                 <span class="price-period">One-time</span>
@@ -407,8 +417,10 @@ onUnmounted(() => {
           <!-- Card 2: The Hero (Founding Member) -->
           <div class="pricing-card pricing-card-hero">
             <div class="pricing-badge">Recommended</div>
+            <div class="pre-order-badge pre-order-badge-hero">Pre-Order</div>
             <div class="pricing-card-header">
               <h3 class="pricing-card-title">Founding Member</h3>
+              <p class="pricing-launch-date">Launching February 14, 2026</p>
               <div class="pricing-card-subtitle">Season Pass</div>
               <div class="pricing-card-price">
                 <span class="price-amount">$99</span>
@@ -644,13 +656,12 @@ onUnmounted(() => {
 }
 
 .release-date {
-  font-size: 0.9rem;
-  color: #999999;
+  font-size: 1rem;
+  color: #666666;
   text-align: center;
   margin: 0.5rem 0 0 0;
-  font-weight: 400;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.02em;
   opacity: 0;
   animation: fadeInUp 0.8s ease-out 0.3s forwards;
 }
@@ -1257,6 +1268,28 @@ onUnmounted(() => {
   max-width: 1200px;
 }
 
+.pricing-intro {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 4rem auto;
+}
+
+.pricing-section-title {
+  font-size: 3rem;
+  font-weight: 600;
+  color: #000000;
+  margin: 0 0 1rem 0;
+  letter-spacing: -0.03em;
+}
+
+.pricing-section-description {
+  font-size: 1.15rem;
+  color: #666666;
+  line-height: 1.7;
+  margin: 0;
+  font-weight: 300;
+}
+
 .pricing-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1310,6 +1343,33 @@ onUnmounted(() => {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   white-space: nowrap;
+  z-index: 2;
+}
+
+.pre-order-badge {
+  position: absolute;
+  top: -12px;
+  left: -12px;
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #000000;
+  padding: 0.4rem 1rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  z-index: 3;
+  border-radius: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pre-order-badge-hero {
+  top: -12px;
+  left: -12px;
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #000000;
 }
 
 .pricing-card-header {
@@ -1329,6 +1389,14 @@ onUnmounted(() => {
   color: #666666;
   margin-bottom: 1rem;
   font-weight: 400;
+}
+
+.pricing-launch-date {
+  font-size: 0.95rem;
+  color: #000000;
+  margin: 0.5rem 0 1rem 0;
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 .pricing-card-price {
@@ -1845,6 +1913,10 @@ onUnmounted(() => {
   }
 
   .release-date {
+    font-size: 0.9rem;
+  }
+  
+  .pricing-launch-date {
     font-size: 0.85rem;
   }
 
@@ -2019,6 +2091,31 @@ onUnmounted(() => {
     padding: 3rem 0;
   }
 
+  .pricing-intro {
+    margin-bottom: 3rem;
+  }
+
+  .pricing-section-title {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .pricing-section-description {
+    font-size: 1rem;
+  }
+
+  .pre-order-badge {
+    top: -10px;
+    left: -10px;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.65rem;
+  }
+
+  .pre-order-badge-hero {
+    top: -10px;
+    left: -10px;
+  }
+
   .pricing-grid {
     grid-template-columns: 1fr;
     gap: 2.5rem;
@@ -2154,6 +2251,10 @@ onUnmounted(() => {
   }
 
   .release-date {
+    font-size: 0.85rem;
+  }
+  
+  .pricing-launch-date {
     font-size: 0.8rem;
   }
 
@@ -2356,6 +2457,31 @@ onUnmounted(() => {
 
   .pricing-section {
     padding: 2.5rem 0;
+  }
+
+  .pricing-intro {
+    margin-bottom: 2.5rem;
+  }
+
+  .pricing-section-title {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .pricing-section-description {
+    font-size: 0.9rem;
+  }
+
+  .pre-order-badge {
+    top: -8px;
+    left: -8px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.6rem;
+  }
+
+  .pre-order-badge-hero {
+    top: -8px;
+    left: -8px;
   }
 
   .pricing-grid {
