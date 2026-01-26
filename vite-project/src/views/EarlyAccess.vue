@@ -188,7 +188,7 @@ onUnmounted(() => {
               Delegate your search. Our 24/7 AI delivers only the top 1% of
               matches that fit your exact criteria.
             </p>
-            <p class="release-date">Launching January 31, 2026</p>
+            <p class="release-date">Launching 14 February, 2026</p>
             <div class="cta-buttons">
               <button
                 @click="openSignupForm"
