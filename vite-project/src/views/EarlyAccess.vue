@@ -1,11 +1,10 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
-import { useRouter } from "vue-router";
-import demoVideo from "@/assets/videos/Demo_Video.mov";
+import robotWorking from "@/assets/images/robot_working.jpg";
+import stressedImage from "@/assets/images/stressed.jpg";
 import unnamedCards from "@/assets/images/unnamed.jpg";
 import verifiedCards from "@/assets/images/verified.jpg";
-import stressedImage from "@/assets/images/stressed.jpg";
-import robotWorking from "@/assets/images/robot_working.jpg";
+import { onMounted, onUnmounted, ref } from "vue";
+import { useRouter } from "vue-router";
 
 const router = useRouter();
 
@@ -196,7 +195,7 @@ onUnmounted(() => {
                 class="cta-button-main"
               >
                 <span v-if="stats.spotsRemaining <= 0">Full</span>
-                <span v-else>Show My Eligible Apartments</span>
+                <span v-else>Reserve My Priority Acces</span>
               </button>
               <button
                 @click="scrollToBenefits"
@@ -207,19 +206,6 @@ onUnmounted(() => {
                 <span v-else>Learn More</span>
               </button>
             </div>
-          </div>
-          <!-- Demo Video -->
-          <div class="header-visual">
-            <video
-              class="demo-video"
-              :src="demoVideo"
-              autoplay
-              loop
-              muted
-              playsinline
-            >
-              Votre navigateur ne supporte pas la vidéo.
-            </video>
           </div>
         </div>
       </div>
@@ -422,6 +408,28 @@ onUnmounted(() => {
               <h3 class="pricing-card-title">Founding Member</h3>
               <p class="pricing-launch-date">Launching February 14, 2026</p>
               <div class="pricing-card-subtitle">Season Pass</div>
+              <div class="rarity-bar">
+                <div class="rarity-bar-top">
+                  <span class="rarity-label">Access Rarity</span>
+                  <span class="rarity-value">
+                    {{ stats.spotsRemaining }} / {{ stats.maxSpots }} spots
+                    remaining
+                  </span>
+                </div>
+                <div class="rarity-bar-track">
+                  <div
+                    class="rarity-bar-fill"
+                    :style="{
+                      width:
+                        (stats.maxSpots
+                          ? ((stats.maxSpots - stats.spotsRemaining) /
+                              stats.maxSpots) *
+                            100
+                          : 0) + '%',
+                    }"
+                  ></div>
+                </div>
+              </div>
               <div class="pricing-card-price">
                 <span class="price-amount">$99</span>
                 <span class="price-period">One-time</span>
@@ -1391,6 +1399,50 @@ onUnmounted(() => {
   font-weight: 400;
 }
 
+.rarity-bar {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.rarity-bar-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+  gap: 0.5rem;
+}
+
+.rarity-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #9ca3af;
+  font-weight: 600;
+}
+
+.rarity-value {
+  font-size: 0.75rem;
+  color: #111827;
+  font-weight: 500;
+}
+
+.rarity-bar-track {
+  position: relative;
+  width: 100%;
+  height: 7px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  overflow: hidden;
+}
+
+.rarity-bar-fill {
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  background: linear-gradient(90deg, #22c55e, #eab308, #ef4444);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .pricing-launch-date {
   font-size: 0.95rem;
   color: #000000;
@@ -1915,7 +1967,7 @@ onUnmounted(() => {
   .release-date {
     font-size: 0.9rem;
   }
-  
+
   .pricing-launch-date {
     font-size: 0.85rem;
   }
@@ -2253,7 +2305,7 @@ onUnmounted(() => {
   .release-date {
     font-size: 0.85rem;
   }
-  
+
   .pricing-launch-date {
     font-size: 0.8rem;
   }
