@@ -1,13 +1,12 @@
 <script setup>
-import robotWorking from "@/assets/images/robot_working.jpg";
-import stressedImage from "@/assets/images/stressed.jpg";
-import unnamedCards from "@/assets/images/unnamed.jpg";
-import verifiedCards from "@/assets/images/verified.jpg";
+import unnamedCards from "@/assets/images/unnamed.png";
+import verifiedCards from "@/assets/images/verified.png";
+import robotVideo from "@/assets/videos/Animation_d_image_subtile_et_realiste.mov";
+import solutionVideo from "@/assets/videos/Image_To_Animated_GIF_Conversion (1).mp4";
 import TypewriterEraseText from "@/components/TypewriterEraseText.vue";
 import TypewriterText from "@/components/TypewriterText.vue";
 import { onMounted, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
-
 const router = useRouter();
 
 // Stats Early Access
@@ -287,25 +286,25 @@ onUnmounted(() => {
                   class="compare-image compare-image-trap"
                 />
                 <div class="warning-badge" style="top: 10%; left: 8%">
-                  ⚠️ Illegal deposit requested
+                   Illegal deposit requested
                 </div>
                 <div
                   class="warning-badge"
                   style="top: 22%; right: 8%; left: auto"
                 >
-                  ⚠️ Already rented — listing still up
+                   Already rented — listing still up
                 </div>
                 <div class="warning-badge" style="top: 50%; left: 8%">
-                  ⚠️ Owner identity mismatch
+                   Owner identity mismatch
                 </div>
                 <div
                   class="warning-badge"
                   style="top: 68%; right: 10%; left: auto"
                 >
-                  ⚠️ High noise level (85db)
+                   High noise level (85db)
                 </div>
                 <div class="warning-badge" style="top: 88%; left: 12%">
-                  ⚠️ 3 recent evictions in building
+                   3 recent evictions in building
                 </div>
               </div>
             </div>
@@ -318,14 +317,14 @@ onUnmounted(() => {
                   alt="Real estate listing verified"
                   class="compare-image compare-image-truth"
                 />
-                <div class="success-badge" style="top: 20%; left: 70%">
-                  ✅ Landlord ID Verified (Tax Records)
+                <div class="success-badge" style="top: 20%; left: 50%">
+                   Landlord ID Verified (Tax Records)
                 </div>
                 <div class="success-badge" style="top: 55%; left: 15%">
-                  ✅ Safe Neighborhood Score
+                   Safe Neighborhood Score
                 </div>
                 <div class="success-badge" style="top: 80%; left: 65%">
-                  ✅ Lease Audit Passed
+                   Lease Audit Passed
                 </div>
               </div>
             </div>
@@ -345,11 +344,14 @@ onUnmounted(() => {
             <div class="illustration-card illustration-card-problem">
               <div class="illustration-number">01</div>
               <div class="illustration-frame">
-                <img
-                  :src="stressedImage"
-                  alt="Stressed international student"
+                <video
+                  :src="robotVideo"
                   class="illustration-image"
-                />
+                  autoplay
+                  muted
+                  loop
+                  playsinline
+                ></video>
               </div>
               <div class="illustration-content">
                 <p class="illustration-caption">
@@ -362,11 +364,14 @@ onUnmounted(() => {
             <div class="illustration-card illustration-card-solution">
               <div class="illustration-number">02</div>
               <div class="illustration-frame">
-                <img
-                  :src="robotWorking"
-                  alt="AI working 24/7"
+                <video
+                  :src="solutionVideo"
                   class="illustration-image"
-                />
+                  autoplay
+                  muted
+                  loop
+                  playsinline
+                ></video>
               </div>
               <div class="illustration-content">
                 <p class="illustration-caption illustration-caption-highlight">
@@ -455,7 +460,8 @@ onUnmounted(() => {
 
           <!-- Card 2: The Hero (Founding Member) -->
           <div class="pricing-card pricing-card-hero">
-            <div class="pricing-badge"><TypewriterEraseText
+            <div class="pricing-badge">
+              <TypewriterEraseText
                 tag="p"
                 text="Recommended"
                 class="pricing"
@@ -466,7 +472,7 @@ onUnmounted(() => {
                 :erase-min-length="0"
               />
             </div>
-            
+
             <div class="pre-order-badge pre-order-badge-hero">Pre-Order</div>
             <div class="pricing-card-header">
               <h3 class="pricing-card-title">Founding Member</h3>
@@ -945,7 +951,7 @@ onUnmounted(() => {
 .compare-image-wrapper {
   position: relative;
   width: 100%;
-  max-width: 500px;
+  max-width: 600px; 
   margin: 0 auto;
   overflow: visible;
   border-radius: 0;
@@ -982,7 +988,7 @@ onUnmounted(() => {
 .warning-badge {
   position: absolute;
   padding: 0.4rem 0.75rem;
-  background: rgba(255, 255, 255, 0.95);
+  background:  transparent;
   color: #000000;
   font-size: 0.7rem;
   font-weight: 500;
@@ -990,7 +996,7 @@ onUnmounted(() => {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 10;
   white-space: nowrap;
   max-width: 90%;
@@ -1001,15 +1007,15 @@ onUnmounted(() => {
 .success-badge {
   position: absolute;
   padding: 0.4rem 0.75rem;
-  background: rgba(0, 0, 0, 0.9);
-  color: #ffffff;
+  background: transparent;
+  color: #000000;
   font-size: 0.7rem;
   font-weight: 500;
   border-radius: 0;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2);
   z-index: 10;
   white-space: nowrap;
   max-width: 90%;
@@ -1173,6 +1179,10 @@ onUnmounted(() => {
   object-fit: contain;
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   filter: grayscale(0.2);
+}
+
+.illustration-frame video.illustration-image {
+  display: block;
 }
 
 .illustration-card:hover .illustration-image {
