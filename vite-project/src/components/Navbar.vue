@@ -1,15 +1,9 @@
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { RouterLink, useRouter } from "vue-router";
-import Logo from "./Logo.vue";
 
-import MoveoutLogo from "../assets/images/Moveout_Logo2.svg";
-
-import { TruckIcon } from "@heroicons/vue/24/outline";
-import { UserIcon } from "@heroicons/vue/24/outline";
-import utils from "../utils/utils/";
-import BetaLogo from "./BetaLogo.vue";
 import { WalletIcon } from "@heroicons/vue/24/outline"; // ajouter l'icône Wallet
+import utils from "../utils/utils/";
 
 const connecter = ref(false); // initialiser à false
 
@@ -30,7 +24,7 @@ watch(
   async () => {
     await isUserLoggedIn();
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 onMounted(async () => {
@@ -52,7 +46,7 @@ function gotosignup() {
 }
 
 const customerPortalUrl = ref(
-  `https://billing.stripe.com/p/login/00g033aRe1av8es3cc` + "?prefilled_email="
+  `https://billing.stripe.com/p/login/00g033aRe1av8es3cc` + "?prefilled_email=",
 );
 
 function billing() {
@@ -290,21 +284,6 @@ function estConnecter() {}
 
     <!-- Navigation Buttons -->
     <div class="navbar-buttons">
-      <button
-        v-if="!connecter"
-        @click="gotologin"
-        class="navbar-btn navbar-btn-outline login-btn"
-      >
-        <span class="btn-text">Se connecter</span>
-      </button>
-      <button
-        v-if="!connecter"
-        @click="gotosignup"
-        class="navbar-btn navbar-btn-solid signup-btn"
-      >
-        <span class="btn-text">S'inscrire</span>
-      </button>
-
       <router-link
         v-if="connecter"
         to="/pricing"

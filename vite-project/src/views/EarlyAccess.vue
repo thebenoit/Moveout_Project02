@@ -180,12 +180,15 @@ onUnmounted(() => {
           <!-- Text Content -->
           <div class="header-text">
             <h1 class="headline">
-              Stop searching. Start living. Find your apartment in 3 days, not 3
+              Stop searching. Start moving. Find your apartment in 3 days, not 3
               months.
             </h1>
             <p class="subtitle">
               Delegate your search. Our 24/7 AI delivers only the top 1% of
               matches that fit your exact criteria.
+            </p>
+            <p class="subtitle">
+              The AI that finds your apartment and vets your landlord.
             </p>
             <p class="release-date">Launching February 14, 2026</p>
             <div class="cta-buttons">
@@ -206,6 +209,7 @@ onUnmounted(() => {
                 <span v-else>Learn More</span>
               </button>
             </div>
+            <p class="cta-waitlist-line">Already 150+ people on the waitlist</p>
           </div>
         </div>
       </div>
@@ -233,14 +237,26 @@ onUnmounted(() => {
                   alt="Real estate listing"
                   class="compare-image compare-image-trap"
                 />
-                <div class="warning-badge" style="top: 15%; left: 10%">
-                  ⚠️ Owner Identity Mismatch
+                <div class="warning-badge" style="top: 10%; left: 8%">
+                  ⚠️ Illegal deposit requested
                 </div>
-                <div class="warning-badge" style="top: 60%; left: 75%">
-                  ⚠️ High Noise Level (85db)
+                <div
+                  class="warning-badge"
+                  style="top: 22%; right: 8%; left: auto"
+                >
+                  ⚠️ Already rented — listing still up
                 </div>
-                <div class="warning-badge" style="top: 85%; left: 20%">
-                  ⚠️ 3 Recent Evictions
+                <div class="warning-badge" style="top: 50%; left: 8%">
+                  ⚠️ Owner identity mismatch
+                </div>
+                <div
+                  class="warning-badge"
+                  style="top: 68%; right: 10%; left: auto"
+                >
+                  ⚠️ High noise level (85db)
+                </div>
+                <div class="warning-badge" style="top: 88%; left: 12%">
+                  ⚠️ 3 recent evictions in building
                 </div>
               </div>
             </div>
@@ -320,6 +336,10 @@ onUnmounted(() => {
         <h2 class="process-title">How It Works</h2>
         <p class="process-subtitle">
           Get your perfect apartment in just 3 simple steps
+        </p>
+        <p class="process-data-note">
+          Our AI scans almost every real estate listing site in your region at
+          once.
         </p>
         <div class="process-cards">
           <div class="process-card">
@@ -431,8 +451,13 @@ onUnmounted(() => {
                 </div>
               </div>
               <div class="pricing-card-price">
-                <span class="price-amount">$99</span>
-                <span class="price-period">One-time</span>
+                <span class="price-regular">Regular price $199</span>
+                <div class="pricing-hero-text"><span class="price-amount">$99</span>
+                
+                <span class="price-period">One-time</span></div>
+                <span class="price-microcopy"
+                  >Cheaper than a single day of rent lost to searching.</span
+                >
               </div>
             </div>
             <ul class="pricing-features">
@@ -463,7 +488,7 @@ onUnmounted(() => {
               class="pricing-button pricing-button-hero"
               @click="openSignupForm('pro')"
             >
-              Secure My Safe Move ($99)
+              Join the founding members
             </button>
           </div>
         </div>
@@ -1198,11 +1223,21 @@ onUnmounted(() => {
   font-size: 1.25rem;
   color: #666666;
   text-align: center;
-  margin: 0 0 5rem 0;
+  margin: 0 0 1rem 0;
   max-width: 650px;
   margin-left: auto;
   margin-right: auto;
   font-weight: 300;
+}
+
+.process-data-note {
+  font-size: 0.9rem;
+  color: #888888;
+  text-align: center;
+  margin: 0 auto 5rem;
+  max-width: 520px;
+  line-height: 1.5;
+  font-weight: 400;
 }
 
 .process-cards {
@@ -1453,9 +1488,27 @@ onUnmounted(() => {
 
 .pricing-card-price {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   gap: 0.5rem;
   margin-top: 1rem;
+}
+
+.price-regular {
+  width: 100%;
+  font-size: 0.95rem;
+  color: #c53030;
+  text-decoration: line-through;
+  font-weight: 700;
+}
+
+.price-microcopy {
+  width: 100%;
+  font-size: 0.85rem;
+  color: #666666;
+  line-height: 1.4;
+  margin-top: 0.25rem;
+  font-weight: 400;
 }
 
 .price-amount {
@@ -1579,6 +1632,51 @@ onUnmounted(() => {
   border-color: #9ca3af;
   color: #374151;
 }
+.pricing-hero-text {
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 3.25rem;
+  letter-spacing: -0.04em;
+  position: relative;
+  display: inline-block;
+  padding: 0.5em 0.75em;  
+  text-shadow: 0 0 0 currentColor;
+  animation: pulse-text-highlight 2.5s ease-out infinite;
+}
+
+@keyframes pulse-text-highlight {
+  0% {
+    box-shadow:
+      0 0 0 0 rgba(255, 255, 255, 0.12),
+      0 0 0 0 rgba(255, 255, 255, 0.08),
+      0 0 0 0 rgba(255, 255, 255, 0.04);
+  }
+  25% {
+    box-shadow:
+      0 0 0 4px rgba(255, 255, 255, 0.08),
+      0 0 0 0 rgba(255, 255, 255, 0.08),
+      0 0 0 0 rgba(255, 255, 255, 0.04);
+  }
+  50% {
+    box-shadow:
+      0 0 0 8px rgba(255, 255, 255, 0.02),
+      0 0 0 4px rgba(255, 255, 255, 0.06),
+      0 0 0 0 rgba(255, 255, 255, 0.04);
+  }
+  75% {
+    box-shadow:
+      0 0 0 12px rgba(255, 255, 255, 0),
+      0 0 0 8px rgba(255, 255, 255, 0.02),
+      0 0 0 4px rgba(255, 255, 255, 0.04);
+  }
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(255, 255, 255, 0),
+      0 0 0 0 rgba(255, 255, 255, 0),
+      0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+
 
 .pricing-button-hero {
   background: #000000;
@@ -1614,6 +1712,16 @@ onUnmounted(() => {
   align-self: center;
   opacity: 0;
   animation: fadeInUp 0.8s ease-out 0.45s forwards;
+}
+
+.cta-waitlist-line {
+  margin: 1rem 0 0;
+  font-size: 0.875rem;
+  color: #666666;
+  text-align: center;
+  font-weight: 400;
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out 0.5s forwards;
 }
 
 .cta-button-main {
