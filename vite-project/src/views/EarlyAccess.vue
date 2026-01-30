@@ -30,6 +30,43 @@ const formData = ref({
 const submitting = ref(false);
 const formError = ref(null);
 
+// Modal process card (zoom)
+const showProcessCardModal = ref(false);
+const selectedProcessCardIndex = ref(null);
+
+const processSteps = [
+  {
+    number: 1,
+    headline: "Sign Up & Set Your Criteria",
+    description:
+      "Create your account and tell us exactly what you're looking for: budget, location, number of bedrooms, and any special requirements.",
+  },
+  {
+    number: 2,
+    headline: "AI Finds Perfect Matches",
+    description:
+      "Our AI scans thousands of listings 24/7 and filters them based on your criteria. You only see the top 1% of matches that fit perfectly.",
+  },
+  {
+    number: 3,
+    headline: "Review & Schedule Visits",
+    description:
+      "Get notified instantly when perfect matches are found. Review the details and schedule visits directly through our platform.",
+  },
+];
+
+function openProcessCardModal(index) {
+  selectedProcessCardIndex.value = index;
+  showProcessCardModal.value = true;
+}
+
+function closeProcessCardModal() {
+  showProcessCardModal.value = false;
+  selectedProcessCardIndex.value = null;
+}
+
+
+
 // Récupérer les stats Early Access
 async function fetchStats() {
   try {
@@ -342,33 +379,17 @@ onUnmounted(() => {
           once.
         </p>
         <div class="process-cards">
-          <div class="process-card">
-            <div class="process-number">1</div>
-            <h3 class="process-headline">Sign Up & Set Your Criteria</h3>
-            <p class="process-description">
-              Create your account and tell us exactly what you're looking for:
-              budget, location, number of bedrooms, and any special
-              requirements.
-            </p>
-          </div>
-          <div class="process-card">
-            <div class="process-number">2</div>
-            <h3 class="process-headline">AI Finds Perfect Matches</h3>
-            <p class="process-description">
-              Our AI scans thousands of listings 24/7 and filters them based on
-              your criteria. You only see the top 1% of matches that fit
-              perfectly.
-            </p>
-          </div>
-          <div class="process-card">
-            <div class="process-number">3</div>
-            <h3 class="process-headline">Review & Schedule Visits</h3>
-            <p class="process-description">
-              Get notified instantly when perfect matches are found. Review the
-              details and schedule visits directly through our platform.
-            </p>
-          </div>
+        <div
+          v-for="(step, index) in processSteps"
+          :key="index"
+          class="process-card"
+          @click="openProcessCardModal(index)"
+        >
+          <div class="process-number">{{ step.number }}</div>
+          <h3 class="process-headline">{{ step.headline }}</h3>
+          <p class="process-description">{{ step.description }}</p>
         </div>
+      </div>
       </div>
     </section>
 
@@ -595,6 +616,50 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
+
+
+    <!-- Modal Process Card (zoom) -->
+<div
+  v-if="showProcessCardModal && selectedProcessCardIndex !== null"
+  class="modal-overlay process-card-modal-overlay"
+  @click="closeProcessCardModal"
+>
+  <div class="process-card-modal-content" @click.stop>
+    <div
+      v-if="processSteps[selectedProcessCardIndex]"
+      class="process-card process-card-zoomed"
+    >
+      <div class="process-number">
+        {{ processSteps[selectedProcessCardIndex].number }}
+      </div>
+      <h3 class="process-headline">
+        {{ processSteps[selectedProcessCardIndex].headline }}
+      </h3>
+      <p class="process-description">
+        {{ processSteps[selectedProcessCardIndex].description }}
+      </p>
+      <button
+        type="button"
+        class="process-card-cta"
+        @click="closeProcessCardModal(); openSignupForm()"
+      >
+        Get started
+      </button>
+    </div>
+    <button
+      type="button"
+      class="process-card-close"
+      aria-label="Fermer"
+      @click="closeProcessCardModal"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <path
+          d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
   </div>
 </template>
 
@@ -1246,6 +1311,7 @@ onUnmounted(() => {
   gap: 3rem;
   max-width: 1200px;
   margin: 0 auto;
+  
 }
 
 .process-card {
@@ -1260,10 +1326,15 @@ onUnmounted(() => {
   align-items: center;
   gap: 1.5rem;
   box-shadow: none;
+  animation: subtle-pulse 5s ease-in-out infinite;
+  cursor: pointer;
 }
+.process-card:nth-child(1) { animation-delay: 0s; }
+.process-card:nth-child(2) { animation-delay: 1.66s; }
+.process-card:nth-child(3) { animation-delay: 3.33s; }
 
 .process-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-8px) scale(1.05);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
   border-color: #000000;
 }
@@ -1348,6 +1419,8 @@ onUnmounted(() => {
   padding: 3rem;
   display: flex;
   flex-direction: column;
+  border-radius: 12px; /* Un peu plus de rondeur pour le confort visuel */
+  position: relative;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -1363,9 +1436,10 @@ onUnmounted(() => {
 
 /* Hero Card (Founding Member) - Elevated & Prominent */
 .pricing-card-hero {
-  border: 2px solid #000000;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-  transform: scale(1.02);
+  border: 2px solid #000;
+  transform: scale(1.05);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+  z-index: 10;
 }
 
 .pricing-card-hero:hover {
@@ -1512,11 +1586,11 @@ onUnmounted(() => {
 }
 
 .price-amount {
-  font-size: 3rem;
-  font-weight: 700;
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
   color: #000000;
   line-height: 1;
-  letter-spacing: -0.03em;
 }
 
 .pricing-card-decoy .price-amount {
@@ -1641,49 +1715,27 @@ onUnmounted(() => {
   display: inline-block;
   padding: 0.5em 0.75em;  
   text-shadow: 0 0 0 currentColor;
-  animation: pulse-text-highlight 2.5s ease-out infinite;
+  animation: subtle-pulse 2.5s infinite;
 }
 
-@keyframes pulse-text-highlight {
-  0% {
-    box-shadow:
-      0 0 0 0 rgba(255, 255, 255, 0.12),
-      0 0 0 0 rgba(255, 255, 255, 0.08),
-      0 0 0 0 rgba(255, 255, 255, 0.04);
-  }
-  25% {
-    box-shadow:
-      0 0 0 4px rgba(255, 255, 255, 0.08),
-      0 0 0 0 rgba(255, 255, 255, 0.08),
-      0 0 0 0 rgba(255, 255, 255, 0.04);
-  }
-  50% {
-    box-shadow:
-      0 0 0 8px rgba(255, 255, 255, 0.02),
-      0 0 0 4px rgba(255, 255, 255, 0.06),
-      0 0 0 0 rgba(255, 255, 255, 0.04);
-  }
-  75% {
-    box-shadow:
-      0 0 0 12px rgba(255, 255, 255, 0),
-      0 0 0 8px rgba(255, 255, 255, 0.02),
-      0 0 0 4px rgba(255, 255, 255, 0.04);
-  }
-  100% {
-    box-shadow:
-      0 0 0 0 rgba(255, 255, 255, 0),
-      0 0 0 0 rgba(255, 255, 255, 0),
-      0 0 0 0 rgba(255, 255, 255, 0);
-  }
+@keyframes subtle-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(0,0,0, 0.2); }
+  70% { box-shadow: 0 0 0 15px rgba(0,0,0, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0,0,0, 0); }
 }
-
-
 .pricing-button-hero {
   background: #000000;
   color: #ffffff;
   border-color: #000000;
   position: relative;
   animation: pulse-button 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@media (max-width: 768px) {
+  .pricing-card-hero {
+    transform: scale(1);
+    margin-top: 2rem;
+  }
 }
 
 .pricing-button-hero:hover {
@@ -2284,6 +2336,9 @@ onUnmounted(() => {
 
   .pricing-card {
     padding: 2.5rem;
+    border-radius: 12px; /* Un peu plus de rondeur pour le confort visuel */
+    position: relative;
+    overflow: hidden;
   }
 
   .pricing-card-hero {
@@ -2648,9 +2703,7 @@ onUnmounted(() => {
     gap: 2rem;
   }
 
-  .pricing-card {
-    padding: 2rem;
-  }
+ 
 
   .pricing-card-title {
     font-size: 1.5rem;
@@ -2770,4 +2823,68 @@ onUnmounted(() => {
     line-height: 1.4;
   }
 }
+
+/* Modal Process Card – fond plus sombre */
+.process-card-modal-overlay {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.process-card-modal-content {
+  position: relative;
+  max-width: 480px;
+  width: 100%;
+  margin: auto;
+  padding: 1rem;
+}
+
+/* Carte en zoom dans le modal */
+.process-card-zoomed {
+  transform: scale(1.08);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+  cursor: default;
+  animation: none;
+}
+.process-card-zoomed:hover {
+  transform: scale(1.11);
+}
+
+.process-card-zoomed .process-number,
+.process-card-zoomed .process-headline,
+.process-card-zoomed .process-description {
+  pointer-events: none;
+}
+
+/* Bouton CTA optionnel dans la carte zoomée */
+.process-card-cta {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: #000;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.process-card-close {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10001;
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.process-card-close svg {
+  width: 44px;
+  height: 44px;
+  display: block;
+}
+
+
+
 </style>
