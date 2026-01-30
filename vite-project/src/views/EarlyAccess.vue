@@ -3,6 +3,8 @@ import robotWorking from "@/assets/images/robot_working.jpg";
 import stressedImage from "@/assets/images/stressed.jpg";
 import unnamedCards from "@/assets/images/unnamed.jpg";
 import verifiedCards from "@/assets/images/verified.jpg";
+import TypewriterEraseText from "@/components/TypewriterEraseText.vue";
+import TypewriterText from "@/components/TypewriterText.vue";
 import { onMounted, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -64,8 +66,6 @@ function closeProcessCardModal() {
   showProcessCardModal.value = false;
   selectedProcessCardIndex.value = null;
 }
-
-
 
 // Récupérer les stats Early Access
 async function fetchStats() {
@@ -217,8 +217,11 @@ onUnmounted(() => {
           <!-- Text Content -->
           <div class="header-text">
             <h1 class="headline">
-              Stop searching. Start moving. Find your apartment in 3 days, not 3
-              months.
+              <TypewriterText
+                text="Stop searching. Start moving. Find your apartment in 3 days, not 3 months."
+                :speed="45"
+                :delay="400"
+              />
             </h1>
             <p class="subtitle">
               Delegate your search. Our 24/7 AI delivers only the top 1% of
@@ -246,7 +249,16 @@ onUnmounted(() => {
                 <span v-else>Learn More</span>
               </button>
             </div>
-            <p class="cta-waitlist-line">Already 150+ people on the waitlist</p>
+            <TypewriterEraseText
+              tag="p"
+              text="Already 150+ people on the waitlist"
+              class="cta-waitlist-line"
+              :type-speed="55"
+              :erase-speed="35"
+              :pause-before-erase="1800"
+              :pause-before-retype="500"
+              :erase-min-length="19"
+            />
           </div>
         </div>
       </div>
@@ -298,7 +310,7 @@ onUnmounted(() => {
               </div>
             </div>
             <!-- Right: The Truth -->
-            <div class="challenge-side challenge-truth">
+            <div class="challenge-side">
               <div class="truth-badge">WHAT MOVEOUT REVEALS</div>
               <div class="compare-image-wrapper">
                 <img
@@ -379,17 +391,17 @@ onUnmounted(() => {
           once.
         </p>
         <div class="process-cards">
-        <div
-          v-for="(step, index) in processSteps"
-          :key="index"
-          class="process-card"
-          @click="openProcessCardModal(index)"
-        >
-          <div class="process-number">{{ step.number }}</div>
-          <h3 class="process-headline">{{ step.headline }}</h3>
-          <p class="process-description">{{ step.description }}</p>
+          <div
+            v-for="(step, index) in processSteps"
+            :key="index"
+            class="process-card"
+            @click="openProcessCardModal(index)"
+          >
+            <div class="process-number">{{ step.number }}</div>
+            <h3 class="process-headline">{{ step.headline }}</h3>
+            <p class="process-description">{{ step.description }}</p>
+          </div>
         </div>
-      </div>
       </div>
     </section>
 
@@ -443,7 +455,18 @@ onUnmounted(() => {
 
           <!-- Card 2: The Hero (Founding Member) -->
           <div class="pricing-card pricing-card-hero">
-            <div class="pricing-badge">Recommended</div>
+            <div class="pricing-badge"><TypewriterEraseText
+                tag="p"
+                text="Recommended"
+                class="pricing"
+                :type-speed="55"
+                :erase-speed="35"
+                :pause-before-erase="1800"
+                :pause-before-retype="500"
+                :erase-min-length="0"
+              />
+            </div>
+            
             <div class="pre-order-badge pre-order-badge-hero">Pre-Order</div>
             <div class="pricing-card-header">
               <h3 class="pricing-card-title">Founding Member</h3>
@@ -473,9 +496,11 @@ onUnmounted(() => {
               </div>
               <div class="pricing-card-price">
                 <span class="price-regular">Regular price $199</span>
-                <div class="pricing-hero-text"><span class="price-amount">$99</span>
-                
-                <span class="price-period">One-time</span></div>
+                <div class="pricing-hero-text">
+                  <span class="price-amount">$99</span>
+
+                  <span class="price-period">One-time</span>
+                </div>
                 <span class="price-microcopy"
                   >Cheaper than a single day of rent lost to searching.</span
                 >
@@ -617,49 +642,51 @@ onUnmounted(() => {
       </div>
     </div>
 
-
     <!-- Modal Process Card (zoom) -->
-<div
-  v-if="showProcessCardModal && selectedProcessCardIndex !== null"
-  class="modal-overlay process-card-modal-overlay"
-  @click="closeProcessCardModal"
->
-  <div class="process-card-modal-content" @click.stop>
     <div
-      v-if="processSteps[selectedProcessCardIndex]"
-      class="process-card process-card-zoomed"
-    >
-      <div class="process-number">
-        {{ processSteps[selectedProcessCardIndex].number }}
-      </div>
-      <h3 class="process-headline">
-        {{ processSteps[selectedProcessCardIndex].headline }}
-      </h3>
-      <p class="process-description">
-        {{ processSteps[selectedProcessCardIndex].description }}
-      </p>
-      <button
-        type="button"
-        class="process-card-cta"
-        @click="closeProcessCardModal(); openSignupForm()"
-      >
-        Get started
-      </button>
-    </div>
-    <button
-      type="button"
-      class="process-card-close"
-      aria-label="Fermer"
+      v-if="showProcessCardModal && selectedProcessCardIndex !== null"
+      class="modal-overlay process-card-modal-overlay"
       @click="closeProcessCardModal"
     >
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-        <path
-          d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-        />
-      </svg>
-    </button>
-  </div>
-</div>
+      <div class="process-card-modal-content" @click.stop>
+        <div
+          v-if="processSteps[selectedProcessCardIndex]"
+          class="process-card process-card-zoomed"
+        >
+          <div class="process-number">
+            {{ processSteps[selectedProcessCardIndex].number }}
+          </div>
+          <h3 class="process-headline">
+            {{ processSteps[selectedProcessCardIndex].headline }}
+          </h3>
+          <p class="process-description">
+            {{ processSteps[selectedProcessCardIndex].description }}
+          </p>
+          <button
+            type="button"
+            class="process-card-cta"
+            @click="
+              closeProcessCardModal();
+              openSignupForm();
+            "
+          >
+            Get started
+          </button>
+        </div>
+        <button
+          type="button"
+          class="process-card-close"
+          aria-label="Fermer"
+          @click="closeProcessCardModal"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -729,6 +756,7 @@ onUnmounted(() => {
   text-align: center;
   opacity: 0;
   animation: fadeInUp 0.8s ease-out forwards;
+  min-height: 1.05em;
 }
 
 @keyframes fadeInUp {
@@ -937,6 +965,12 @@ onUnmounted(() => {
   display: block;
   object-fit: cover;
 }
+.compare-image-truth {
+  border: 2px solid #000;
+  transform: scale(1.05);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
 
 /* Image Filters */
 .compare-image-trap {
@@ -1002,6 +1036,7 @@ onUnmounted(() => {
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  animation: pulse-button 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .challenge-button:hover {
@@ -1311,7 +1346,6 @@ onUnmounted(() => {
   gap: 3rem;
   max-width: 1200px;
   margin: 0 auto;
-  
 }
 
 .process-card {
@@ -1329,9 +1363,15 @@ onUnmounted(() => {
   animation: subtle-pulse 5s ease-in-out infinite;
   cursor: pointer;
 }
-.process-card:nth-child(1) { animation-delay: 0s; }
-.process-card:nth-child(2) { animation-delay: 1.66s; }
-.process-card:nth-child(3) { animation-delay: 3.33s; }
+.process-card:nth-child(1) {
+  animation-delay: 0s;
+}
+.process-card:nth-child(2) {
+  animation-delay: 1.66s;
+}
+.process-card:nth-child(3) {
+  animation-delay: 3.33s;
+}
 
 .process-card:hover {
   transform: translateY(-8px) scale(1.05);
@@ -1713,15 +1753,21 @@ onUnmounted(() => {
   letter-spacing: -0.04em;
   position: relative;
   display: inline-block;
-  padding: 0.5em 0.75em;  
+  padding: 0.5em 0.75em;
   text-shadow: 0 0 0 currentColor;
   animation: subtle-pulse 2.5s infinite;
 }
 
 @keyframes subtle-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(0,0,0, 0.2); }
-  70% { box-shadow: 0 0 0 15px rgba(0,0,0, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(0,0,0, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(0, 0, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
 }
 .pricing-button-hero {
   background: #000000;
@@ -2703,8 +2749,6 @@ onUnmounted(() => {
     gap: 2rem;
   }
 
- 
-
   .pricing-card-title {
     font-size: 1.5rem;
   }
@@ -2884,7 +2928,4 @@ onUnmounted(() => {
   height: 44px;
   display: block;
 }
-
-
-
 </style>
