@@ -2,6 +2,7 @@
 import { onMounted, ref, watch } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 
+import logoImg from "@/assets/images/Moveout_Logo2.png";
 import { WalletIcon } from "@heroicons/vue/24/outline"; // ajouter l'icône Wallet
 import utils from "../utils/utils/";
 
@@ -278,8 +279,8 @@ function estConnecter() {}
   <nav class="navbar fixed-top">
     <!-- Brand Logo -->
     <a href="/" class="navbar-brand">
-      <img src="/Moveout_Logo2.svg" alt="Moveout Logo" class="logo-icon" />
-      <span class="brand-text">Moveout</span>
+      <img :src="logoImg" alt="Moveout Logo" class="logo-icon" />
+      <span class="brand-text">MoveOut Ai</span>
     </a>
 
     <!-- Navigation Buttons -->

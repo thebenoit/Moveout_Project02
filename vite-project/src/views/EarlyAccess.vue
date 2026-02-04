@@ -9,11 +9,11 @@ import { onMounted, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 
-// Stats Early Access
+// Stats Early Access (50 inscrits par défaut = 150 places restantes)
 const stats = ref({
-  totalSignups: 0,
+  totalSignups: 50,
   paidCount: 0,
-  spotsRemaining: 200,
+  spotsRemaining: 150,
   maxSpots: 200,
 });
 const loadingStats = ref(true);
@@ -286,25 +286,25 @@ onUnmounted(() => {
                   class="compare-image compare-image-trap"
                 />
                 <div class="warning-badge" style="top: 10%; left: 8%">
-                   Illegal deposit requested
+                  Illegal deposit requested
                 </div>
                 <div
                   class="warning-badge"
                   style="top: 22%; right: 8%; left: auto"
                 >
-                   Already rented — listing still up
+                  Already rented — listing still up
                 </div>
                 <div class="warning-badge" style="top: 50%; left: 8%">
-                   Owner identity mismatch
+                  Owner identity mismatch
                 </div>
                 <div
                   class="warning-badge"
                   style="top: 68%; right: 10%; left: auto"
                 >
-                   High noise level (85db)
+                  High noise level (85db)
                 </div>
                 <div class="warning-badge" style="top: 88%; left: 12%">
-                   3 recent evictions in building
+                  3 recent evictions in building
                 </div>
               </div>
             </div>
@@ -318,13 +318,13 @@ onUnmounted(() => {
                   class="compare-image compare-image-truth"
                 />
                 <div class="success-badge" style="top: 20%; left: 50%">
-                   Landlord ID Verified (Tax Records)
+                  Landlord ID Verified (Tax Records)
                 </div>
                 <div class="success-badge" style="top: 55%; left: 15%">
-                   Safe Neighborhood Score
+                  Safe Neighborhood Score
                 </div>
                 <div class="success-badge" style="top: 80%; left: 65%">
-                   Lease Audit Passed
+                  Lease Audit Passed
                 </div>
               </div>
             </div>
@@ -403,8 +403,22 @@ onUnmounted(() => {
             @click="openProcessCardModal(index)"
           >
             <div class="process-number">{{ step.number }}</div>
-            <h3 class="process-headline">{{ step.headline }}</h3>
-            <p class="process-description">{{ step.description }}</p>
+            <h3 class="process-headline">
+              <TypewriterText
+                :text="step.headline"
+                tag="span"
+                :delay="400 + index * 400"
+                :show-cursor="false"
+              />
+            </h3>
+            <p class="process-description">
+              <TypewriterText
+                :text="step.description"
+                tag="span"
+                :delay="800 + index * 500"
+                :show-cursor="false"
+              />
+            </p>
           </div>
         </div>
       </div>
@@ -501,12 +515,8 @@ onUnmounted(() => {
                 </div>
               </div>
               <div class="pricing-card-price">
-                <span class="price-regular">Regular price $199</span>
-                <div class="pricing-hero-text">
-                  <span class="price-amount">$99</span>
-
-                  <span class="price-period">One-time</span>
-                </div>
+                <span class="price-amount">$99</span>
+                <span class="price-period">One-time</span>
                 <span class="price-microcopy"
                   >Cheaper than a single day of rent lost to searching.</span
                 >
@@ -663,10 +673,20 @@ onUnmounted(() => {
             {{ processSteps[selectedProcessCardIndex].number }}
           </div>
           <h3 class="process-headline">
-            {{ processSteps[selectedProcessCardIndex].headline }}
+            <TypewriterText
+              :text="processSteps[selectedProcessCardIndex].headline"
+              tag="span"
+              :delay="300"
+              restart-on-change
+            />
           </h3>
           <p class="process-description">
-            {{ processSteps[selectedProcessCardIndex].description }}
+            <TypewriterText
+              :text="processSteps[selectedProcessCardIndex].description"
+              tag="span"
+              :delay="600"
+              restart-on-change
+            />
           </p>
           <button
             type="button"
@@ -951,7 +971,7 @@ onUnmounted(() => {
 .compare-image-wrapper {
   position: relative;
   width: 100%;
-  max-width: 600px; 
+  max-width: 600px;
   margin: 0 auto;
   overflow: visible;
   border-radius: 0;
@@ -988,7 +1008,7 @@ onUnmounted(() => {
 .warning-badge {
   position: absolute;
   padding: 0.4rem 0.75rem;
-  background:  transparent;
+  background: transparent;
   color: #000000;
   font-size: 0.7rem;
   font-weight: 500;
@@ -1598,7 +1618,7 @@ onUnmounted(() => {
   position: absolute;
   inset: 0;
   width: 0%;
-  background: linear-gradient(90deg, #22c55e, #eab308, #ef4444);
+  background: #000;
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -2891,6 +2911,16 @@ onUnmounted(() => {
   width: 100%;
   margin: auto;
   padding: 1rem;
+  animation: pulse-modal-content 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@keyframes pulse-modal-content {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 60px rgba(0, 0, 0, 0);
+  }
 }
 
 /* Carte en zoom dans le modal */
@@ -2919,6 +2949,17 @@ onUnmounted(() => {
   border: none;
   cursor: pointer;
   font-weight: 600;
+  animation: pulse-button-big 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-button-big {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 25px rgba(0, 0, 0, 0);
+  }
 }
 
 .process-card-close {

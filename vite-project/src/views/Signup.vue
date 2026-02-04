@@ -1,6 +1,7 @@
 <script setup>
+import logoImg from "@/assets/images/Moveout_Logo2.png";
 import { useRouter } from "vue-router";
-import utils from "../utils/utils"
+import utils from "../utils/utils";
 
 const router = useRouter();
 
@@ -186,8 +187,8 @@ const signupWithGoogle = () => {
     <!-- Top Navigation Bar -->
     <nav class="top-navbar">
       <a href="/" class="navbar-brand">
-        <img src="/Moveout_Logo2.svg" alt="Moveout Logo" class="logo-icon" />
-        <span>Moveout</span>
+        <img :src="logoImg" alt="Moveout Logo" class="logo-icon" />
+        <span>MoveOut Ai</span>
       </a>
     </nav>
 

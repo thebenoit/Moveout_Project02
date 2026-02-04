@@ -1,21 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import HomeNew from "@/views/HomeNew.vue";
-
-import Login from "@/views/Login.vue";
-import Signup from "@/views/Signup.vue";
-
-import Erreur404 from "@/views/Erreur404.vue";
 import EA2 from "@/views/EA2.vue";
+import Erreur404 from "@/views/Erreur404.vue";
 
-import Pricing_Page from "@/views/pricing_pages/pricing_page.vue";
-import PremiumSuccess from "@/views/pricing_pages/PremiumSuccess.vue";
 import EarlyAccess from "@/views/EarlyAccess.vue";
 import EarlyAccessSuccess from "@/views/EarlyAccessSuccess.vue";
-import Dashboard from "@/views/Dashboard.vue";
-import TestListingCard from "@/views/TestListingCard.vue";
-import LoadingListings from "@/components/loading_listings.vue";
-import LoadingListingsTest from "@/components/LoadingListingsTest.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -97,9 +86,9 @@ const router = createRouter({
     },
   ],
   scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition;
-    }
+    // if (savedPosition) {
+    //   return savedPosition;
+    // }
     return { top: 0 };
   },
 });
