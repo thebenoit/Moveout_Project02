@@ -1,15 +1,10 @@
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { RouterLink, useRouter } from "vue-router";
-import Logo from "./Logo.vue";
 
-import MoveoutLogo from "../assets/images/Moveout_Logo2.svg";
-
-import { TruckIcon } from "@heroicons/vue/24/outline";
-import { UserIcon } from "@heroicons/vue/24/outline";
-import utils from "../utils/utils/";
-import BetaLogo from "./BetaLogo.vue";
+import logoImg from "@/assets/images/Moveout_Logo2.png";
 import { WalletIcon } from "@heroicons/vue/24/outline"; // ajouter l'icône Wallet
+import utils from "../utils/utils/";
 
 const connecter = ref(false); // initialiser à false
 
@@ -30,7 +25,7 @@ watch(
   async () => {
     await isUserLoggedIn();
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 onMounted(async () => {
@@ -52,7 +47,7 @@ function gotosignup() {
 }
 
 const customerPortalUrl = ref(
-  `https://billing.stripe.com/p/login/00g033aRe1av8es3cc` + "?prefilled_email="
+  `https://billing.stripe.com/p/login/00g033aRe1av8es3cc` + "?prefilled_email=",
 );
 
 function billing() {
@@ -284,27 +279,12 @@ function estConnecter() {}
   <nav class="navbar fixed-top">
     <!-- Brand Logo -->
     <a href="/" class="navbar-brand">
-      <img src="/Moveout_Logo2.svg" alt="Moveout Logo" class="logo-icon" />
-      <span class="brand-text">Moveout</span>
+      <img :src="logoImg" alt="Moveout Logo" class="logo-icon" />
+      <span class="brand-text">MoveOut Ai</span>
     </a>
 
     <!-- Navigation Buttons -->
     <div class="navbar-buttons">
-      <button
-        v-if="!connecter"
-        @click="gotologin"
-        class="navbar-btn navbar-btn-outline login-btn"
-      >
-        <span class="btn-text">Se connecter</span>
-      </button>
-      <button
-        v-if="!connecter"
-        @click="gotosignup"
-        class="navbar-btn navbar-btn-solid signup-btn"
-      >
-        <span class="btn-text">S'inscrire</span>
-      </button>
-
       <router-link
         v-if="connecter"
         to="/pricing"

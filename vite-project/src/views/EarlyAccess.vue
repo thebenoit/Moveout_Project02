@@ -1,19 +1,19 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import unnamedCards from "@/assets/images/unnamed.png";
+import verifiedCards from "@/assets/images/verified.png";
+import robotVideo from "@/assets/videos/Animation_d_image_subtile_et_realiste.mov";
+import solutionVideo from "@/assets/videos/Image_To_Animated_GIF_Conversion (1).mp4";
+import TypewriterEraseText from "@/components/TypewriterEraseText.vue";
+import TypewriterText from "@/components/TypewriterText.vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import demoVideo from "@/assets/videos/Demo_Video.mov";
-import unnamedCards from "@/assets/images/unnamed.jpg";
-import verifiedCards from "@/assets/images/verified.jpg";
-import stressedImage from "@/assets/images/stressed.jpg";
-import robotWorking from "@/assets/images/robot_working.jpg";
-
 const router = useRouter();
 
-// Stats Early Access
+// Stats Early Access (50 inscrits par défaut = 150 places restantes)
 const stats = ref({
-  totalSignups: 0,
+  totalSignups: 50,
   paidCount: 0,
-  spotsRemaining: 200,
+  spotsRemaining: 150,
   maxSpots: 200,
 });
 const loadingStats = ref(true);
@@ -30,6 +30,41 @@ const formData = ref({
 });
 const submitting = ref(false);
 const formError = ref(null);
+
+// Modal process card (zoom)
+const showProcessCardModal = ref(false);
+const selectedProcessCardIndex = ref(null);
+
+const processSteps = [
+  {
+    number: 1,
+    headline: "Sign Up & Set Your Criteria",
+    description:
+      "Create your account and tell us exactly what you're looking for: budget, location, number of bedrooms, and any special requirements.",
+  },
+  {
+    number: 2,
+    headline: "AI Finds Perfect Matches",
+    description:
+      "Our AI scans thousands of listings 24/7 and filters them based on your criteria. You only see the top 1% of matches that fit perfectly.",
+  },
+  {
+    number: 3,
+    headline: "Review & Schedule Visits",
+    description:
+      "Get notified instantly when perfect matches are found. Review the details and schedule visits directly through our platform.",
+  },
+];
+
+function openProcessCardModal(index) {
+  selectedProcessCardIndex.value = index;
+  showProcessCardModal.value = true;
+}
+
+function closeProcessCardModal() {
+  showProcessCardModal.value = false;
+  selectedProcessCardIndex.value = null;
+}
 
 // Récupérer les stats Early Access
 async function fetchStats() {
@@ -181,12 +216,18 @@ onUnmounted(() => {
           <!-- Text Content -->
           <div class="header-text">
             <h1 class="headline">
-              Stop searching. Start living. Find your apartment in 3 days, not 3
-              months.
+              <TypewriterText
+                text="Stop searching. Start moving. Find your apartment in 3 days, not 3 months."
+                :speed="45"
+                :delay="400"
+              />
             </h1>
             <p class="subtitle">
               Delegate your search. Our 24/7 AI delivers only the top 1% of
               matches that fit your exact criteria.
+            </p>
+            <p class="subtitle">
+              The AI that finds your apartment and vets your landlord.
             </p>
             <p class="release-date">Launching February 14, 2026</p>
             <div class="cta-buttons">
@@ -196,7 +237,7 @@ onUnmounted(() => {
                 class="cta-button-main"
               >
                 <span v-if="stats.spotsRemaining <= 0">Full</span>
-                <span v-else>Show My Eligible Apartments</span>
+                <span v-else>Reserve My Priority Acces</span>
               </button>
               <button
                 @click="scrollToBenefits"
@@ -207,19 +248,16 @@ onUnmounted(() => {
                 <span v-else>Learn More</span>
               </button>
             </div>
-          </div>
-          <!-- Demo Video -->
-          <div class="header-visual">
-            <video
-              class="demo-video"
-              :src="demoVideo"
-              autoplay
-              loop
-              muted
-              playsinline
-            >
-              Votre navigateur ne supporte pas la vidéo.
-            </video>
+            <TypewriterEraseText
+              tag="p"
+              text="Already 150+ people on the waitlist"
+              class="cta-waitlist-line"
+              :type-speed="55"
+              :erase-speed="35"
+              :pause-before-erase="1800"
+              :pause-before-retype="500"
+              :erase-min-length="19"
+            />
           </div>
         </div>
       </div>
@@ -247,19 +285,31 @@ onUnmounted(() => {
                   alt="Real estate listing"
                   class="compare-image compare-image-trap"
                 />
-                <div class="warning-badge" style="top: 15%; left: 10%">
-                  ⚠️ Owner Identity Mismatch
+                <div class="warning-badge" style="top: 10%; left: 8%">
+                  Illegal deposit requested
                 </div>
-                <div class="warning-badge" style="top: 60%; left: 75%">
-                  ⚠️ High Noise Level (85db)
+                <div
+                  class="warning-badge"
+                  style="top: 22%; right: 8%; left: auto"
+                >
+                  Already rented — listing still up
                 </div>
-                <div class="warning-badge" style="top: 85%; left: 20%">
-                  ⚠️ 3 Recent Evictions
+                <div class="warning-badge" style="top: 50%; left: 8%">
+                  Owner identity mismatch
+                </div>
+                <div
+                  class="warning-badge"
+                  style="top: 68%; right: 10%; left: auto"
+                >
+                  High noise level (85db)
+                </div>
+                <div class="warning-badge" style="top: 88%; left: 12%">
+                  3 recent evictions in building
                 </div>
               </div>
             </div>
             <!-- Right: The Truth -->
-            <div class="challenge-side challenge-truth">
+            <div class="challenge-side">
               <div class="truth-badge">WHAT MOVEOUT REVEALS</div>
               <div class="compare-image-wrapper">
                 <img
@@ -267,14 +317,14 @@ onUnmounted(() => {
                   alt="Real estate listing verified"
                   class="compare-image compare-image-truth"
                 />
-                <div class="success-badge" style="top: 20%; left: 70%">
-                  ✅ Landlord ID Verified (Tax Records)
+                <div class="success-badge" style="top: 20%; left: 50%">
+                  Landlord ID Verified (Tax Records)
                 </div>
                 <div class="success-badge" style="top: 55%; left: 15%">
-                  ✅ Safe Neighborhood Score
+                  Safe Neighborhood Score
                 </div>
                 <div class="success-badge" style="top: 80%; left: 65%">
-                  ✅ Lease Audit Passed
+                  Lease Audit Passed
                 </div>
               </div>
             </div>
@@ -294,11 +344,14 @@ onUnmounted(() => {
             <div class="illustration-card illustration-card-problem">
               <div class="illustration-number">01</div>
               <div class="illustration-frame">
-                <img
-                  :src="stressedImage"
-                  alt="Stressed international student"
+                <video
+                  :src="robotVideo"
                   class="illustration-image"
-                />
+                  autoplay
+                  muted
+                  loop
+                  playsinline
+                ></video>
               </div>
               <div class="illustration-content">
                 <p class="illustration-caption">
@@ -311,11 +364,14 @@ onUnmounted(() => {
             <div class="illustration-card illustration-card-solution">
               <div class="illustration-number">02</div>
               <div class="illustration-frame">
-                <img
-                  :src="robotWorking"
-                  alt="AI working 24/7"
+                <video
+                  :src="solutionVideo"
                   class="illustration-image"
-                />
+                  autoplay
+                  muted
+                  loop
+                  playsinline
+                ></video>
               </div>
               <div class="illustration-content">
                 <p class="illustration-caption illustration-caption-highlight">
@@ -335,31 +391,33 @@ onUnmounted(() => {
         <p class="process-subtitle">
           Get your perfect apartment in just 3 simple steps
         </p>
+        <p class="process-data-note">
+          Our AI scans almost every real estate listing site in your region at
+          once.
+        </p>
         <div class="process-cards">
-          <div class="process-card">
-            <div class="process-number">1</div>
-            <h3 class="process-headline">Sign Up & Set Your Criteria</h3>
+          <div
+            v-for="(step, index) in processSteps"
+            :key="index"
+            class="process-card"
+            @click="openProcessCardModal(index)"
+          >
+            <div class="process-number">{{ step.number }}</div>
+            <h3 class="process-headline">
+              <TypewriterText
+                :text="step.headline"
+                tag="span"
+                :delay="400 + index * 400"
+                :show-cursor="false"
+              />
+            </h3>
             <p class="process-description">
-              Create your account and tell us exactly what you're looking for:
-              budget, location, number of bedrooms, and any special
-              requirements.
-            </p>
-          </div>
-          <div class="process-card">
-            <div class="process-number">2</div>
-            <h3 class="process-headline">AI Finds Perfect Matches</h3>
-            <p class="process-description">
-              Our AI scans thousands of listings 24/7 and filters them based on
-              your criteria. You only see the top 1% of matches that fit
-              perfectly.
-            </p>
-          </div>
-          <div class="process-card">
-            <div class="process-number">3</div>
-            <h3 class="process-headline">Review & Schedule Visits</h3>
-            <p class="process-description">
-              Get notified instantly when perfect matches are found. Review the
-              details and schedule visits directly through our platform.
+              <TypewriterText
+                :text="step.description"
+                tag="span"
+                :delay="800 + index * 500"
+                :show-cursor="false"
+              />
             </p>
           </div>
         </div>
@@ -416,15 +474,52 @@ onUnmounted(() => {
 
           <!-- Card 2: The Hero (Founding Member) -->
           <div class="pricing-card pricing-card-hero">
-            <div class="pricing-badge">Recommended</div>
+            <div class="pricing-badge">
+              <TypewriterEraseText
+                tag="p"
+                text="Recommended"
+                class="pricing"
+                :type-speed="55"
+                :erase-speed="35"
+                :pause-before-erase="1800"
+                :pause-before-retype="500"
+                :erase-min-length="0"
+              />
+            </div>
+
             <div class="pre-order-badge pre-order-badge-hero">Pre-Order</div>
             <div class="pricing-card-header">
               <h3 class="pricing-card-title">Founding Member</h3>
               <p class="pricing-launch-date">Launching February 14, 2026</p>
               <div class="pricing-card-subtitle">Season Pass</div>
+              <div class="rarity-bar">
+                <div class="rarity-bar-top">
+                  <span class="rarity-label">Access Rarity</span>
+                  <span class="rarity-value">
+                    {{ stats.spotsRemaining }} / {{ stats.maxSpots }} spots
+                    remaining
+                  </span>
+                </div>
+                <div class="rarity-bar-track">
+                  <div
+                    class="rarity-bar-fill"
+                    :style="{
+                      width:
+                        (stats.maxSpots
+                          ? ((stats.maxSpots - stats.spotsRemaining) /
+                              stats.maxSpots) *
+                            100
+                          : 0) + '%',
+                    }"
+                  ></div>
+                </div>
+              </div>
               <div class="pricing-card-price">
                 <span class="price-amount">$99</span>
                 <span class="price-period">One-time</span>
+                <span class="price-microcopy"
+                  >Cheaper than a single day of rent lost to searching.</span
+                >
               </div>
             </div>
             <ul class="pricing-features">
@@ -455,7 +550,7 @@ onUnmounted(() => {
               class="pricing-button pricing-button-hero"
               @click="openSignupForm('pro')"
             >
-              Secure My Safe Move ($99)
+              Join the founding members
             </button>
           </div>
         </div>
@@ -562,6 +657,62 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
+
+    <!-- Modal Process Card (zoom) -->
+    <div
+      v-if="showProcessCardModal && selectedProcessCardIndex !== null"
+      class="modal-overlay process-card-modal-overlay"
+      @click="closeProcessCardModal"
+    >
+      <div class="process-card-modal-content" @click.stop>
+        <div
+          v-if="processSteps[selectedProcessCardIndex]"
+          class="process-card process-card-zoomed"
+        >
+          <div class="process-number">
+            {{ processSteps[selectedProcessCardIndex].number }}
+          </div>
+          <h3 class="process-headline">
+            <TypewriterText
+              :text="processSteps[selectedProcessCardIndex].headline"
+              tag="span"
+              :delay="300"
+              restart-on-change
+            />
+          </h3>
+          <p class="process-description">
+            <TypewriterText
+              :text="processSteps[selectedProcessCardIndex].description"
+              tag="span"
+              :delay="600"
+              restart-on-change
+            />
+          </p>
+          <button
+            type="button"
+            class="process-card-cta"
+            @click="
+              closeProcessCardModal();
+              openSignupForm();
+            "
+          >
+            Get started
+          </button>
+        </div>
+        <button
+          type="button"
+          class="process-card-close"
+          aria-label="Fermer"
+          @click="closeProcessCardModal"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -631,6 +782,7 @@ onUnmounted(() => {
   text-align: center;
   opacity: 0;
   animation: fadeInUp 0.8s ease-out forwards;
+  min-height: 1.05em;
 }
 
 @keyframes fadeInUp {
@@ -819,7 +971,7 @@ onUnmounted(() => {
 .compare-image-wrapper {
   position: relative;
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
   margin: 0 auto;
   overflow: visible;
   border-radius: 0;
@@ -839,6 +991,12 @@ onUnmounted(() => {
   display: block;
   object-fit: cover;
 }
+.compare-image-truth {
+  border: 2px solid #000;
+  transform: scale(1.05);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
 
 /* Image Filters */
 .compare-image-trap {
@@ -850,7 +1008,7 @@ onUnmounted(() => {
 .warning-badge {
   position: absolute;
   padding: 0.4rem 0.75rem;
-  background: rgba(255, 255, 255, 0.95);
+  background: transparent;
   color: #000000;
   font-size: 0.7rem;
   font-weight: 500;
@@ -858,7 +1016,7 @@ onUnmounted(() => {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 10;
   white-space: nowrap;
   max-width: 90%;
@@ -869,15 +1027,15 @@ onUnmounted(() => {
 .success-badge {
   position: absolute;
   padding: 0.4rem 0.75rem;
-  background: rgba(0, 0, 0, 0.9);
-  color: #ffffff;
+  background: transparent;
+  color: #000000;
   font-size: 0.7rem;
   font-weight: 500;
   border-radius: 0;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2);
   z-index: 10;
   white-space: nowrap;
   max-width: 90%;
@@ -904,6 +1062,7 @@ onUnmounted(() => {
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  animation: pulse-button 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .challenge-button:hover {
@@ -1040,6 +1199,10 @@ onUnmounted(() => {
   object-fit: contain;
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   filter: grayscale(0.2);
+}
+
+.illustration-frame video.illustration-image {
+  display: block;
 }
 
 .illustration-card:hover .illustration-image {
@@ -1190,11 +1353,21 @@ onUnmounted(() => {
   font-size: 1.25rem;
   color: #666666;
   text-align: center;
-  margin: 0 0 5rem 0;
+  margin: 0 0 1rem 0;
   max-width: 650px;
   margin-left: auto;
   margin-right: auto;
   font-weight: 300;
+}
+
+.process-data-note {
+  font-size: 0.9rem;
+  color: #888888;
+  text-align: center;
+  margin: 0 auto 5rem;
+  max-width: 520px;
+  line-height: 1.5;
+  font-weight: 400;
 }
 
 .process-cards {
@@ -1217,10 +1390,21 @@ onUnmounted(() => {
   align-items: center;
   gap: 1.5rem;
   box-shadow: none;
+  animation: subtle-pulse 5s ease-in-out infinite;
+  cursor: pointer;
+}
+.process-card:nth-child(1) {
+  animation-delay: 0s;
+}
+.process-card:nth-child(2) {
+  animation-delay: 1.66s;
+}
+.process-card:nth-child(3) {
+  animation-delay: 3.33s;
 }
 
 .process-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-8px) scale(1.05);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
   border-color: #000000;
 }
@@ -1305,6 +1489,8 @@ onUnmounted(() => {
   padding: 3rem;
   display: flex;
   flex-direction: column;
+  border-radius: 12px; /* Un peu plus de rondeur pour le confort visuel */
+  position: relative;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -1320,9 +1506,10 @@ onUnmounted(() => {
 
 /* Hero Card (Founding Member) - Elevated & Prominent */
 .pricing-card-hero {
-  border: 2px solid #000000;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-  transform: scale(1.02);
+  border: 2px solid #000;
+  transform: scale(1.05);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+  z-index: 10;
 }
 
 .pricing-card-hero:hover {
@@ -1391,6 +1578,50 @@ onUnmounted(() => {
   font-weight: 400;
 }
 
+.rarity-bar {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.rarity-bar-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+  gap: 0.5rem;
+}
+
+.rarity-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #9ca3af;
+  font-weight: 600;
+}
+
+.rarity-value {
+  font-size: 0.75rem;
+  color: #111827;
+  font-weight: 500;
+}
+
+.rarity-bar-track {
+  position: relative;
+  width: 100%;
+  height: 7px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  overflow: hidden;
+}
+
+.rarity-bar-fill {
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  background: #000;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .pricing-launch-date {
   font-size: 0.95rem;
   color: #000000;
@@ -1401,17 +1632,35 @@ onUnmounted(() => {
 
 .pricing-card-price {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   gap: 0.5rem;
   margin-top: 1rem;
 }
 
-.price-amount {
-  font-size: 3rem;
+.price-regular {
+  width: 100%;
+  font-size: 0.95rem;
+  color: #c53030;
+  text-decoration: line-through;
   font-weight: 700;
+}
+
+.price-microcopy {
+  width: 100%;
+  font-size: 0.85rem;
+  color: #666666;
+  line-height: 1.4;
+  margin-top: 0.25rem;
+  font-weight: 400;
+}
+
+.price-amount {
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
   color: #000000;
   line-height: 1;
-  letter-spacing: -0.03em;
 }
 
 .pricing-card-decoy .price-amount {
@@ -1527,13 +1776,42 @@ onUnmounted(() => {
   border-color: #9ca3af;
   color: #374151;
 }
+.pricing-hero-text {
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 3.25rem;
+  letter-spacing: -0.04em;
+  position: relative;
+  display: inline-block;
+  padding: 0.5em 0.75em;
+  text-shadow: 0 0 0 currentColor;
+  animation: subtle-pulse 2.5s infinite;
+}
 
+@keyframes subtle-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(0, 0, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
 .pricing-button-hero {
   background: #000000;
   color: #ffffff;
   border-color: #000000;
   position: relative;
   animation: pulse-button 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@media (max-width: 768px) {
+  .pricing-card-hero {
+    transform: scale(1);
+    margin-top: 2rem;
+  }
 }
 
 .pricing-button-hero:hover {
@@ -1562,6 +1840,16 @@ onUnmounted(() => {
   align-self: center;
   opacity: 0;
   animation: fadeInUp 0.8s ease-out 0.45s forwards;
+}
+
+.cta-waitlist-line {
+  margin: 1rem 0 0;
+  font-size: 0.875rem;
+  color: #666666;
+  text-align: center;
+  font-weight: 400;
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out 0.5s forwards;
 }
 
 .cta-button-main {
@@ -1915,7 +2203,7 @@ onUnmounted(() => {
   .release-date {
     font-size: 0.9rem;
   }
-  
+
   .pricing-launch-date {
     font-size: 0.85rem;
   }
@@ -2124,6 +2412,9 @@ onUnmounted(() => {
 
   .pricing-card {
     padding: 2.5rem;
+    border-radius: 12px; /* Un peu plus de rondeur pour le confort visuel */
+    position: relative;
+    overflow: hidden;
   }
 
   .pricing-card-hero {
@@ -2253,7 +2544,7 @@ onUnmounted(() => {
   .release-date {
     font-size: 0.85rem;
   }
-  
+
   .pricing-launch-date {
     font-size: 0.8rem;
   }
@@ -2488,10 +2779,6 @@ onUnmounted(() => {
     gap: 2rem;
   }
 
-  .pricing-card {
-    padding: 2rem;
-  }
-
   .pricing-card-title {
     font-size: 1.5rem;
   }
@@ -2609,5 +2896,87 @@ onUnmounted(() => {
     margin-bottom: 1rem;
     line-height: 1.4;
   }
+}
+
+/* Modal Process Card – fond plus sombre */
+.process-card-modal-overlay {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.process-card-modal-content {
+  position: relative;
+  max-width: 480px;
+  width: 100%;
+  margin: auto;
+  padding: 1rem;
+  animation: pulse-modal-content 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@keyframes pulse-modal-content {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 60px rgba(0, 0, 0, 0);
+  }
+}
+
+/* Carte en zoom dans le modal */
+.process-card-zoomed {
+  transform: scale(1.08);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+  cursor: default;
+  animation: none;
+}
+.process-card-zoomed:hover {
+  transform: scale(1.11);
+}
+
+.process-card-zoomed .process-number,
+.process-card-zoomed .process-headline,
+.process-card-zoomed .process-description {
+  pointer-events: none;
+}
+
+/* Bouton CTA optionnel dans la carte zoomée */
+.process-card-cta {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: #000;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  animation: pulse-button-big 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-button-big {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 25px rgba(0, 0, 0, 0);
+  }
+}
+
+.process-card-close {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10001;
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.process-card-close svg {
+  width: 44px;
+  height: 44px;
+  display: block;
 }
 </style>
